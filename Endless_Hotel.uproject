@@ -7,7 +7,11 @@
 		{
 			"Name": "Endless_Hotel",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UMG",
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
