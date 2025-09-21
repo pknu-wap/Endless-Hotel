@@ -11,4 +11,12 @@ class ENDLESS_HOTEL_API UUI_PopUp_Pause : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
+
+#pragma endregion
+
 };
