@@ -1,12 +1,22 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
+#include "UI/Controller/UI_Controller.h"
 #include "GameFramework/GameUserSettings.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Button.h"
 #include "Sound/SoundClass.h"
 #include "Kismet/GameplayStatics.h"
+
+#pragma region Delegate
+
+FSettingGrapic UUI_PopUp_Setting::SettingGrapic;
+FSettingLanguage UUI_PopUp_Setting::SettingLanguage;
+FSettingResolution UUI_PopUp_Setting::SettingResolution;
+FSettingScreen UUI_PopUp_Setting::SettingScreen;
+
+#pragma endregion
 
 #pragma region Base
 
@@ -16,10 +26,10 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	SettingHandle = UGameUserSettings::GetGameUserSettings();
 
-	SettingGrapic.AddDynamic(this, ThisClass::ButtonClick_Grapic);
-	SettingLanguage.AddDynamic(this, ThisClass::ButtonClick_Language);
-	SettingResolution.AddDynamic(this, ThisClass::ButtonClick_Resolution);
-	SettingScreen.AddDynamic(this, ThisClass::ButtonClick_Screen);
+	SettingGrapic.AddDynamic(this, &ThisClass::ButtonClick_Grapic);
+	SettingLanguage.AddDynamic(this, &ThisClass::ButtonClick_Language);
+	SettingResolution.AddDynamic(this, &ThisClass::ButtonClick_Resolution);
+	SettingScreen.AddDynamic(this, &ThisClass::ButtonClick_Screen);
 
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
@@ -38,15 +48,6 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Value_Screen = static_cast<EWindowMode::Type>(SaveData.Screen);
 	Value_Sound = SaveData.Sound;
 }
-
-#pragma endregion
-
-#pragma region Delegate
-
-FSettingGrapic UUI_PopUp_Setting::SettingGrapic;
-FSettingLanguage UUI_PopUp_Setting::SettingLanguage;
-FSettingResolution UUI_PopUp_Setting::SettingResolution;
-FSettingScreen UUI_PopUp_Setting::SettingScreen;
 
 #pragma endregion
 
@@ -98,6 +99,16 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 	SaveData.Sound = Value_Sound;
 
 	SaveManager->SaveSettingData(SaveData);
+}
+
+#pragma endregion
+
+#pragma region Input
+
+void UUI_PopUp_Setting::Input_ESC()
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->ClosePopUpWidget(EInputModeType::UIOnly);
 }
 
 #pragma endregion

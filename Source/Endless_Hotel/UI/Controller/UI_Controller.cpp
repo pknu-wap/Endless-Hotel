@@ -3,7 +3,27 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "GameFramework/PlayerController.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+
+#pragma region Base
+
+UUI_Controller::UUI_Controller()
+{
+	static ConstructorHelpers::FClassFinder<UUI_Base> MainMenuFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/MainMenu/WBP_MainMenu.WBP_MainMenu_C"));
+	if (MainMenuFinder.Succeeded())
+	{
+		UI_MainMenu = MainMenuFinder.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUI_Base> InGameFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/InGame/WBP_InGame.WBP_InGame_C"));
+	if (InGameFinder.Succeeded())
+	{
+		UI_InGame = InGameFinder.Class;
+	}
+}
+
+#pragma endregion
 
 #pragma region Open
 
@@ -13,7 +33,7 @@ UUI_Base* UUI_Controller::OpenBaseWidget(TSubclassOf<UUI_Base> WidgetClass, cons
 	{
 		CloseBaseWidget(InputMode);
 	}
-
+	
 	BaseWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
 	BaseWidget->AddToViewport(BASE_UI_ZORDER);
 
@@ -153,6 +173,24 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 
 		break;
 	}
+	}
+}
+
+#pragma endregion
+
+#pragma region Widget
+
+void UUI_Controller::OpenMapBaseWidget()
+{
+	switch (UEHGameInstance::CurrentMap)
+	{
+	case EMapType::MainMenu:
+		OpenBaseWidget(UI_MainMenu);
+		break;
+
+	case EMapType::Hotel:
+		OpenBaseWidget(UI_InGame, EInputModeType::GameOnly);
+		break;
 	}
 }
 

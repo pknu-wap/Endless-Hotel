@@ -26,7 +26,14 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-#pragma region Widget
+#pragma region Base
+
+public:
+	UUI_Controller();
+
+#pragma endregion
+
+#pragma region Open & Close
 
 public:
 	class UUI_Base* OpenBaseWidget(TSubclassOf<class UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
@@ -49,6 +56,20 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UUI_PopUp_Base> PopUpWidget;
+
+#pragma endregion
+
+#pragma region Widget
+
+public:
+	void OpenMapBaseWidget();
+
+protected:
+	UPROPERTY()
+	TSubclassOf<class UUI_Base> UI_MainMenu;
+
+	UPROPERTY()
+	TSubclassOf<class UUI_Base> UI_InGame;
 
 #pragma endregion
 

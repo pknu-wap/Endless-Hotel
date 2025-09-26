@@ -105,4 +105,11 @@ protected:
 
 #pragma endregion
 
+#pragma region Input
+
+protected:
+	virtual void Input_ESC() override;
+
+#pragma endregion
+
 };

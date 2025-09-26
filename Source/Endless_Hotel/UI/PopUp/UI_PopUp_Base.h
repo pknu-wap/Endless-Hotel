@@ -22,7 +22,10 @@ protected:
 #pragma region Input
 
 protected:
+	UFUNCTION()
 	virtual void Input_Enter() PURE_VIRTUAL(UUI_PopUp_Base::Input_Enter, );
+
+	UFUNCTION()
 	virtual void Input_ESC();
 
 #pragma endregion
