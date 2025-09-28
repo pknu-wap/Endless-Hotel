@@ -53,7 +53,7 @@ public:
 
 #pragma endregion
 
-#pragma region Buttons
+#pragma region Button
 
 protected:
 	UPROPERTY(meta = (BindWidget))

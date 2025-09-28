@@ -29,13 +29,13 @@ protected:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> ResumeButton;
+	TObjectPtr<class UButton> Button_Resume;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> MainMenuButton;
+	TObjectPtr<class UButton> Button_MainMenu;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> QuitButton;
+	TObjectPtr<class UButton> Button_Quit;
 
 #pragma endregion
 

@@ -39,16 +39,16 @@ protected:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> StartButton;
+	TObjectPtr<class UButton> Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> DictionaryButton;
+	TObjectPtr<class UButton> Button_Dictionary;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> SettingButton;
+	TObjectPtr<class UButton> Button_Setting;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> QuitButton;
+	TObjectPtr<class UButton> Button_Quit;
 
 #pragma endregion
 

@@ -51,7 +51,7 @@ void UUI_PopUp_Setting::NativeConstruct()
 
 #pragma endregion
 
-#pragma region Click
+#pragma region Button
 
 void UUI_PopUp_Setting::ButtonClick_Grapic(int32 Value, int32 Index)
 {

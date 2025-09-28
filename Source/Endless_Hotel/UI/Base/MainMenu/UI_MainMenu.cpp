@@ -14,10 +14,10 @@ void UUI_MainMenu::NativeOnInitialized()
 
 	UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 
-	StartButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
-	DictionaryButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Dictionary);
-	SettingButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
-	QuitButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
+	Button_Start->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
+	Button_Dictionary->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Dictionary);
+	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
+	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 }
 
 #pragma endregion

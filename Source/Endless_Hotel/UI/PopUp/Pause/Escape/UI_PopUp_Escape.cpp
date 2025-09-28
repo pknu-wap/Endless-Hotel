@@ -10,9 +10,9 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	ResumeButton->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
-	MainMenuButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_MainMenu);
-	QuitButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
+	Button_Resume->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+	Button_MainMenu->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_MainMenu);
+	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 }
 
 #pragma endregion
