@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "UI_Base.generated.h"
 
-UCLASS(Abstract, Meta = (DisableNativeTick))
+UCLASS()
 class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 {
 	GENERATED_BODY()
