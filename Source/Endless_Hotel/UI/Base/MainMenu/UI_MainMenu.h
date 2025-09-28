@@ -22,7 +22,7 @@ protected:
 
 #pragma endregion
 
-#pragma region Buttons
+#pragma region Button
 
 protected:
 	UFUNCTION()
