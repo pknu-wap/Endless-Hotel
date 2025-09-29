@@ -29,7 +29,7 @@ protected:
 	void ButtonClick_Start();
 
 	UFUNCTION()
-	void ButtonClick_Dictionary();
+	void ButtonClick_Compendium();
 
 	UFUNCTION()
 	void ButtonClick_Setting();
@@ -42,7 +42,7 @@ protected:
 	TObjectPtr<class UButton> Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Dictionary;
+	TObjectPtr<class UButton> Button_Compendium;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Setting;
@@ -56,7 +56,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Dictionary;
+	TSubclassOf<class UUI_PopUp_Base> UI_Compendium;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_PopUp_Base> UI_Setting;
