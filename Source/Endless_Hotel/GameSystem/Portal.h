@@ -1,0 +1,23 @@
+// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "Portal.generated.h"
+
+UCLASS()
+class ENDLESS_HOTEL_API APortal : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	APortal();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+};
