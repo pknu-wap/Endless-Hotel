@@ -6,7 +6,7 @@
 #include "UI/PopUp/Pause/UI_PopUp_Pause.h"
 #include "UI_PopUp_Escape.generated.h"
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Escape : public UUI_PopUp_Pause
 {
 	GENERATED_BODY()

@@ -6,7 +6,7 @@
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
 #include "UI_PopUp_Reset.generated.h"
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Reset : public UUI_PopUp_Default
 {
 	GENERATED_BODY()
