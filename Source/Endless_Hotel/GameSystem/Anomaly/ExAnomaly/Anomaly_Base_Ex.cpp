@@ -19,7 +19,7 @@ void AAnomaly_Base_Ex::BeginPlay()
 
 void AAnomaly_Base_Ex::StartAnomaly()
 {
-	UE_LOG(LogTemp, Log, TEXT("Anomaly %d Started"), AnomalyID);
+	UE_LOG(LogTemp, Log, TEXT("Anomaly %d Started"), DefaultID);
 }
 void AAnomaly_Base_Ex::StartAnomaly_Implementation()
 {

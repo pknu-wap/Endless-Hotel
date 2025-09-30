@@ -52,7 +52,7 @@ void AAnomaly_Generator::BeginPlay()
 
 int32 AAnomaly_Generator::MakeTimeSeed()
 {
-	const int64 Ticks = FDateTime::UtcNow().GetTicks();  // 100ns 단위
+	const int64 Ticks = FDateTime::UtcNow().GetTicks();
 	const uint64 Cycles = FPlatformTime::Cycles64();
 	const FGuid Guid = FGuid::NewGuid();
 	const uint64 Mix = ((uint64)Guid.A << 32) ^ Guid.D;
@@ -63,16 +63,16 @@ int32 AAnomaly_Generator::MakeTimeSeed()
 // Reset Pool
 void AAnomaly_Generator::InitializePool(bool bShuffle)
 {
-	// 시간 기반 시드 갱신
+	// Seed by Time
 	Seed = MakeTimeSeed();
 
-	// 스트림 초기화
+	// Reset Stream
 	RS.Initialize(Seed);
 
-	// 원본에서 복사
+	// Copy from Original
 	Act_Anomaly = Origin_Anomaly;
 
-	// 셔플
+	// Shuffle
 	if (bShuffle && Act_Anomaly.Num() > 1)
 	{
 		for (int32 i = Act_Anomaly.Num() - 1; i > 0; --i)
@@ -85,7 +85,7 @@ void AAnomaly_Generator::InitializePool(bool bShuffle)
 		}
 	}
 
-	// 현재 인덱스 리셋
+	// Reset Index
 	Current_AnomalyID = -1;
 
 	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Seed=%d, Count=%d"),
@@ -120,6 +120,7 @@ bool AAnomaly_Generator::DestroyCurrentAnomaly()
 {
 	if (CurrentAnomaly.IsValid())
 	{
+		UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] Destroying %s"), *CurrentAnomaly->GetName());
 		CurrentAnomaly->Destroy();
 		CurrentAnomaly = nullptr;
 		return true;
@@ -167,6 +168,7 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 		return nullptr;
 	}
 
+	// Spawn
 	const FTransform SpawnTM = PickSpawnTransform();
 
 	FActorSpawnParameters Params;
@@ -191,11 +193,6 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 		UE_LOG(LogTemp, Warning,
 			TEXT("[Anomaly_Generator] %s has no DefaultID set (stays -1)."),
 			*GetNameSafe(Cls));
-		Spawned->AnomalyID = -1;
-	}
-	else
-	{
-		Spawned->AnomalyID = FixedID;
 	}
 
 	// Start

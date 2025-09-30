@@ -15,11 +15,9 @@ public:
 	// Sets default values for this actor's properties
 	AAnomaly_Base_Ex(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	// Setting in BP Class Defaults, NEVER DUPLICATE
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anomaly")
 	int32 DefaultID = -1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly")
-	int32 AnomalyID = -1;
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void StartAnomaly();
