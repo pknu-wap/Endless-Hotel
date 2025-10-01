@@ -1,0 +1,469 @@
+// Elevator.cpp
+// Copyright by 2025-2 WAP Game 2 team
+
+#include "Elevator.h"
+#include "Components/BoxComponent.h"          // UBoxComponent
+#include "Components/StaticMeshComponent.h"   // UStaticMeshComponent
+#include "Components/PointLightComponent.h"   // UPointLightComponent
+#include "Components/TimelineComponent.h"     // UTimelineComponent
+#include "Components/SceneComponent.h"        // USceneComponent
+#include "Curves/CurveFloat.h"                // UCurveFloat
+#include "TimerManager.h"
+#include "GameFramework/Character.h"          // ACharacter
+#include "Engine/CollisionProfile.h"          // Trigger
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
+#include "CollisionQueryParams.h"
+#include "WorldCollision.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Engine/EngineTypes.h"
+
+
+DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
+
+// ================== Constructor ==================
+AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	PrimaryActorTick.bCanEverTick = false;
+
+	// 1) Root
+	ElevatorSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
+	SetRootComponent(ElevatorSceneRoot);
+
+	// 2) Frame
+	Car = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car"));
+	Car->SetupAttachment(ElevatorSceneRoot);
+
+	Exterior_Structure = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Exterior_Structure"));
+	Exterior_Structure->SetupAttachment(Car);
+
+	// 3) Door / Glass
+	LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
+	LeftDoor->SetupAttachment(Car);
+
+	RightDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoor"));
+	RightDoor->SetupAttachment(Car);
+
+	RightGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightGlass"));
+	RightGlass->SetupAttachment(RightDoor);
+
+	LeftGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftGlass"));
+	LeftGlass->SetupAttachment(LeftDoor);
+
+	// 4) Entrance
+	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
+	Entrance->SetupAttachment(ElevatorSceneRoot);
+
+	// 5) Buttons
+	CallPanel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallPanel"));
+	CallPanel->SetupAttachment(Entrance);
+
+	CallDownButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallDownButtonRing"));
+	CallDownButtonRing->SetupAttachment(CallPanel);
+
+	CallDownButton = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallDownButton"));
+	CallDownButton->SetupAttachment(CallDownButtonRing);
+
+	CallUpButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallUpButtonRing"));
+	CallUpButtonRing->SetupAttachment(CallPanel);
+
+	CallUpButton = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallUpButton"));
+	CallUpButton->SetupAttachment(CallUpButtonRing);
+
+	// 6) Light
+	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
+	ElevatorLight->SetupAttachment(Car);
+
+	// 7) EntranceTrigger
+	GetInTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("GetInTrigger"));
+	GetInTrigger->SetupAttachment(Entrance);
+	GetInTrigger->SetBoxExtent(FVector(120.f, 60.0f, 120.0f));
+	GetInTrigger->SetCollisionProfileName(TEXT("Trigger"));
+	GetInTrigger->SetGenerateOverlapEvents(true);
+
+	GetInTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	GetInTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	// 8) InsideTrigger
+	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
+	InsideTrigger->SetupAttachment(Car);
+	InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 120.0f));
+	InsideTrigger->SetCollisionProfileName(TEXT("Trigger"));
+	InsideTrigger->SetGenerateOverlapEvents(true);
+	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	// 9) Timeline
+	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+	MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
+
+	// 10) Mobility Settings
+	ElevatorSceneRoot->SetMobility(EComponentMobility::Movable);
+	Car->SetMobility(EComponentMobility::Movable);
+	LeftDoor->SetMobility(EComponentMobility::Movable);
+	RightDoor->SetMobility(EComponentMobility::Movable);
+	LeftGlass->SetMobility(EComponentMobility::Movable);
+	RightGlass->SetMobility(EComponentMobility::Movable);
+
+	// 11) Location Settings
+	LeftDoor->SetUsingAbsoluteLocation(false);
+	RightDoor->SetUsingAbsoluteLocation(false);
+}
+
+// ================== BeginPlay ==================
+void AElevator::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(LeftDoor && RightDoor && DoorTimeline && GetInTrigger && InsideTrigger);
+
+	// 1) Closed Location Save
+	LeftDoorClosed = LeftDoor->GetRelativeLocation();
+	RightDoorClosed = RightDoor->GetRelativeLocation();
+
+	// 2) Open Location Compute
+	const FVector LOff = bSlideOnX ? FVector(-DoorGap, 0, 0) : FVector(0, -DoorGap, 0);
+	const FVector ROff = bSlideOnX ? FVector(DoorGap, 0, 0) : FVector(0, DoorGap, 0);
+
+	LeftDoorOpenPos = LeftDoorClosed + LOff;
+	RightDoorOpenPos = RightDoorClosed + ROff;
+
+	UE_LOG(LogElevator, Log, TEXT("[BeginPlay] Closed L=%s R=%s  Open L=%s R=%s"),
+		*LeftDoorClosed.ToString(), *RightDoorClosed.ToString(),
+		*LeftDoorOpenPos.ToString(), *RightDoorOpenPos.ToString());
+
+	// 3) Timeline Setup
+	if (ensureMsgf(DoorCurve != nullptr, TEXT("DoorCurve is not assigned! Please set a 0->1 CurveFloat.")))
+	{
+		FOnTimelineFloat Update;
+		Update.BindUFunction(this, FName("OnDoorTimelineUpdate"));
+
+		FOnTimelineEvent Finished;
+		Finished.BindUFunction(this, FName("OnDoorTimelineFinished"));
+
+		DoorTimeline->AddInterpFloat(DoorCurve, Update);
+		DoorTimeline->SetTimelineFinishedFunc(Finished);
+		DoorTimeline->SetLooping(false);
+		DoorTimeline->SetIgnoreTimeDilation(true);
+
+		// Curve Length: 1
+		if (DoorDuration > 0.f)
+		{
+			DoorTimeline->SetPlayRate(1.f / DoorDuration);
+		}
+	}
+	SetActorLocation(StartPoint);
+
+	if (ensureMsgf(MoveCurve != nullptr, TEXT("MoveCurve is not assigned! Please set a 0->1 CurveFloat.")))
+	{
+		FOnTimelineFloat MoveUpdate;
+		MoveUpdate.BindUFunction(this, FName("OnMoveTimelineUpdate"));
+
+		FOnTimelineEvent MoveFinished;
+		MoveFinished.BindUFunction(this, FName("OnMoveTimelineFinished"));
+
+		MoveTimeline->AddInterpFloat(MoveCurve, MoveUpdate);
+		MoveTimeline->SetTimelineFinishedFunc(MoveFinished);
+		MoveTimeline->SetLooping(false);
+		MoveTimeline->SetIgnoreTimeDilation(true);
+
+		if (MoveDuration > 0.f)
+		{
+			MoveTimeline->SetPlayRate(1.f / MoveDuration);
+		}
+	}
+	
+	OrigStartPoint = StartPoint;
+	OrigLoopPoint = LoopPoint;
+	MovePhase = 0;
+
+	// 4) Delegate Setup
+	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnOverlapBegin);
+	GetInTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnOverlapEnd);
+
+	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
+	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
+}
+
+// ================== Timeline Callbacks ==================
+void AElevator::OnDoorTimelineUpdate(float Alpha)
+{
+	// Alpha: 0->1 (Reverse : 1->0)
+	const FVector L = FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha);
+	const FVector R = FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha);
+
+	LeftDoor->SetRelativeLocation(L);
+	RightDoor->SetRelativeLocation(R);
+}
+
+void AElevator::OnDoorTimelineFinished()
+{
+	bDoorOpen = bWantOpen;
+	UE_LOG(LogElevator, Log, TEXT("[DoorTimelineFinished] bDoorOpen=%d  L=%s R=%s"),
+		bDoorOpen,
+		*LeftDoor->GetRelativeLocation().ToString(),
+		*RightDoor->GetRelativeLocation().ToString());
+}
+
+void AElevator::OnMoveTimelineUpdate(float Alpha)
+{
+	// Alpha: 0->1 (Reverse : 1->0)
+	const FVector NewPos = FMath::Lerp(StartPoint, LoopPoint, Alpha);
+	SetActorLocation(NewPos);
+}
+
+void AElevator::OnMoveTimelineFinished()
+{
+	UE_LOG(LogElevator, Log, TEXT("[ElevatorMoveTimelineFinished] Location=%s  Phase=%d"),
+		*GetActorLocation().ToString(), MovePhase);
+
+	if (MovePhase == 0)
+	{
+		PerformLoopTeleport();
+
+		MovePhase = 1;
+		StartPoint = LoopSpawnPoint;
+		LoopPoint = OrigStartPoint;
+
+		if (MoveTimeline)
+		{
+			MoveTimeline->PlayFromStart();
+		}
+	}
+	else
+	{
+		bIsMoving = false;
+		MovePhase = 0;
+
+		StartPoint = OrigStartPoint;
+		LoopPoint = OrigLoopPoint;
+
+		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
+		GetWorldTimerManager().SetTimer(
+			AutoOpenTimer,
+			[this]()
+			{
+				OpenDoors();
+			},
+			AutoOpenTimeAtReturn, false
+		);
+	}
+}
+
+// ================== API ==================
+void AElevator::OpenDoors()
+{
+	if (!DoorTimeline || !DoorCurve) return;
+	if (bDoorOpen) return;
+
+	DoorTimeline->Stop();
+	bWantOpen = true;
+	DoorTimeline->PlayFromStart();
+}
+
+void AElevator::CloseDoors()
+{
+	if (!DoorTimeline || !DoorCurve) return;
+	if (!bDoorOpen) return;
+
+	DoorTimeline->Stop();
+	bWantOpen = false;
+	DoorTimeline->ReverseFromEnd();
+}
+
+void AElevator::MoveUp()
+{
+	if (!MoveTimeline || !MoveCurve) return;
+	bIsMoving = true;
+
+	MovePhase = 0;
+	StartPoint = OrigStartPoint;
+	LoopPoint = OrigLoopPoint;
+
+	MoveTimeline->PlayFromStart();
+}
+
+void AElevator::MoveDown()
+{
+	if (!MoveTimeline || !MoveCurve) return;
+	bIsMoving = true;
+
+	MovePhase = 0;
+	StartPoint = OrigStartPoint;
+	LoopPoint = OrigLoopPoint;
+
+	MoveTimeline->ReverseFromEnd();
+}
+
+/*void AElevator::HandleDepartureTimer()
+{
+	// 기존 로직은 InsideTrigger 도입으로 사용하지 않지만, 호환성 위해 남겨둠.
+	if (!bPlayerOnboard || bIsMoving)
+		return;
+	CloseDoors();
+	MoveUp();
+}*/
+
+// Teleport With Player
+void AElevator::PerformLoopTeleport()
+{
+	const FVector Delta = LoopSpawnPoint - LoopPoint;
+
+	const FBoxSphereBounds Bounds = (Car ? Car->Bounds : GetRootComponent()->Bounds);
+	const FVector Center = Bounds.Origin;
+	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f); // 여유치
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjTypes;
+	ObjTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+
+	TArray<AActor*> OverlapActors;
+	const bool bHit = UKismetSystemLibrary::BoxOverlapActors(
+		GetWorld(),
+		Center,                      
+		Extents,                     
+		ObjTypes,                    
+		ACharacter::StaticClass(),   
+		ActorsToIgnore,
+		OverlapActors
+	);
+	AddActorWorldOffset(Delta, false, nullptr, ETeleportType::TeleportPhysics);
+
+	if (bHit && OverlapActors.Num() > 0)
+	{
+		TSet<ACharacter*> UniqueChars;
+		for (AActor* A : OverlapActors)
+		{
+			if (ACharacter* C = Cast<ACharacter>(A))
+			{
+				UniqueChars.Add(C);
+			}
+		}
+
+		for (ACharacter* C : UniqueChars)
+		{
+			if (!IsValid(C)) continue;
+
+			const FVector NewLoc = C->GetActorLocation() + Delta;
+			const FRotator NewRot = C->GetActorRotation();
+
+			const bool bOK = C->TeleportTo(NewLoc, NewRot, false, false);
+
+			if (bOK)
+			{
+				if (UCharacterMovementComponent* Move = C->GetCharacterMovement())
+				{
+					Move->StopMovementImmediately();
+					Move->Velocity = FVector::ZeroVector;
+				}
+			}
+		}
+	}
+}
+
+// Trigger Callbacks
+void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Player only
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
+		OpenDoors();
+	}
+}
+
+void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
+	}
+}
+
+void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[Inside Begin] %s"), *OtherActor->GetName());
+
+		if (bSequenceArmed || bIsMoving) return;
+		bSequenceArmed = true;
+		bPlayerOnboard = true;
+
+		CloseDoors();
+
+		GetWorldTimerManager().ClearTimer(StartMoveTimer);
+		GetWorldTimerManager().SetTimer(
+			StartMoveTimer,
+			[this]()
+			{
+				MoveUp();
+			},
+			StartMoveDelay,
+			false
+		);
+	}
+}
+
+void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[Inside End] %s"), *OtherActor->GetName());
+
+		bPlayerOnboard = false;
+
+		if (!bIsMoving)
+		{
+			GetWorldTimerManager().ClearTimer(StartMoveTimer);
+			bSequenceArmed = false;
+		}
+
+		GetWorldTimerManager().ClearTimer(AutoCloseTimer);
+		GetWorldTimerManager().SetTimer(
+			AutoCloseTimer,
+			[this]()
+			{
+				CloseDoors();
+				bSequenceArmed = false;
+			},
+			AutoCloseDelayAfterExit,
+			false
+		);
+	}
+}
+
+// Player Check Helper
+bool AElevator::IsMyPlayer(AActor* Other) const
+{
+	if (!Other) return false;
+	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
+	return Cast<ACharacter>(Other) != nullptr;
+}
