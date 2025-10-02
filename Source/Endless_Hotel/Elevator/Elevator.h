@@ -1,4 +1,4 @@
-// Elevator.h
+﻿// Elevator.h
 #pragma once
 
 #include "CoreMinimal.h"
@@ -18,6 +18,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AActor
 {
 	GENERATED_BODY()
+#pragma region Base
 
 public:
 	AElevator(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -28,8 +29,11 @@ protected:
 	// ===== Components =====
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
+#pragma endregion
 
-#pragma region Frame
+#pragma region Frames
+
+protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Frame")
 	TObjectPtr<UStaticMeshComponent> Exterior_Structure;
 
@@ -58,6 +62,7 @@ protected:
 
 #pragma region Buttons
 
+protected:
 	// Buttons
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Button")
 	TObjectPtr<UStaticMeshComponent> CallDownButtonRing;
@@ -73,12 +78,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Light
+
+protected:
 	// Light
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Light")
 	TObjectPtr<UPointLightComponent> ElevatorLight;
 
+#pragma endregion
+
 #pragma region Trigger
 
+protected:
 	// EntranceTrigger
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Trigger")
 	TObjectPtr<UBoxComponent> GetInTrigger;
@@ -95,6 +106,7 @@ protected:
 
 #pragma region TimeLine
 
+protected:
 	// Timeline
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Movement|Door")
 	TObjectPtr<UTimelineComponent> DoorTimeline;
@@ -112,6 +124,7 @@ protected:
 
 #pragma region Params
 
+protected:
 	// Door Params
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float DoorDuration = 2.0f;
@@ -151,26 +164,17 @@ protected:
 
 #pragma endregion
 
-	// API
+#pragma region DoorMovement
+
+protected:
 	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
 	void OpenDoors();
 
 	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
 	void CloseDoors();
 
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveUp();
-
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveDown();
-
 	UFUNCTION() void OnDoorTimelineUpdate(float Alpha);
 	UFUNCTION() void OnDoorTimelineFinished();
-
-	UFUNCTION() void OnMoveTimelineUpdate(float Alpha);
-	UFUNCTION() void OnMoveTimelineFinished();
-
-	UFUNCTION() void PerformLoopTeleport();
 
 	// Overlap
 	UFUNCTION()
@@ -181,6 +185,22 @@ protected:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+#pragma endregion
+
+#pragma region ElevatorMovement
+
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
+	void MoveUp();
+
+	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
+	void MoveDown();
+
+	UFUNCTION() void OnMoveTimelineUpdate(float Alpha);
+	UFUNCTION() void OnMoveTimelineFinished();
+
+	UFUNCTION() void PerformLoopTeleport();
+
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -189,33 +209,42 @@ protected:
 	void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-private:
-	FVector LeftDoorClosed, RightDoorClosed;
-	FVector LeftDoorOpenPos, RightDoorOpenPos;
+#pragma endregion
 
-	bool bWantOpen = false;
-	bool bDoorOpen = false;
+#pragma region Internal
 
-	FTimerHandle DoorOpenTimerHandle;
-	FTimerHandle DoorCloseTimerHandle;
+	private:
+		// Door Internal
+		FVector LeftDoorClosed, RightDoorClosed;
+		FVector LeftDoorOpenPos, RightDoorOpenPos;
 
-	bool bPlayerOnboard = false;
-	bool bIsMoving = false;
+		bool bWantOpen = false;
+		bool bDoorOpen = false;
 
-	FTimerHandle DepartuerTImerHandle;
+		FTimerHandle DoorOpenTimerHandle;
+		FTimerHandle DoorCloseTimerHandle;
 
-	FTimerHandle StartMoveTimer;
-	FTimerHandle AutoOpenTimer;
-	FTimerHandle AutoCloseTimer;
+		// Move Internal
+		bool bPlayerOnboard = false;
+		bool bIsMoving = false;
 
-	// Move Manage (0: Start -> Loop, 1: LoopSpawn -> Start)
-	int32 MovePhase = 0;
+		FTimerHandle DepartuerTImerHandle;
 
-	FVector OrigStartPoint;
-	FVector OrigLoopPoint;
+		FTimerHandle StartMoveTimer;
+		FTimerHandle AutoOpenTimer;
+		FTimerHandle AutoCloseTimer;
 
-	bool bSequenceArmed = false;
+		// Move Manage (0: Start -> Loop, 1: LoopSpawn -> Start)
+		int32 MovePhase = 0;
 
-	// Player check helper
-	bool IsMyPlayer(AActor* Other) const;
+		FVector OrigStartPoint;
+		FVector OrigLoopPoint;
+
+		bool bSequenceArmed = false;
+
+		// Player check helper
+		bool IsMyPlayer(AActor* Other) const;
+
+#pragma endregion
+
 };

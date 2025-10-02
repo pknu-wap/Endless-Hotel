@@ -1,10 +1,13 @@
-// Anomaly_Generator.cpp
+﻿// Anomaly_Generator.cpp
 
 #include "Anomaly_Generator.h"
 #include "Kismet/GameplayStatics.h"
 #include "HAL/PlatformTime.h"
 #include "Misc/DateTime.h"
 #include "Misc/Guid.h"
+#include "ExAnomaly/Anomaly_Base_Ex.h"
+
+#pragma region Base
 
 AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializer)
 {
@@ -50,24 +53,12 @@ void AAnomaly_Generator::BeginPlay()
 	SpawnNextAnomaly();
 }
 
-int32 AAnomaly_Generator::MakeTimeSeed()
-{
-	const int64 Ticks = FDateTime::UtcNow().GetTicks();
-	const uint64 Cycles = FPlatformTime::Cycles64();
-	const FGuid Guid = FGuid::NewGuid();
-	const uint64 Mix = ((uint64)Guid.A << 32) ^ Guid.D;
-	const uint64 Combo = ((uint64)Ticks) ^ Cycles ^ Mix;
-	return (int32)(Combo & 0xFFFFFFFF);
-}
+#pragma endregion
 
+#pragma region Pool & Sequence
 // Reset Pool
 void AAnomaly_Generator::InitializePool(bool bShuffle)
 {
-	// Seed by Time
-	Seed = MakeTimeSeed();
-
-	// Reset Stream
-	RS.Initialize(Seed);
 
 	// Copy from Original
 	Act_Anomaly = Origin_Anomaly;
@@ -77,7 +68,7 @@ void AAnomaly_Generator::InitializePool(bool bShuffle)
 	{
 		for (int32 i = Act_Anomaly.Num() - 1; i > 0; --i)
 		{
-			const int32 j = RS.RandRange(0, i);
+			const int32 j = FMath::RandRange(0, i);
 			if (i != j)
 			{
 				Act_Anomaly.Swap(i, j);
@@ -88,8 +79,8 @@ void AAnomaly_Generator::InitializePool(bool bShuffle)
 	// Reset Index
 	Current_AnomalyID = -1;
 
-	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Seed=%d, Count=%d"),
-		Seed, Act_Anomaly.Num());
+	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Count=%d"),
+		Act_Anomaly.Num());
 }
 
 void AAnomaly_Generator::ResetSequence(bool bShuffle)
@@ -97,8 +88,11 @@ void AAnomaly_Generator::ResetSequence(bool bShuffle)
 	InitializePool(bShuffle);
 }
 
+#pragma endregion
+
+#pragma region Generate
+
 // Pick Random Spawn Transform
-// Anomaly_Generator.cpp
 FTransform AAnomaly_Generator::PickSpawnTransform() const
 {
 	if (SpawnPoints.IsValidIndex(SpawnIndex))
@@ -107,7 +101,6 @@ FTransform AAnomaly_Generator::PickSpawnTransform() const
 	}
 	return FTransform::Identity;
 }
-
 
 // Spawn Next Anomaly
 AAnomaly_Base_Ex* AAnomaly_Generator::SpawnNextAnomaly(bool bDestroyPrev)
@@ -206,3 +199,5 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 
 	return Spawned;
 }
+
+#pragma endregion

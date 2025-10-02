@@ -1,4 +1,4 @@
-// Elevator.cpp
+ï»¿// Elevator.cpp
 // Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
@@ -20,6 +20,9 @@
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
+
+
+#pragma region Base
 
 // ================== Constructor ==================
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
@@ -185,8 +188,10 @@ void AElevator::BeginPlay()
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
 }
+#pragma endregion
 
-// ================== Timeline Callbacks ==================
+#pragma region DoorTimeline
+
 void AElevator::OnDoorTimelineUpdate(float Alpha)
 {
 	// Alpha: 0->1 (Reverse : 1->0)
@@ -205,6 +210,10 @@ void AElevator::OnDoorTimelineFinished()
 		*LeftDoor->GetRelativeLocation().ToString(),
 		*RightDoor->GetRelativeLocation().ToString());
 }
+
+#pragma endregion
+
+#pragma region MoveTimeline
 
 void AElevator::OnMoveTimelineUpdate(float Alpha)
 {
@@ -251,7 +260,11 @@ void AElevator::OnMoveTimelineFinished()
 	}
 }
 
-// ================== API ==================
+#pragma endregion
+
+#pragma region DoorMovement
+
+// API
 void AElevator::OpenDoors()
 {
 	if (!DoorTimeline || !DoorCurve) return;
@@ -272,6 +285,42 @@ void AElevator::CloseDoors()
 	DoorTimeline->ReverseFromEnd();
 }
 
+// Trigger Callbacks
+void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Player only
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
+		OpenDoors();
+	}
+}
+
+void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
+	}
+}
+
+#pragma endregion
+
+#pragma region ElevatorMove
+
+// API
 void AElevator::MoveUp()
 {
 	if (!MoveTimeline || !MoveCurve) return;
@@ -296,15 +345,6 @@ void AElevator::MoveDown()
 	MoveTimeline->ReverseFromEnd();
 }
 
-/*void AElevator::HandleDepartureTimer()
-{
-	// ±âÁ¸ ·ÎÁ÷Àº InsideTrigger µµÀÔÀ¸·Î »ç¿ëÇÏÁö ¾ÊÁö¸¸, È£È¯¼º À§ÇØ ³²°ÜµÒ.
-	if (!bPlayerOnboard || bIsMoving)
-		return;
-	CloseDoors();
-	MoveUp();
-}*/
-
 // Teleport With Player
 void AElevator::PerformLoopTeleport()
 {
@@ -312,7 +352,7 @@ void AElevator::PerformLoopTeleport()
 
 	const FBoxSphereBounds Bounds = (Car ? Car->Bounds : GetRootComponent()->Bounds);
 	const FVector Center = Bounds.Origin;
-	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f); // ¿©À¯Ä¡
+	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f); // ì—¬ìœ ì¹˜
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjTypes;
 	ObjTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
@@ -323,10 +363,10 @@ void AElevator::PerformLoopTeleport()
 	TArray<AActor*> OverlapActors;
 	const bool bHit = UKismetSystemLibrary::BoxOverlapActors(
 		GetWorld(),
-		Center,                      
-		Extents,                     
-		ObjTypes,                    
-		ACharacter::StaticClass(),   
+		Center,
+		Extents,
+		ObjTypes,
+		ACharacter::StaticClass(),
 		ActorsToIgnore,
 		OverlapActors
 	);
@@ -365,36 +405,6 @@ void AElevator::PerformLoopTeleport()
 }
 
 // Trigger Callbacks
-void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// Player only
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
-	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
-		OpenDoors();
-	}
-}
-
-void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
-	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
-	}
-}
-
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -467,3 +477,5 @@ bool AElevator::IsMyPlayer(AActor* Other) const
 	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
 	return Cast<ACharacter>(Other) != nullptr;
 }
+
+#pragma endregion
