@@ -33,6 +33,7 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
+	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Reset);
 }
 
 void UUI_PopUp_Setting::NativeConstruct()
@@ -51,7 +52,7 @@ void UUI_PopUp_Setting::NativeConstruct()
 
 #pragma endregion
 
-#pragma region Click
+#pragma region Button
 
 void UUI_PopUp_Setting::ButtonClick_Grapic(int32 Value, int32 Index)
 {
@@ -101,14 +102,10 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 	SaveManager->SaveSettingData(SaveData);
 }
 
-#pragma endregion
-
-#pragma region Input
-
-void UUI_PopUp_Setting::Input_ESC()
+void UUI_PopUp_Setting::ButtonClick_Reset()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->ClosePopUpWidget(EInputModeType::UIOnly);
+	UICon->OpenPopUpWidget(UI_Reset);
 }
 
 #pragma endregion

@@ -9,6 +9,20 @@
 #pragma region Declare
 
 USTRUCT(BlueprintType)
+struct FRecordingData
+{
+	GENERATED_BODY()
+
+	int32 Index;
+	bool bIsChecked;
+
+	bool operator==(const FRecordingData& Data) const
+	{
+		return Index == Data.Index && bIsChecked == Data.bIsChecked;
+	}
+};
+
+USTRUCT(BlueprintType)
 struct FSettingSaveData
 {
 	GENERATED_BODY()
@@ -26,6 +40,19 @@ UCLASS()
 class ENDLESS_HOTEL_API USaveManager : public USaveGame
 {
 	GENERATED_BODY()
+
+#pragma region Recording
+
+public:
+	TArray<FRecordingData> LoadRecordingData();
+	void SaveRecordingData(const FRecordingData& Data);
+	void DeleteRecordingData();
+
+protected:
+	UPROPERTY(SaveGame)
+	TArray<FRecordingData> RecordingData;
+
+#pragma endregion
 
 #pragma region Setting
 

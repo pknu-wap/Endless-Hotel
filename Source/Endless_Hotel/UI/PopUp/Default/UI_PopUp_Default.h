@@ -10,5 +10,12 @@ UCLASS(Abstract, Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Default : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
-	
+
+#pragma region Input
+
+protected:
+	virtual void Input_ESC() override;
+
+#pragma endregion
+
 };
