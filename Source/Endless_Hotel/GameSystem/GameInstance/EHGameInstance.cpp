@@ -5,6 +5,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+#pragma region Base
+
+void UEHGameInstance::OnStart()
+{
+	Super::OnStart();
+
+	CurrentMap = EMapType::MainMenu;
+}
+
+#pragma endregion
+
 #pragma region Map
 
 EMapType UEHGameInstance::CurrentMap = EMapType::MainMenu;

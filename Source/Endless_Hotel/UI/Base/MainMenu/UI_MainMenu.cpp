@@ -14,15 +14,15 @@ void UUI_MainMenu::NativeOnInitialized()
 
 	UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 
-	StartButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
-	DictionaryButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Dictionary);
-	SettingButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
-	QuitButton->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
+	Button_Start->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
+	Button_Compendium->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Compendium);
+	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
+	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 }
 
 #pragma endregion
 
-#pragma region Buttons
+#pragma region Button
 
 void UUI_MainMenu::ButtonClick_Start()
 {
@@ -30,14 +30,14 @@ void UUI_MainMenu::ButtonClick_Start()
 	GameInstance->OpenMap(EMapType::Hotel);
 }
 
-void UUI_MainMenu::ButtonClick_Dictionary()
+void UUI_MainMenu::ButtonClick_Compendium()
 {
-	if (!UI_Dictionary)
+	if (!UI_Compendium)
 	{
 		return;
 	}
 
-	UICon->OpenPopUpWidget(UI_Dictionary);
+	UICon->OpenPopUpWidget(UI_Compendium);
 }
 
 void UUI_MainMenu::ButtonClick_Setting()

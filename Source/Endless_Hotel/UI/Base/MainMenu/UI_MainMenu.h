@@ -22,14 +22,14 @@ protected:
 
 #pragma endregion
 
-#pragma region Buttons
+#pragma region Button
 
 protected:
 	UFUNCTION()
 	void ButtonClick_Start();
 
 	UFUNCTION()
-	void ButtonClick_Dictionary();
+	void ButtonClick_Compendium();
 
 	UFUNCTION()
 	void ButtonClick_Setting();
@@ -39,16 +39,16 @@ protected:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> StartButton;
+	TObjectPtr<class UButton> Button_Start;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> DictionaryButton;
+	TObjectPtr<class UButton> Button_Compendium;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> SettingButton;
+	TObjectPtr<class UButton> Button_Setting;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> QuitButton;
+	TObjectPtr<class UButton> Button_Quit;
 
 #pragma endregion
 
@@ -56,7 +56,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Dictionary;
+	TSubclassOf<class UUI_PopUp_Base> UI_Compendium;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_PopUp_Base> UI_Setting;

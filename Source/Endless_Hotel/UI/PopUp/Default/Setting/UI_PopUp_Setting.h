@@ -53,7 +53,29 @@ public:
 
 #pragma endregion
 
-#pragma region Buttons
+#pragma region Button
+
+protected:
+	UFUNCTION()
+	void ButtonClick_Grapic(int32 Value, int32 Index);
+
+	UFUNCTION()
+	void ButtonClick_Language(FString Value, int32 Index);
+
+	UFUNCTION()
+	void ButtonClick_Resolution(FIntPoint Value, int32 Index);
+
+	UFUNCTION()
+	void ButtonClick_Screen(EWindowMode::Type Value, int32 Index);
+
+	UFUNCTION()
+	void SliderClick_Sound(float Value);
+
+	UFUNCTION()
+	void ButtonClick_Apply();
+
+	UFUNCTION()
+	void ButtonClick_Reset();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -80,35 +102,16 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
-#pragma endregion
-
-#pragma region Click
-
-protected:
-	UFUNCTION()
-	void ButtonClick_Grapic(int32 Value, int32 Index);
-
-	UFUNCTION()
-	void ButtonClick_Language(FString Value, int32 Index);
-
-	UFUNCTION()
-	void ButtonClick_Resolution(FIntPoint Value, int32 Index);
-
-	UFUNCTION()
-	void ButtonClick_Screen(EWindowMode::Type Value, int32 Index);
-
-	UFUNCTION()
-	void SliderClick_Sound(float Value);
-
-	UFUNCTION()
-	void ButtonClick_Apply();
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Reset;
 
 #pragma endregion
 
-#pragma region Input
+#pragma region Widget
 
 protected:
-	virtual void Input_ESC() override;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_PopUp_Base> UI_Reset;
 
 #pragma endregion
 
