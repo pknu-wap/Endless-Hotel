@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Anomaly_Base_Ex.generated.h"
 
+
+// Forward Declaration
+class UAnomalyProgressSubSystem;
+
+
 UCLASS(Abstract, Blueprintable)
 class ENDLESS_HOTEL_API AAnomaly_Base_Ex : public AActor
 {
@@ -19,9 +24,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anomaly")
 	int32 DefaultID = -1;
 
+	// Start Anomaly Event
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void StartAnomaly();
 	virtual void StartAnomaly_Implementation();
+
+	// Anomaly Progress SubSystem
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
+	UAnomalyProgressSubSystem* SolveAnomaly();
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
+	UAnomalyProgressSubSystem* NotSolveAnomaly();
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
+	UAnomalyProgressSubSystem* VerdictAnomaly();
 
 protected:
 	// Called when the game starts or when spawned

@@ -51,6 +51,11 @@ void AAnomaly_Generator::BeginPlay()
 	SpawnNextAnomaly();
 	SpawnNextAnomaly();
 	SpawnNextAnomaly();
+	SpawnNextAnomaly();
+	SpawnNextAnomaly();
+	SpawnNextAnomaly();
+	SpawnNextAnomaly();
+	SpawnNextAnomaly();
 }
 
 #pragma endregion
