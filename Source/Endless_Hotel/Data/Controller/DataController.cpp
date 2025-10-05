@@ -16,7 +16,7 @@ UDataController::UDataController()
 
 #pragma endregion
 
-#pragma region Data
+#pragma region Compendium
 
 FCompendium* UDataController::GetCompendiumData(int32 Index)
 {
@@ -32,6 +32,23 @@ FCompendium* UDataController::GetCompendiumData(FString Name)
 		Data = (FCompendium*)RowData.Value;
 
 		if (Data->Name == Name)
+		{
+			return Data;
+		}
+	}
+
+	return nullptr;
+}
+
+FCompendium* UDataController::GetCompendiumData(int32 Page, int32 Number)
+{
+	FCompendium* Data = nullptr;
+
+	for (auto RowData : DataTable_Compendium->GetRowMap())
+	{
+		Data = (FCompendium*)RowData.Value;
+
+		if (Data->Page == Page && Data->Number == Number)
 		{
 			return Data;
 		}

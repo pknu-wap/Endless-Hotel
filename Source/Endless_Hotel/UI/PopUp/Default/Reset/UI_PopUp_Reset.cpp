@@ -22,7 +22,7 @@ void UUI_PopUp_Reset::NativeOnInitialized()
 void UUI_PopUp_Reset::ButtonClick_Yes()
 {
 	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Recording"), 0));
-	SaveManager->DeleteRecordingData();
+	SaveManager->DeleteCompendiumData();
 
 	Input_ESC();
 }
