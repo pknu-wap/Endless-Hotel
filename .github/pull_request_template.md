@@ -1,4 +1,4 @@
-# Pull Request
+# Pull Request (Player)
 ### 🎮 개발한 핵심 기능
 - 추가된 기능을 적어주세요
 
