@@ -45,17 +45,6 @@ void AAnomaly_Generator::BeginPlay()
 			Used.Add(FixedID);
 		}
 	}
-
-	// For Test
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
 }
 
 #pragma endregion

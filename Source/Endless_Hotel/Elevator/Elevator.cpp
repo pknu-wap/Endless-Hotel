@@ -17,6 +17,7 @@
 #include "WorldCollision.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
@@ -248,6 +249,9 @@ void AElevator::OnMoveTimelineFinished()
 		StartPoint = OrigStartPoint;
 		LoopPoint = OrigLoopPoint;
 
+		bRideCompleted = true;
+		bSpawnSentThisStop = false;
+
 		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
 		GetWorldTimerManager().SetTimer(
 			AutoOpenTimer,
@@ -325,6 +329,8 @@ void AElevator::MoveUp()
 {
 	if (!MoveTimeline || !MoveCurve) return;
 	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
 
 	MovePhase = 0;
 	StartPoint = OrigStartPoint;
@@ -337,6 +343,8 @@ void AElevator::MoveDown()
 {
 	if (!MoveTimeline || !MoveCurve) return;
 	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
 
 	MovePhase = 0;
 	StartPoint = OrigStartPoint;
@@ -352,7 +360,7 @@ void AElevator::PerformLoopTeleport()
 
 	const FBoxSphereBounds Bounds = (Car ? Car->Bounds : GetRootComponent()->Bounds);
 	const FVector Center = Bounds.Origin;
-	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f); // 여유치
+	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjTypes;
 	ObjTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
@@ -417,6 +425,11 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 		UE_LOG(LogElevator, Log, TEXT("[Inside Begin] %s"), *OtherActor->GetName());
 
+		if (!bChoiceSentThisRide)
+		{
+			NotifySubsystemElevatorChoice();
+		}
+
 		if (bSequenceArmed || bIsMoving) return;
 		bSequenceArmed = true;
 		bPlayerOnboard = true;
@@ -436,6 +449,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	}
 }
 
+
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
@@ -452,6 +466,13 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 		if (!bIsMoving)
 		{
+			if (bRideCompleted && !bSpawnSentThisStop)
+			{
+				NotifySubsystemSpawnNextAnomaly();
+				bSpawnSentThisStop = true;
+				bRideCompleted = false;
+			}
+
 			GetWorldTimerManager().ClearTimer(StartMoveTimer);
 			bSequenceArmed = false;
 		}
@@ -476,6 +497,34 @@ bool AElevator::IsMyPlayer(AActor* Other) const
 	if (!Other) return false;
 	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
 	return Cast<ACharacter>(Other) != nullptr;
+}
+
+#pragma endregion
+
+#pragma region SubSystem
+
+void AElevator::NotifySubsystemElevatorChoice()
+{
+	if (bChoiceSentThisRide) return;
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
+		{
+			Sub->EvaluateElevatorChoice(bIsNormalElevator);
+			bChoiceSentThisRide = true;
+		}
+	}
+}
+
+void AElevator::NotifySubsystemSpawnNextAnomaly()
+{
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
+		{
+			Sub->AnomalySpawn();
+		}
+	}
 }
 
 #pragma endregion

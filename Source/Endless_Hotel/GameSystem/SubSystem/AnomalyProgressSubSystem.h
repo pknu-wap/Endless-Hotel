@@ -24,6 +24,7 @@ class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsyste
 
 private:
 	bool bIsAnomalySolved = false;
+	bool bIsElevatorNormal = false;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
@@ -32,12 +33,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	void SetIsAnomalySolved(bool bNewValue);
 
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	void SetIsElevatorNormal(bool bNewValue);
+
 #pragma endregion
 
 #pragma region Floor
 
 private:
-	INT32 Floor = 9;
+	int32 Floor = 9;
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
@@ -56,6 +63,22 @@ private:
 public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void AnomalyVerdict();
+
+#pragma endregion
+
+#pragma region AnomalyGenerate
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Generate")
+	void AnomalySpawn();
+
+#pragma endregion
+
+#pragma region ElevatorChoice
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void EvaluateElevatorChoice(bool bElevatorIsNormal);
 
 #pragma endregion
 };

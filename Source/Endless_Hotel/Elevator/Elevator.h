@@ -162,6 +162,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Sequence", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float AutoCloseDelayAfterExit = 2.0f;
 
+	// Elevator Anomaly Params
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Type")
+	bool bIsNormalElevator = true;
+
 #pragma endregion
 
 #pragma region DoorMovement
@@ -242,7 +246,15 @@ protected:
 
 		bool bSequenceArmed = false;
 
+		// SubSystem Internal
+		bool bChoiceSentThisRide = false;
+		void NotifySubsystemElevatorChoice();
+		void NotifySubsystemSpawnNextAnomaly();
+
 		// Player check helper
+		bool bRideCompleted = false;
+		bool bSpawnSentThisStop = false;
+
 		bool IsMyPlayer(AActor* Other) const;
 
 #pragma endregion

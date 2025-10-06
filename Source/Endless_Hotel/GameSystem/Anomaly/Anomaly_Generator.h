@@ -83,6 +83,7 @@ public:
 #pragma endregion
 
 #pragma region Generate Anomaly
+public:
 	// Spawn Next Anomaly in Sequence
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	AAnomaly_Base_Ex* SpawnNextAnomaly(bool bDestroyPrev = true);
