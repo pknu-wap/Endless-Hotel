@@ -23,6 +23,7 @@ public:
 public:
 	struct FCompendium* GetCompendiumData(int32 Index);
 	struct FCompendium* GetCompendiumData(FString Name);
+	struct FCompendium* GetCompendiumData(int32 Page, int32 Number);
 
 protected:
 	UPROPERTY()

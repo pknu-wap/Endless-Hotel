@@ -3,40 +3,40 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Kismet/GameplayStatics.h"
 
-#pragma region Recording
+#pragma region Compendium
 
-TArray<FRecordingData> USaveManager::LoadRecordingData()
+TArray<FCompendiumData> USaveManager::LoadCompendiumData()
 {
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Recording"), 0));
-	TArray<FRecordingData> SaveData;
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Compendium"), 0));
+	TArray<FCompendiumData> SaveData;
 
 	if (!SaveManager)
 	{
 		return SaveData;
 	}
 
-	SaveData = SaveManager->RecordingData;
+	SaveData = SaveManager->CompendiumData;
 
 	return SaveData;
 }
 
-void USaveManager::SaveRecordingData(const FRecordingData& Data)
+void USaveManager::SaveCompendiumData(const FCompendiumData& Data)
 {
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Recording"), 0));
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Compendium"), 0));
 
 	if (!SaveManager)
 	{
 		SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
 	}
 
-	SaveManager->RecordingData.AddUnique(Data);
+	SaveManager->CompendiumData.AddUnique(Data);
 
-	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Recording"), 0);
+	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Compendium"), 0);
 }
 
-void USaveManager::DeleteRecordingData()
+void USaveManager::DeleteCompendiumData()
 {
-	UGameplayStatics::DeleteGameInSlot(TEXT("Save_Recording"), 0);
+	UGameplayStatics::DeleteGameInSlot(TEXT("Save_Compendium"), 0);
 }
 
 #pragma endregion
