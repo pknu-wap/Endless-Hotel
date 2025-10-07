@@ -9,16 +9,16 @@
 #pragma region Declare
 
 USTRUCT(BlueprintType)
-struct FRecordingData
+struct FCompendiumData
 {
 	GENERATED_BODY()
 
 	int32 Index;
 	bool bIsChecked;
 
-	bool operator==(const FRecordingData& Data) const
+	bool operator==(const FCompendiumData& Data) const
 	{
-		return Index == Data.Index && bIsChecked == Data.bIsChecked;
+		return Index == Data.Index;
 	}
 };
 
@@ -41,16 +41,16 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 {
 	GENERATED_BODY()
 
-#pragma region Recording
+#pragma region Compendium
 
 public:
-	TArray<FRecordingData> LoadRecordingData();
-	void SaveRecordingData(const FRecordingData& Data);
-	void DeleteRecordingData();
+	TArray<FCompendiumData> LoadCompendiumData();
+	void SaveCompendiumData(const FCompendiumData& Data);
+	void DeleteCompendiumData();
 
 protected:
 	UPROPERTY(SaveGame)
-	TArray<FRecordingData> RecordingData;
+	TArray<FCompendiumData> CompendiumData;
 
 #pragma endregion
 
