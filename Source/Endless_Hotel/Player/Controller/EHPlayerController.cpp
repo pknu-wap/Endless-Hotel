@@ -43,7 +43,7 @@ void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 
 	if (UICon->GetCurrentPopUpWidget())
 	{
-		UICon->ClosePopUpWidget();
+		UICon->ClosePopUpWidget(true);
 		return;
 	}
 
