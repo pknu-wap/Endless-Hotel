@@ -27,17 +27,16 @@ public:
 	// Start Anomaly Event
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void StartAnomaly();
-	virtual void StartAnomaly_Implementation();
 
 	// Anomaly Progress SubSystem
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	UAnomalyProgressSubSystem* SolveAnomaly();
+	void SolveAnomaly();
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	UAnomalyProgressSubSystem* NotSolveAnomaly();
+	void NotSolveAnomaly();
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	UAnomalyProgressSubSystem* VerdictAnomaly();
+	void VerdictAnomaly();
 
 protected:
 	// Called when the game starts or when spawned

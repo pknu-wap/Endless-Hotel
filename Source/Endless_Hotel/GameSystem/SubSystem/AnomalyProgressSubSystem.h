@@ -78,7 +78,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void EvaluateElevatorChoice(bool bElevatorIsNormal);
+	void EvaluateElevatorChoice(bool bIsChosenElevatorNormal);
 
 #pragma endregion
 };

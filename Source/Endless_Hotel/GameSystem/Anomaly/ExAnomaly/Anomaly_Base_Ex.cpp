@@ -20,70 +20,29 @@ void AAnomaly_Base_Ex::BeginPlay()
 
 void AAnomaly_Base_Ex::StartAnomaly()
 {
-	
-}
-void AAnomaly_Base_Ex::StartAnomaly_Implementation()
-{
-	UE_LOG(LogTemp, Log, TEXT("Anomaly %d Started"), DefaultID);
+	UE_LOG(LogTemp, Log, TEXT("[Anomaly] Anomaly ID=%d started."), DefaultID);
 }
 
-UAnomalyProgressSubSystem* AAnomaly_Base_Ex::SolveAnomaly()
+void AAnomaly_Base_Ex::SolveAnomaly()
 {
-	if (GetWorld())
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
 	{
-
-		if (UAnomalyProgressSubSystem* AnomalySubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			AnomalySubsystem->SetIsAnomalySolved(true);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AnomalyProgressSubSystem not found in GameInstance."));
-		}
+		AnomalySubsystem->SetIsAnomalySolved(true);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("World context is invalid."));
-	}
-	return nullptr;
 }
 
-UAnomalyProgressSubSystem* AAnomaly_Base_Ex::NotSolveAnomaly()
+void AAnomaly_Base_Ex::NotSolveAnomaly()
 {
-	if (GetWorld())
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
 	{
-		if (UAnomalyProgressSubSystem* AnomalySubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			AnomalySubsystem->SetIsAnomalySolved(false);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AnomalyProgressSubSystem not found in GameInstance."));
-		}
+		AnomalySubsystem->SetIsAnomalySolved(false);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("World context is invalid."));
-	}
-	return nullptr;
 }
 
-UAnomalyProgressSubSystem* AAnomaly_Base_Ex::VerdictAnomaly()
+void AAnomaly_Base_Ex::VerdictAnomaly()
 {
-	if (GetWorld())
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
 	{
-		if (UAnomalyProgressSubSystem* AnomalySubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			AnomalySubsystem->AnomalyVerdict();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AnomalyProgressSubSystem not found in GameInstance."));
-		}
+		AnomalySubsystem->AnomalyVerdict();
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("World context is invalid."));
-	}
-	return nullptr;
 }

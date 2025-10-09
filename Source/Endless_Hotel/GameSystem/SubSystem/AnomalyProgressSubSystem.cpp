@@ -37,14 +37,14 @@ void UAnomalyProgressSubSystem::AnomalyVerdict()
 	return;
 }
 
-void UAnomalyProgressSubSystem::EvaluateElevatorChoice(bool bElevatorIsNormal)
+void UAnomalyProgressSubSystem::EvaluateElevatorChoice(bool bIsChosenElevatorNormal)
 {
-	if (bIsAnomalySolved && !bElevatorIsNormal)
+	if (bIsAnomalySolved && !bIsChosenElevatorNormal)
 	{
 		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Solved + Abnormal elevator: PASS."));
 		SubFloor();
 	}
-	else if (!bIsAnomalySolved && bElevatorIsNormal)
+	else if (!bIsAnomalySolved && bIsChosenElevatorNormal)
 	{
 		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Not solved + Normal elevator: FAIL."));
 		SetFloor();
@@ -97,31 +97,22 @@ void UAnomalyProgressSubSystem::AddFloor()
 
 void UAnomalyProgressSubSystem::AnomalySpawn()
 {
-	UWorld* World = GetWorld();
-	if (!World)
+
+	AAnomaly_Generator* Generator = nullptr;
+
+	for (TActorIterator<AAnomaly_Generator> GeneratorInWorld(GetWorld()); GeneratorInWorld; ++GeneratorInWorld)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[AnomalySubsystem] World is null. Cannot spawn anomaly."));
-		return;
+		Generator = *GeneratorInWorld;
+		break;
 	}
 
-	AAnomaly_Generator* Gen = nullptr;
-
-	for (TActorIterator<AAnomaly_Generator> It(World); It; ++It)
-	{
-		if (IsValid(*It))
-		{
-			Gen = *It;
-			break;
-		}
-	}
-
-	if (!IsValid(Gen))
+	if (!Generator)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] No AAnomaly_Generator found in level."));
 		return;
 	}
 
-	Gen->SpawnNextAnomaly(true);
+	Generator->SpawnNextAnomaly(true);
 }
 
 #pragma endregion
