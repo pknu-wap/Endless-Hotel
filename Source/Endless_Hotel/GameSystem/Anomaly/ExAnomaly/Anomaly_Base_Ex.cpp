@@ -1,7 +1,8 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly_Base_Ex.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 // Sets default values
 AAnomaly_Base_Ex::AAnomaly_Base_Ex(const FObjectInitializer& ObjectInitializer)
@@ -19,9 +20,29 @@ void AAnomaly_Base_Ex::BeginPlay()
 
 void AAnomaly_Base_Ex::StartAnomaly()
 {
-	UE_LOG(LogTemp, Log, TEXT("Anomaly %d Started"), DefaultID);
+	UE_LOG(LogTemp, Log, TEXT("[Anomaly] Anomaly ID=%d started."), DefaultID);
 }
-void AAnomaly_Base_Ex::StartAnomaly_Implementation()
+
+void AAnomaly_Base_Ex::SolveAnomaly()
 {
-	// Default implementation does nothing
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
+	{
+		AnomalySubsystem->SetIsAnomalySolved(true);
+	}
+}
+
+void AAnomaly_Base_Ex::NotSolveAnomaly()
+{
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
+	{
+		AnomalySubsystem->SetIsAnomalySolved(false);
+	}
+}
+
+void AAnomaly_Base_Ex::VerdictAnomaly()
+{
+	if (UAnomalyProgressSubSystem* AnomalySubsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>())
+	{
+		AnomalySubsystem->AnomalyVerdict();
+	}
 }

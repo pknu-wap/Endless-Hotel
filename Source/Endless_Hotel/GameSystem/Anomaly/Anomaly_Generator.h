@@ -1,21 +1,34 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ExAnomaly/Anomaly_Base_Ex.h"
 #include "Anomaly_Generator.generated.h"
 
+#pragma region Declare
+
+// Forward Declaration
+class AAnomaly_Base_Ex;
+
+// Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base_Ex*, Spawned);
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Generator : public AActor
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
 public:
 	AAnomaly_Generator(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+#pragma endregion
+
+#pragma region Generate & State
 
 	// Original Pool
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly")
@@ -25,25 +38,17 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly")
 	TArray<TSubclassOf<AAnomaly_Base_Ex>> Act_Anomaly;
 
-	// Seed
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|Random")
-	int32 Seed = 12345;
-
 	// Current Index
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	int32 Current_AnomalyID = -1;
 
-	// SPawnPoints
+	// SpawnPoints
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Spawn")
 	TArray<FTransform> SpawnPoints;
 
 	// SpawnPoint Index
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Spawn")
 	int32 SpawnIndex = 0;
-
-	// Event when Anomaly is Spawned
-	UPROPERTY(BlueprintAssignable, Category = "Anomaly|Event")
-	FOnAnomalySpawned OnAnomalySpawned;
 
 	// Initial Spawn Done
 	UPROPERTY(VisibleInstanceOnly)
@@ -53,18 +58,35 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	TWeakObjectPtr<AAnomaly_Base_Ex> CurrentAnomaly;
 
+#pragma endregion
+
+#pragma region Event
+	
+	// Event when Anomaly is Spawned
+	UPROPERTY(BlueprintAssignable, Category = "Anomaly|Event")
+	FOnAnomalySpawned OnAnomalySpawned;
+
+#pragma endregion
+
+#pragma region Pool & Sequence
+
 public:
-	// ===== API =====
+
+	// Initialize Pool
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void InitializePool(bool bShuffle = true);
-
-	// Spawn Next Anomaly in Sequence
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	AAnomaly_Base_Ex* SpawnNextAnomaly(bool bDestroyPrev = true);
 
 	// Reset Sequence (re-shuffle if true)
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void ResetSequence(bool bShuffle = true);
+
+#pragma endregion
+
+#pragma region Generate Anomaly
+public:
+	// Spawn Next Anomaly in Sequence
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	AAnomaly_Base_Ex* SpawnNextAnomaly(bool bDestroyPrev = true);
 
 	// Spawn Anomaly at Specific Index
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
@@ -74,16 +96,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	bool DestroyCurrentAnomaly();
 
+#pragma endregion
+
 protected:
 	virtual void BeginPlay() override;
+	
+#pragma region Internals
 
 private:
-	// Random Stream
-	mutable FRandomStream RS;
-
 	// Pick Random Spawn Transform
 	FTransform PickSpawnTransform() const;
 
-	// Make Time Seed
-	static int32 MakeTimeSeed();
+#pragma endregion
 };
