@@ -1,4 +1,4 @@
-// Elevator.cpp
+癤�// Elevator.cpp
 // Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
@@ -17,9 +17,13 @@
 #include "WorldCollision.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
+
+
+#pragma region Base
 
 // ================== Constructor ==================
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
@@ -185,8 +189,10 @@ void AElevator::BeginPlay()
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
 }
+#pragma endregion
 
-// ================== Timeline Callbacks ==================
+#pragma region DoorTimeline
+
 void AElevator::OnDoorTimelineUpdate(float Alpha)
 {
 	// Alpha: 0->1 (Reverse : 1->0)
@@ -205,6 +211,10 @@ void AElevator::OnDoorTimelineFinished()
 		*LeftDoor->GetRelativeLocation().ToString(),
 		*RightDoor->GetRelativeLocation().ToString());
 }
+
+#pragma endregion
+
+#pragma region MoveTimeline
 
 void AElevator::OnMoveTimelineUpdate(float Alpha)
 {
@@ -239,6 +249,9 @@ void AElevator::OnMoveTimelineFinished()
 		StartPoint = OrigStartPoint;
 		LoopPoint = OrigLoopPoint;
 
+		bRideCompleted = true;
+		bSpawnSentThisStop = false;
+
 		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
 		GetWorldTimerManager().SetTimer(
 			AutoOpenTimer,
@@ -251,7 +264,11 @@ void AElevator::OnMoveTimelineFinished()
 	}
 }
 
-// ================== API ==================
+#pragma endregion
+
+#pragma region DoorMovement
+
+// API
 void AElevator::OpenDoors()
 {
 	if (!DoorTimeline || !DoorCurve) return;
@@ -272,10 +289,48 @@ void AElevator::CloseDoors()
 	DoorTimeline->ReverseFromEnd();
 }
 
+// Trigger Callbacks
+void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// Player only
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
+		OpenDoors();
+	}
+}
+
+void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
+	}
+}
+
+#pragma endregion
+
+#pragma region ElevatorMove
+
+// API
 void AElevator::MoveUp()
 {
 	if (!MoveTimeline || !MoveCurve) return;
 	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
 
 	MovePhase = 0;
 	StartPoint = OrigStartPoint;
@@ -288,6 +343,8 @@ void AElevator::MoveDown()
 {
 	if (!MoveTimeline || !MoveCurve) return;
 	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
 
 	MovePhase = 0;
 	StartPoint = OrigStartPoint;
@@ -296,15 +353,6 @@ void AElevator::MoveDown()
 	MoveTimeline->ReverseFromEnd();
 }
 
-/*void AElevator::HandleDepartureTimer()
-{
-	// 기존 로직은 InsideTrigger 도입으로 사용하지 않지만, 호환성 위해 남겨둠.
-	if (!bPlayerOnboard || bIsMoving)
-		return;
-	CloseDoors();
-	MoveUp();
-}*/
-
 // Teleport With Player
 void AElevator::PerformLoopTeleport()
 {
@@ -312,7 +360,7 @@ void AElevator::PerformLoopTeleport()
 
 	const FBoxSphereBounds Bounds = (Car ? Car->Bounds : GetRootComponent()->Bounds);
 	const FVector Center = Bounds.Origin;
-	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f); // 여유치
+	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjTypes;
 	ObjTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
@@ -323,10 +371,10 @@ void AElevator::PerformLoopTeleport()
 	TArray<AActor*> OverlapActors;
 	const bool bHit = UKismetSystemLibrary::BoxOverlapActors(
 		GetWorld(),
-		Center,                      
-		Extents,                     
-		ObjTypes,                    
-		ACharacter::StaticClass(),   
+		Center,
+		Extents,
+		ObjTypes,
+		ACharacter::StaticClass(),
 		ActorsToIgnore,
 		OverlapActors
 	);
@@ -365,36 +413,6 @@ void AElevator::PerformLoopTeleport()
 }
 
 // Trigger Callbacks
-void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// Player only
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
-	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
-		OpenDoors();
-	}
-}
-
-void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
-	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
-	}
-}
-
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -406,6 +424,11 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		}
 
 		UE_LOG(LogElevator, Log, TEXT("[Inside Begin] %s"), *OtherActor->GetName());
+
+		if (!bChoiceSentThisRide)
+		{
+			NotifySubsystemElevatorChoice();
+		}
 
 		if (bSequenceArmed || bIsMoving) return;
 		bSequenceArmed = true;
@@ -426,6 +449,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	}
 }
 
+
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
@@ -442,6 +466,13 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 		if (!bIsMoving)
 		{
+			if (bRideCompleted && !bSpawnSentThisStop)
+			{
+				NotifySubsystemSpawnNextAnomaly();
+				bSpawnSentThisStop = true;
+				bRideCompleted = false;
+			}
+
 			GetWorldTimerManager().ClearTimer(StartMoveTimer);
 			bSequenceArmed = false;
 		}
@@ -467,3 +498,33 @@ bool AElevator::IsMyPlayer(AActor* Other) const
 	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
 	return Cast<ACharacter>(Other) != nullptr;
 }
+
+#pragma endregion
+
+#pragma region SubSystem
+
+void AElevator::NotifySubsystemElevatorChoice()
+{
+	if (bChoiceSentThisRide) return;
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
+		{
+			Sub->EvaluateElevatorChoice(bIsNormalElevator);
+			bChoiceSentThisRide = true;
+		}
+	}
+}
+
+void AElevator::NotifySubsystemSpawnNextAnomaly()
+{
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
+		{
+			Sub->AnomalySpawn();
+		}
+	}
+}
+
+#pragma endregion
