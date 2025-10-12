@@ -125,15 +125,24 @@ protected:
 #pragma region Params
 
 protected:
-	// Door Params
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DoorDuration = 2.0f;
+	float DoorOpenDuration = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float DoorCloseDuration = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
 	float DoorGap = 40.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
 	bool bSlideOnX = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	bool bWaitDoorCloseBeforMove = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	bool bMoveAfterClosePending = false;
 
 	// Move Params
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Vertical", meta = (ClampMin = "0.0", UIMin = "0.0"))
@@ -256,6 +265,13 @@ protected:
 		bool bSpawnSentThisStop = false;
 
 		bool IsMyPlayer(AActor* Other) const;
+
+#pragma endregion
+
+#pragma region PlayerMoveControl
+
+private:
+	void SetPlayerInputEnabled(bool bEnable);
 
 #pragma endregion
 

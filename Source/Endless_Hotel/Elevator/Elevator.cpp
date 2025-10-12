@@ -18,6 +18,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include <Kismet/GameplayStatics.h>
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
@@ -150,12 +151,6 @@ void AElevator::BeginPlay()
 		DoorTimeline->SetTimelineFinishedFunc(Finished);
 		DoorTimeline->SetLooping(false);
 		DoorTimeline->SetIgnoreTimeDilation(true);
-
-		// Curve Length: 1
-		if (DoorDuration > 0.f)
-		{
-			DoorTimeline->SetPlayRate(1.f / DoorDuration);
-		}
 	}
 	SetActorLocation(StartPoint);
 
@@ -206,10 +201,25 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	bDoorOpen = bWantOpen;
+	SetPlayerInputEnabled(true);
+
 	UE_LOG(LogElevator, Log, TEXT("[DoorTimelineFinished] bDoorOpen=%d  L=%s R=%s"),
 		bDoorOpen,
 		*LeftDoor->GetRelativeLocation().ToString(),
 		*RightDoor->GetRelativeLocation().ToString());
+
+	if (!bDoorOpen && bMoveAfterClosePending)
+	{
+		bMoveAfterClosePending = false;
+		GetWorldTimerManager().ClearTimer(StartMoveTimer);
+		
+		GetWorldTimerManager().SetTimer(
+			StartMoveTimer,
+			[this]() {MoveUp();  },
+			StartMoveDelay,
+			false
+		);
+	}
 }
 
 #pragma endregion
@@ -274,8 +284,11 @@ void AElevator::OpenDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bDoorOpen) return;
 
+	SetPlayerInputEnabled(false);
+
 	DoorTimeline->Stop();
 	bWantOpen = true;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
 	DoorTimeline->PlayFromStart();
 }
 
@@ -284,8 +297,11 @@ void AElevator::CloseDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (!bDoorOpen) return;
 
+	SetPlayerInputEnabled(false);
+
 	DoorTimeline->Stop();
 	bWantOpen = false;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorCloseDuration));
 	DoorTimeline->ReverseFromEnd();
 }
 
@@ -434,18 +450,26 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		bSequenceArmed = true;
 		bPlayerOnboard = true;
 
+		const bool bWasOpen = bDoorOpen;
 		CloseDoors();
 
 		GetWorldTimerManager().ClearTimer(StartMoveTimer);
-		GetWorldTimerManager().SetTimer(
-			StartMoveTimer,
-			[this]()
-			{
-				MoveUp();
-			},
-			StartMoveDelay,
-			false
-		);
+		if (bWaitDoorCloseBeforMove && bWasOpen && DoorTimeline->IsPlaying())
+		{
+			bMoveAfterClosePending = true;
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(
+				StartMoveTimer,
+				[this]()
+				{
+					MoveUp();
+				},
+				StartMoveDelay,
+				false
+			);
+		}
 	}
 }
 
@@ -527,4 +551,18 @@ void AElevator::NotifySubsystemSpawnNextAnomaly()
 	}
 }
 
+#pragma endregion
+
+#pragma region PlayerMoveControl
+void AElevator::SetPlayerInputEnabled(bool bEnable)
+{
+	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		if (APlayerController* PC = Cast<APlayerController>(Player->GetController()))
+		{
+			PC->SetIgnoreMoveInput(!bEnable);
+			PC->SetIgnoreLookInput(!bEnable);
+		}
+	}
+}
 #pragma endregion
