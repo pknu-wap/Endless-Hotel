@@ -5,7 +5,7 @@
 #include "HAL/PlatformTime.h"
 #include "Misc/DateTime.h"
 #include "Misc/Guid.h"
-#include "ExAnomaly/Anomaly_Base_Ex.h"
+#include "Anomaly/Anomaly_Base/Anomaly_Base.h"
 
 #pragma region Base
 
@@ -20,24 +20,24 @@ void AAnomaly_Generator::BeginPlay()
 
 	InitializePool(true);
 
-	// Check DefaultID Settings
+	// Check AnomalyID Settings
 	TSet<int32> UsedID;
 	for (auto AnomalyClass : Act_Anomaly)
 	{
 		if (!*AnomalyClass) continue;
-		const AAnomaly_Base_Ex* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base_Ex>();
-		const int32 FixedID = CDO ? CDO->DefaultID : -1;
+		const AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
+		const int32 FixedID = CDO ? CDO->AnomalyID : -1;
 
 		if (FixedID < 0)
 		{
 			UE_LOG(LogTemp, Warning,
-				TEXT("[Anomaly_Generator] %s DefaultID not set."),
+				TEXT("[Anomaly_Generator] %s AnomalyID not set."),
 				*GetNameSafe(AnomalyClass));
 		}
 		else if (UsedID.Contains(FixedID))
 		{
 			UE_LOG(LogTemp, Error,
-				TEXT("[Anomaly_Generator] Duplicate DefaultID=%d on class %s"),
+				TEXT("[Anomaly_Generator] Duplicate AnomalyID=%d on class %s"),
 				FixedID, *GetNameSafe(AnomalyClass));
 		}
 		else
@@ -45,21 +45,6 @@ void AAnomaly_Generator::BeginPlay()
 			UsedID.Add(FixedID);
 		}
 	}
-
-	//ForTest
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
 }
 
 #pragma endregion
@@ -112,7 +97,7 @@ FTransform AAnomaly_Generator::PickSpawnTransform() const
 }
 
 // Spawn Next Anomaly
-AAnomaly_Base_Ex* AAnomaly_Generator::SpawnNextAnomaly(bool bDestroyPrev)
+AAnomaly_Base* AAnomaly_Generator::SpawnNextAnomaly(bool bDestroyPrev)
 {
 	const int32 NextIndex = Current_AnomalyID + 1;
 	return SpawnAnomalyAtIndex(NextIndex, bDestroyPrev);
@@ -122,6 +107,7 @@ bool AAnomaly_Generator::DestroyCurrentAnomaly()
 {
 	if (CurrentAnomaly.IsValid())
 	{
+		
 		UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] Destroying %s"), *CurrentAnomaly->GetName());
 		CurrentAnomaly->Destroy();
 		CurrentAnomaly = nullptr;
@@ -131,7 +117,7 @@ bool AAnomaly_Generator::DestroyCurrentAnomaly()
 }
 
 // Spawn Anomaly at Specific Index
-AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev)
+AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev)
 {
 	UE_LOG(LogTemp, Verbose, TEXT("[Gen %s] SpawnAnomalyAtIndex(%d)"), *GetName(), Index);
 
@@ -163,7 +149,7 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 		DestroyCurrentAnomaly();
 	}
 
-	TSubclassOf<AAnomaly_Base_Ex> AnomalyClass = Act_Anomaly[Index];
+	TSubclassOf<AAnomaly_Base> AnomalyClass = Act_Anomaly[Index];
 	if (!*AnomalyClass)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[Anomaly_Generator] Invalid class at index %d"), Index);
@@ -177,8 +163,8 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AAnomaly_Base_Ex* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base_Ex>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Base* Spawned =
+		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{
@@ -187,18 +173,18 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 	}
 
 	// Setting Fixed ID
-	const AAnomaly_Base_Ex* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base_Ex>();
-	const int32 FixedID = (CDO ? CDO->DefaultID : -1);
+	const AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
+	const int32 FixedID = (CDO ? CDO->AnomalyID : -1);
 
 	if (FixedID < 0)
 	{
 		UE_LOG(LogTemp, Warning,
-			TEXT("[Anomaly_Generator] %s has no DefaultID set (stays -1)."),
+			TEXT("[Anomaly_Generator] %s has no AnomalyID set (stays -1)."),
 			*GetNameSafe(AnomalyClass));
 	}
 
 	// Start
-	Spawned->StartAnomaly();
+	Spawned->ActivateAnomaly();
 
 	Current_AnomalyID = Index;
 	CurrentAnomaly = Spawned;
