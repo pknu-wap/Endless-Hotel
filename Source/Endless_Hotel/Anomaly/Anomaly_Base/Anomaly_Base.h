@@ -6,11 +6,24 @@
 #include "GameFramework/Actor.h"
 #include "Anomaly_Base.generated.h"
 
+#pragma region Declare
 
-//Forward Declaration
+// Forward Declaration
 class UAnomalyProgressSubSystem;
 
-UCLASS()
+// ================= Verdict Mode =================
+UENUM(BlueprintType)
+enum class EAnomalyVerdictMode : uint8
+{
+	CorrectElevatorOnly UMETA(DisplayName = "Correct Elevator Only"),
+	SolvedOnly          UMETA(DisplayName = "Solved Only"),
+	Both_AND            UMETA(DisplayName = "Both (AND)"),
+	Either_OR           UMETA(DisplayName = "Either (OR)")
+};
+
+#pragma endregion
+
+UCLASS(Blueprintable, BlueprintType)
 class ENDLESS_HOTEL_API AAnomaly_Base : public AActor
 {
 	GENERATED_BODY()
@@ -18,49 +31,65 @@ class ENDLESS_HOTEL_API AAnomaly_Base : public AActor
 #pragma region Base
 
 public:
-	// Sets default values for this actor's properties
 	AAnomaly_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 #pragma endregion
 
-#pragma region ID
-
+#pragma region Params
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|ID")
-	int32 AnomalyID;
+	// ===== Verdict Inputs (BP에서 읽고/쓰기) =====
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsCorrectElevator = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsSolved = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Both_AND;
+
+	// ===== Identity =====
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
+	int32 AnomalyID = -1;
+
+protected:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
+	bool bIsActive = false;
+
+#pragma endregion
+#pragma region Verdicts
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void SetSolved(bool bNewSolved);
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void SetCorrectElevator(bool bNewCorrect);
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	bool SubmitVerdictWith(bool bSolved, bool bCorrectElevator);
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void SubmitVerdict();
 
 #pragma endregion
 
-#pragma region Active DeActive
+#pragma region Activity
 
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Activate")
-	bool bIsActive = false;
-
-	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Activate")
+	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
 	void ActivateAnomaly();
 	virtual void ActivateAnomaly_Implementation();
 
 #pragma endregion
 
-#pragma region Subsystem
-protected:
+#pragma region Inner Verdicts
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void IsSolveAnomaly();
-
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void IsNotSolveAnomaly();
-
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void IsVerdictAnomaly();
+private:
+	bool EvaluateOutcome() const;
+	void FinalizeAnomaly(bool bPassed);
+	void MarkSolved();
+	void MarkFailed();
+	void PushVerdict();
 
 #pragma endregion
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
 
 };
