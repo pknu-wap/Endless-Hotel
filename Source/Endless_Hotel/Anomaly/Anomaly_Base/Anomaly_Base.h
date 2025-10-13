@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+Ôªø// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -37,7 +37,7 @@ public:
 
 #pragma region Params
 public:
-	// ===== Verdict Inputs (BPø°º≠ ¿–∞Ì/æ≤±‚) =====
+	// ===== Verdict Inputs (BPÏóêÏÑú ÏùΩÍ≥†/Ïì∞Í∏∞) =====
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	bool bIsCorrectElevator = false;
 

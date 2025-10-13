@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+ï»¿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Anomaly_Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
@@ -81,10 +81,10 @@ void AAnomaly_Base::FinalizeAnomaly(bool bPassed)
 	if (bPassed)	MarkSolved();
 	else			MarkFailed();
 
-	// Subsystem¿¡ °á°ú ¹İ¿µ
+	// Subsystemì— ê²°ê³¼ ë°˜ì˜
 	PushVerdict();
 
-	// ÇÑ ¹ø Ã³¸®µÈ µÚ¿£ ºñÈ°¼ºÈ­(¿øÇÏ¸é À¯Áö)
+	// í•œ ë²ˆ ì²˜ë¦¬ëœ ë’¤ì—” ë¹„í™œì„±í™”(ì›í•˜ë©´ ìœ ì§€)
 	bIsActive = false;
 }
 
