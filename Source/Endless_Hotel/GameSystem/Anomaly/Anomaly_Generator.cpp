@@ -1,13 +1,10 @@
-﻿// Anomaly_Generator.cpp
+// Anomaly_Generator.cpp
 
 #include "Anomaly_Generator.h"
 #include "Kismet/GameplayStatics.h"
 #include "HAL/PlatformTime.h"
 #include "Misc/DateTime.h"
 #include "Misc/Guid.h"
-#include "ExAnomaly/Anomaly_Base_Ex.h"
-
-#pragma region Base
 
 AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializer)
 {
@@ -21,53 +18,56 @@ void AAnomaly_Generator::BeginPlay()
 	InitializePool(true);
 
 	// Check DefaultID Settings
-	TSet<int32> UsedID;
-	for (auto AnomalyClass : Act_Anomaly)
+	TSet<int32> Used;
+	for (auto Cls : Act_Anomaly)
 	{
-		if (!*AnomalyClass) continue;
-		const AAnomaly_Base_Ex* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base_Ex>();
+		if (!*Cls) continue;
+		const AAnomaly_Base_Ex* CDO = Cls->GetDefaultObject<AAnomaly_Base_Ex>();
 		const int32 FixedID = CDO ? CDO->DefaultID : -1;
 
 		if (FixedID < 0)
 		{
 			UE_LOG(LogTemp, Warning,
 				TEXT("[Anomaly_Generator] %s DefaultID not set."),
-				*GetNameSafe(AnomalyClass));
+				*GetNameSafe(Cls));
 		}
-		else if (UsedID.Contains(FixedID))
+		else if (Used.Contains(FixedID))
 		{
 			UE_LOG(LogTemp, Error,
 				TEXT("[Anomaly_Generator] Duplicate DefaultID=%d on class %s"),
-				FixedID, *GetNameSafe(AnomalyClass));
+				FixedID, *GetNameSafe(Cls));
 		}
 		else
 		{
-			UsedID.Add(FixedID);
+			Used.Add(FixedID);
 		}
 	}
 
-	//ForTest
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
-	SpawnNextAnomaly();
+	// For Test
 	SpawnNextAnomaly();
 	SpawnNextAnomaly();
 	SpawnNextAnomaly();
 	SpawnNextAnomaly();
 }
 
-#pragma endregion
+int32 AAnomaly_Generator::MakeTimeSeed()
+{
+	const int64 Ticks = FDateTime::UtcNow().GetTicks();
+	const uint64 Cycles = FPlatformTime::Cycles64();
+	const FGuid Guid = FGuid::NewGuid();
+	const uint64 Mix = ((uint64)Guid.A << 32) ^ Guid.D;
+	const uint64 Combo = ((uint64)Ticks) ^ Cycles ^ Mix;
+	return (int32)(Combo & 0xFFFFFFFF);
+}
 
-#pragma region Pool & Sequence
 // Reset Pool
 void AAnomaly_Generator::InitializePool(bool bShuffle)
 {
+	// Seed by Time
+	Seed = MakeTimeSeed();
+
+	// Reset Stream
+	RS.Initialize(Seed);
 
 	// Copy from Original
 	Act_Anomaly = Origin_Anomaly;
@@ -75,12 +75,12 @@ void AAnomaly_Generator::InitializePool(bool bShuffle)
 	// Shuffle
 	if (bShuffle && Act_Anomaly.Num() > 1)
 	{
-		for (int32 CurrentIndex = Act_Anomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		for (int32 i = Act_Anomaly.Num() - 1; i > 0; --i)
 		{
-			const int32 RandomIndex = FMath::RandRange(0, CurrentIndex);
-			if (CurrentIndex != RandomIndex)
+			const int32 j = RS.RandRange(0, i);
+			if (i != j)
 			{
-				Act_Anomaly.Swap(CurrentIndex, RandomIndex);
+				Act_Anomaly.Swap(i, j);
 			}
 		}
 	}
@@ -88,8 +88,8 @@ void AAnomaly_Generator::InitializePool(bool bShuffle)
 	// Reset Index
 	Current_AnomalyID = -1;
 
-	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Count=%d"),
-		Act_Anomaly.Num());
+	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Seed=%d, Count=%d"),
+		Seed, Act_Anomaly.Num());
 }
 
 void AAnomaly_Generator::ResetSequence(bool bShuffle)
@@ -97,11 +97,8 @@ void AAnomaly_Generator::ResetSequence(bool bShuffle)
 	InitializePool(bShuffle);
 }
 
-#pragma endregion
-
-#pragma region Generate
-
 // Pick Random Spawn Transform
+// Anomaly_Generator.cpp
 FTransform AAnomaly_Generator::PickSpawnTransform() const
 {
 	if (SpawnPoints.IsValidIndex(SpawnIndex))
@@ -110,6 +107,7 @@ FTransform AAnomaly_Generator::PickSpawnTransform() const
 	}
 	return FTransform::Identity;
 }
+
 
 // Spawn Next Anomaly
 AAnomaly_Base_Ex* AAnomaly_Generator::SpawnNextAnomaly(bool bDestroyPrev)
@@ -163,22 +161,22 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 		DestroyCurrentAnomaly();
 	}
 
-	TSubclassOf<AAnomaly_Base_Ex> AnomalyClass = Act_Anomaly[Index];
-	if (!*AnomalyClass)
+	TSubclassOf<AAnomaly_Base_Ex> Cls = Act_Anomaly[Index];
+	if (!*Cls)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[Anomaly_Generator] Invalid class at index %d"), Index);
 		return nullptr;
 	}
 
 	// Spawn
-	const FTransform SpawnTransform = PickSpawnTransform();
+	const FTransform SpawnTM = PickSpawnTransform();
 
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	AAnomaly_Base_Ex* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base_Ex>(AnomalyClass, SpawnTransform, Params);
+		GetWorld()->SpawnActor<AAnomaly_Base_Ex>(Cls, SpawnTM, Params);
 
 	if (!Spawned)
 	{
@@ -187,14 +185,14 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 	}
 
 	// Setting Fixed ID
-	const AAnomaly_Base_Ex* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base_Ex>();
+	const AAnomaly_Base_Ex* CDO = Cls->GetDefaultObject<AAnomaly_Base_Ex>();
 	const int32 FixedID = (CDO ? CDO->DefaultID : -1);
 
 	if (FixedID < 0)
 	{
 		UE_LOG(LogTemp, Warning,
 			TEXT("[Anomaly_Generator] %s has no DefaultID set (stays -1)."),
-			*GetNameSafe(AnomalyClass));
+			*GetNameSafe(Cls));
 	}
 
 	// Start
@@ -208,5 +206,3 @@ AAnomaly_Base_Ex* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDes
 
 	return Spawned;
 }
-
-#pragma endregion

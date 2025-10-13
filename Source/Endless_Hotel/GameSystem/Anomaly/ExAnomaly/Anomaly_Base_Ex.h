@@ -1,15 +1,10 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
+// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Anomaly_Base_Ex.generated.h"
-
-
-// Forward Declaration
-class UAnomalyProgressSubSystem;
-
 
 UCLASS(Abstract, Blueprintable)
 class ENDLESS_HOTEL_API AAnomaly_Base_Ex : public AActor
@@ -24,19 +19,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anomaly")
 	int32 DefaultID = -1;
 
-	// Start Anomaly Event
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void StartAnomaly();
-
-	// Anomaly Progress SubSystem
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void SolveAnomaly();
-
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void NotSolveAnomaly();
-
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Subsystem")
-	void VerdictAnomaly();
+	virtual void StartAnomaly_Implementation();
 
 protected:
 	// Called when the game starts or when spawned
