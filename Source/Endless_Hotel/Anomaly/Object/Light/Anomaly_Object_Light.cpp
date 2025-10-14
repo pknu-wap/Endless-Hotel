@@ -59,3 +59,13 @@ void AAnomaly_Object_Light::LightDestroyed(const FChaosBreakEvent& BreakEvent)
 }
 
 #pragma endregion
+
+#pragma region Color
+
+void AAnomaly_Object_Light::ChangeLightColor()
+{
+	PointLight->SetLightColor(FLinearColor(0, 0.9f, 1));
+	PointLight->MarkRenderStateDirty();
+}
+
+#pragma endregion

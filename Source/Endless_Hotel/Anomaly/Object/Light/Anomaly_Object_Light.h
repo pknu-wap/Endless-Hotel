@@ -19,6 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	UPROPERTY(EditAnywhere)
+	int32 LightIndex = 0;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Default;
@@ -36,13 +40,16 @@ protected:
 public:
 	void DropLight();
 
-public:
-	UPROPERTY(EditAnywhere)
-	int32 LightIndex = 0;
-
 protected:
 	UFUNCTION()
 	void LightDestroyed(const struct FChaosBreakEvent& BreakEvent);
+
+#pragma endregion
+
+#pragma region Color
+
+public:
+	void ChangeLightColor();
 
 #pragma endregion
 
