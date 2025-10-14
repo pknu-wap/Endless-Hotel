@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API AAnomaly_LightDestroy : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
+
 #pragma region Activity
 
 public:

@@ -4,6 +4,17 @@
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
 #include "Kismet/GameplayStatics.h"
 
+#pragma region Base
+
+void AAnomaly_LightDestroy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	ActivateAnomaly_Implementation(); // 임시 코드 - 테스트용
+}
+
+#pragma endregion
+
 #pragma region Activity
 
 void AAnomaly_LightDestroy::ActivateAnomaly_Implementation()
