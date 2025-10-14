@@ -9,17 +9,10 @@
 #pragma region Declare
 
 // Forward Declaration
-<<<<<<< HEAD
-class AAnomaly_Base_Ex;
-
-// Delegate
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base_Ex*, Spawned);
-=======
 class AAnomaly_Base;
 
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base*, Spawned);
->>>>>>> parent of ced9334 (Revert "Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly")
 
 #pragma endregion
 
@@ -93,11 +86,7 @@ public:
 public:
 	// Spawn Next Anomaly in Sequence
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-<<<<<<< HEAD
-	AAnomaly_Base_Ex* SpawnNextAnomaly(bool bDestroyPrev = true);
-=======
 	AAnomaly_Base* SpawnNextAnomaly(bool bDestroyPrev = true);
->>>>>>> parent of ced9334 (Revert "Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly")
 
 	// Spawn Anomaly at Specific Index
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
