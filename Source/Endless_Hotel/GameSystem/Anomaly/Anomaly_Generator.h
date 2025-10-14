@@ -9,10 +9,17 @@
 #pragma region Declare
 
 // Forward Declaration
+<<<<<<< HEAD
 class AAnomaly_Base_Ex;
 
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base_Ex*, Spawned);
+=======
+class AAnomaly_Base;
+
+// Delegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base*, Spawned);
+>>>>>>> parent of ced9334 (Revert "Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly")
 
 #pragma endregion
 
@@ -32,11 +39,11 @@ public:
 
 	// Original Pool
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly")
-	TArray<TSubclassOf<AAnomaly_Base_Ex>> Origin_Anomaly;
+	TArray<TSubclassOf<AAnomaly_Base>> Origin_Anomaly;
 
 	// Active Pool
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly")
-	TArray<TSubclassOf<AAnomaly_Base_Ex>> Act_Anomaly;
+	TArray<TSubclassOf<AAnomaly_Base>> Act_Anomaly;
 
 	// Current Index
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
@@ -56,7 +63,7 @@ public:
 
 	/** Living Anomaly */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	TWeakObjectPtr<AAnomaly_Base_Ex> CurrentAnomaly;
+	TWeakObjectPtr<AAnomaly_Base> CurrentAnomaly;
 
 #pragma endregion
 
@@ -86,11 +93,15 @@ public:
 public:
 	// Spawn Next Anomaly in Sequence
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+<<<<<<< HEAD
 	AAnomaly_Base_Ex* SpawnNextAnomaly(bool bDestroyPrev = true);
+=======
+	AAnomaly_Base* SpawnNextAnomaly(bool bDestroyPrev = true);
+>>>>>>> parent of ced9334 (Revert "Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly")
 
 	// Spawn Anomaly at Specific Index
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	AAnomaly_Base_Ex* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
+	AAnomaly_Base* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
 
 	// Destroy Current Anomaly
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
