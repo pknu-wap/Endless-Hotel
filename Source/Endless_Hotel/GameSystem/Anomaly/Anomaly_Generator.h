@@ -7,7 +7,13 @@
 #include "ExAnomaly/Anomaly_Base_Ex.h"
 #include "Anomaly_Generator.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base_Ex*, Spawned);
+#pragma region Declare
+
+// Forward Declaration
+class AAnomaly_Base;
+
+// Delegate
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base*, Spawned);
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Generator : public AActor
@@ -19,11 +25,11 @@ public:
 
 	// Original Pool
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly")
-	TArray<TSubclassOf<AAnomaly_Base_Ex>> Origin_Anomaly;
+	TArray<TSubclassOf<AAnomaly_Base>> Origin_Anomaly;
 
 	// Active Pool
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly")
-	TArray<TSubclassOf<AAnomaly_Base_Ex>> Act_Anomaly;
+	TArray<TSubclassOf<AAnomaly_Base>> Act_Anomaly;
 
 	// Seed
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|Random")
@@ -51,7 +57,7 @@ public:
 
 	/** Living Anomaly */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	TWeakObjectPtr<AAnomaly_Base_Ex> CurrentAnomaly;
+	TWeakObjectPtr<AAnomaly_Base> CurrentAnomaly;
 
 public:
 	// ===== API =====
@@ -66,9 +72,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void ResetSequence(bool bShuffle = true);
 
+#pragma endregion
+
+#pragma region Generate Anomaly
+public:
+	// Spawn Next Anomaly in Sequence
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	AAnomaly_Base* SpawnNextAnomaly(bool bDestroyPrev = true);
+
 	// Spawn Anomaly at Specific Index
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	AAnomaly_Base_Ex* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
+	AAnomaly_Base* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
 
 	// Destroy Current Anomaly
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
