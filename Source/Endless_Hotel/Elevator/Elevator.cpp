@@ -19,6 +19,8 @@
 #include "Engine/EngineTypes.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include <Kismet/GameplayStatics.h>
+#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "EngineUtils.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
@@ -183,6 +185,13 @@ void AElevator::BeginPlay()
 
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
+
+	// 5) Anomaly Generator Setup
+	for (TActorIterator<AAnomaly_Generator> It(GetWorld()); It; ++It)
+	{
+		AnomalyGenerator = *It;
+		break;
+	}
 }
 #pragma endregion
 
@@ -443,6 +452,8 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 		if (!bChoiceSentThisRide)
 		{
+
+			UE_LOG(LogElevator, Log, TEXT("[IsNormalElevaotr: %d]"), bIsNormalElevator);
 			NotifySubsystemElevatorChoice();
 		}
 
@@ -530,25 +541,16 @@ bool AElevator::IsMyPlayer(AActor* Other) const
 void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->EvaluateElevatorChoice(bIsNormalElevator);
-			bChoiceSentThisRide = true;
-		}
-	}
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->SetIsElevatorNormal(bIsNormalElevator);
+	Sub->ApplyVerdict();
+	bChoiceSentThisRide = true;
 }
 
 void AElevator::NotifySubsystemSpawnNextAnomaly()
 {
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->AnomalySpawn();
-		}
-	}
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->AnomalySpawn();
 }
 
 #pragma endregion

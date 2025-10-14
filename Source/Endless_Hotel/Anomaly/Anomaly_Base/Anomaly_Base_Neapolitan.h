@@ -13,8 +13,11 @@ class ENDLESS_HOTEL_API AAnomaly_Base_Neapolitan : public AAnomaly_Base
     GENERATED_BODY()
 #pragma region Base
 
-public:
-    AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+//public:
+//    AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+    virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -24,4 +27,5 @@ protected:
     virtual void ActivateAnomaly_Implementation() override;
 
 #pragma endregion
+
 };

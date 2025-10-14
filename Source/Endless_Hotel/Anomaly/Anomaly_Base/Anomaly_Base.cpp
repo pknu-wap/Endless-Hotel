@@ -27,98 +27,40 @@ void AAnomaly_Base::ActivateAnomaly_Implementation()
 
 void AAnomaly_Base::SetSolved(bool bNewSolved)
 {
-	bIsSolved = bNewSolved;
+	if (bNewSolved)
+		MarkSolved();
+	else
+		MarkFailed();
 }
 
-void AAnomaly_Base::SetCorrectElevator(bool bNewCorrect)
+void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
-	bIsCorrectElevator = bNewCorrect;
-}
-
-bool AAnomaly_Base::SubmitVerdictWith(bool bSolved, bool bCorrectElevator)
-{
-	bIsSolved = bSolved;
-	bIsCorrectElevator = bCorrectElevator;
-
-	SubmitVerdict();
-
-	return EvaluateOutcome();
-}
-
-void AAnomaly_Base::SubmitVerdict()
-{
-	const bool bPassed = EvaluateOutcome();
-	FinalizeAnomaly(bPassed);
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->SetVerdictMode(NewMode); // VerdictMode Setting
 }
 
 #pragma endregion
 
 #pragma region Inner Verdicts
 
-bool AAnomaly_Base::EvaluateOutcome() const
-{
-	switch (VerdictMode)
-	{
-	case EAnomalyVerdictMode::CorrectElevatorOnly:
-		return bIsCorrectElevator;
-
-	case EAnomalyVerdictMode::SolvedOnly:
-		return bIsSolved;
-
-	case EAnomalyVerdictMode::Both_AND:
-		return (bIsSolved && bIsCorrectElevator);
-
-	case EAnomalyVerdictMode::Either_OR:
-		return (bIsSolved || bIsCorrectElevator);
-
-	default:
-		return false;
-	}
-}
-
 void AAnomaly_Base::FinalizeAnomaly(bool bPassed)
 {
 	if (bPassed)	MarkSolved();
 	else			MarkFailed();
 
-	// Subsystem에 결과 반영
-	PushVerdict();
-
-	// 한 번 처리된 뒤엔 비활성화(원하면 유지)
 	bIsActive = false;
 }
 
 void AAnomaly_Base::MarkSolved()
 {
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (auto* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->SetIsAnomalySolved(true);
-		}
-	}
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->SetIsAnomalySolved(true);
 }
 
 void AAnomaly_Base::MarkFailed()
 {
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (auto* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->SetIsAnomalySolved(false);
-		}
-	}
-}
-
-void AAnomaly_Base::PushVerdict()
-{
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (auto* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->AnomalyVerdict();
-		}
-	}
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->SetIsAnomalySolved(false);
 }
 
 #pragma endregion

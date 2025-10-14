@@ -7,49 +7,40 @@
 
 #pragma region AnomalyState
 
-void UAnomalyProgressSubSystem::SetIsAnomalySolved(bool bNewValue)
-{
-	bIsAnomalySolved = bNewValue;
-}
-
-void UAnomalyProgressSubSystem::SetIsElevatorNormal(bool bNewValue)
-{
-	bIsElevatorNormal = bNewValue;
-}
-
 #pragma endregion
 
 #pragma region Verdict
 
-void UAnomalyProgressSubSystem::AnomalyVerdict()
+bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bCorrectElevator) const
 {
-	if (bIsAnomalySolved)
+	switch (VerdictMode)
 	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Anomaly solved. Decreasing floor."));
-		SubFloor();
+	case EAnomalyVerdictMode::CorrectElevatorOnly:
+		return bCorrectElevator;
+	case EAnomalyVerdictMode::SolvedOnly:
+		return bSolved;
+	case EAnomalyVerdictMode::Both_AND:
+		return bSolved && bCorrectElevator;
+	case EAnomalyVerdictMode::Either_OR:
+		return bSolved || bCorrectElevator;
+	default:
+		return false;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Anomaly not solved. Resetting floor to 9."));
-		SetFloor();
-	}
-	bIsAnomalySolved = false;
-	return;
 }
 
-void UAnomalyProgressSubSystem::EvaluateElevatorChoice(bool bIsChosenElevatorNormal)
+void UAnomalyProgressSubSystem::ApplyVerdict()
 {
-	if (bIsAnomalySolved && !bIsChosenElevatorNormal)
+	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
+	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
+		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
+	if (bPassed) 
 	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Solved + Abnormal elevator: PASS."));
-		SubFloor();
+		SubFloor(); 
 	}
-	else if (!bIsAnomalySolved && bIsChosenElevatorNormal)
-	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Not solved + Normal elevator: FAIL."));
-		SetFloor();
+	else 
+	{ 
+		SetFloor(); 
 	}
-	return;
 }
 
 #pragma endregion

@@ -13,6 +13,7 @@ class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
+class AAnomaly_Generator;
 
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AActor
@@ -125,6 +126,9 @@ protected:
 #pragma region Params
 
 protected:
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Elevator|Refs")
+	AAnomaly_Generator* AnomalyGenerator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float DoorOpenDuration = 1.0f;

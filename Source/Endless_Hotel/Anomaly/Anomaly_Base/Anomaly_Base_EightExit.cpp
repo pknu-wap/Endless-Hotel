@@ -2,14 +2,25 @@
 
 
 #include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 #pragma region Base
 
 AAnomaly_Base_EightExit::AAnomaly_Base_EightExit(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    Super::ActivateAnomaly_Implementation();
-    VerdictMode = EAnomalyVerdictMode::CorrectElevatorOnly; // VerdictMode Setting
+
+}
+
+#pragma region VerdictMode
+
+#pragma endregion
+
+
+void AAnomaly_Base_EightExit::BeginPlay()
+{
+	Super::BeginPlay();
+	SetVerdictMode(EAnomalyVerdictMode::CorrectElevatorOnly); // VerdictMode Setting
 }
 
 #pragma endregion

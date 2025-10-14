@@ -11,6 +11,14 @@ class AAnomaly_Base_Ex;
 
 #pragma region Declare
 
+UENUM(BlueprintType)
+enum class EAnomalyVerdictMode : uint8
+{
+	CorrectElevatorOnly,
+	SolvedOnly,
+	Both_AND,
+	Either_OR
+};
 
 #pragma endregion
 
@@ -31,13 +39,13 @@ public:
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
-	void SetIsAnomalySolved(bool bNewValue);
+	void SetIsAnomalySolved(bool bNewValue) { bIsAnomalySolved = bNewValue; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
-	void SetIsElevatorNormal(bool bNewValue);
+	void SetIsElevatorNormal(bool bNewValue) { bIsElevatorNormal = bNewValue; };
 
 #pragma endregion
 
@@ -58,14 +66,6 @@ private:
 
 #pragma endregion
 
-#pragma region Verdict
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void AnomalyVerdict();
-
-#pragma endregion
-
 #pragma region AnomalyGenerate
 
 public:
@@ -74,11 +74,20 @@ public:
 
 #pragma endregion
 
-#pragma region ElevatorChoice
+#pragma region Verdict
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::CorrectElevatorOnly;
+
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void EvaluateElevatorChoice(bool bIsChosenElevatorNormal);
+	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void ApplyVerdict();
 
 #pragma endregion
 };
