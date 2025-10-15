@@ -13,9 +13,10 @@ AAnomaly_Base_Neapolitan::AAnomaly_Base_Neapolitan(const FObjectInitializer& Obj
 
 void AAnomaly_Base_Neapolitan::BeginPlay()
 {
-	bIsActive = true;
 	Super::BeginPlay();
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
+	bIsActive = true;
+	sendIDToSubsystem();
 }
 
 void AAnomaly_Base_Neapolitan::ActivateAnomaly_Implementation()

@@ -35,7 +35,10 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
 	if (bPassed) 
 	{
-		SubFloor(); 
+		SubFloor();
+		if(!AnomalyHistory.Contains(CurrentAnomalyID))
+			AnomalyHistory.Add(CurrentAnomalyID);
+		AnomalyCount++;
 	}
 	else 
 	{ 

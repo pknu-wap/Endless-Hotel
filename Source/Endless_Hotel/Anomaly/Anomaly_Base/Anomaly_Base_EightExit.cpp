@@ -20,8 +20,9 @@ AAnomaly_Base_EightExit::AAnomaly_Base_EightExit(const FObjectInitializer& Objec
 void AAnomaly_Base_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
+    SetVerdictMode(EAnomalyVerdictMode::AnomalyElevatorOnly); // VerdictMode Setting
     bIsActive = true;
-	SetVerdictMode(EAnomalyVerdictMode::AnomalyElevatorOnly); // VerdictMode Setting
+    sendIDToSubsystem();
 }
 
 #pragma endregion

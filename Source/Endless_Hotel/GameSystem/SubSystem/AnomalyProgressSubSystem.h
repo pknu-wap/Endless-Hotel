@@ -90,4 +90,19 @@ public:
 	void ApplyVerdict();
 
 #pragma endregion
+
+#pragma region AnomalyCount
+
+public:
+	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
+	int32 AnomalyCount = 0;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
+	TArray<int32> AnomalyHistory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
+	int32 CurrentAnomalyID = -1;
+
+#pragma endregion
+
 };
