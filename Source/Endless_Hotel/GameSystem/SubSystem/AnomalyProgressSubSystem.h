@@ -14,7 +14,7 @@ class AAnomaly_Base_Ex;
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
 {
-	CorrectElevatorOnly,
+	AnomalyElevatorOnly,
 	SolvedOnly,
 	Both_AND,
 	Either_OR
@@ -78,10 +78,10 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
-	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::CorrectElevatorOnly;
+	EAnomalyVerdictMode VerdictMode;
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode NewMode = EAnomalyVerdictMode::AnomalyElevatorOnly) { VerdictMode = NewMode; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;

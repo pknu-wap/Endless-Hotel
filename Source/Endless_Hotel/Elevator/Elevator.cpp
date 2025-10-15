@@ -270,6 +270,7 @@ void AElevator::OnMoveTimelineFinished()
 
 		bRideCompleted = true;
 		bSpawnSentThisStop = false;
+		bChoiceSentThisRide = false;
 
 		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
 		GetWorldTimerManager().SetTimer(

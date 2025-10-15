@@ -6,15 +6,14 @@
 
 // Anomaly_Base_Neapolitan.cpp
 
-//AAnomaly_Base_Neapolitan::AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer)
-//    : Super(ObjectInitializer)
-//{
-//    Super::ActivateAnomaly_Implementation();
-//    VerdictMode = EAnomalyVerdictMode::Both_AND; // VerdictMode Setting
-//}
+AAnomaly_Base_Neapolitan::AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+}
 
 void AAnomaly_Base_Neapolitan::BeginPlay()
 {
+	bIsActive = true;
 	Super::BeginPlay();
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
 }

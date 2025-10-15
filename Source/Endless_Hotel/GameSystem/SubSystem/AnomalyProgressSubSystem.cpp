@@ -11,18 +11,18 @@
 
 #pragma region Verdict
 
-bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bCorrectElevator) const
+bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
 {
 	switch (VerdictMode)
 	{
-	case EAnomalyVerdictMode::CorrectElevatorOnly:
-		return bCorrectElevator;
+	case EAnomalyVerdictMode::AnomalyElevatorOnly:
+		return !bNormalElevator;
 	case EAnomalyVerdictMode::SolvedOnly:
 		return bSolved;
 	case EAnomalyVerdictMode::Both_AND:
-		return bSolved && bCorrectElevator;
+		return bSolved && !bNormalElevator;
 	case EAnomalyVerdictMode::Either_OR:
-		return bSolved || bCorrectElevator;
+		return bSolved || bNormalElevator;
 	default:
 		return false;
 	}
@@ -41,6 +41,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	{ 
 		SetFloor(); 
 	}
+	bIsAnomalySolved = false;
 }
 
 #pragma endregion
