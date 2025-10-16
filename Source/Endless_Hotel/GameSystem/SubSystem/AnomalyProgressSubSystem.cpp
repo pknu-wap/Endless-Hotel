@@ -37,7 +37,14 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	{
 		SubFloor();
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))
+		{
 			AnomalyHistory.Add(CurrentAnomalyID);
+			UE_LOG(LogTemp, Log, TEXT("[Verdict] New Verdict Found"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Already Found Before"));
+		}
 		AnomalyCount++;
 	}
 	else 
