@@ -69,9 +69,4 @@ private:
 
 #pragma endregion
 
-#pragma region MyRegion
-protected:
-	void sendIDToSubsystem();
-#pragma endregion
-
 };

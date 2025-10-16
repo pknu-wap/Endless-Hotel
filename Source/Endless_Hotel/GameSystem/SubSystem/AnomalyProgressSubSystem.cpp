@@ -115,6 +115,7 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 	}
 
 	Generator->SpawnNextAnomaly(true);
+	CurrentAnomalyID = Generator->Current_AnomalyID;
 }
 
 #pragma endregion

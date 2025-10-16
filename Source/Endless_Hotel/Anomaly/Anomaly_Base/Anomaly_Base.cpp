@@ -64,11 +64,3 @@ void AAnomaly_Base::MarkFailed()
 }
 
 #pragma endregion
-
-#pragma region Count
-void AAnomaly_Base::sendIDToSubsystem()
-{
-	auto Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->CurrentAnomalyID = AnomalyID;
-}
-#pragma endregion

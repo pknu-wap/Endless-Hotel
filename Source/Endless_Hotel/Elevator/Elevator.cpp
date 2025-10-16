@@ -18,7 +18,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include <Kismet/GameplayStatics.h>
+#include "Kismet/GameplayStatics.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "EngineUtils.h"
 

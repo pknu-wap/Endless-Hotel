@@ -16,7 +16,6 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 	Super::BeginPlay();
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
 	bIsActive = true;
-	sendIDToSubsystem();
 }
 
 void AAnomaly_Base_Neapolitan::ActivateAnomaly_Implementation()
