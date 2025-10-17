@@ -18,6 +18,9 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/EngineTypes.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "EngineUtils.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
@@ -150,12 +153,6 @@ void AElevator::BeginPlay()
 		DoorTimeline->SetTimelineFinishedFunc(Finished);
 		DoorTimeline->SetLooping(false);
 		DoorTimeline->SetIgnoreTimeDilation(true);
-
-		// Curve Length: 1
-		if (DoorDuration > 0.f)
-		{
-			DoorTimeline->SetPlayRate(1.f / DoorDuration);
-		}
 	}
 	SetActorLocation(StartPoint);
 
@@ -188,6 +185,13 @@ void AElevator::BeginPlay()
 
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
+
+	// 5) Anomaly Generator Setup
+	for (TActorIterator<AAnomaly_Generator> It(GetWorld()); It; ++It)
+	{
+		AnomalyGenerator = *It;
+		break;
+	}
 }
 #pragma endregion
 
@@ -206,10 +210,25 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	bDoorOpen = bWantOpen;
+	SetPlayerInputEnabled(true);
+
 	UE_LOG(LogElevator, Log, TEXT("[DoorTimelineFinished] bDoorOpen=%d  L=%s R=%s"),
 		bDoorOpen,
 		*LeftDoor->GetRelativeLocation().ToString(),
 		*RightDoor->GetRelativeLocation().ToString());
+
+	if (!bDoorOpen && bMoveAfterClosePending)
+	{
+		bMoveAfterClosePending = false;
+		GetWorldTimerManager().ClearTimer(StartMoveTimer);
+		
+		GetWorldTimerManager().SetTimer(
+			StartMoveTimer,
+			[this]() {MoveUp();  },
+			StartMoveDelay,
+			false
+		);
+	}
 }
 
 #pragma endregion
@@ -251,6 +270,7 @@ void AElevator::OnMoveTimelineFinished()
 
 		bRideCompleted = true;
 		bSpawnSentThisStop = false;
+		bChoiceSentThisRide = false;
 
 		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
 		GetWorldTimerManager().SetTimer(
@@ -274,8 +294,11 @@ void AElevator::OpenDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bDoorOpen) return;
 
+	SetPlayerInputEnabled(false);
+
 	DoorTimeline->Stop();
 	bWantOpen = true;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
 	DoorTimeline->PlayFromStart();
 }
 
@@ -284,8 +307,11 @@ void AElevator::CloseDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (!bDoorOpen) return;
 
+	SetPlayerInputEnabled(false);
+
 	DoorTimeline->Stop();
 	bWantOpen = false;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorCloseDuration));
 	DoorTimeline->ReverseFromEnd();
 }
 
@@ -427,6 +453,8 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 		if (!bChoiceSentThisRide)
 		{
+
+			UE_LOG(LogElevator, Log, TEXT("[IsNormalElevaotr: %d]"), bIsNormalElevator);
 			NotifySubsystemElevatorChoice();
 		}
 
@@ -434,18 +462,26 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		bSequenceArmed = true;
 		bPlayerOnboard = true;
 
+		const bool bWasOpen = bDoorOpen;
 		CloseDoors();
 
 		GetWorldTimerManager().ClearTimer(StartMoveTimer);
-		GetWorldTimerManager().SetTimer(
-			StartMoveTimer,
-			[this]()
-			{
-				MoveUp();
-			},
-			StartMoveDelay,
-			false
-		);
+		if (bWaitDoorCloseBeforMove && bWasOpen && DoorTimeline->IsPlaying())
+		{
+			bMoveAfterClosePending = true;
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(
+				StartMoveTimer,
+				[this]()
+				{
+					MoveUp();
+				},
+				StartMoveDelay,
+				false
+			);
+		}
 	}
 }
 
@@ -506,25 +542,30 @@ bool AElevator::IsMyPlayer(AActor* Other) const
 void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
-	if (UGameInstance* GI = GetGameInstance())
-	{
-		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
-		{
-			Sub->EvaluateElevatorChoice(bIsNormalElevator);
-			bChoiceSentThisRide = true;
-		}
-	}
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->SetIsElevatorNormal(bIsNormalElevator);
+	Sub->ApplyVerdict();
+	bChoiceSentThisRide = true;
 }
 
 void AElevator::NotifySubsystemSpawnNextAnomaly()
 {
-	if (UGameInstance* GI = GetGameInstance())
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->AnomalySpawn();
+}
+
+#pragma endregion
+
+#pragma region PlayerMoveControl
+void AElevator::SetPlayerInputEnabled(bool bEnable)
+{
+	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
 	{
-		if (UAnomalyProgressSubSystem* Sub = GI->GetSubsystem<UAnomalyProgressSubSystem>())
+		if (APlayerController* PC = Cast<APlayerController>(Player->GetController()))
 		{
-			Sub->AnomalySpawn();
+			PC->SetIgnoreMoveInput(!bEnable);
+			PC->SetIgnoreLookInput(!bEnable);
 		}
 	}
 }
-
 #pragma endregion
