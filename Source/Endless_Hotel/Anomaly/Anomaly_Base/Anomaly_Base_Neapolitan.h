@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -16,6 +16,9 @@ class ENDLESS_HOTEL_API AAnomaly_Base_Neapolitan : public AAnomaly_Base
 public:
     AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+protected:
+    virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region Activities
@@ -24,4 +27,5 @@ protected:
     virtual void ActivateAnomaly_Implementation() override;
 
 #pragma endregion
+
 };

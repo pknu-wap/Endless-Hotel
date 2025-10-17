@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "AnomalyProgressSubSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
@@ -7,49 +7,51 @@
 
 #pragma region AnomalyState
 
-void UAnomalyProgressSubSystem::SetIsAnomalySolved(bool bNewValue)
-{
-	bIsAnomalySolved = bNewValue;
-}
-
-void UAnomalyProgressSubSystem::SetIsElevatorNormal(bool bNewValue)
-{
-	bIsElevatorNormal = bNewValue;
-}
-
 #pragma endregion
 
 #pragma region Verdict
 
-void UAnomalyProgressSubSystem::AnomalyVerdict()
+bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
 {
-	if (bIsAnomalySolved)
+	switch (VerdictMode)
 	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Anomaly solved. Decreasing floor."));
-		SubFloor();
+	case EAnomalyVerdictMode::AnomalyElevatorOnly:
+		return !bNormalElevator;
+	case EAnomalyVerdictMode::SolvedOnly:
+		return bSolved;
+	case EAnomalyVerdictMode::Both_AND:
+		return bSolved && !bNormalElevator;
+	case EAnomalyVerdictMode::Either_OR:
+		return bSolved || bNormalElevator;
+	default:
+		return false;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Anomaly not solved. Resetting floor to 9."));
-		SetFloor();
-	}
-	bIsAnomalySolved = false;
-	return;
 }
 
-void UAnomalyProgressSubSystem::EvaluateElevatorChoice(bool bIsChosenElevatorNormal)
+void UAnomalyProgressSubSystem::ApplyVerdict()
 {
-	if (bIsAnomalySolved && !bIsChosenElevatorNormal)
+	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
+	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
+		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
+	if (bPassed) 
 	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Solved + Abnormal elevator: PASS."));
 		SubFloor();
+		if(!AnomalyHistory.Contains(CurrentAnomalyID))
+		{
+			AnomalyHistory.Add(CurrentAnomalyID);
+			UE_LOG(LogTemp, Log, TEXT("[Verdict] New Verdict Found"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Already Found Before"));
+		}
+		AnomalyCount++;
 	}
-	else if (!bIsAnomalySolved && bIsChosenElevatorNormal)
-	{
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Not solved + Normal elevator: FAIL."));
-		SetFloor();
+	else 
+	{ 
+		SetFloor(); 
 	}
-	return;
+	bIsAnomalySolved = false;
 }
 
 #pragma endregion
@@ -113,6 +115,7 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 	}
 
 	Generator->SpawnNextAnomaly(true);
+	CurrentAnomalyID = Generator->Current_AnomalyID;
 }
 
 #pragma endregion
