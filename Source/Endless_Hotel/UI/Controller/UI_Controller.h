@@ -40,9 +40,9 @@ public:
 	class UUI_PopUp_Base* OpenPopUpWidget(TSubclassOf<class UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
 	class UUI_PopUp_Base* OpenStrongPopUpWidget(TSubclassOf<class UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
 
-	void CloseBaseWidget(const EInputModeType& InputMode = EInputModeType::GameOnly);
-	void ClosePopUpWidget(const EInputModeType& InputMode = EInputModeType::GameOnly);
-	void CloseStrongPopUpWidget(const EInputModeType& InputMode = EInputModeType::GameOnly);
+	void CloseBaseWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
+	void ClosePopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
+	void CloseStrongPopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
 
 	class UUI_Base* GetCurrentBaseWidget() { return BaseWidget; }
 	class UUI_PopUp_Base* GetCurrentPopUpWidget() { return PopUpWidget; }
