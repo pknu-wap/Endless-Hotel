@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_LightDestroy.generated.h"
+#include "Anomaly_Light_Base.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_LightDestroy : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Light_Base : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 	
@@ -22,6 +22,15 @@ protected:
 
 public:
 	virtual void ActivateAnomaly_Implementation() override;
+
+#pragma endregion
+
+#pragma region Light
+
+protected:
+	void StartLightAction(TFunction<void(class AAnomaly_Object_Light*)> Action);
+
+	TFunction<void(class AAnomaly_Object_Light*)> LightAction;
 
 protected:
 	int32 CurrentIndex = 1;
