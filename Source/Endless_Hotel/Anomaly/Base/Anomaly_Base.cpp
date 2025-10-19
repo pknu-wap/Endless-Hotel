@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Anomaly/Anomaly_Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Engine/GameInstance.h"
 

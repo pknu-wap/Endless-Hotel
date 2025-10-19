@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/Anomaly_Base/Anomaly_Base_Neapolitan.h"
+#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 // Anomaly_Base_Neapolitan.cpp

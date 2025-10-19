@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Anomaly/Anomaly_Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly_Base_EightExit.generated.h"
 
 #pragma region Declare
