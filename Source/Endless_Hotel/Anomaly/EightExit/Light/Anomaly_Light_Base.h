@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_Light_Base.generated.h"
 
 UCLASS()

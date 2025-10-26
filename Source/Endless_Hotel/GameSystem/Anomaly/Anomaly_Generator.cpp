@@ -6,12 +6,19 @@
 #include "Misc/DateTime.h"
 #include "Misc/Guid.h"
 #include "Anomaly/Base/Anomaly_Base.h"
+#include "Data/Anomaly/AnomalyData.h"
 
 #pragma region Base
 
 AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> AnomalyFinder(TEXT("/Game/EndlessHotel/Data/DT_AnomalyData.DT_AnomalyData"));
+	if (AnomalyFinder.Succeeded())
+	{
+		DataTable_Anomaly = AnomalyFinder.Object;
+	}
 }
 
 void AAnomaly_Generator::BeginPlay()
@@ -19,6 +26,8 @@ void AAnomaly_Generator::BeginPlay()
 	Super::BeginPlay();
 
 	InitializePool(true);
+
+	GetAnomalyData();
 
 	// Check AnomalyID Settings
 	TSet<int32> UsedID;
@@ -48,6 +57,32 @@ void AAnomaly_Generator::BeginPlay()
 }
 
 #pragma endregion
+
+#pragma region AnomalyDataBase
+
+void AAnomaly_Generator::GetAnomalyData()
+{
+
+	FAnomalyData* Data = nullptr;
+
+	for (auto RowData : DataTable_Anomaly->GetRowMap())
+	{
+		Data = (FAnomalyData*)RowData.Value;
+
+		if (!Data->AnomalyPath.IsEmpty())
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
+
+			if (LoadedClass)
+			{
+				Origin_Anomaly.Add(LoadedClass);
+			}
+		}
+	}
+}
+
+#pragma endregion
+
 
 #pragma region Pool & Sequence
 // Reset Pool

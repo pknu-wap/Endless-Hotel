@@ -28,8 +28,21 @@ public:
 
 #pragma endregion
 
+#pragma region AnomalyDataBase
+
+public:
+	void GetAnomalyData();
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UDataTable> DataTable_Anomaly;
+
+#pragma endregion
+
+
 #pragma region Generate & State
 
+public:
 	// Original Pool
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly")
 	TArray<TSubclassOf<AAnomaly_Base>> Origin_Anomaly;
