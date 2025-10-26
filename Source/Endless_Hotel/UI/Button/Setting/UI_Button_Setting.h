@@ -43,7 +43,7 @@ class ENDLESS_HOTEL_API UUI_Button_Setting : public UUI_Button_Base
 #pragma region Base
 
 public:
-	UUI_Button_Setting();
+	UUI_Button_Setting(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion
 	

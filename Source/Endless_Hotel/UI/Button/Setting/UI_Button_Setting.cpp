@@ -5,7 +5,8 @@
 
 #pragma region Base
 
-UUI_Button_Setting::UUI_Button_Setting()
+UUI_Button_Setting::UUI_Button_Setting(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
 }
