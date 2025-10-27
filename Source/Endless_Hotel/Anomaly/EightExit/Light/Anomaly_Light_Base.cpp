@@ -10,7 +10,7 @@ void AAnomaly_Light_Base::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ActivateAnomaly_Implementation();
+	//ActivateAnomaly_Implementation();
 }
 
 #pragma endregion

@@ -32,6 +32,6 @@ void AAnomaly_Base_EightExit::BeginPlay()
 void AAnomaly_Base_EightExit::ActivateAnomaly_Implementation()
 {
     // Activites
-    UE_LOG(LogTemp, Log, TEXT("[EightExit] Activated."));
+    UE_LOG(LogTemp, Log, TEXT("[EightExit] AnomalyID: %d Activated."), AnomalyID);
 }
 #pragma endregion
