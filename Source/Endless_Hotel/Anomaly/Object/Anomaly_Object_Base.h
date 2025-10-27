@@ -18,4 +18,13 @@ public:
 
 #pragma endregion
 
+#pragma region Params
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Object|ID")
+	int32 ObjectID = -1;
+
+#pragma endregion
+
+
 };

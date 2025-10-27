@@ -7,6 +7,7 @@
 #include "Misc/Guid.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Data/Anomaly/AnomalyData.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 
 #pragma region Base
 
@@ -78,6 +79,33 @@ void AAnomaly_Generator::GetAnomalyData()
 				Origin_Anomaly.Add(LoadedClass);
 			}
 		}
+	}
+}
+
+int32 AAnomaly_Generator::GetAnomalyDataByID(int32 AnomalyID)
+{
+	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
+	{
+		return Data->Object_ID;
+	}
+	return -1;
+}
+
+#pragma endregion
+
+#pragma region AnomalyObjectLinker
+
+void AAnomaly_Generator::AnomalyObjectLinker()
+{
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
+
+	for (auto* FoundActor : FoundActors)
+	{
+		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		int32 LinkObjectID = GetAnomalyDataByID(CurrentAnomaly->AnomalyID);
+		if(LinkObjectID == AnomalyObject->ObjectID)
+			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 	}
 }
 
@@ -223,6 +251,8 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 
 	Current_AnomalyID = Index;
 	CurrentAnomaly = Spawned;
+
+	AnomalyObjectLinker();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);

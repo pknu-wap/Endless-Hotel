@@ -18,6 +18,14 @@ public:
 
 #pragma endregion
 
+#pragma region ObjectLinker
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Linker")
+	TArray<AActor*> LinkedObjects;
+
+#pragma endregion
+
 #pragma region Params
 public:
 	// Verdict Params

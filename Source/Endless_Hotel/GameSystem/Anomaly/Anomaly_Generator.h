@@ -37,6 +37,15 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
 
+public:
+	int32 GetAnomalyDataByID(int32 AnomalyID);
+
+#pragma endregion
+
+#pragma region Linker
+
+	void AnomalyObjectLinker();
+
 #pragma endregion
 
 
