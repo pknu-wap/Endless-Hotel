@@ -21,7 +21,7 @@ public:
 #pragma region ObjectLinker
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Linker")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
 	TArray<AActor*> LinkedObjects;
 
 #pragma endregion

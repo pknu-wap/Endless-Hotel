@@ -109,9 +109,6 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 		return nullptr;
 	}
 
-	// Setting Fixed ID
-	const AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
-
 	CurrentAnomaly = Spawned;
 
 	// Start
