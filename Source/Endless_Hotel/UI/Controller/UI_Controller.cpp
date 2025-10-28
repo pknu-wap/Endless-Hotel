@@ -31,7 +31,12 @@ UUI_Base* UUI_Controller::OpenBaseWidget(TSubclassOf<UUI_Base> WidgetClass, cons
 {
 	if (BaseWidget)
 	{
-		CloseBaseWidget(InputMode);
+		CloseBaseWidget(false);
+	}
+
+	if (PopUpWidget)
+	{
+		ClosePopUpWidget(false);
 	}
 	
 	BaseWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
@@ -46,7 +51,7 @@ UUI_PopUp_Base* UUI_Controller::OpenPopUpWidget(TSubclassOf<UUI_PopUp_Base> Widg
 {
 	if (PopUpWidget)
 	{
-		ClosePopUpWidget(InputMode);
+		ClosePopUpWidget(false);
 	}
 
 	PopUpWidget = CreateWidget<UUI_PopUp_Base>(GetWorld(), WidgetClass);
@@ -61,7 +66,7 @@ UUI_PopUp_Base* UUI_Controller::OpenStrongPopUpWidget(TSubclassOf<UUI_PopUp_Base
 {
 	if (PopUpWidget)
 	{
-		ClosePopUpWidget(InputMode);
+		ClosePopUpWidget(false);
 	}
 
 	PopUpWidget = CreateWidget<UUI_PopUp_Base>(GetWorld(), WidgetClass);
@@ -76,7 +81,7 @@ UUI_PopUp_Base* UUI_Controller::OpenStrongPopUpWidget(TSubclassOf<UUI_PopUp_Base
 
 #pragma region Close
 
-void UUI_Controller::CloseBaseWidget(const EInputModeType& InputMode)
+void UUI_Controller::CloseBaseWidget(bool bIsChangeMode, const EInputModeType& InputMode)
 {
 	if (!BaseWidget)
 	{
@@ -86,10 +91,13 @@ void UUI_Controller::CloseBaseWidget(const EInputModeType& InputMode)
 	BaseWidget->RemoveFromViewport();
 	BaseWidget = nullptr;
 
-	SetInputMode(InputMode);
+	if (bIsChangeMode)
+	{
+		SetInputMode(InputMode);
+	}
 }
 
-void UUI_Controller::ClosePopUpWidget(const EInputModeType& InputMode)
+void UUI_Controller::ClosePopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode)
 {
 	if (!PopUpWidget)
 	{
@@ -99,10 +107,13 @@ void UUI_Controller::ClosePopUpWidget(const EInputModeType& InputMode)
 	PopUpWidget->RemoveFromViewport();
 	PopUpWidget = nullptr;
 
-	SetInputMode(InputMode);
+	if (bIsChangeMode)
+	{
+		SetInputMode(InputMode);
+	}
 }
 
-void UUI_Controller::CloseStrongPopUpWidget(const EInputModeType& InputMode)
+void UUI_Controller::CloseStrongPopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode)
 {
 	if (!PopUpWidget)
 	{
@@ -112,7 +123,10 @@ void UUI_Controller::CloseStrongPopUpWidget(const EInputModeType& InputMode)
 	GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget->TakeWidget());
 	PopUpWidget = nullptr;
 
-	SetInputMode(InputMode);
+	if (bIsChangeMode)
+	{
+		SetInputMode(InputMode);
+	}
 }
 
 #pragma endregion

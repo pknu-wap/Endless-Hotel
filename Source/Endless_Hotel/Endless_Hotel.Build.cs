@@ -24,7 +24,10 @@ public class Endless_Hotel : ModuleRules
             "NavigationSystem",
             "UMG",
             "Niagara",
-            "AdvancedWidgets"
+            "AdvancedWidgets",
+            "Chaos",            
+            "ChaosSolverEngine",
+            "GeometryCollectionEngine"
         });
 
         PrivateIncludePaths.Add("Endless_Hotel");
