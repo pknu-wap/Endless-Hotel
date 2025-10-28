@@ -50,11 +50,6 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))
 		{
 			AnomalyHistory.Add(CurrentAnomalyID);
-			UE_LOG(LogTemp, Log, TEXT("[Verdict] New Verdict Found"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Already Found Before"));
 		}
 		AnomalyCount++;
 	}
@@ -72,7 +67,6 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 void UAnomalyProgressSubSystem::SetFloor()
 {
 	Floor = 9;
-	UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor set to %d"), Floor);
 	return;
 }
 
@@ -81,11 +75,6 @@ void UAnomalyProgressSubSystem::SubFloor()
 	if (Floor > 1)
 	{
 		Floor--;
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor decreased to %d"), Floor);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] Floor is already at minimum (1). Cannot decrease further."));
 	}
 	return;
 }
@@ -95,11 +84,6 @@ void UAnomalyProgressSubSystem::AddFloor()
 	if (Floor < 9)
 	{
 		Floor++;
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor increased to %d"), Floor);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] Floor is already at maximum (9). Cannot increase further."));
 	}
 	return;
 }
@@ -117,11 +101,6 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 	{
 		Generator = *GeneratorInWorld;
 		break;
-	}
-
-	if (!Generator)
-	{
-		return;
 	}
 
 	Generator->SpawnAnomalyAtIndex(ActIndex, true);
@@ -186,9 +165,6 @@ void UAnomalyProgressSubSystem::InitializePool(bool bShuffle)
 
 	// Reset Index
 	ActIndex = 0;
-
-	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Count=%d"),
-		ActAnomaly.Num());
 }
 
 void UAnomalyProgressSubSystem::ResetSequence(bool bShuffle)

@@ -49,7 +49,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 	{
 		auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		int32 LinkObjectID = Sub->GetAnomalyDataByID(CurrentAnomaly->AnomalyID);
+		uint8 LinkObjectID = Sub->GetAnomalyDataByID(CurrentAnomaly->AnomalyID);
 		if(LinkObjectID == AnomalyObject->ObjectID)
 			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 	}
