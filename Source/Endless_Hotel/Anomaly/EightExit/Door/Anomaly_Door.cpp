@@ -32,12 +32,11 @@ void AAnomaly_Door::ActivateAnomaly_Implementation()
 {
 	Super::ActivateAnomaly_Implementation();
 
+	// 이 부분은 ID를 넘겨받는 부분이 생기면 바로 수정 예정
 	/*switch (Anomaly_ID)
 	{
 		case ?:
-		{
 			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->PlayHandleShake(); });
-		}
 		break;
 	}*/
 

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Light_Base.generated.h"
+#include "Anomaly_Light.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Light_Base : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Light : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 	
@@ -28,8 +28,9 @@ public:
 #pragma region Light
 
 protected:
-	void StartLightAction(TFunction<void(class AAnomaly_Object_Light*)> Action);
+	void StartLightAction();
 
+protected:
 	TFunction<void(class AAnomaly_Object_Light*)> LightAction;
 
 protected:
