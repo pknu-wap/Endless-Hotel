@@ -68,7 +68,7 @@ void UAnomalyProgressSubSystem::SetFloor()
 void UAnomalyProgressSubSystem::SubFloor()
 {
 	if (Floor > 1)
-	{
+	
 		Floor--;
 		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor decreased to %d"), Floor);
 	}
