@@ -37,7 +37,7 @@ public:
 
 	// ID
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
-	int32 AnomalyID = -1;
+	uint8 AnomalyID = -1;
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
@@ -63,8 +63,8 @@ protected:
 
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
-	void ActivateAnomaly();
-	virtual void ActivateAnomaly_Implementation();
+	void ActivateAnomaly(uint8 Anomaly_ID);
+	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID);
 
 #pragma endregion
 

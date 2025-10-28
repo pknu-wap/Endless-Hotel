@@ -4,8 +4,19 @@
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Data/Anomaly/AnomalyData.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 
-#pragma region AnomalyState
+#pragma region Base
+
+UAnomalyProgressSubSystem::UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<UDataTable> AnomalyFinder(TEXT("/Game/EndlessHotel/Data/DT_AnomalyData.DT_AnomalyData"));
+	if (AnomalyFinder.Succeeded())
+	{
+		DataTable_Anomaly = AnomalyFinder.Object;
+	}
+}
 
 #pragma endregion
 
@@ -110,12 +121,79 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 
 	if (!Generator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] No AAnomaly_Generator found in level."));
 		return;
 	}
 
-	Generator->SpawnNextAnomaly(true);
-	CurrentAnomalyID = Generator->Current_AnomalyID;
+	Generator->SpawnAnomalyAtIndex(ActIndex, true);
+	ActIndex++;
+}
+
+#pragma endregion
+
+#pragma region AnomalyDataBase
+
+void UAnomalyProgressSubSystem::GetAnomalyData()
+{
+
+	FAnomalyData* Data = nullptr;
+
+	for (auto RowData : DataTable_Anomaly->GetRowMap())
+	{
+		Data = (FAnomalyData*)RowData.Value;
+
+		if (!Data->AnomalyPath.IsEmpty())
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
+
+			if (LoadedClass)
+			{
+				OriginAnomaly.Add(LoadedClass);
+			}
+		}
+	}
+}
+
+uint8 UAnomalyProgressSubSystem::GetAnomalyDataByID(uint8 AnomalyID)
+{
+	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
+	{
+		return Data->Object_ID;
+	}
+	return -1;
+}
+
+#pragma endregion
+
+#pragma region Pool & Reset
+
+void UAnomalyProgressSubSystem::InitializePool(bool bShuffle)
+{
+	// Copy from Original
+	ActAnomaly = OriginAnomaly;
+
+	// Shuffle
+	if (bShuffle && ActAnomaly.Num() > 1)
+	{
+		for (int32 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		{
+			const int32 RandomIndex = FMath::RandRange(0, CurrentIndex);
+			if (CurrentIndex != RandomIndex)
+			{
+				ActAnomaly.Swap(CurrentIndex, RandomIndex);
+			}
+		}
+	}
+
+	// Reset Index
+	ActIndex = 0;
+
+	UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] InitializePool: Count=%d"),
+		ActAnomaly.Num());
+}
+
+void UAnomalyProgressSubSystem::ResetSequence(bool bShuffle)
+{
+	InitializePool(true);
 }
 
 #pragma endregion

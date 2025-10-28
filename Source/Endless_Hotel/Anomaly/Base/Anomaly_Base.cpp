@@ -19,7 +19,7 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 #pragma endregion
 
 #pragma region Activities
-void AAnomaly_Base::ActivateAnomaly_Implementation()
+void AAnomaly_Base::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
 	bIsActive = true;
 }

@@ -18,7 +18,7 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 	bIsActive = true;
 }
 
-void AAnomaly_Base_Neapolitan::ActivateAnomaly_Implementation()
+void AAnomaly_Base_Neapolitan::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
     // Activites
     UE_LOG(LogTemp, Log, TEXT("[Neapolitan] Activated."));

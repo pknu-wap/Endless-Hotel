@@ -24,7 +24,7 @@ protected:
 #pragma region Activities
 
 protected:
-    virtual void ActivateAnomaly_Implementation() override;
+    virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) override;
 
 #pragma endregion
 
