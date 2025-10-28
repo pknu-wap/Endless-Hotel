@@ -11,11 +11,17 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 {
 	Mesh_Door = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Door"));
 	SetRootComponent(Mesh_Door);
+	Mesh_Door->SetRelativeRotation(FRotator(0, 0, 90));
 
 	Mesh_Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle"));
 	Mesh_Handle->SetupAttachment(RootComponent);
 
 	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+}
+
+void AAnomaly_Object_Door::BeginPlay()
+{
+	Super::BeginPlay();
 
 	FOnTimelineFloat UpdateFunc;
 	UpdateFunc.BindUFunction(this, FName("ShakeHandle"));
@@ -33,7 +39,8 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Door::ShakeHandle(float Value)
 {
 	FVector Target = Mesh_Handle->GetRelativeLocation();
-	Target.Z += Value;
+	Target.Y = -99;
+	Target.Y += Value;
 
 	Mesh_Handle->SetRelativeLocation(Target);
 }

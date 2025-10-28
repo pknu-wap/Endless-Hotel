@@ -6,6 +6,7 @@
 
 #pragma region Base
 
+// For test
 void AAnomaly_Light_Base::BeginPlay()
 {
 	Super::BeginPlay();

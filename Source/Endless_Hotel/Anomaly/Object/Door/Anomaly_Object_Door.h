@@ -17,6 +17,9 @@ public:
 	AAnomaly_Object_Door(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	virtual void BeginPlay() override;
+
+protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Door;
 
@@ -26,19 +29,20 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Time")
 	TObjectPtr<UCurveFloat> Curve_HandleShake;
 
 #pragma endregion
 
 #pragma region Handle Shake
 
+public:
+	UFUNCTION()
+	void PlayHandleShake();
+
 protected:
 	UFUNCTION()
 	void ShakeHandle(float Value);
-
-	UFUNCTION()
-	void PlayHandleShake();
 
 #pragma endregion
 

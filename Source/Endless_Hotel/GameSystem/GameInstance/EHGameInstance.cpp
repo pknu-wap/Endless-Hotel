@@ -11,7 +11,21 @@ void UEHGameInstance::OnStart()
 {
 	Super::OnStart();
 
-	CurrentMap = EMapType::MainMenu;
+	FString MapName = GetWorld()->GetMapName();
+	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+
+	if (MapName == TEXT("MainMenu"))
+	{
+		CurrentMap = EMapType::MainMenu;
+	}
+	else if (MapName == TEXT("Hotel"))
+	{
+		CurrentMap = EMapType::Hotel;
+	}
+	else
+	{
+		CurrentMap = EMapType::None;
+	}
 }
 
 #pragma endregion
