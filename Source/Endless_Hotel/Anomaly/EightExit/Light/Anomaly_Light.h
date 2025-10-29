@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_Light.generated.h"
 
 UCLASS()
@@ -21,7 +21,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly_Implementation() override;
+	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) override;
 
 #pragma endregion
 
