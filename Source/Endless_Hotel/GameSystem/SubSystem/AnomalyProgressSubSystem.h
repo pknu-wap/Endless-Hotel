@@ -7,7 +7,7 @@
 #include "AnomalyProgressSubSystem.generated.h"
 
 class AAnomaly_Generator;
-class AAnomaly_Base_Ex;
+class AAnomaly_Base;
 
 #pragma region Declare
 
@@ -27,6 +27,13 @@ UCLASS()
 class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+
+#pragma region Base
+
+public:
+	UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+#pragma endregion
 
 #pragma region AnomalyState
 
@@ -101,7 +108,42 @@ public:
 	TArray<int32> AnomalyHistory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
-	int32 CurrentAnomalyID = -1;
+	uint8 CurrentAnomalyID = -1;
+
+#pragma endregion
+
+#pragma region Pool
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
+	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
+	TArray<TSubclassOf<AAnomaly_Base>> ActAnomaly;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
+	int32 ActIndex = 0;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	void InitializePool(bool bShuffle = true);
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	void ResetSequence(bool bShuffle = true);
+
+#pragma endregion
+
+#pragma region AnomalyDataBase
+
+	public:
+		void GetAnomalyData();
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UDataTable> DataTable_Anomaly;
+
+public:
+	uint8 GetAnomalyDataByID(uint8 AnomalyID);
 
 #pragma endregion
 

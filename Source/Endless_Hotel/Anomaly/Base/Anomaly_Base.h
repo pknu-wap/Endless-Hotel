@@ -18,6 +18,14 @@ public:
 
 #pragma endregion
 
+#pragma region ObjectLinker
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
+	TArray<AActor*> LinkedObjects;
+
+#pragma endregion
+
 #pragma region Params
 public:
 	// Verdict Params
@@ -29,7 +37,7 @@ public:
 
 	// ID
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
-	int32 AnomalyID = -1;
+	uint8 AnomalyID = -1;
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
@@ -55,8 +63,8 @@ protected:
 
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
-	void ActivateAnomaly();
-	virtual void ActivateAnomaly_Implementation();
+	void ActivateAnomaly(uint8 Anomaly_ID);
+	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID);
 
 #pragma endregion
 

@@ -10,16 +10,16 @@ void AAnomaly_Light_Base::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ActivateAnomaly_Implementation();
+	//ActivateAnomaly_Implementation();
 }
 
 #pragma endregion
 
 #pragma region Activity
 
-void AAnomaly_Light_Base::ActivateAnomaly_Implementation()
+void AAnomaly_Light_Base::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation();
+	Super::ActivateAnomaly_Implementation(AnomalyID);
 
 	StartLightAction(LightAction);
 }

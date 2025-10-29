@@ -4,8 +4,19 @@
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Data/Anomaly/AnomalyData.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 
-#pragma region AnomalyState
+#pragma region Base
+
+UAnomalyProgressSubSystem::UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<UDataTable> AnomalyFinder(TEXT("/Game/EndlessHotel/Data/DT_AnomalyData.DT_AnomalyData"));
+	if (AnomalyFinder.Succeeded())
+	{
+		DataTable_Anomaly = AnomalyFinder.Object;
+	}
+}
 
 #pragma endregion
 
@@ -39,11 +50,6 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))
 		{
 			AnomalyHistory.Add(CurrentAnomalyID);
-			UE_LOG(LogTemp, Log, TEXT("[Verdict] New Verdict Found"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Already Found Before"));
 		}
 		AnomalyCount++;
 	}
@@ -61,7 +67,6 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 void UAnomalyProgressSubSystem::SetFloor()
 {
 	Floor = 9;
-	UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor set to %d"), Floor);
 	return;
 }
 
@@ -70,11 +75,6 @@ void UAnomalyProgressSubSystem::SubFloor()
 	if (Floor > 1)
 	{
 		Floor--;
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor decreased to %d"), Floor);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] Floor is already at minimum (1). Cannot decrease further."));
 	}
 	return;
 }
@@ -84,11 +84,6 @@ void UAnomalyProgressSubSystem::AddFloor()
 	if (Floor < 9)
 	{
 		Floor++;
-		UE_LOG(LogTemp, Log, TEXT("[AnomalySubsystem] Floor increased to %d"), Floor);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] Floor is already at maximum (9). Cannot increase further."));
 	}
 	return;
 }
@@ -108,14 +103,73 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 		break;
 	}
 
-	if (!Generator)
+	Generator->SpawnAnomalyAtIndex(ActIndex, true);
+	ActIndex++;
+}
+
+#pragma endregion
+
+#pragma region AnomalyDataBase
+
+void UAnomalyProgressSubSystem::GetAnomalyData()
+{
+
+	FAnomalyData* Data = nullptr;
+
+	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[AnomalySubsystem] No AAnomaly_Generator found in level."));
-		return;
+		Data = (FAnomalyData*)RowData.Value;
+
+		if (!Data->AnomalyPath.IsEmpty())
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
+
+			if (LoadedClass)
+			{
+				OriginAnomaly.Add(LoadedClass);
+			}
+		}
+	}
+}
+
+uint8 UAnomalyProgressSubSystem::GetAnomalyDataByID(uint8 AnomalyID)
+{
+	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
+	{
+		return Data->Object_ID;
+	}
+	return -1;
+}
+
+#pragma endregion
+
+#pragma region Pool & Reset
+
+void UAnomalyProgressSubSystem::InitializePool(bool bShuffle)
+{
+	// Copy from Original
+	ActAnomaly = OriginAnomaly;
+
+	// Shuffle
+	if (bShuffle && ActAnomaly.Num() > 1)
+	{
+		for (int32 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		{
+			const int32 RandomIndex = FMath::RandRange(0, CurrentIndex);
+			if (CurrentIndex != RandomIndex)
+			{
+				ActAnomaly.Swap(CurrentIndex, RandomIndex);
+			}
+		}
 	}
 
-	Generator->SpawnNextAnomaly(true);
-	CurrentAnomalyID = Generator->Current_AnomalyID;
+	// Reset Index
+	ActIndex = 0;
+}
+
+void UAnomalyProgressSubSystem::ResetSequence(bool bShuffle)
+{
+	InitializePool(true);
 }
 
 #pragma endregion

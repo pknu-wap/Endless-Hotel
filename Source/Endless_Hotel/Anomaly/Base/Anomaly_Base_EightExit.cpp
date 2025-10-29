@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/Anomaly_Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 #pragma region Base
@@ -29,9 +29,9 @@ void AAnomaly_Base_EightExit::BeginPlay()
 #pragma region Activities
 
 // Anomaly_Base_EightExit.cpp
-void AAnomaly_Base_EightExit::ActivateAnomaly_Implementation()
+void AAnomaly_Base_EightExit::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
     // Activites
-    UE_LOG(LogTemp, Log, TEXT("[EightExit] Activated."));
+    UE_LOG(LogTemp, Log, TEXT("[EightExit] AnomalyID: %d Activated."), AnomalyID);
 }
 #pragma endregion

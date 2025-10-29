@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Anomaly/Anomaly_Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly_Base_Neapolitan.generated.h"
 
 // Anomaly_Base_Neapolitan.h
@@ -24,7 +24,7 @@ protected:
 #pragma region Activities
 
 protected:
-    virtual void ActivateAnomaly_Implementation() override;
+    virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) override;
 
 #pragma endregion
 

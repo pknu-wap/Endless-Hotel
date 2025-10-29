@@ -1,8 +1,10 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Anomaly/Anomaly_Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Engine/GameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma region Base
 
@@ -17,7 +19,7 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 #pragma endregion
 
 #pragma region Activities
-void AAnomaly_Base::ActivateAnomaly_Implementation()
+void AAnomaly_Base::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
 	bIsActive = true;
 }
