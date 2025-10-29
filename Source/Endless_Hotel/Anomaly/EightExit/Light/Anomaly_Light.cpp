@@ -18,9 +18,9 @@ void AAnomaly_Light::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Light_Base::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation(AnomalyID);
+	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
 	// 이 부분은 ID를 넘겨받는 부분이 생기면 바로 수정 예정
 	/*switch (Anomaly_ID)
