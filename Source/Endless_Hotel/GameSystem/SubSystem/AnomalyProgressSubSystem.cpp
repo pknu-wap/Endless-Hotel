@@ -94,7 +94,6 @@ void UAnomalyProgressSubSystem::AddFloor()
 
 void UAnomalyProgressSubSystem::AnomalySpawn()
 {
-
 	AAnomaly_Generator* Generator = nullptr;
 
 	for (TActorIterator<AAnomaly_Generator> GeneratorInWorld(GetWorld()); GeneratorInWorld; ++GeneratorInWorld)
@@ -113,7 +112,6 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 
 void UAnomalyProgressSubSystem::GetAnomalyData()
 {
-
 	FAnomalyData* Data = nullptr;
 
 	for (auto RowData : DataTable_Anomaly->GetRowMap())

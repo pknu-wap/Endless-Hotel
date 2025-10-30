@@ -4,41 +4,19 @@
 #include "Anomaly/Object/Door/Anomaly_Object_Door.h"
 #include "Kismet/GameplayStatics.h"
 
-#pragma region Base
-
-// For test
-AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	DoorAction = ([](AAnomaly_Object_Door* Door)
-		{
-			Door->PlayHandleShake();
-		});
-}
-
-// For test
-void AAnomaly_Door::BeginPlay()
-{
-	Super::BeginPlay();
-
-	ActivateAnomaly_Implementation();
-}
-
-#pragma endregion
-
 #pragma region Activity
 
-void AAnomaly_Door::ActivateAnomaly_Implementation()
+void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation();
+	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
-	// 이 부분은 ID를 넘겨받는 부분이 생기면 바로 수정 예정
-	/*switch (Anomaly_ID)
+	// 임시 ID
+	switch (Anomaly_ID)
 	{
-		case ?:
+		case 1:
 			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->PlayHandleShake(); });
 		break;
-	}*/
+	}
 
 	StartDoorAction();
 }
