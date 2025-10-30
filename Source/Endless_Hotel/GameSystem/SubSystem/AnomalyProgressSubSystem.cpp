@@ -124,7 +124,7 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 
 			if (LoadedClass)
 			{
-				OriginAnomaly.Add(LoadedClass);
+				OriginAnomaly.Add({ LoadedClass, (uint8)Data->AnomalyID });
 			}
 		}
 	}

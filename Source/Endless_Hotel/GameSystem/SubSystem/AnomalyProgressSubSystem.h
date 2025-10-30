@@ -20,6 +20,13 @@ enum class EAnomalyVerdictMode : uint8
 	Either_OR
 };
 
+struct FAnomalyEntry
+{
+	GENERATED_BODY()
+	UPROPERTY() TSubclassOf<AAnomaly_Base> Class;
+	UPROPERTY() uint8 ID = -1;
+};
+
 #pragma endregion
 
 
@@ -116,10 +123,10 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
+	TArray<FAnomalyEntry> OriginAnomaly;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	TArray<TSubclassOf<AAnomaly_Base>> ActAnomaly;
+	TArray<FAnomalyEntry> ActAnomaly;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
 	int32 ActIndex = 0;
@@ -135,12 +142,16 @@ public:
 
 #pragma region AnomalyDataBase
 
-	public:
-		void GetAnomalyData();
+public:
+	UPROPERTY()
+	TMap<TSubclassOf<AAnomaly_Base>, uint8> ClassToID;
 
 protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
+
+public:
+	void GetAnomalyData();
 
 public:
 	uint8 GetAnomalyDataByID(uint8 AnomalyID);

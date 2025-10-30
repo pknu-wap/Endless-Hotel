@@ -29,8 +29,8 @@ void AAnomaly_Generator::BeginPlay()
 	TSet<uint8> UsedID;
 	for (auto AnomalyClass : Sub->ActAnomaly)
 	{
-		if (!*AnomalyClass) continue;
-		const AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
+		if (!AnomalyClass.ID) continue;
+		const AAnomaly_Base* CDO = AnomalyClass.Class->GetDefaultObject<AAnomaly_Base>();
 		const uint8 FixedID = CDO ? CDO->AnomalyID : -1;
 	}
 }
@@ -91,7 +91,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 		DestroyCurrentAnomaly();
 	}
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index];
+	const FAnomalyEntry& ActingAnomaly = Sub->ActAnomaly[Index];
 
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
@@ -100,14 +100,13 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AAnomaly_Base* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(ActingAnomaly.Class, SpawnTransform, Params);
 
 	if (!Spawned)
 	{
 		return nullptr;
 	}
-
+	Spawned->AnomalyID = ActingAnomaly.ID;
 	CurrentAnomaly = Spawned;
 
 	// Start
