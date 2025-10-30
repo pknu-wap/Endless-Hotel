@@ -18,6 +18,15 @@ UAnomalyProgressSubSystem::UAnomalyProgressSubSystem(const FObjectInitializer& O
 	}
 }
 
+void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	Floor = 9;
+	AnomalyCount = 0;
+	ActIndex = 0;
+	GetAnomalyData();
+	InitializePool(true);
+}
 #pragma endregion
 
 #pragma region Verdict
@@ -42,8 +51,8 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
 	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
-	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
-		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
+	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s Floor is %d"),
+		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"), Floor)
 	if (bPassed) 
 	{
 		SubFloor();

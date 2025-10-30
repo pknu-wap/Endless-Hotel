@@ -20,10 +20,6 @@ AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializ
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->GetAnomalyData();
-	Sub->InitializePool(true);
 }
 
 #pragma endregion

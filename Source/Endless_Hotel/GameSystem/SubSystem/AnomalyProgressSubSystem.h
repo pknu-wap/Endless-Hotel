@@ -45,6 +45,9 @@ class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsyste
 public:
 	UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+private:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 #pragma endregion
 
 #pragma region AnomalyState
@@ -71,7 +74,7 @@ public:
 #pragma region Floor
 
 private:
-	int32 Floor = 9;
+	uint8 Floor = 9;
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
