@@ -135,12 +135,12 @@ public:
 
 #pragma region AnomalyDataBase
 
-	public:
-		void GetAnomalyData();
-
 protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
+
+public:
+	void GetAnomalyData();
 
 public:
 	uint8 GetAnomalyDataByID(uint8 AnomalyID);

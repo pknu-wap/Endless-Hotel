@@ -113,6 +113,7 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 void UAnomalyProgressSubSystem::GetAnomalyData()
 {
 	FAnomalyData* Data = nullptr;
+	uint8 i = 1;
 
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
@@ -125,6 +126,8 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 			if (LoadedClass)
 			{
 				OriginAnomaly.Add(LoadedClass);
+				AAnomaly_Base* AnomalyCDO = Cast<AAnomaly_Base>(LoadedClass->GetDefaultObject());
+				AnomalyCDO->AnomalyID = Data->AnomalyID;
 			}
 		}
 	}
