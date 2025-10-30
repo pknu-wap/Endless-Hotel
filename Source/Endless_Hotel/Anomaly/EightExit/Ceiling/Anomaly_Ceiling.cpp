@@ -26,8 +26,7 @@ void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Ceiling::StartCeilingAction()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Ceiling::StaticClass(), OUT FoundActors);
+	TArray<AActor*> FoundActors = LinkedObjects;
 
 	FTimerHandle CeilingHandle;
 	GetWorld()->GetTimerManager().SetTimer(CeilingHandle, [this, CeilingHandle, FoundActors]() mutable

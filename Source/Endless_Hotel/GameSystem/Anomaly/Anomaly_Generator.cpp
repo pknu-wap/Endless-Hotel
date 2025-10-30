@@ -99,10 +99,10 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 
 	CurrentAnomaly = Spawned;
 
+	AnomalyObjectLinker();
+
 	// Start
 	Spawned->ActivateAnomaly(Spawned->AnomalyID);
-
-	AnomalyObjectLinker();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);
