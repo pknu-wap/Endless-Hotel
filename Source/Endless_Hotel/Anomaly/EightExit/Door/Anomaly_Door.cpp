@@ -14,7 +14,7 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	switch (Anomaly_ID)
 	{
 		case 1:
-			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->PlayHandleShake(); });
+			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->ActiveTrigger(); });
 		break;
 	}
 

@@ -6,7 +6,7 @@
 #include "UI/Button/UI_Button_Base.h"
 #include "UI_Button_Text.generated.h"
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base
 {
 	GENERATED_BODY()

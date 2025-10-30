@@ -26,23 +26,59 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
-	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> Timeline;
-
-	UPROPERTY(EditAnywhere, Category = "Time")
-	TObjectPtr<UCurveFloat> Curve_HandleShake;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UBoxComponent> TriggerBox;
 
 #pragma endregion
 
-#pragma region Handle Shake
+#pragma region Shake
 
 public:
-	UFUNCTION()
-	void PlayHandleShake();
+	void ActiveTrigger();
 
 protected:
 	UFUNCTION()
+	void OnDoorShakeRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	void PlayShake_Handle();
+	void PlayShake_Door();
+
+	UFUNCTION()
+	void ShakeDoor(float Value);
+
+	UFUNCTION()
 	void ShakeHandle(float Value);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Door;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Handle;
+
+	UPROPERTY(EditAnywhere, Category = "Time")
+	TObjectPtr<UCurveFloat> Curve_Door;
+
+	UPROPERTY(EditAnywhere, Category = "Time")
+	TObjectPtr<UCurveFloat> Curve_Handle;
+
+	FVector Door_Origin;
+	FVector Handle_Origin;
+
+	const uint8 MaxShakeCount_Handle = 30;
+	uint8 ShakeCount_Handle = 0;
+
+	const uint8 MaxShakeCount_Door = 4;
+	uint8 ShakeCount_Door = 0;
+
+	FTimerHandle HandleHandle;
+	FTimerHandle DoorHandle;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_DoorShake;
 
 #pragma endregion
 
