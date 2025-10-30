@@ -14,11 +14,11 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	switch (Anomaly_ID)
 	{
 	case 1:
-		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
+		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
 		break;
 
 	case 2:
-		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
+		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
 		break;
 	}
 

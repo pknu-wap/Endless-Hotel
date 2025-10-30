@@ -22,9 +22,8 @@ void AAnomaly_Generator::BeginPlay()
 	Super::BeginPlay();
 
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->InitializePool(true);
-
 	Sub->GetAnomalyData();
+	Sub->InitializePool(true);
 
 	// Check AnomalyID Settings
 	TSet<uint8> UsedID;
