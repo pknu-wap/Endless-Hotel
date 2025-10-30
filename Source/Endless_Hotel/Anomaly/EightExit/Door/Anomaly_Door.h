@@ -11,16 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Door(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
 #pragma region Activity
 
 public:
