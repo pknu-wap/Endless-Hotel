@@ -24,7 +24,6 @@ void AAnomaly_Generator::BeginPlay()
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Sub->GetAnomalyData();
 	Sub->InitializePool(true);
-
 }
 
 #pragma endregion
