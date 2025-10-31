@@ -22,6 +22,9 @@ protected:
 
 protected:
 	UFUNCTION()
+	void OnButtonClicked();
+
+	UFUNCTION()
 	void OnButtonHovered();
 
 	UFUNCTION()
