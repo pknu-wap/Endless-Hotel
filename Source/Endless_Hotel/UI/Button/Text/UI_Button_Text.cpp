@@ -9,8 +9,8 @@ TSharedRef<SWidget, ESPMode::ThreadSafe> UUI_Button_Text::RebuildWidget()
 {
 	TSharedRef<SWidget, ESPMode::ThreadSafe> Btn = Super::RebuildWidget();
 
-	OnClicked.RemoveDynamic(this, &ThisClass::OnButtonClicked);
-	OnClicked.AddDynamic(this, &ThisClass::OnButtonClicked);
+	OnPressed.RemoveDynamic(this, &ThisClass::OnButtonClicked);
+	OnPressed.AddDynamic(this, &ThisClass::OnButtonClicked);
 
 	OnHovered.RemoveDynamic(this, &ThisClass::OnButtonHovered);
 	OnHovered.AddDynamic(this, &ThisClass::OnButtonHovered);
@@ -31,7 +31,7 @@ void UUI_Button_Text::OnButtonClicked()
 	{
 		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
 		{
-			TextBlock->SetColorAndOpacity(FLinearColor(0.5f, 0.5f, 0.5f, 1));
+			TextBlock->SetColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f, 1));
 		}
 	}
 }
