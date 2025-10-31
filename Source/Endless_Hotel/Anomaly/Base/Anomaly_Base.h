@@ -36,7 +36,7 @@ public:
 	bool bIsSolved = false;
 
 	// ID
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
 protected:

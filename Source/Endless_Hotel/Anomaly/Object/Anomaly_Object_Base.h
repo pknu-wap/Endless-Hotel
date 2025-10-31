@@ -22,7 +22,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Object|ID")
-	int32 ObjectID = -1;
+	uint8 ObjectID = -1;
 
 #pragma endregion
 

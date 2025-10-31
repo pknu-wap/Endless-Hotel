@@ -13,7 +13,7 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	// 임시 ID
 	switch (Anomaly_ID)
 	{
-		case 1:
+		case 3:
 			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->PlayHandleShake(); });
 		break;
 	}
