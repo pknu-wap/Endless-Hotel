@@ -28,8 +28,6 @@ struct FAnomalyEntry
 
 	UPROPERTY()
 	uint8 AnomalyID;
-	UPROPERTY()
-	uint8 ObjectID;
 
 	UPROPERTY()
 	TSubclassOf<AAnomaly_Base> AnomalyClass;
@@ -161,8 +159,6 @@ protected:
 
 public:
 	void GetAnomalyData();
-
-	uint8 GetAnomalyDataByID(uint8 AnomalyID);
 
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
 

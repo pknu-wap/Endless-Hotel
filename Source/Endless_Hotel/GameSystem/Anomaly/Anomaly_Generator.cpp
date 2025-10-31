@@ -31,13 +31,13 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	TArray<AActor*> FoundActors;
 	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
-	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->ObjectID);
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, FoundActors);
+	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, OUT FoundActors);
 
 	for (auto* FoundActor : FoundActors)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+		CurrentAnomaly->LinkedObjects.Add(FoundActor);
 	}
 }
 
@@ -96,7 +96,6 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	}
 
 	Spawned->AnomalyID = Sub->ActAnomaly[Index].AnomalyID;
-	Spawned->ObjectID = Sub->ActAnomaly[Index].ObjectID;
 
 	CurrentAnomaly = Spawned;
 

@@ -135,24 +135,15 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 
 			if (LoadedClass)
 			{
-				OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, Data->Object_ID, LoadedClass, ObjectClass});
+				OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, ObjectClass});
 			}
 		}
 	}
 }
 
-uint8 UAnomalyProgressSubSystem::GetAnomalyDataByID(uint8 AnomalyID)
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 AnomalyID)
 {
 	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
-	{
-		return Data->Object_ID;
-	}
-	return -1;
-}
-
-TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 ObjectID)
-{
-	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(ObjectID), TEXT("")))
 	{
 		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
 		return LoadedClass;
