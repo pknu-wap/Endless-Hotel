@@ -35,7 +35,7 @@ struct FButtonInfo
 
 #pragma endregion
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Button_Setting : public UUI_Button_Base
 {
 	GENERATED_BODY()
