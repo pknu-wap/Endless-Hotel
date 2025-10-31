@@ -39,6 +39,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
+	uint8 ObjectID = -1;
+
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	bool bIsActive = false;

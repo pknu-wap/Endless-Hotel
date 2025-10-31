@@ -21,4 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString AnomalyPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString ObjectPath;
 };
