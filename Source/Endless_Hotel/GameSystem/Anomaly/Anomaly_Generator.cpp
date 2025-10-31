@@ -20,19 +20,6 @@ AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializ
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->GetAnomalyData();
-	Sub->InitializePool(true);
-
-	// Check AnomalyID Settings
-	TSet<uint8> UsedID;
-	for (auto AnomalyClass : Sub->ActAnomaly)
-	{
-		if (!*AnomalyClass) continue;
-		const AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
-		const uint8 FixedID = CDO ? CDO->AnomalyID : -1;
-	}
 }
 
 #pragma endregion
@@ -91,7 +78,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 		DestroyCurrentAnomaly();
 	}
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index];
+	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].Class;
 
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
@@ -108,12 +95,14 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 		return nullptr;
 	}
 
+	Spawned->AnomalyID = Sub->ActAnomaly[Index].AnomalyID;
+
 	CurrentAnomaly = Spawned;
+
+	AnomalyObjectLinker();
 
 	// Start
 	Spawned->ActivateAnomaly(Spawned->AnomalyID);
-
-	AnomalyObjectLinker();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);

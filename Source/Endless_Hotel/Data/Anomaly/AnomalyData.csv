@@ -1,4 +1,5 @@
-﻿Row,AnomalyID,Object_ID,Anomaly_En,AnomalyPath
-1,,,,
-2,,,,
-3,,,,
+Row,AnomalyID,Object_ID,Anomaly_En,AnomalyPath
+1,1,1,Light_Destroy,/Game/EndlessHotel/Anomaly/Base/BP_Light.BP_Light_C
+2,2,1,Light_Blue,/Game/EndlessHotel/Anomaly/Base/BP_Light.BP_Light_C
+3,3,2,Door_Shake,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C
+4,4,3,Ceiling_Rotate,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C
