@@ -1,16 +1,15 @@
-﻿// Elevator.cpp
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
-#include "Components/BoxComponent.h"          // UBoxComponent
-#include "Components/StaticMeshComponent.h"   // UStaticMeshComponent
-#include "Components/PointLightComponent.h"   // UPointLightComponent
-#include "Components/TimelineComponent.h"     // UTimelineComponent
-#include "Components/SceneComponent.h"        // USceneComponent
-#include "Curves/CurveFloat.h"                // UCurveFloat
+#include "Components/BoxComponent.h"          
+#include "Components/StaticMeshComponent.h"   
+#include "Components/PointLightComponent.h"   
+#include "Components/TimelineComponent.h"     
+#include "Components/SceneComponent.h"        
+#include "Curves/CurveFloat.h"                
 #include "TimerManager.h"
-#include "GameFramework/Character.h"          // ACharacter
-#include "Engine/CollisionProfile.h"          // Trigger
+#include "GameFramework/Character.h"          
+#include "Engine/CollisionProfile.h"          
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
 #include "CollisionQueryParams.h"
@@ -28,7 +27,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
 #pragma region Base
 
-// ================== Constructor ==================
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -118,7 +116,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	RightDoor->SetUsingAbsoluteLocation(false);
 }
 
-// ================== BeginPlay ==================
 void AElevator::BeginPlay()
 {
 	Super::BeginPlay();
@@ -156,23 +153,20 @@ void AElevator::BeginPlay()
 	}
 	SetActorLocation(StartPoint);
 
-	if (ensureMsgf(MoveCurve != nullptr, TEXT("MoveCurve is not assigned! Please set a 0->1 CurveFloat.")))
+	FOnTimelineFloat MoveUpdate;
+	MoveUpdate.BindUFunction(this, FName("OnMoveTimelineUpdate"));
+
+	FOnTimelineEvent MoveFinished;
+	MoveFinished.BindUFunction(this, FName("OnMoveTimelineFinished"));
+
+	MoveTimeline->AddInterpFloat(MoveCurve, MoveUpdate);
+	MoveTimeline->SetTimelineFinishedFunc(MoveFinished);
+	MoveTimeline->SetLooping(false);
+	MoveTimeline->SetIgnoreTimeDilation(true);
+
+	if (MoveDuration > 0.f)
 	{
-		FOnTimelineFloat MoveUpdate;
-		MoveUpdate.BindUFunction(this, FName("OnMoveTimelineUpdate"));
-
-		FOnTimelineEvent MoveFinished;
-		MoveFinished.BindUFunction(this, FName("OnMoveTimelineFinished"));
-
-		MoveTimeline->AddInterpFloat(MoveCurve, MoveUpdate);
-		MoveTimeline->SetTimelineFinishedFunc(MoveFinished);
-		MoveTimeline->SetLooping(false);
-		MoveTimeline->SetIgnoreTimeDilation(true);
-
-		if (MoveDuration > 0.f)
-		{
-			MoveTimeline->SetPlayRate(1.f / MoveDuration);
-		}
+		MoveTimeline->SetPlayRate(1.f / MoveDuration);
 	}
 	
 	OrigStartPoint = StartPoint;
@@ -212,11 +206,6 @@ void AElevator::OnDoorTimelineFinished()
 	bDoorOpen = bWantOpen;
 	SetPlayerInputEnabled(true);
 
-	UE_LOG(LogElevator, Log, TEXT("[DoorTimelineFinished] bDoorOpen=%d  L=%s R=%s"),
-		bDoorOpen,
-		*LeftDoor->GetRelativeLocation().ToString(),
-		*RightDoor->GetRelativeLocation().ToString());
-
 	if (!bDoorOpen && bMoveAfterClosePending)
 	{
 		bMoveAfterClosePending = false;
@@ -237,16 +226,12 @@ void AElevator::OnDoorTimelineFinished()
 
 void AElevator::OnMoveTimelineUpdate(float Alpha)
 {
-	// Alpha: 0->1 (Reverse : 1->0)
 	const FVector NewPos = FMath::Lerp(StartPoint, LoopPoint, Alpha);
 	SetActorLocation(NewPos);
 }
 
 void AElevator::OnMoveTimelineFinished()
 {
-	UE_LOG(LogElevator, Log, TEXT("[ElevatorMoveTimelineFinished] Location=%s  Phase=%d"),
-		*GetActorLocation().ToString(), MovePhase);
-
 	if (MovePhase == 0)
 	{
 		PerformLoopTeleport();
@@ -288,7 +273,7 @@ void AElevator::OnMoveTimelineFinished()
 
 #pragma region DoorMovement
 
-// API
+// Open& Close
 void AElevator::OpenDoors()
 {
 	if (!DoorTimeline || !DoorCurve) return;
@@ -326,8 +311,6 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		{
 			return;
 		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapBegin] %s"), *OtherActor->GetName());
 		OpenDoors();
 	}
 }
@@ -341,8 +324,6 @@ void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherA
 		{
 			return;
 		}
-
-		UE_LOG(LogElevator, Log, TEXT("[OnOverlapEnd] %s"), *OtherActor->GetName());
 	}
 }
 
@@ -449,11 +430,8 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 			return;
 		}
 
-		UE_LOG(LogElevator, Log, TEXT("[Inside Begin] %s"), *OtherActor->GetName());
-
 		if (!bChoiceSentThisRide)
 		{
-
 			UE_LOG(LogElevator, Log, TEXT("[IsNormalElevaotr: %d]"), bIsNormalElevator);
 			NotifySubsystemElevatorChoice();
 		}
@@ -485,7 +463,6 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	}
 }
 
-
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
@@ -495,8 +472,6 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		{
 			return;
 		}
-
-		UE_LOG(LogElevator, Log, TEXT("[Inside End] %s"), *OtherActor->GetName());
 
 		bPlayerOnboard = false;
 
