@@ -14,11 +14,11 @@ public:
 	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 Object_ID;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Anomaly_En;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString AnomalyPath;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString ObjectPath;
 };

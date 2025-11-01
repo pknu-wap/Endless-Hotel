@@ -8,6 +8,7 @@
 
 class AAnomaly_Generator;
 class AAnomaly_Base;
+class AAnomaly_Object_Base;
 
 #pragma region Declare
 
@@ -26,10 +27,12 @@ struct FAnomalyEntry
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TSubclassOf<AAnomaly_Base> Class;
+	uint8 AnomalyID;
 
 	UPROPERTY()
-	uint8 AnomalyID;
+	TSubclassOf<AAnomaly_Base> AnomalyClass;
+	UPROPERTY()
+	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
 };
 
 #pragma endregion
@@ -157,8 +160,7 @@ protected:
 public:
 	void GetAnomalyData();
 
-public:
-	uint8 GetAnomalyDataByID(uint8 AnomalyID);
+	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
 
 #pragma endregion
 

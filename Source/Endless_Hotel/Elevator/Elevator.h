@@ -5,7 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "Elevator.generated.h"
 
-// Forward Declarations
+#pragma region ForwardDeclarations
+
 class UPointLightComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
@@ -14,6 +15,8 @@ class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
 class AAnomaly_Generator;
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AActor
@@ -27,7 +30,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	// ===== Components =====
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
 #pragma endregion

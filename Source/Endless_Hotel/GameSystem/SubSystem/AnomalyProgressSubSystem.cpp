@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 
 #pragma region Base
 
@@ -130,24 +131,25 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 		if (!Data->AnomalyPath.IsEmpty())
 		{
 			UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
+			UClass* ObjectClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
 
 			if (LoadedClass)
 			{
-				OriginAnomaly.Add(FAnomalyEntry{ LoadedClass, Data->AnomalyID});
+				OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, ObjectClass});
 			}
 		}
 	}
 }
 
-uint8 UAnomalyProgressSubSystem::GetAnomalyDataByID(uint8 AnomalyID)
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 AnomalyID)
 {
 	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
 	{
-		return Data->Object_ID;
+		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
+		return LoadedClass;
 	}
-	return -1;
+	return nullptr;
 }
-
 #pragma endregion
 
 #pragma region Pool & Reset

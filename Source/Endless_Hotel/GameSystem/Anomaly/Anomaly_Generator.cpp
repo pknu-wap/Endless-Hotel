@@ -28,16 +28,16 @@ void AAnomaly_Generator::BeginPlay()
 
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
+	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, OUT FoundActors);
 
 	for (auto* FoundActor : FoundActors)
 	{
-		auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		uint8 LinkObjectID = Sub->GetAnomalyDataByID(CurrentAnomaly->AnomalyID);
-		if(LinkObjectID == AnomalyObject->ObjectID)
-			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+		CurrentAnomaly->LinkedObjects.Add(FoundActor);
 	}
 }
 
@@ -78,7 +78,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 		DestroyCurrentAnomaly();
 	}
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].Class;
+	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].AnomalyClass;
 
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
