@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
 #pragma endregion
 
 #pragma region Shake
@@ -73,9 +76,6 @@ protected:
 
 	FTimerHandle HandleHandle;
 	FTimerHandle DoorHandle;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_DoorShake;

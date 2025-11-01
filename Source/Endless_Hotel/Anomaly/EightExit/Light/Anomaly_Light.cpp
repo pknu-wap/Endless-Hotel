@@ -14,10 +14,12 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	{
 	case 1:
 		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
+		NextActionDelay = 0.5f;
 		break;
 
 	case 2:
 		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
+		NextActionDelay = 2;
 		break;
 	}
 
@@ -46,7 +48,7 @@ void AAnomaly_Light::StartLightAction()
 			{
 				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
-		}, 0.5f, true);
+		}, NextActionDelay, true);
 }
 
 #pragma endregion
