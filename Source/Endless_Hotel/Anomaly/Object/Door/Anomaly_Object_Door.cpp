@@ -22,6 +22,7 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	Timeline_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Handle"));
 
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AC->SetupAttachment(RootComponent);
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(RootComponent);
@@ -102,7 +103,7 @@ void AAnomaly_Object_Door::PlayShake_Handle()
 
 				PlayShake_Door();
 			}
-		}, 0.15f, true);
+		}, 0.17f, true);
 }
 
 void AAnomaly_Object_Door::PlayShake_Door()

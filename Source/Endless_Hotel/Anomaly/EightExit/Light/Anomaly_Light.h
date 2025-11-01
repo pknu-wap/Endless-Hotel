@@ -30,6 +30,8 @@ protected:
 	int32 CurrentIndex = 1;
 	const int32 MaxIndex = 4;
 
+	float NextActionDelay = 0;
+
 #pragma endregion
 
 };

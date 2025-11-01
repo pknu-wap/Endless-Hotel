@@ -10,7 +10,6 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
-	// 임시 ID
 	switch (Anomaly_ID)
 	{
 		case 3:
@@ -27,13 +26,10 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Door::StartDoorAction()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Door::StaticClass(), OUT FoundActors);
-
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle, FoundActors]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
 		{
-			for (auto* FoundActor : FoundActors)
+			for (auto* FoundActor : LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Door>(FoundActor);
 				DoorAction(Light);

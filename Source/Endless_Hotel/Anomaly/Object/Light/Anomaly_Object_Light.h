@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UPointLightComponent> PointLight;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
 #pragma endregion
 
 #pragma region Destroy
@@ -44,12 +47,19 @@ protected:
 	UFUNCTION()
 	void LightDestroyed(const struct FChaosBreakEvent& BreakEvent);
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_LightDestroy;
+
 #pragma endregion
 
 #pragma region Color
 
 public:
 	void ChangeLightColor();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_LightBlue;
 
 #pragma endregion
 

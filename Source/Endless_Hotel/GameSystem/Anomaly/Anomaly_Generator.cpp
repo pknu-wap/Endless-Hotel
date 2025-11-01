@@ -29,9 +29,15 @@ void AAnomaly_Generator::BeginPlay()
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	TArray<AActor*> FoundActors;
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
+
 	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
+
+	if (!TargetClass)
+	{
+		return;
+	}
+
+	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, OUT FoundActors);
 
 	for (auto* FoundActor : FoundActors)
