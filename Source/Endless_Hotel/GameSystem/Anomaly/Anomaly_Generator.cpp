@@ -20,6 +20,8 @@ AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializ
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Sub->AnomalySpawn();
 }
 
 #pragma endregion
@@ -108,6 +110,53 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	OnAnomalySpawned.Broadcast(Spawned);
 
 	return Spawned;
+}
+
+AAnomaly_Base* AAnomaly_Generator::SpawnNormal(bool bDestroyPrev)
+{
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+
+	// Destroy Previous
+	if (bDestroyPrev)
+	{
+		DestroyCurrentAnomaly();
+	}
+
+	TSubclassOf<AAnomaly_Base> AnomalyClass = NormalClass;
+
+	// Spawn
+	const FTransform SpawnTransform(FVector::ZeroVector);
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AAnomaly_Base* Spawned =
+		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+
+	if (!Spawned)
+	{
+		return nullptr;
+	}
+
+	CurrentAnomaly = Spawned;
+
+	return Spawned;
+}
+#pragma endregion
+
+#pragma region ForTest
+
+void AAnomaly_Generator::AddAnomaly()
+{
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	for (const TSubclassOf<AAnomaly_Base>& AnomalyClass : OriginAnomaly)
+	{
+		AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
+		const uint8 AnomalyID = CDO->AnomalyID;
+		TSubclassOf<AAnomaly_Object_Base> ObjectClass = CDO->ObjectClass->GetClass();
+		Sub->OriginAnomaly.Add(FAnomalyEntry{ AnomalyID, AnomalyClass, ObjectClass });
+	}
 }
 
 #pragma endregion

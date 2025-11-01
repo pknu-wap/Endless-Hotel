@@ -12,11 +12,6 @@ AAnomaly_Base_EightExit::AAnomaly_Base_EightExit(const FObjectInitializer& Objec
 
 }
 
-#pragma region VerdictMode
-
-#pragma endregion
-
-
 void AAnomaly_Base_EightExit::BeginPlay()
 {
 	Super::BeginPlay();

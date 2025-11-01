@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "Anomaly_Base.generated.h"
 
+#pragma region Declare
+
+class AAnomaly_Object_Base;
+
+#pragma endregion
+
+
 UCLASS(Blueprintable, BlueprintType)
 class ENDLESS_HOTEL_API AAnomaly_Base : public AActor
 {
@@ -36,7 +43,7 @@ public:
 	bool bIsSolved = false;
 
 	// ID
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
 protected:
@@ -77,4 +84,10 @@ private:
 
 #pragma endregion
 
+#pragma region ForTest
+
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
+#pragma endregion
 };

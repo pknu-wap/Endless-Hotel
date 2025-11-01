@@ -62,10 +62,29 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	AAnomaly_Base* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
 
+	// Spawn Normal State
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	AAnomaly_Base* SpawnNormal(bool bDestroyPrev = true);
+
 	// Destroy Current Anomaly
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	bool DestroyCurrentAnomaly();
 
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
+	TSubclassOf<AAnomaly_Base> NormalClass;
+
+#pragma endregion
+
+
+#pragma region ForTest
+public:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Test")
+	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
+
+protected:
+	UFUNCTION()
+	void AddAnomaly();
 #pragma endregion
 
 protected:
