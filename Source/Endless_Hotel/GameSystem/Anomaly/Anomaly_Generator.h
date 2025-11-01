@@ -76,6 +76,17 @@ protected:
 
 #pragma endregion
 
+
+#pragma region ForTest
+public:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Test")
+	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
+
+protected:
+	UFUNCTION()
+	void AddAnomaly();
+#pragma endregion
+
 protected:
 	virtual void BeginPlay() override;
 };
