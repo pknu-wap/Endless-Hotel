@@ -2,8 +2,9 @@
 
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
 #include "Components/StaticMeshComponent.h"
-#include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Components/PointLightComponent.h"
+#include "Components/AudioComponent.h"
+#include "GeometryCollection/GeometryCollectionComponent.h"
 #include "Physics/Experimental/ChaosEventType.h"
 
 #pragma region Base
@@ -23,6 +24,8 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 
 	PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
 	PointLight->SetupAttachment(RootComponent);
+
+	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 }
 
 void AAnomaly_Object_Light::BeginPlay()
@@ -55,7 +58,8 @@ void AAnomaly_Object_Light::LightDestroyed(const FChaosBreakEvent& BreakEvent)
 	PointLight->bAffectsWorld = false;
 	PointLight->MarkRenderStateDirty();
 
-	// 여기에 사운드 추가 예정
+	AC->Sound = Sound_LightDestroy;
+	AC->Play();
 }
 
 #pragma endregion
@@ -66,6 +70,9 @@ void AAnomaly_Object_Light::ChangeLightColor()
 {
 	PointLight->SetLightColor(FLinearColor(0, 0.9f, 1));
 	PointLight->MarkRenderStateDirty();
+
+	AC->Sound = Sound_LightBlue;
+	AC->Play();
 }
 
 #pragma endregion
