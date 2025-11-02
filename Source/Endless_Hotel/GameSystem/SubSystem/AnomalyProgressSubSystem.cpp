@@ -42,8 +42,8 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 		return bSolved;
 	case EAnomalyVerdictMode::Both_AND:
 		return bSolved && !bNormalElevator;
-	case EAnomalyVerdictMode::Either_OR:
-		return bSolved || bNormalElevator;
+	case EAnomalyVerdictMode::Normal:
+		return !bSolved && bNormalElevator;
 	default:
 		return false;
 	}
@@ -52,8 +52,8 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
 	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
-	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s Floor is %d"),
-		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"), Floor)
+	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
+		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
 	if (bPassed) 
 	{
 		SubFloor();
@@ -111,7 +111,12 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 		Generator = *GeneratorInWorld;
 		break;
 	}
-
+	uint8 IsNormal = FMath::RandRange(1, 10);
+	if (IsNormal > 7)
+	{
+		Generator->SpawnNormal(true);
+		return;
+	}
 	Generator->SpawnAnomalyAtIndex(ActIndex, true);
 	ActIndex++;
 }

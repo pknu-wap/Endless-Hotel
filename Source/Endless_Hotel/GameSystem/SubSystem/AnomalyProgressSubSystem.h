@@ -18,7 +18,7 @@ enum class EAnomalyVerdictMode : uint8
 	AnomalyElevatorOnly,
 	SolvedOnly,
 	Both_AND,
-	Either_OR
+	Normal
 };
 
 USTRUCT(BlueprintType)
@@ -106,7 +106,7 @@ public:
 	EAnomalyVerdictMode VerdictMode;
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void SetVerdictMode(EAnomalyVerdictMode NewMode = EAnomalyVerdictMode::AnomalyElevatorOnly) { VerdictMode = NewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;
