@@ -117,12 +117,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Movement|Door")
 	TObjectPtr<UCurveFloat> DoorCurve;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Movement|Vertical")
-	TObjectPtr<UTimelineComponent> MoveTimeline;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Movement|Vertical")
-	TObjectPtr<UCurveFloat> MoveCurve;
-
 #pragma endregion
 
 #pragma region Params
@@ -187,10 +181,7 @@ protected:
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
-	void OpenDoors();
-
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
-	void CloseDoors();
+	void MoveDoors(bool isOpening);
 
 	UFUNCTION() void OnDoorTimelineUpdate(float Alpha);
 	UFUNCTION() void OnDoorTimelineFinished();
@@ -209,67 +200,35 @@ protected:
 #pragma region ElevatorMovement
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveUp();
-
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveDown();
-
-	UFUNCTION() void OnMoveTimelineUpdate(float Alpha);
-	UFUNCTION() void OnMoveTimelineFinished();
-
-	UFUNCTION() void PerformLoopTeleport();
 
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 #pragma endregion
 
 #pragma region Internal
 
-	private:
-		// Door Internal
-		FVector LeftDoorClosed, RightDoorClosed;
-		FVector LeftDoorOpenPos, RightDoorOpenPos;
+private:
+	// Door Internal
+	FVector LeftDoorClosed, RightDoorClosed;
+	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
-		bool bWantOpen = false;
-		bool bDoorOpen = false;
+	bool bWantOpen = false;
+	bool bDoorOpen = false;
 
-		FTimerHandle DoorOpenTimerHandle;
-		FTimerHandle DoorCloseTimerHandle;
+	FTimerHandle DoorOpenTimerHandle;
+	FTimerHandle DoorCloseTimerHandle;
 
-		// Move Internal
-		bool bPlayerOnboard = false;
-		bool bIsMoving = false;
+	// Move Internal
+	bool bPlayerOnboard = false;
+	bool bIsMoving = false;
 
-		FTimerHandle DepartuerTImerHandle;
+	// SubSystem Internal
+	bool bChoiceSentThisRide = false;
+	void NotifySubsystemElevatorChoice();
 
-		FTimerHandle StartMoveTimer;
-		FTimerHandle AutoOpenTimer;
-		FTimerHandle AutoCloseTimer;
-
-		// Move Manage (0: Start -> Loop, 1: LoopSpawn -> Start)
-		int32 MovePhase = 0;
-
-		FVector OrigStartPoint;
-		FVector OrigLoopPoint;
-
-		bool bSequenceArmed = false;
-
-		// SubSystem Internal
-		bool bChoiceSentThisRide = false;
-		void NotifySubsystemElevatorChoice();
-
-		// Player check helper
-		bool bRideCompleted = false;
-		bool bSpawnSentThisStop = false;
-
-		bool IsMyPlayer(AActor* Other) const;
+	bool IsMyPlayer(AActor* Other) const;
 
 #pragma endregion
 
