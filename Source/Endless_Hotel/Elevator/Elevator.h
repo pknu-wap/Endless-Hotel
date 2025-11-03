@@ -264,7 +264,6 @@ protected:
 		// SubSystem Internal
 		bool bChoiceSentThisRide = false;
 		void NotifySubsystemElevatorChoice();
-		void NotifySubsystemSpawnNextAnomaly();
 
 		// Player check helper
 		bool bRideCompleted = false;

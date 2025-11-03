@@ -2,13 +2,10 @@
 
 #include "Anomaly_Generator.h"
 #include "Kismet/GameplayStatics.h"
-#include "HAL/PlatformTime.h"
-#include "Misc/DateTime.h"
-#include "Misc/Guid.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include <GameSystem/SubSystem/AnomalyProgressSubSystem.h>
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 #pragma region Base
 
@@ -20,8 +17,17 @@ AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializ
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
+
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->AnomalySpawn();
+
+	uint8 IsNormal = FMath::RandRange(1, 10);
+	if (IsNormal > 7)
+	{
+		SpawnNormal(true);
+		return;
+	}
+	SpawnAnomalyAtIndex(Sub->ActIndex, true);
+	Sub->ActIndex++;
 }
 
 #pragma endregion

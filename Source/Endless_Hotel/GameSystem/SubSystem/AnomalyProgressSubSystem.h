@@ -91,14 +91,6 @@ private:
 
 #pragma endregion
 
-#pragma region AnomalyGenerate
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Generate")
-	void AnomalySpawn();
-
-#pragma endregion
-
 #pragma region Verdict
 
 public:

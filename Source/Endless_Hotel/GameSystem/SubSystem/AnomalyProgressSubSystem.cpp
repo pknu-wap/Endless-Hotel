@@ -92,30 +92,6 @@ void UAnomalyProgressSubSystem::AddFloor()
 
 #pragma endregion
 
-#pragma region AnomalyGenerate
-
-void UAnomalyProgressSubSystem::AnomalySpawn()
-{
-	AAnomaly_Generator* Generator = nullptr;
-
-	for (TActorIterator<AAnomaly_Generator> GeneratorInWorld(GetWorld()); GeneratorInWorld; ++GeneratorInWorld)
-	{
-		Generator = *GeneratorInWorld;
-		break;
-	}
-
-	uint8 IsNormal = FMath::RandRange(1, 10);
-	if (IsNormal > 7)
-	{
-		Generator->SpawnNormal(true);
-		return;
-	}
-	Generator->SpawnAnomalyAtIndex(ActIndex, true);
-	ActIndex++;
-}
-
-#pragma endregion
-
 #pragma region AnomalyDataBase
 
 void UAnomalyProgressSubSystem::GetAnomalyData()

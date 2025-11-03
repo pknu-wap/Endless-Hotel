@@ -479,7 +479,6 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		{
 			if (bRideCompleted && !bSpawnSentThisStop)
 			{
-				NotifySubsystemSpawnNextAnomaly();
 				bSpawnSentThisStop = true;
 				bRideCompleted = false;
 			}
@@ -521,12 +520,6 @@ void AElevator::NotifySubsystemElevatorChoice()
 	Sub->SetIsElevatorNormal(bIsNormalElevator);
 	Sub->ApplyVerdict();
 	bChoiceSentThisRide = true;
-}
-
-void AElevator::NotifySubsystemSpawnNextAnomaly()
-{
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->AnomalySpawn();
 }
 
 #pragma endregion
