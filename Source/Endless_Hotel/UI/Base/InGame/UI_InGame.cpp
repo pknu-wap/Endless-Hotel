@@ -4,7 +4,20 @@
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
 
+#pragma region Base
+
+void UUI_InGame::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+}
+
+#pragma endregion
+
 #pragma region Crosshair
+
+FCanInteract UUI_InGame::CanInteract;
 
 void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 {
