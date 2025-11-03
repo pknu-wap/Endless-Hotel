@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
 #pragma endregion
 
 #pragma region Shake
@@ -65,17 +68,14 @@ protected:
 	FVector Door_Origin;
 	FVector Handle_Origin;
 
+	FTimerHandle HandleHandle;
+	FTimerHandle DoorHandle;
+
 	const uint8 MaxShakeCount_Handle = 30;
 	uint8 ShakeCount_Handle = 0;
 
 	const uint8 MaxShakeCount_Door = 4;
 	uint8 ShakeCount_Door = 0;
-
-	FTimerHandle HandleHandle;
-	FTimerHandle DoorHandle;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_DoorShake;

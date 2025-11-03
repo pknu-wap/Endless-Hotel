@@ -292,12 +292,11 @@ void AElevator::CloseDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (!bDoorOpen) return;
 
-	SetPlayerInputEnabled(false);
+	// SetPlayerInputEnabled(false); -> 연출 대비
 
 	DoorTimeline->Stop();
 	bWantOpen = false;
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorCloseDuration));
-	DoorTimeline->ReverseFromEnd();
 }
 
 // Trigger Callbacks
@@ -479,7 +478,6 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		{
 			if (bRideCompleted && !bSpawnSentThisStop)
 			{
-				NotifySubsystemSpawnNextAnomaly();
 				bSpawnSentThisStop = true;
 				bRideCompleted = false;
 			}
@@ -523,11 +521,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 	bChoiceSentThisRide = true;
 }
 
-void AElevator::NotifySubsystemSpawnNextAnomaly()
-{
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->AnomalySpawn();
-}
+#pragma endregion
 
 #pragma endregion
 
