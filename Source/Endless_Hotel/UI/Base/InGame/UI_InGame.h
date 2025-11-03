@@ -4,14 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UI/UI_Base.h"
-#include "Delegates/DelegateCombinations.h"
 #include "UI_InGame.generated.h"
-
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, CanInteract);
-
-#pragma endregion
 
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_InGame : public UUI_Base
@@ -31,9 +24,6 @@ protected:
 	UFUNCTION()
 	void ChangeCrosshair(bool bCanInteract);
 
-public:
-	static FCanInteract CanInteract;
-	
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Crosshair;
