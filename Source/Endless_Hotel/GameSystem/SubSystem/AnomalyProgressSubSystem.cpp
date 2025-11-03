@@ -2,6 +2,7 @@
 
 #include "AnomalyProgressSubSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Data/Anomaly/AnomalyData.h"
@@ -68,6 +69,9 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		ResetFloor();
 	}
 	bIsAnomalySolved = false;
+
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->OpenMap(EMapType::Hotel);
 }
 
 #pragma endregion
