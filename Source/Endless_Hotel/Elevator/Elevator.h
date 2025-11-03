@@ -279,5 +279,4 @@ private:
 	void SetPlayerInputEnabled(bool bEnable);
 
 #pragma endregion
-
 };

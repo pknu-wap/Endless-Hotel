@@ -292,12 +292,11 @@ void AElevator::CloseDoors()
 	if (!DoorTimeline || !DoorCurve) return;
 	if (!bDoorOpen) return;
 
-	SetPlayerInputEnabled(false);
+	// SetPlayerInputEnabled(false); -> 연출 대비
 
 	DoorTimeline->Stop();
 	bWantOpen = false;
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorCloseDuration));
-	DoorTimeline->ReverseFromEnd();
 }
 
 // Trigger Callbacks
@@ -521,6 +520,8 @@ void AElevator::NotifySubsystemElevatorChoice()
 	Sub->ApplyVerdict();
 	bChoiceSentThisRide = true;
 }
+
+#pragma endregion
 
 #pragma endregion
 

@@ -84,6 +84,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	{
 		Sub->InitializePool(true);
 		Sub->ActIndex = 0; // restart
+		Index = 0;
 	}
 
 	// Destroy Previous
