@@ -10,7 +10,7 @@
 
 #pragma region Base
 
-UAnomalyProgressSubSystem::UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer)
+UAnomalyProgressSubSystem::UAnomalyProgressSubSystem()
 {
 	static ConstructorHelpers::FObjectFinder<UDataTable> AnomalyFinder(TEXT("/Game/EndlessHotel/Data/DT_AnomalyData.DT_AnomalyData"));
 	if (AnomalyFinder.Succeeded())
@@ -65,7 +65,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	}
 	else 
 	{ 
-		SetFloor(); 
+		ResetFloor();
 	}
 	bIsAnomalySolved = false;
 }
@@ -74,19 +74,12 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 
 #pragma region Floor
 
-void UAnomalyProgressSubSystem::SetFloor()
-{
-	Floor = 9;
-	return;
-}
-
 void UAnomalyProgressSubSystem::SubFloor()
 {
 	if (Floor > 1)
 	{
 		Floor--;
 	}
-	return;
 }
 
 void UAnomalyProgressSubSystem::AddFloor()
@@ -95,7 +88,6 @@ void UAnomalyProgressSubSystem::AddFloor()
 	{
 		Floor++;
 	}
-	return;
 }
 
 #pragma endregion
@@ -111,6 +103,7 @@ void UAnomalyProgressSubSystem::AnomalySpawn()
 		Generator = *GeneratorInWorld;
 		break;
 	}
+
 	uint8 IsNormal = FMath::RandRange(1, 10);
 	if (IsNormal > 7)
 	{
