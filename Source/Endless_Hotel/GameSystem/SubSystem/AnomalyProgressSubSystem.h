@@ -18,7 +18,7 @@ enum class EAnomalyVerdictMode : uint8
 	AnomalyElevatorOnly,
 	SolvedOnly,
 	Both_AND,
-	Either_OR
+	Normal
 };
 
 USTRUCT(BlueprintType)
@@ -46,7 +46,7 @@ class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsyste
 #pragma region Base
 
 public:
-	UAnomalyProgressSubSystem(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	UAnomalyProgressSubSystem();
 
 private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -81,21 +81,13 @@ private:
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
-	void SetFloor();
+	void ResetFloor() { Floor = 9; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
 	void SubFloor();
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
 	void AddFloor();
-
-#pragma endregion
-
-#pragma region AnomalyGenerate
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Generate")
-	void AnomalySpawn();
 
 #pragma endregion
 
@@ -106,7 +98,7 @@ public:
 	EAnomalyVerdictMode VerdictMode;
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void SetVerdictMode(EAnomalyVerdictMode NewMode = EAnomalyVerdictMode::AnomalyElevatorOnly) { VerdictMode = NewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;

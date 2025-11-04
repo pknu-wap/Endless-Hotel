@@ -2,13 +2,10 @@
 
 #include "Anomaly_Generator.h"
 #include "Kismet/GameplayStatics.h"
-#include "HAL/PlatformTime.h"
-#include "Misc/DateTime.h"
-#include "Misc/Guid.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include <GameSystem/SubSystem/AnomalyProgressSubSystem.h>
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 #pragma region Base
 
@@ -20,6 +17,17 @@ AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializ
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+
+	uint8 IsNormal = FMath::RandRange(1, 10);
+	if (IsNormal > 7)
+	{
+		SpawnNormal(true);
+		return;
+	}
+	SpawnAnomalyAtIndex(Sub->ActIndex, true);
+	Sub->ActIndex++;
 }
 
 #pragma endregion
@@ -29,9 +37,15 @@ void AAnomaly_Generator::BeginPlay()
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	TArray<AActor*> FoundActors;
-	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Base::StaticClass(), OUT FoundActors);
+
 	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
+
+	if (!TargetClass)
+	{
+		return;
+	}
+
+	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, OUT FoundActors);
 
 	for (auto* FoundActor : FoundActors)
@@ -70,6 +84,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	{
 		Sub->InitializePool(true);
 		Sub->ActIndex = 0; // restart
+		Index = 0;
 	}
 
 	// Destroy Previous
@@ -108,6 +123,53 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	OnAnomalySpawned.Broadcast(Spawned);
 
 	return Spawned;
+}
+
+AAnomaly_Base* AAnomaly_Generator::SpawnNormal(bool bDestroyPrev)
+{
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+
+	// Destroy Previous
+	if (bDestroyPrev)
+	{
+		DestroyCurrentAnomaly();
+	}
+
+	TSubclassOf<AAnomaly_Base> AnomalyClass = NormalClass;
+
+	// Spawn
+	const FTransform SpawnTransform(FVector::ZeroVector);
+
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AAnomaly_Base* Spawned =
+		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+
+	if (!Spawned)
+	{
+		return nullptr;
+	}
+
+	CurrentAnomaly = Spawned;
+
+	return Spawned;
+}
+#pragma endregion
+
+#pragma region ForTest
+
+void AAnomaly_Generator::AddAnomaly()
+{
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	for (const TSubclassOf<AAnomaly_Base>& AnomalyClass : OriginAnomaly)
+	{
+		AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
+		const uint8 AnomalyID = CDO->AnomalyID;
+		TSubclassOf<AAnomaly_Object_Base> ObjectClass = CDO->ObjectClass->GetClass();
+		Sub->OriginAnomaly.Add(FAnomalyEntry{ AnomalyID, AnomalyClass, ObjectClass });
+	}
 }
 
 #pragma endregion

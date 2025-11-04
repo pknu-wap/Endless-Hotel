@@ -10,15 +10,16 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
-	// ID는 임시
 	switch (Anomaly_ID)
 	{
 	case 1:
 		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
+		NextActionDelay = 0.5f;
 		break;
 
 	case 2:
 		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
+		NextActionDelay = 2;
 		break;
 	}
 
@@ -31,13 +32,10 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Light::StartLightAction()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
-
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle, FoundActors]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
 		{
-			for (auto* FoundActor : FoundActors)
+			for (auto* FoundActor : LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
 				if (CurrentIndex == Light->LightIndex)
@@ -50,7 +48,7 @@ void AAnomaly_Light::StartLightAction()
 			{
 				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
-		}, 0.5f, true);
+		}, NextActionDelay, true);
 }
 
 #pragma endregion

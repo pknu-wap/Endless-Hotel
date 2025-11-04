@@ -22,10 +22,11 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	Timeline_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Handle"));
 
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AC->SetupAttachment(RootComponent);
 
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(RootComponent);
-	TriggerBox->SetActive(false);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->InitBoxExtent(FVector(100, 100, 100));
 	TriggerBox->SetRelativeLocation(FVector(100, -100, -40));
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDoorShakeRange);
@@ -69,12 +70,12 @@ void AAnomaly_Object_Door::ShakeHandle(float Value)
 
 void AAnomaly_Object_Door::ActiveTrigger()
 {
-	TriggerBox->SetActive(true);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void AAnomaly_Object_Door::OnDoorShakeRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	TriggerBox->SetActive(false);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	PlayShake_Handle();
 }
@@ -102,7 +103,7 @@ void AAnomaly_Object_Door::PlayShake_Handle()
 
 				PlayShake_Door();
 			}
-		}, 0.15f, true);
+		}, 0.17f, true);
 }
 
 void AAnomaly_Object_Door::PlayShake_Door()

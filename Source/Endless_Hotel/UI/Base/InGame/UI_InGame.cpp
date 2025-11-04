@@ -3,6 +3,21 @@
 #include "UI/Base/InGame/UI_InGame.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Player/Character/EHPlayer.h"
+#include "Kismet/GameplayStatics.h"
+
+#pragma region Base
+
+void UUI_InGame::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	AEHPlayer* EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	EHPlayer->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+}
+
+#pragma endregion
 
 #pragma region Crosshair
 

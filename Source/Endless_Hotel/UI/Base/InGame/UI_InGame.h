@@ -11,12 +11,19 @@ class ENDLESS_HOTEL_API UUI_InGame : public UUI_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
 #pragma region Crosshair
 
 protected:
 	UFUNCTION()
 	void ChangeCrosshair(bool bCanInteract);
-	
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Crosshair;
