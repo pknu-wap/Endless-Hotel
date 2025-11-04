@@ -206,7 +206,10 @@ void AElevator::MoveDoors(bool bIsOpening)
 		DoorTimeline->PlayFromStart();
 	}
 	else
+	{
 		DoorTimeline->ReverseFromEnd();
+
+	}
 }
 
 // Trigger Callbacks
@@ -248,7 +251,6 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 		if (!bChoiceSentThisRide)
 		{
-			UE_LOG(LogElevator, Log, TEXT("[IsNormalElevaotr: %d]"), bIsNormalElevator);
 			NotifySubsystemElevatorChoice();
 		}
 	}
@@ -261,6 +263,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
+	RotatePlayer();
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Sub->SetIsElevatorNormal(bIsNormalElevator);
 	Sub->ApplyVerdict();
@@ -281,5 +284,16 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 			PC->SetIgnoreLookInput(!bEnable);
 		}
 	}
+}
+
+void AElevator::RotatePlayer()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
+	Player->SetActorRotation(FMath::RInterpTo(
+		Player->GetActorRotation(), 
+		LookRotation,
+		UGameplayStatics::GetWorldDeltaSeconds(this),
+		55.f));
 }
 #pragma endregion

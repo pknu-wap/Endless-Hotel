@@ -101,10 +101,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-	// PlayerTrigger
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
-	TSubclassOf<ACharacter> PlayerBPClass;
-
 #pragma endregion
 
 #pragma region TimeLine
@@ -183,6 +179,16 @@ protected:
 #pragma endregion
 
 #pragma region Player
+
+protected:
+	UPROPERTY(EditAnywhere)
+	int16 RotateAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
+	TSubclassOf<ACharacter> PlayerBPClass;
+protected:
+	UFUNCTION()
+	void RotatePlayer();
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
