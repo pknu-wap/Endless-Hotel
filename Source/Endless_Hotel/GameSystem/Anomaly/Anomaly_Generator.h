@@ -26,6 +26,9 @@ class ENDLESS_HOTEL_API AAnomaly_Generator : public AActor
 public:
 	AAnomaly_Generator(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region Linker
@@ -37,11 +40,9 @@ public:
 #pragma region Generate & State
 
 public:
-	// Initial Spawn Done
 	UPROPERTY(VisibleInstanceOnly)
 	bool bDidInitialSpawn = false;
 
-	/** Living Anomaly */
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	TWeakObjectPtr<AAnomaly_Base> CurrentAnomaly;
 
@@ -49,26 +50,19 @@ public:
 
 #pragma region Event
 	
-	// Event when Anomaly is Spawned
 	UPROPERTY(BlueprintAssignable, Category = "Anomaly|Event")
 	FOnAnomalySpawned OnAnomalySpawned;
 
 #pragma endregion
 
 #pragma region Generate Anomaly
+
 public:
-
-	// Spawn Anomaly at Specific Index
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	AAnomaly_Base* SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev = true);
+	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index);
 
-	// Spawn Normal State
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	AAnomaly_Base* SpawnNormal(bool bDestroyPrev = true);
-
-	// Destroy Current Anomaly
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	bool DestroyCurrentAnomaly();
+	AAnomaly_Base* SpawnNormal();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
@@ -76,8 +70,8 @@ protected:
 
 #pragma endregion
 
-
 #pragma region ForTest
+
 public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Test")
 	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
@@ -85,8 +79,6 @@ public:
 protected:
 	UFUNCTION()
 	void AddAnomaly();
-#pragma endregion
 
-protected:
-	virtual void BeginPlay() override;
+#pragma endregion
 };

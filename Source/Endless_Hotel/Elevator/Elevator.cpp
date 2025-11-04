@@ -1,17 +1,15 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
-#include "Components/BoxComponent.h"          
-#include "Components/StaticMeshComponent.h"   
-#include "Components/PointLightComponent.h"   
-#include "Components/TimelineComponent.h"     
-#include "Components/SceneComponent.h"        
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/PointLightComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Curves/CurveFloat.h"
 #include "TimerManager.h"
-#include "GameFramework/Character.h"          
-#include "Engine/CollisionProfile.h"          
+#include "GameFramework/Character.h"
+#include "Engine/CollisionProfile.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Engine/World.h"
 #include "CollisionQueryParams.h"
 #include "WorldCollision.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -148,13 +146,6 @@ void AElevator::BeginPlay()
 		DoorTimeline->SetLooping(false);
 		DoorTimeline->SetIgnoreTimeDilation(true);
 	}
-	SetActorLocation(StartPoint);
-
-	FOnTimelineFloat MoveUpdate;
-	MoveUpdate.BindUFunction(this, FName("OnMoveTimelineUpdate"));
-
-	FOnTimelineEvent MoveFinished;
-	MoveFinished.BindUFunction(this, FName("OnMoveTimelineFinished"));
 
 	// 4) Delegate Setup
 	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnOverlapBegin);
@@ -185,10 +176,10 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 
 void AElevator::OnDoorTimelineFinished()
 {
-	bDoorOpen = bWantOpen;
 	SetPlayerInputEnabled(true);
 
-	if (!bDoorOpen && bMoveAfterClosePending)
+	bIsDoorOpened = bIsDoorOpening;
+	if (!bIsDoorOpened && bMoveAfterClosePending)
 	{
 		bMoveAfterClosePending = false;
 	}
@@ -199,17 +190,17 @@ void AElevator::OnDoorTimelineFinished()
 #pragma region DoorMovement
 
 // Open& Close
-void AElevator::MoveDoors(bool isOpening)
+void AElevator::MoveDoors(bool bIsOpening)
 {
-	bWantOpen = isOpening;
+	bIsDoorOpening = bIsOpening;
 
 	if (!DoorTimeline || !DoorCurve) return;
-	if (bDoorOpen) return;
+	if (bIsDoorOpened) return;
 
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
 
-	if (isOpening)
+	if (bIsOpening)
 	{
 		SetPlayerInputEnabled(false);
 		DoorTimeline->PlayFromStart();
@@ -222,7 +213,6 @@ void AElevator::MoveDoors(bool isOpening)
 void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// Player only
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
 	{
 		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
@@ -264,14 +254,6 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	}
 }
 
-// Player Check Helper
-bool AElevator::IsMyPlayer(AActor* Other) const
-{
-	if (!Other) return false;
-	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
-	return Cast<ACharacter>(Other) != nullptr;
-}
-
 #pragma endregion
 
 #pragma region SubSystem
@@ -288,6 +270,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 #pragma endregion
 
 #pragma region PlayerMoveControl
+
 void AElevator::SetPlayerInputEnabled(bool bEnable)
 {
 	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
