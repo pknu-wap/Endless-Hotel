@@ -36,6 +36,12 @@ void AAnomaly_Blur::ShowBlurWiget()
 
 	AC->Sound = Sound_Blur;
 	AC->Play();
+
+	FTimerHandle FadeOutHandle;
+	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, [this]()
+		{
+			AC->FadeOut(1, 0);
+		}, 9, false);
 }
 
 #pragma endregion
