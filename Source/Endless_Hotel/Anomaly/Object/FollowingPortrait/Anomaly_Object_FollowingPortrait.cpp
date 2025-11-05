@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 
+#pragma region Base
+
 AAnomaly_Object_FollowingPortrait::AAnomaly_Object_FollowingPortrait(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
@@ -25,6 +27,10 @@ AAnomaly_Object_FollowingPortrait::AAnomaly_Object_FollowingPortrait(const FObje
 void AAnomaly_Object_FollowingPortrait::BeginPlay()
 {
 }
+
+#pragma endregion
+
+#pragma region EyeMove
 
 void AAnomaly_Object_FollowingPortrait::EyeFollowing()
 {
@@ -55,3 +61,5 @@ void AAnomaly_Object_FollowingPortrait::EyeFollowing()
 
 		}, 0.17f, true);
 }
+
+#pragma endregion
