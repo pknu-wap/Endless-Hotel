@@ -135,6 +135,7 @@ void UAnomalyProgressSubSystem::InitializePool()
 	// Copy from Original
 	ActAnomaly = OriginAnomaly;
 
+	ActIndex = 0;
 	// Shuffle
 	if (ActAnomaly.Num() > 1)
 	{

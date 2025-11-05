@@ -13,7 +13,6 @@
 #include "CollisionQueryParams.h"
 #include "WorldCollision.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Engine/EngineTypes.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
@@ -263,11 +262,16 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
-	RotatePlayer();
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->SetIsElevatorNormal(bIsNormalElevator);
-	Sub->ApplyVerdict();
-	bChoiceSentThisRide = true;
+	RotatePlayer();
+
+	FTimerHandle LightHandle;
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, Sub, LightHandle]() mutable
+		{
+			Sub->SetIsElevatorNormal(bIsNormalElevator);
+			Sub->ApplyVerdict();
+			bChoiceSentThisRide = true;
+		}, 100.5f, false);
 }
 
 #pragma endregion
@@ -290,10 +294,13 @@ void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
-	Player->SetActorRotation(FMath::RInterpTo(
-		Player->GetActorRotation(), 
-		LookRotation,
-		UGameplayStatics::GetWorldDeltaSeconds(this),
-		55.f));
+
+	// 보류: 플레이어 카메라 설정 추가 예정 Yaw 설정
+	Player->SetActorRotation(
+		FMath::RInterpTo(
+			Player->GetActorRotation(),
+			LookRotation,
+			UGameplayStatics::GetWorldDeltaSeconds(this),
+			3.f));
 }
 #pragma endregion

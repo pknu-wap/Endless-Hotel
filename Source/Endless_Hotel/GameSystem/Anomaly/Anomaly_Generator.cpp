@@ -69,10 +69,12 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	// Out of Range Check
 	if (!(Sub->ActAnomaly).IsValidIndex(Index))
 	{
-		Sub->InitializePool();
-		Sub->ActIndex = 0;
+		if (Sub->ActAnomaly.Num() == 0)
+		{
+			return nullptr;
+		}
 		Index = 0;
-		SpawnAnomalyAtIndex(Sub->ActIndex); // restart
+		SpawnAnomalyAtIndex(Index); // restart
 	}
 
 	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].AnomalyClass;
