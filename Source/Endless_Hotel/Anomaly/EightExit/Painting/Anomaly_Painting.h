@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_FollowingPortrait.generated.h"
+#include "Anomaly_Painting.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_FollowingPortrait : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Painting : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
@@ -27,7 +27,7 @@ protected:
 	void StartFollowAction();
 
 protected:
-	TFunction<void(class AAnomaly_Object_FollowingPortrait*)> FollowAction;
+	TFunction<void(class AAnomaly_Object_Painting*)> FollowAction;
 
 #pragma endregion
 };

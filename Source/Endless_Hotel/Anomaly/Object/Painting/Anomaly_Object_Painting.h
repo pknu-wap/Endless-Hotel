@@ -4,23 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_FollowingPortrait.generated.h"
+#include "Anomaly_Object_Painting.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_FollowingPortrait : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
-	
 #pragma region Base
 
 public:
-	AAnomaly_Object_FollowingPortrait(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
+	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	UPROPERTY(EditAnyWhere, Category = "Painting")

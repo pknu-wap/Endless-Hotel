@@ -1,13 +1,13 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/Object/FollowingPortrait/Anomaly_Object_FollowingPortrait.h"
+#include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 
 #pragma region Base
 
-AAnomaly_Object_FollowingPortrait::AAnomaly_Object_FollowingPortrait(const FObjectInitializer& ObjectInitializer)
+AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Mesh_Painting = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Painting"));
@@ -24,15 +24,11 @@ AAnomaly_Object_FollowingPortrait::AAnomaly_Object_FollowingPortrait(const FObje
 	Mesh_RightEye->SetRelativeRotation(FRotator(0, 0, -90));
 }
 
-void AAnomaly_Object_FollowingPortrait::BeginPlay()
-{
-}
-
 #pragma endregion
 
 #pragma region EyeMove
 
-void AAnomaly_Object_FollowingPortrait::EyeFollowing()
+void AAnomaly_Object_Painting::EyeFollowing()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FTimerHandle Timer;
