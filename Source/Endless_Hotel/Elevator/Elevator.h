@@ -101,10 +101,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-	// PlayerTrigger
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
-	TSubclassOf<ACharacter> PlayerBPClass;
-
 #pragma endregion
 
 #pragma region TimeLine
@@ -117,18 +113,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Movement|Door")
 	TObjectPtr<UCurveFloat> DoorCurve;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Movement|Vertical")
-	TObjectPtr<UTimelineComponent> MoveTimeline;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Movement|Vertical")
-	TObjectPtr<UCurveFloat> MoveCurve;
-
 #pragma endregion
 
-#pragma region Params
+#pragma region DoorMovement
 
 protected:
-
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Elevator|Refs")
 	AAnomaly_Generator* AnomalyGenerator;
 
@@ -150,50 +139,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
 	bool bMoveAfterClosePending = false;
 
-	// Move Params
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Vertical", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float MoveDuration = 20.0f;
+private:
+	FVector LeftDoorClosed, RightDoorClosed;
+	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Vertical")
-	FVector StartPoint = FVector(0.f, 0.f, 0.f);
+	bool bIsDoorOpening = false;
+	bool bIsDoorOpened;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Vertical")
-	FVector LoopPoint = FVector(0.f, 0.f, 500.f);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Vertical")
-	FVector LoopSpawnPoint = FVector(0.f, 0.f, -500.f);
-
-	// Player Params
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Trigger", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DepartureDelay = 3.0f;
-
-	// Delay Params
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Sequence", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float StartMoveDelay = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Sequence", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float AutoOpenTimeAtReturn = 0.1f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Sequence", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float AutoCloseDelayAfterExit = 2.0f;
-
-	// Elevator Anomaly Params
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Type")
-	bool bIsNormalElevator = true;
-
-#pragma endregion
-
-#pragma region DoorMovement
+	FTimerHandle DoorOpenTimerHandle;
+	FTimerHandle DoorCloseTimerHandle;
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
-	void OpenDoors();
+	void MoveDoors(bool isOpening);
 
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
-	void CloseDoors();
-
-	UFUNCTION() void OnDoorTimelineUpdate(float Alpha);
-	UFUNCTION() void OnDoorTimelineFinished();
+	UFUNCTION()
+	void OnDoorTimelineUpdate(float Alpha);
+	UFUNCTION()
+	void OnDoorTimelineFinished();
 
 	// Overlap
 	UFUNCTION()
@@ -209,74 +172,39 @@ protected:
 #pragma region ElevatorMovement
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveUp();
-
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Vertical")
-	void MoveDown();
-
-	UFUNCTION() void OnMoveTimelineUpdate(float Alpha);
-	UFUNCTION() void OnMoveTimelineFinished();
-
-	UFUNCTION() void PerformLoopTeleport();
-
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+#pragma endregion
+
+#pragma region Player
+
+protected:
+	UPROPERTY(EditAnywhere)
+	int16 RotateAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
+	TSubclassOf<ACharacter> PlayerBPClass;
+protected:
 	UFUNCTION()
-	void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-#pragma endregion
-
-#pragma region Internal
-
-	private:
-		// Door Internal
-		FVector LeftDoorClosed, RightDoorClosed;
-		FVector LeftDoorOpenPos, RightDoorOpenPos;
-
-		bool bWantOpen = false;
-		bool bDoorOpen = false;
-
-		FTimerHandle DoorOpenTimerHandle;
-		FTimerHandle DoorCloseTimerHandle;
-
-		// Move Internal
-		bool bPlayerOnboard = false;
-		bool bIsMoving = false;
-
-		FTimerHandle DepartuerTImerHandle;
-
-		FTimerHandle StartMoveTimer;
-		FTimerHandle AutoOpenTimer;
-		FTimerHandle AutoCloseTimer;
-
-		// Move Manage (0: Start -> Loop, 1: LoopSpawn -> Start)
-		int32 MovePhase = 0;
-
-		FVector OrigStartPoint;
-		FVector OrigLoopPoint;
-
-		bool bSequenceArmed = false;
-
-		// SubSystem Internal
-		bool bChoiceSentThisRide = false;
-		void NotifySubsystemElevatorChoice();
-
-		// Player check helper
-		bool bRideCompleted = false;
-		bool bSpawnSentThisStop = false;
-
-		bool IsMyPlayer(AActor* Other) const;
-
-#pragma endregion
-
-#pragma region PlayerMoveControl
+	void RotatePlayer();
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
 
+#pragma endregion
+
+#pragma region Subsystem
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Type")
+	bool bIsNormalElevator = true;
+
+private:
+	bool bChoiceSentThisRide = false;
+
+private:
+	void NotifySubsystemElevatorChoice();
 #pragma endregion
 };

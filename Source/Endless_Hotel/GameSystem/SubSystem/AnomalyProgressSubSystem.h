@@ -19,7 +19,7 @@ enum class EAnomalyVerdictMode : uint8
 	SolvedOnly,
 	Both_AND,
 	Normal
-};
+}; //전부 E 붙이기
 
 USTRUCT(BlueprintType)
 struct FAnomalyEntry
@@ -64,13 +64,13 @@ public:
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
-	void SetIsAnomalySolved(bool bNewValue) { bIsAnomalySolved = bNewValue; };
+	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
-	void SetIsElevatorNormal(bool bNewValue) { bIsElevatorNormal = bNewValue; };
+	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
 
@@ -97,11 +97,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	EAnomalyVerdictMode VerdictMode;
 
+public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
-	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;
+	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void ApplyVerdict();
@@ -112,10 +113,10 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
-	int32 AnomalyCount = 0;
+	uint8 AnomalyCount = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
-	TArray<int32> AnomalyHistory;
+	TArray<uint8> AnomalyHistory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 CurrentAnomalyID = -1;
@@ -132,14 +133,11 @@ public:
 	TArray<FAnomalyEntry> ActAnomaly;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	int32 ActIndex = 0;
+	uint8 ActIndex = 0;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	void InitializePool(bool bShuffle = true);
-
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
-	void ResetSequence(bool bShuffle = true);
+	void InitializePool();
 
 #pragma endregion
 
@@ -155,5 +153,4 @@ public:
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
 
 #pragma endregion
-
 };
