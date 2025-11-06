@@ -33,16 +33,9 @@ public:
 
 #pragma endregion
 
-#pragma region Params
+#pragma region Anomaly
+
 public:
-	// Verdict Params
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
-	bool bIsCorrectElevator = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
-	bool bIsSolved = false;
-
-	// ID
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
@@ -54,13 +47,20 @@ protected:
 
 #pragma region Verdicts
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsCorrectElevator = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsSolved = false;
+
+protected:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void SetSolved(bool bNewSolved);
 
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void SetCorrectElevator(bool bNewCorrect) { bIsCorrectElevator = bNewCorrect; };
 
-protected:
 	UFUNCTION(BlueprintCallable, Category = "Anomaly|VerdictMode")
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
 
@@ -89,5 +89,6 @@ private:
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
+
 #pragma endregion
 };

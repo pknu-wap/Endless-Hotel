@@ -23,10 +23,10 @@ void AAnomaly_Generator::BeginPlay()
 	uint8 IsNormal = FMath::RandRange(1, 10);
 	if (IsNormal > 7)
 	{
-		SpawnNormal(true);
+		SpawnNormal();
 		return;
 	}
-	SpawnAnomalyAtIndex(Sub->ActIndex, true);
+	SpawnAnomalyAtIndex(Sub->ActIndex);
 	Sub->ActIndex++;
 }
 
@@ -59,21 +59,8 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 
 #pragma region Generate
 
-bool AAnomaly_Generator::DestroyCurrentAnomaly()
-{
-	if (CurrentAnomaly.IsValid())
-	{
-		
-		UE_LOG(LogTemp, Log, TEXT("[Anomaly_Generator] Destroying %s"), *CurrentAnomaly->GetName());
-		CurrentAnomaly->Destroy();
-		CurrentAnomaly = nullptr;
-		return true;
-	}
-	return false;
-}
-
 // Spawn Anomaly at Specific Index
-AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestroyPrev)
+AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 {
 	UE_LOG(LogTemp, Verbose, TEXT("[Gen %s] SpawnAnomalyAtIndex(%d)"), *GetName(), Index);
 
@@ -82,15 +69,12 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	// Out of Range Check
 	if (!(Sub->ActAnomaly).IsValidIndex(Index))
 	{
-		Sub->InitializePool(true);
-		Sub->ActIndex = 0; // restart
+		if (Sub->ActAnomaly.Num() == 0)
+		{
+			return nullptr;
+		}
 		Index = 0;
-	}
-
-	// Destroy Previous
-	if (bDestroyPrev)
-	{
-		DestroyCurrentAnomaly();
+		SpawnAnomalyAtIndex(Index); // restart
 	}
 
 	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].AnomalyClass;
@@ -125,15 +109,9 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(int32 Index, bool bDestro
 	return Spawned;
 }
 
-AAnomaly_Base* AAnomaly_Generator::SpawnNormal(bool bDestroyPrev)
+AAnomaly_Base* AAnomaly_Generator::SpawnNormal()
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-
-	// Destroy Previous
-	if (bDestroyPrev)
-	{
-		DestroyCurrentAnomaly();
-	}
 
 	TSubclassOf<AAnomaly_Base> AnomalyClass = NormalClass;
 
