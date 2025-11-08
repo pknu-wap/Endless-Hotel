@@ -19,4 +19,12 @@ public:
 
 #pragma endregion
 
+#pragma region Patrol
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
+	TArray<TObjectPtr<AActor>> PatrolPoints;
+
+#pragma endregion
+
 };

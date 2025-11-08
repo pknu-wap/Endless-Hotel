@@ -7,14 +7,9 @@
 #include "MazeMonsterController.generated.h"
 
 #pragma region Declare
-	
-	class UAIPerceptionComponent;
-	class UAISenseConfig_Sight;
-	class UBehaviorTree;
-	class UBlackboardData;
-	class UBlackboardComponent;
-	
-	struct FPathFollowingResult;
+
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
 
 #pragma endregion
 
@@ -30,8 +25,8 @@ public:
 	AMazeMonsterController();
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -39,26 +34,23 @@ protected:
 
 protected:
 	UPROPERTY(visibleAnywhere, BlueprintReadOnly, Category = "AI|Perception")
-	TObjectPtr<UAIPerceptionComponent> AIPerception = nullptr;
+	TObjectPtr<UAIPerceptionComponent> Perception;
 
 	UPROPERTY()
-	TObjectPtr<UAISenseConfig_Sight> SightConfig = nullptr;
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TObjectPtr<UBehaviorTree> BTAsset = nullptr;
+	TObjectPtr<UBehaviorTree> BTAsset;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TObjectPtr<UBlackboardData> BBAsset = nullptr;
-
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	UBlackboardComponent* BBComponent = nullptr;
+	TObjectPtr<UBlackboardData> BBAsset;
 
 #pragma endregion
 
 #pragma region Search & Move
 
 	UFUNCTION()
-	void OnTargetPerceived(AActor* Actor, FAIStimulus Stimulus);
+	void OnTargetDetected(AActor* Actor, FAIStimulus Stimulus);
 
 #pragma endregion
 
@@ -67,7 +59,7 @@ protected:
 public:
 	static const FName Key_TargetPlayer;
 	static const FName Key_LastKnownPos;
-	static const FName Key_SpawnLocation;
+	static const FName Key_PatrolPos;
 
 #pragma endregion
 
