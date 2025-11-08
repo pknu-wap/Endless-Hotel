@@ -1,14 +1,14 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Character/AI/MoveToLastKnown.h"
+#include "Character/AI/BTTask_MoveToLastKnown.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "Character/AI/MazeMonsterController.h"
 
 #pragma region Base
 
-UMoveToLastKnown::UMoveToLastKnown()
+UBTTask_MoveToLastKnown::UBTTask_MoveToLastKnown()
 {
 	NodeName = TEXT("Set PatrolPos Around LastKnown");
 }
@@ -17,7 +17,7 @@ UMoveToLastKnown::UMoveToLastKnown()
 
 #pragma region Task
 
-EBTNodeResult::Type UMoveToLastKnown::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MoveToLastKnown::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBlackboardComponent* BlackBoard = OwnerComp.GetBlackboardComponent();
 	if (!BlackBoard) return EBTNodeResult::Failed;

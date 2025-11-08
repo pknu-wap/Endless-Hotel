@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "MoveToLastKnown.generated.h"
+#include "BTTask_MoveToLastKnown.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API UMoveToLastKnown : public UBTTaskNode
+class ENDLESS_HOTEL_API UBTTask_MoveToLastKnown : public UBTTaskNode
 {
 	GENERATED_BODY()
 	
 #pragma region Base
 
 public:
-	UMoveToLastKnown();
+	UBTTask_MoveToLastKnown();
 
 #pragma endregion
 
