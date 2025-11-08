@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Light.generated.h"
+#include "Anomaly_Cong.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Light : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
-	
+
 #pragma region Activity
 
 public:
@@ -18,19 +18,15 @@ public:
 
 #pragma endregion
 
-#pragma region Light
+#pragma region Cong
 
 protected:
-	void StartLightAction();
+	void StartCongAction();
 
 protected:
-	TFunction<void(class AAnomaly_Object_Light*)> LightAction;
+	FTimerHandle CongHandle;
 
-protected:
-	uint8 CurrentIndex = 1;
-	const uint8 MaxIndex = 15;
-
-	float NextActionDelay = 0;
+	float NextCong = 3;
 
 #pragma endregion
 
