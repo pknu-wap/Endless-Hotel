@@ -6,13 +6,11 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly_Object_Painting.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
+
 #pragma region Base
 
 public:
@@ -35,6 +33,20 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	void EyeFollowing();
+
+#pragma endregion
+
+#pragma region Blood
+
+public:
+	void BloodDropping();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> Niagara_Blood_Left;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> Niagara_Blood_Right;
 
 #pragma endregion
 
