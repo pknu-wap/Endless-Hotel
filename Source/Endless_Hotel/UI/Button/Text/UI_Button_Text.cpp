@@ -27,33 +27,47 @@ TSharedRef<SWidget, ESPMode::ThreadSafe> UUI_Button_Text::RebuildWidget()
 
 void UUI_Button_Text::OnButtonClicked()
 {
+	FLinearColor Click_Color = FColor::FromHex(TEXT("927F60FF")).ReinterpretAsLinear();
+
 	for (auto* Child : GetAllChildren())
 	{
 		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
 		{
-			TextBlock->SetColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f, 1));
+			TextBlock->SetColorAndOpacity(FSlateColor(Click_Color));
 		}
 	}
 }
 
 void UUI_Button_Text::OnButtonHovered()
 {
+	FLinearColor Hover_Color = FColor::FromHex(TEXT("D2B78AFF")).ReinterpretAsLinear();
+
 	for (auto* Child : GetAllChildren())
 	{
 		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
 		{
-			TextBlock->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
+			TextBlock->SetColorAndOpacity(FSlateColor(Hover_Color));
+
+			FSlateFontInfo FontInfo = TextBlock->Font;
+			FontInfo.Size = 96 * FontAdjustValue;
+			TextBlock->SetFont(FontInfo);
 		}
 	}
 }
 
 void UUI_Button_Text::OnButtonUnhovered()
 {
+	FLinearColor Unhover_Color = FColor::FromHex(TEXT("927F60FF")).ReinterpretAsLinear();
+
 	for (auto* Child : GetAllChildren())
 	{
 		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
 		{
-			TextBlock->SetColorAndOpacity(FLinearColor(0.3f, 0.3f, 0.3f, 1));
+			TextBlock->SetColorAndOpacity(FSlateColor(Unhover_Color));
+
+			FSlateFontInfo FontInfo = TextBlock->Font;
+			FontInfo.Size = 64 * FontAdjustValue;
+			TextBlock->SetFont(FontInfo);
 		}
 	}
 }

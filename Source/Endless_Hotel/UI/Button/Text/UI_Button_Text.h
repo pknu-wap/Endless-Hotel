@@ -30,6 +30,11 @@ protected:
 	UFUNCTION()
 	void OnButtonUnhovered();
 
+protected:
+	// 언리얼 폰트 DPI = 96, Figma 폰트 DPI = 72
+	// 해당 DPI 차이를 극복하기 위한 방법 ㅠㅠ -> 프로젝트 세팅으로 변경해도 C++에서는 적용 X
+	const float FontAdjustValue = 72.0f / 96.0f;
+
 #pragma endregion
 
 };
