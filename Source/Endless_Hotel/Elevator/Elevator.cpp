@@ -17,6 +17,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "EngineUtils.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Camera/CameraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -158,6 +160,9 @@ void AElevator::BeginPlay()
 		AnomalyGenerator = *It;
 		break;
 	}
+
+	// 6) Camera Setup
+	SetPlayerInputEnabled(true);
 }
 #pragma endregion
 
@@ -293,14 +298,33 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	Player->bUseControllerRotationYaw = false;
+	//Camera Rotation 어떻게 하나요...
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
+	FRotator PlayerRotation = Player->GetActorRotation();
 
-	// 보류: 플레이어 카메라 설정 추가 예정 Yaw 설정
-	Player->SetActorRotation(
-		FMath::RInterpTo(
-			Player->GetActorRotation(),
-			LookRotation,
-			UGameplayStatics::GetWorldDeltaSeconds(this),
-			3.f));
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, [this, PlayerRotation, LookRotation]()
+		{
+			RotateCamera(PlayerRotation, LookRotation);
+		}, 0.01f, true);
+
+	Player->bUseControllerRotationYaw = true;
 }
+
+void AElevator::RotateCamera(FRotator PlayerRotation, FRotator TargetRotation)
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FRotator CurrentRotation = Player->GetActorRotation();
+	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
+
+	Player->SetActorRotation(SmoothRotation);
+
+	if (SmoothRotation.Equals(TargetRotation, 0.01f))
+	{
+		SmoothRotation = TargetRotation;
+		SetPlayerInputEnabled(true);
+		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
+	}
+}
+
 #pragma endregion

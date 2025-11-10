@@ -60,16 +60,16 @@ private:
 	bool bIsElevatorNormal = false;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	UFUNCTION()
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	UFUNCTION()
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	UFUNCTION()
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	UFUNCTION()
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
@@ -80,13 +80,13 @@ private:
 	uint8 Floor = 9;
 
 private:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
+	UFUNCTION()
 	void ResetFloor() { Floor = 9; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
+	UFUNCTION()
 	void SubFloor();
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
+	UFUNCTION()
 	void AddFloor();
 
 #pragma endregion
@@ -98,13 +98,13 @@ public:
 	EAnomalyVerdictMode VerdictMode;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	UFUNCTION()
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	UFUNCTION()
 	void ApplyVerdict();
 
 #pragma endregion
@@ -136,7 +136,7 @@ public:
 	uint8 ActIndex = 0;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	UFUNCTION()
 	void InitializePool();
 
 #pragma endregion

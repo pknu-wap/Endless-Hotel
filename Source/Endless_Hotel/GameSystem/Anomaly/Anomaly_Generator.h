@@ -58,10 +58,10 @@ public:
 #pragma region Generate Anomaly
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	UFUNCTION()
 	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index);
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	UFUNCTION()
 	AAnomaly_Base* SpawnNormal();
 
 protected:

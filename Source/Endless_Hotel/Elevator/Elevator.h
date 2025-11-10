@@ -150,7 +150,7 @@ private:
 	FTimerHandle DoorCloseTimerHandle;
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
+	UFUNCTION()
 	void MoveDoors(bool isOpening);
 
 	UFUNCTION()
@@ -184,11 +184,17 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int16 RotateAngle;
 
+	FTimerHandle RotateHandle;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
 	TSubclassOf<ACharacter> PlayerBPClass;
+
 protected:
 	UFUNCTION()
 	void RotatePlayer();
+
+	UFUNCTION()
+	void RotateCamera(FRotator PlayerRotation, FRotator OriginRoatation);
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
@@ -206,5 +212,6 @@ private:
 
 private:
 	void NotifySubsystemElevatorChoice();
+
 #pragma endregion
 };
