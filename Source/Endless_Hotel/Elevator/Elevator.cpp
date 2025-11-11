@@ -6,19 +6,9 @@
 #include "Components/PointLightComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Curves/CurveFloat.h"
-#include "TimerManager.h"
 #include "GameFramework/Character.h"
-#include "Engine/CollisionProfile.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "CollisionQueryParams.h"
-#include "WorldCollision.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameSystem/Anomaly/Anomaly_Generator.h"
-#include "EngineUtils.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Camera/CameraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -150,18 +140,9 @@ void AElevator::BeginPlay()
 
 	// 4) Delegate Setup
 	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnOverlapBegin);
-	GetInTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnOverlapEnd);
-
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 
-	// 5) Anomaly Generator Setup
-	for (TActorIterator<AAnomaly_Generator> It(GetWorld()); It; ++It)
-	{
-		AnomalyGenerator = *It;
-		break;
-	}
-
-	// 6) Camera Setup
+	// 5) Camera Setup
 	SetPlayerInputEnabled(true);
 }
 #pragma endregion
@@ -182,8 +163,8 @@ void AElevator::OnDoorTimelineFinished()
 {
 	SetPlayerInputEnabled(true);
 
-	bIsDoorOpened = bIsDoorOpening;
-	if (!bIsDoorOpened && bMoveAfterClosePending)
+	bIsDoorMoved = bIsDoorOpening;
+	if (!bIsDoorMoved && bMoveAfterClosePending)
 	{
 		bMoveAfterClosePending = false;
 	}
@@ -199,14 +180,14 @@ void AElevator::MoveDoors(bool bIsOpening)
 	bIsDoorOpening = bIsOpening;
 
 	if (!DoorTimeline || !DoorCurve) return;
-	if (bIsDoorOpened) return;
+	if (bIsDoorMoved) return;
 
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
+	SetPlayerInputEnabled(false);
 
 	if (bIsOpening)
 	{
-		SetPlayerInputEnabled(false);
 		DoorTimeline->PlayFromStart();
 	}
 	else
@@ -226,18 +207,6 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			return;
 		}
 		MoveDoors(true);
-	}
-}
-
-void AElevator::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
-	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
 	}
 }
 
@@ -268,9 +237,9 @@ void AElevator::NotifySubsystemElevatorChoice()
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	RotatePlayer();
-	bIsDoorOpened = false;
+	bIsDoorMoved = false;
 	MoveDoors(false);
-
+	SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this, Sub, WaitHandle]() mutable
 		{
@@ -307,8 +276,6 @@ void AElevator::RotatePlayer()
 		{
 			SmoothRotate(PlayerRotation, LookRotation);
 		}, 0.01f, true);
-
-	/*Player->bUseControllerRotationYaw = true;*/
 }
 
 void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
@@ -323,7 +290,6 @@ void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
 	{
 		SmoothRotation = TargetRotation;
-		SetPlayerInputEnabled(true);
 		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 	}
 }

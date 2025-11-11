@@ -14,7 +14,6 @@ class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
-class AAnomaly_Generator;
 
 #pragma endregion
 
@@ -118,8 +117,6 @@ protected:
 #pragma region DoorMovement
 
 protected:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Elevator|Refs")
-	AAnomaly_Generator* AnomalyGenerator;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
 	float DoorOpenDuration = 1.0f;
@@ -144,7 +141,7 @@ private:
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
 	bool bIsDoorOpening = false;
-	bool bIsDoorOpened;
+	bool bIsDoorMoved;
 
 	FTimerHandle DoorOpenTimerHandle;
 	FTimerHandle DoorCloseTimerHandle;
@@ -162,10 +159,6 @@ protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 #pragma endregion
 
