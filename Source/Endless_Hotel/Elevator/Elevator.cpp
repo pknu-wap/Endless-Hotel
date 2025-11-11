@@ -212,7 +212,6 @@ void AElevator::MoveDoors(bool bIsOpening)
 	else
 	{
 		DoorTimeline->ReverseFromEnd();
-
 	}
 }
 
@@ -269,14 +268,16 @@ void AElevator::NotifySubsystemElevatorChoice()
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	RotatePlayer();
+	bIsDoorOpened = false;
+	MoveDoors(false);
 
-	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, Sub, LightHandle]() mutable
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this, Sub, WaitHandle]() mutable
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
-		}, 100.5f, false);
+		}, 10.5f, false);
 }
 
 #pragma endregion
@@ -299,25 +300,25 @@ void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	Player->bUseControllerRotationYaw = false;
-	//Camera Rotation 어떻게 하나요...
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
 	FRotator PlayerRotation = Player->GetActorRotation();
 
 	GetWorld()->GetTimerManager().SetTimer(RotateHandle, [this, PlayerRotation, LookRotation]()
 		{
-			RotateCamera(PlayerRotation, LookRotation);
+			SmoothRotate(PlayerRotation, LookRotation);
 		}, 0.01f, true);
 
-	Player->bUseControllerRotationYaw = true;
+	/*Player->bUseControllerRotationYaw = true;*/
 }
 
-void AElevator::RotateCamera(FRotator PlayerRotation, FRotator TargetRotation)
+void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FRotator CurrentRotation = Player->GetActorRotation();
 	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
 
 	Player->SetActorRotation(SmoothRotation);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(SmoothRotation);
 
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
 	{

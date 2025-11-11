@@ -194,7 +194,7 @@ protected:
 	void RotatePlayer();
 
 	UFUNCTION()
-	void RotateCamera(FRotator PlayerRotation, FRotator OriginRoatation);
+	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
