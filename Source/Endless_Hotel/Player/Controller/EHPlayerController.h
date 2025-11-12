@@ -36,11 +36,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputMappingContext> IMC_Default;
 
-	// Move - 2D Vector로 통합
+	// Move
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* IA_Move;
 
-	// Look - 2D Vector로 통합
+	// Look
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* IA_Look;
 
@@ -72,6 +72,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* IA_FaceCover;
 
+	//ESC
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* IA_ESC;
+
 	// Look Sensitivity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	float LookSensitivity = 0.3f;
@@ -85,6 +89,7 @@ protected:
 	void OnCrouchCompleted();
 	void OnFaceCoverTriggered();
 	void OnInteract(const FInputActionValue& Value);
+	void OnESCTriggered();
 
 	/** Tick 내 상호작용 탐색 */
 	void CheckForInteractables();
@@ -101,12 +106,6 @@ protected:
 
 	// Helper function to get camera
 	UCameraComponent* GetPlayerCamera() const;
-#pragma endregion
-
-#pragma region Widget
-protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_PopUp_Base> UI_Escape;
 #pragma endregion
 
 #pragma region State

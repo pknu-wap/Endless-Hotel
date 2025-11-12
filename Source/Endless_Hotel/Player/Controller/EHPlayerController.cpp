@@ -78,6 +78,10 @@ void AEHPlayerController::SetupInputComponent()
 
 		// FaceCover
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Triggered, this, &ThisClass::OnFaceCoverTriggered);
+
+		// ESC
+		// FaceCover
+		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Triggered, this, &ThisClass::OnESCTriggered);
 	}
 }
 
@@ -165,19 +169,9 @@ void AEHPlayerController::OnCrouchStarted()
 
 		if (UCapsuleComponent* Capsule = ControlledCharacter->GetCapsuleComponent())
 		{
-			Capsule->SetCapsuleSize(45.f, 63.f);
+			Capsule->SetCapsuleSize(63.f, 60.f);
 		}
 
-		// SpringArm 초기화 (BeginPlay에서 캐싱하는 것이 더 좋음)
-		if (!SpringArm)
-		{
-			SpringArm = ControlledCharacter->FindComponentByClass<USpringArmComponent>();
-		}
-
-		if (SpringArm)
-		{
-			SpringArm->AddRelativeLocation(FVector(0.f, 0.f, -50.f));
-		}
 	}
 }
 
@@ -195,11 +189,7 @@ void AEHPlayerController::OnCrouchCompleted()
 		{
 			Capsule->SetCapsuleSize(45.f, 100.f);
 		}
-
-		if (SpringArm)
-		{
-			SpringArm->AddRelativeLocation(FVector(0.f, 0.f, 50.f));
-		}
+		
 	}
 }
 
@@ -293,6 +283,10 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 	{
 		Interactable->Interact(this);
 	}
+}
+
+void AEHPlayerController::OnESCTriggered() {
+
 }
 
 
