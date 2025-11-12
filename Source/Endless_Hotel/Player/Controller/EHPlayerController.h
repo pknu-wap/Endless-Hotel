@@ -31,14 +31,10 @@ protected:
 #pragma region Input
 protected:
 	virtual void SetupInputComponent() override;
-	void EscapeStarted(const struct FInputActionValue& InputValue);
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputMappingContext> IMC_Default;
-
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<class UInputAction> IA_ESC;
 
 	// Move - 2D Vector로 통합
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
