@@ -86,6 +86,15 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
+	// 9) PresenceTrigger
+	PresenceTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("PresenceTrigger"));
+	PresenceTrigger->SetupAttachment(Car);
+	PresenceTrigger->SetBoxExtent(FVector(100.f, 100.0f, 150.0f));
+	PresenceTrigger->SetCollisionProfileName(TEXT("Trigger"));
+	PresenceTrigger->SetGenerateOverlapEvents(true);
+	PresenceTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PresenceTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 	// 9) Timeline
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
 
@@ -141,9 +150,15 @@ void AElevator::BeginPlay()
 	// 4) Delegate Setup
 	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnOverlapBegin);
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
+	PresenceTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnPresenceBegin);
+	PresenceTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnPresenceEnd);
 
-	// 5) Camera Setup
-	SetPlayerInputEnabled(true);
+	// 5) MoveElevator
+	if (!bIsNormalElevator)
+	{
+		ElevatorMove(StartPos, MapPos, true);
+		bIsPlayerInside = true;
+	}
 }
 #pragma endregion
 
@@ -155,6 +170,7 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 	const FVector L = FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha);
 	const FVector R = FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha);
 
+	bIsDoorMoving = true;
 	LeftDoor->SetRelativeLocation(L);
 	RightDoor->SetRelativeLocation(R);
 }
@@ -163,8 +179,8 @@ void AElevator::OnDoorTimelineFinished()
 {
 	SetPlayerInputEnabled(true);
 
-	bIsDoorMoved = bIsDoorOpening;
-	if (!bIsDoorMoved && bMoveAfterClosePending)
+	bIsDoorMoving = false;
+	if (!bIsDoorMoving && bMoveAfterClosePending)
 	{
 		bMoveAfterClosePending = false;
 	}
@@ -177,13 +193,12 @@ void AElevator::OnDoorTimelineFinished()
 // Open& Close
 void AElevator::MoveDoors(bool bIsOpening)
 {
-	bIsDoorOpening = bIsOpening;
 
 	if (!DoorTimeline || !DoorCurve) return;
-	if (bIsDoorMoved) return;
+	if (bIsDoorMoving) return;
 
 	DoorTimeline->Stop();
-	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
 	SetPlayerInputEnabled(false);
 
 	if (bIsOpening)
@@ -200,7 +215,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor) && !bIsPlayerInside)
 	{
 		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
 		{
@@ -210,34 +225,26 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 }
 
-void AElevator::ElevatorMove(FVector Start, FVector End)
+void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
-	const float MoveDuration = 3.0f; // 이동 시간(초)
+	SetPlayerInputEnabled(false);
 
-	float ElapsedTime = 0.f;
+	SetActorLocation(Start);
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, End, GetActorRotation(),
+		false, false, ElevatorMoveDuration, false, EMoveComponentAction::Type::Move, LatentInfo);
 
-	FTimerHandle MoveHandle;
-
-	// 기존 타이머 중복 방지
-	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-
-	// 타이머 반복 호출
-	GetWorld()->GetTimerManager().SetTimer(MoveHandle, [this, Start, End, MoveDuration, &ElapsedTime, &MoveHandle]()
-		{
-			ElapsedTime += 0.01f; // TickInterval 만큼 증가
-			const float Alpha = FMath::Clamp(ElapsedTime / MoveDuration, 0.f, 1.f);
-
-			// 선형 보간 (부드럽게 이동)
-			FVector NewLocation = FMath::Lerp(Start, End, Alpha);
-			SetActorLocation(NewLocation);
-
-			// 이동 완료 시 타이머 정지
-			if (Alpha >= 1.f)
+	if(bIsStart)
+	{
+		FTimerHandle MoveHandle;
+		GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateLambda([&]()
 			{
+				MoveDoors(true);
+				SetPlayerInputEnabled(true);
 				GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-			}
-
-		}, 0.01f, true);
+			}), ElevatorMoveDuration, false);
+	}
 }
 
 // Trigger Callbacks
@@ -258,6 +265,19 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	}
 }
 
+void AElevator::OnPresenceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!(OtherActor && PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
+	bIsPlayerInside = true;
+}
+
+void AElevator::OnPresenceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (!(OtherActor && PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
+	bIsPlayerInside = false;
+	MoveDoors(false);
+}
+
 #pragma endregion
 
 #pragma region SubSystem
@@ -267,16 +287,24 @@ void AElevator::NotifySubsystemElevatorChoice()
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	RotatePlayer();
-	bIsDoorMoved = false;
 	MoveDoors(false);
 	SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
+	FTimerHandle MoveHandle;
+	
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, [this, MoveHandle]() mutable
+		{
+			ElevatorMove(MapPos, EndPos, false);
+			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+		}, DoorDuration, false);
+
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this, Sub, WaitHandle]() mutable
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
-		}, 10.5f, false);
+			GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+		}, DoorDuration + ElevatorMoveDuration, false);
 }
 
 #pragma endregion

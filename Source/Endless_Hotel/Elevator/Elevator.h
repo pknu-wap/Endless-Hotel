@@ -100,17 +100,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-#pragma endregion
-
-#pragma region TimeLine
+	// PresenceTrigger
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
+	TObjectPtr<UBoxComponent> PresenceTrigger;
 
 protected:
-	// Timeline
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement|Door")
-	TObjectPtr<UTimelineComponent> DoorTimeline;
+	UFUNCTION()
+	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement|Door")
-	TObjectPtr<UCurveFloat> DoorCurve;
+	UFUNCTION()
+	void OnPresenceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnPresenceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 #pragma endregion
 
@@ -118,30 +123,33 @@ protected:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DoorOpenDuration = 1.0f;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement|Door")
+	TObjectPtr<UTimelineComponent> DoorTimeline;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DoorCloseDuration = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement|Door")
+	TObjectPtr<UCurveFloat> DoorCurve;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float DoorDuration = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	float DoorGap = 40.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bSlideOnX = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bWaitDoorCloseBeforMove = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bMoveAfterClosePending = false;
 
 private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
-	bool bIsDoorOpening = false;
-	bool bIsDoorMoved;
+	bool bIsDoorMoving;
+	bool bIsPlayerInside;
 
 	FTimerHandle DoorOpenTimerHandle;
 	FTimerHandle DoorCloseTimerHandle;
@@ -152,6 +160,7 @@ protected:
 
 	UFUNCTION()
 	void OnDoorTimelineUpdate(float Alpha);
+
 	UFUNCTION()
 	void OnDoorTimelineFinished();
 
@@ -169,15 +178,18 @@ protected:
 	FVector StartPos;
 
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	FVector MapPos;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	FVector EndPos;
 
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	float ElevatorMoveDuration = 3.0f;
 protected:
-	UFUNCTION()
-	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UFUNCTION()
-	void ElevatorMove(FVector Start, FVector End);
+	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
+
 
 #pragma endregion
 
