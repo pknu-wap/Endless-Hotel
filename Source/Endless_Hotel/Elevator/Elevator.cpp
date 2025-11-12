@@ -210,6 +210,36 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 }
 
+void AElevator::ElevatorMove(FVector Start, FVector End)
+{
+	const float MoveDuration = 3.0f; // 이동 시간(초)
+
+	float ElapsedTime = 0.f;
+
+	FTimerHandle MoveHandle;
+
+	// 기존 타이머 중복 방지
+	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+
+	// 타이머 반복 호출
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, [this, Start, End, MoveDuration, &ElapsedTime, &MoveHandle]()
+		{
+			ElapsedTime += 0.01f; // TickInterval 만큼 증가
+			const float Alpha = FMath::Clamp(ElapsedTime / MoveDuration, 0.f, 1.f);
+
+			// 선형 보간 (부드럽게 이동)
+			FVector NewLocation = FMath::Lerp(Start, End, Alpha);
+			SetActorLocation(NewLocation);
+
+			// 이동 완료 시 타이머 정지
+			if (Alpha >= 1.f)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+			}
+
+		}, 0.01f, true);
+}
+
 // Trigger Callbacks
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
