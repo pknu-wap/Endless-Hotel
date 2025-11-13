@@ -17,6 +17,9 @@ class ENDLESS_HOTEL_API AMazeMonster : public AEHCharacter
 public:
 	AMazeMonster(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void Tick(float DeltaSeconds) override;
+
 #pragma endregion
 
 #pragma region Patrol
