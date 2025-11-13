@@ -208,7 +208,7 @@ void AEHPlayerController::OnFaceCoverTriggered()
 	bIsCameraFixed = !bIsCameraFixed;
 	bCanMove = !bCanMove;
 
-	// SpringArm & Camera 초기화 (BeginPlay에서 캐싱하는 것이 더 좋음)
+	// SpringArm & Camera 초기화
 	if (!SpringArm)
 	{
 		SpringArm = ControlledCharacter->FindComponentByClass<USpringArmComponent>();

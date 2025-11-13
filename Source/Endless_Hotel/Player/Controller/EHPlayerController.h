@@ -49,10 +49,10 @@ protected:
 	UInputAction* IA_Run;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float WalkSpeed = 400.0f;
+	float WalkSpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float RunSpeed = 700.0f;
+	float RunSpeed = 600.0f;
 
 	// Interact 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
