@@ -19,7 +19,7 @@ enum class EAnomalyVerdictMode : uint8
 	SolvedOnly,
 	Both_AND,
 	Normal
-}; //전부 E 붙이기
+};
 
 USTRUCT(BlueprintType)
 struct FAnomalyEntry

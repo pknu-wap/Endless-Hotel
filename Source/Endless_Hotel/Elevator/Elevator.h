@@ -31,6 +31,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
+
 #pragma endregion
 
 #pragma region Frames
@@ -65,7 +66,6 @@ protected:
 #pragma region Buttons
 
 protected:
-	// Buttons
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
 	TObjectPtr<UStaticMeshComponent> CallDownButtonRing;
 
@@ -83,7 +83,6 @@ protected:
 #pragma region Light
 
 protected:
-	// Light
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Light")
 	TObjectPtr<UPointLightComponent> ElevatorLight;
 
@@ -117,6 +116,10 @@ protected:
 	void OnPresenceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 #pragma endregion
 
 #pragma region DoorMovement
@@ -138,12 +141,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bSlideOnX = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
-	bool bWaitDoorCloseBeforMove = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
-	bool bMoveAfterClosePending = false;
-
 private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
@@ -164,11 +161,6 @@ protected:
 	UFUNCTION()
 	void OnDoorTimelineFinished();
 
-	// Overlap
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 #pragma endregion
 
 #pragma region ElevatorMovement
@@ -185,11 +177,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	float ElevatorMoveDuration = 3.0f;
+
 protected:
 	
 	UFUNCTION()
 	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
-
 
 #pragma endregion
 

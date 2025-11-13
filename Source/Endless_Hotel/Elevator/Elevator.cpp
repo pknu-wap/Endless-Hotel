@@ -73,7 +73,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	GetInTrigger->SetBoxExtent(FVector(120.f, 60.0f, 120.0f));
 	GetInTrigger->SetCollisionProfileName(TEXT("Trigger"));
 	GetInTrigger->SetGenerateOverlapEvents(true);
-
 	GetInTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GetInTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
@@ -128,12 +127,8 @@ void AElevator::BeginPlay()
 	LeftDoorOpenPos = LeftDoorClosed + LOff;
 	RightDoorOpenPos = RightDoorClosed + ROff;
 
-	UE_LOG(LogElevator, Log, TEXT("[BeginPlay] Closed L=%s R=%s  Open L=%s R=%s"),
-		*LeftDoorClosed.ToString(), *RightDoorClosed.ToString(),
-		*LeftDoorOpenPos.ToString(), *RightDoorOpenPos.ToString());
-
 	// 3) Timeline Setup
-	if (ensureMsgf(DoorCurve != nullptr, TEXT("DoorCurve is not assigned! Please set a 0->1 CurveFloat.")))
+	if (DoorCurve != nullptr)
 	{
 		FOnTimelineFloat Update;
 		Update.BindUFunction(this, FName("OnDoorTimelineUpdate"));
@@ -178,12 +173,7 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	SetPlayerInputEnabled(true);
-
 	bIsDoorMoving = false;
-	if (!bIsDoorMoving && bMoveAfterClosePending)
-	{
-		bMoveAfterClosePending = false;
-	}
 }
 
 #pragma endregion
@@ -202,13 +192,9 @@ void AElevator::MoveDoors(bool bIsOpening)
 	SetPlayerInputEnabled(false);
 
 	if (bIsOpening)
-	{
 		DoorTimeline->PlayFromStart();
-	}
 	else
-	{
 		DoorTimeline->ReverseFromEnd();
-	}
 }
 
 // Trigger Callbacks
@@ -217,10 +203,7 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor) && !bIsPlayerInside)
 	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
 		MoveDoors(true);
 	}
 }
@@ -253,15 +236,10 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 {
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
 	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
-		{
-			return;
-		}
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
 
 		if (!bChoiceSentThisRide)
-		{
 			NotifySubsystemElevatorChoice();
-		}
 	}
 }
 
