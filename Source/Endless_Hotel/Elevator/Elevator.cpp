@@ -189,7 +189,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
-	SetPlayerInputEnabled(false);
+	if(bIsPlayerInside) SetPlayerInputEnabled(false);
 
 	if (bIsOpening)
 		DoorTimeline->PlayFromStart();

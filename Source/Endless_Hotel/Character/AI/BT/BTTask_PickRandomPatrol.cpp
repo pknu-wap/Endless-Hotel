@@ -1,13 +1,13 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Character/AI/BTTask_PickRandomPatrol.h"
+#include "Character/AI/BT/BTTask_PickRandomPatrol.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
 #include "Engine/TargetPoint.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "MazeMonsterController.h"
-#include "MazeMonster.h"
+#include "Character/AI/MazeMonsterController.h"
+#include "Character/AI/MazeMonster.h"
 
 #pragma region Base
 

@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Character/AI/BTTask_ClearLastKnown.h"
+#include "Character/AI/BT/BTTask_ClearLastKnown.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/AI/MazeMonsterController.h"
 
