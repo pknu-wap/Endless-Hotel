@@ -55,7 +55,6 @@ public:
 	bool bIsSolved = false;
 
 protected:
-	UFUNCTION()
 	void SetSolved(bool bNewSolved);
 
 	UFUNCTION()

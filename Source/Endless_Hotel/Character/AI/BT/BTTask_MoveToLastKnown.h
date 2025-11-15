@@ -21,7 +21,6 @@ public:
 #pragma region Setting
 
 public:
-
 	UPROPERTY(EditAnywhere, Category = "Investigate")
 	float SearchRadius = 300.f;
 

@@ -31,6 +31,7 @@ struct FAnomalyEntry
 
 	UPROPERTY()
 	TSubclassOf<AAnomaly_Base> AnomalyClass;
+
 	UPROPERTY()
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
 };
@@ -60,16 +61,12 @@ private:
 	bool bIsElevatorNormal = false;
 
 public:
-	UFUNCTION()
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
-	UFUNCTION()
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
 
-	UFUNCTION()
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
-	UFUNCTION()
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
@@ -80,13 +77,10 @@ private:
 	uint8 Floor = 9;
 
 private:
-	UFUNCTION()
 	void ResetFloor() { Floor = 9; };
 
-	UFUNCTION()
 	void SubFloor();
 
-	UFUNCTION()
 	void AddFloor();
 
 #pragma endregion
@@ -98,13 +92,10 @@ public:
 	EAnomalyVerdictMode VerdictMode;
 
 public:
-	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 
-	UFUNCTION()
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 
-	UFUNCTION()
 	void ApplyVerdict();
 
 #pragma endregion
@@ -136,7 +127,6 @@ public:
 	uint8 ActIndex = 0;
 
 public:
-	UFUNCTION()
 	void InitializePool();
 
 #pragma endregion

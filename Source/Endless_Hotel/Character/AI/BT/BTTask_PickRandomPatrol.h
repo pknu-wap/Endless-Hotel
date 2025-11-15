@@ -20,6 +20,7 @@ public:
 
 #pragma region Key
 
+public:
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	struct FBlackboardKeySelector PatrolPosKey;
 
@@ -30,6 +31,7 @@ public:
 
 #pragma region Task
 
+public:
 	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

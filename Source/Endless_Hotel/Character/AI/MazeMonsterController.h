@@ -36,7 +36,8 @@ protected:
 	UPROPERTY(visibleAnywhere, BlueprintReadOnly, Category = "AI|Perception")
 	TObjectPtr<UAIPerceptionComponent> Perception;
 
-	UPROPERTY()
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -49,6 +50,7 @@ protected:
 
 #pragma region Search & Move
 
+protected:
 	UFUNCTION()
 	void OnTargetDetected(AActor* Actor, FAIStimulus Stimulus);
 

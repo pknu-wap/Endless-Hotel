@@ -152,7 +152,6 @@ private:
 	FTimerHandle DoorCloseTimerHandle;
 
 protected:
-	UFUNCTION()
 	void MoveDoors(bool isOpening);
 
 	UFUNCTION()
@@ -179,8 +178,6 @@ protected:
 	float ElevatorMoveDuration = 3.0f;
 
 protected:
-	
-	UFUNCTION()
 	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
 
 #pragma endregion
@@ -197,10 +194,8 @@ protected:
 	TSubclassOf<ACharacter> PlayerBPClass;
 
 protected:
-	UFUNCTION()
 	void RotatePlayer();
 
-	UFUNCTION()
 	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
 
 private:
