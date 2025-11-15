@@ -55,13 +55,12 @@ public:
 	bool bIsSolved = false;
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void SetSolved(bool bNewSolved);
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	UFUNCTION()
 	void SetCorrectElevator(bool bNewCorrect) { bIsCorrectElevator = bNewCorrect; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|VerdictMode")
+	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
 
 #pragma endregion
