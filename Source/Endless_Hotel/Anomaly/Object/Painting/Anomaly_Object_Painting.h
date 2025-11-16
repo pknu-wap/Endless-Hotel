@@ -31,7 +31,7 @@ protected:
 #pragma region EyeMove
 
 public:
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void EyeFollowing();
 
 #pragma endregion

@@ -58,10 +58,8 @@ public:
 #pragma region Generate Anomaly
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index);
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	AAnomaly_Base* SpawnNormal();
 
 protected:
@@ -77,7 +75,6 @@ public:
 	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
 
 protected:
-	UFUNCTION()
 	void AddAnomaly();
 
 #pragma endregion
