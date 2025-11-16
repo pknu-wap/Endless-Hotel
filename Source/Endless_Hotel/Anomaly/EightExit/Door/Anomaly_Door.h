@@ -18,14 +18,4 @@ public:
 
 #pragma endregion
 
-#pragma region Door
-
-protected:
-	void StartDoorAction();
-
-protected:
-	TFunction<void(class AAnomaly_Object_Door*)> DoorAction;
-
-#pragma endregion
-
 };

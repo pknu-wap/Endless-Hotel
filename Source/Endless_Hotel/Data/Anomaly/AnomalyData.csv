@@ -4,3 +4,4 @@
 3,3,Door_Shake,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C,/Game/EndlessHotel/Anomaly/Object/Door/BP_Door.BP_Door_C
 4,4,Ceiling_Rotate,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
 5,5,Cry,/Game/EndlessHotel/Anomaly/Base/BP_Cry.BP_Cry_C,
+6,11,Blood,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C

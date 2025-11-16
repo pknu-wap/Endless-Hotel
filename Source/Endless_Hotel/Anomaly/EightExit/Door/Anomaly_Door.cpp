@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/Door/Anomaly_Object_Door.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Activity
 
@@ -13,28 +12,14 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	switch (Anomaly_ID)
 	{
 		case 3:
-			DoorAction = ([](AAnomaly_Object_Door* Door) {Door->ActiveTrigger(); });
+			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+				{
+					Cast<AAnomaly_Object_Door>(AnomalyObject)->ActiveTrigger();
+				});
 		break;
 	}
 
-	StartDoorAction();
-}
-
-#pragma endregion
-
-#pragma region Door
-
-void AAnomaly_Door::StartDoorAction()
-{
-	FTimerHandle DoorHandle;
-	GetWorld()->GetTimerManager().SetTimer(DoorHandle, [this]() mutable
-		{
-			for (auto* FoundActor : LinkedObjects)
-			{
-				auto* Light = Cast<AAnomaly_Object_Door>(FoundActor);
-				DoorAction(Light);
-			}
-		}, 0.5f, true);
+	StartAnomalyAction();
 }
 
 #pragma endregion
