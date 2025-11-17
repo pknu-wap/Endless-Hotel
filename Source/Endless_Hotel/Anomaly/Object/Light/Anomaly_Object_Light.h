@@ -38,6 +38,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Light
+
+public:
+	void TurnOffLight();
+
+#pragma endregion
+
 #pragma region Destroy
 
 public:
