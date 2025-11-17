@@ -26,8 +26,8 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Door::StartDoorAction()
 {
-	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
+	FTimerHandle DoorHandle;
+	GetWorld()->GetTimerManager().SetTimer(DoorHandle, [this]() mutable
 		{
 			for (auto* FoundActor : LinkedObjects)
 			{
