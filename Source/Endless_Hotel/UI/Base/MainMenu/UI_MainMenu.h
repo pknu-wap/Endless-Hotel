@@ -16,13 +16,27 @@ class ENDLESS_HOTEL_API UUI_MainMenu : public UUI_Base
 protected:
 	virtual void NativeOnInitialized() override;
 
-protected:
-	UPROPERTY()
-	TObjectPtr<class UUI_Controller> UICon;
-
 #pragma endregion
 
 #pragma region Button
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UVerticalBox> VBox_Buttons;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UButton>> Buttons;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Compendium;
+
+	const int32 Index_Start = 0;
+	const int32 Index_Setting = 1;
+	const int32 Index_Quit = 2;
+
+#pragma endregion
+
+#pragma region Click
 
 protected:
 	UFUNCTION()
@@ -37,18 +51,13 @@ protected:
 	UFUNCTION()
 	void ButtonClick_Quit();
 
+#pragma endregion
+
+#pragma region Reset
+
 protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Start;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Compendium;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Setting;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Quit;
+	UFUNCTION()
+	void ResetOtherButton();
 
 #pragma endregion
 
