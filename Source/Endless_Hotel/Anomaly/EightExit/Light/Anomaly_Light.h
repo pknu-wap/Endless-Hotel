@@ -27,8 +27,8 @@ protected:
 	TFunction<void(class AAnomaly_Object_Light*)> LightAction;
 
 protected:
-	uint8 CurrentIndex = 1;
-	const uint8 MaxIndex = 15;
+	int32 CurrentIndex = 1;
+	const int32 MaxIndex = 4;
 
 	float NextActionDelay = 0;
 

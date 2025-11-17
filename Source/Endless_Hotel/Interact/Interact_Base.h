@@ -9,12 +9,13 @@
 UCLASS()
 class ENDLESS_HOTEL_API AInteract_Base : public AActor
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
+	
+#pragma region Base
 
 public:
-    AInteract_Base(const FObjectInitializer& ObjectInitializer);
+	AInteract_Base(const FObjectInitializer& ObjectInitializer);
 
-    //상호작용 함수 선언
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-    void Interact(APlayerController* InteractingController);
+#pragma endregion
+
 };

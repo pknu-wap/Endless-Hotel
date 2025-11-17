@@ -3,6 +3,8 @@
 #include "AnomalyProgressSubSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Engine/World.h"
+#include "EngineUtils.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
@@ -25,7 +27,7 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	AnomalyCount = 0;
 	ActIndex = 0;
 	GetAnomalyData();
-	InitializePool();
+	InitializePool(true);
 }
 #pragma endregion
 
@@ -159,18 +161,17 @@ TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByRowIndex
 
 #pragma region Pool & Reset
 
-void UAnomalyProgressSubSystem::InitializePool()
+void UAnomalyProgressSubSystem::InitializePool(bool bShuffle)
 {
 	// Copy from Original
 	ActAnomaly = OriginAnomaly;
 
-	ActIndex = 0;
 	// Shuffle
-	if (ActAnomaly.Num() > 1)
+	if (bShuffle && ActAnomaly.Num() > 1)
 	{
-		for (uint8 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		for (int32 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
 		{
-			const uint8 RandomIndex = FMath::RandRange(0, CurrentIndex);
+			const int32 RandomIndex = FMath::RandRange(0, CurrentIndex);
 			if (CurrentIndex != RandomIndex)
 			{
 				ActAnomaly.Swap(CurrentIndex, RandomIndex);
@@ -180,6 +181,11 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 	// Reset Index
 	ActIndex = 0;
+}
+
+void UAnomalyProgressSubSystem::ResetSequence(bool bShuffle)
+{
+	InitializePool(true);
 }
 
 #pragma endregion

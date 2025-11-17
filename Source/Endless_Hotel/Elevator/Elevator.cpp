@@ -1,16 +1,36 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
+<<<<<<< HEAD
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Curves/CurveFloat.h"
 #include "GameFramework/Character.h"
+=======
+#include "Components/BoxComponent.h"          
+#include "Components/StaticMeshComponent.h"   
+#include "Components/PointLightComponent.h"   
+#include "Components/TimelineComponent.h"     
+#include "Components/SceneComponent.h"        
+#include "Curves/CurveFloat.h"                
+#include "TimerManager.h"
+#include "GameFramework/Character.h"          
+#include "Engine/CollisionProfile.h"          
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
+#include "CollisionQueryParams.h"
+#include "WorldCollision.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Engine/EngineTypes.h"
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
 
+
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
+
 
 #pragma region Base
 
@@ -96,6 +116,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	// 9) Timeline
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+	MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
 
 	// 10) Mobility Settings
 	ElevatorSceneRoot->SetMobility(EComponentMobility::Movable);
@@ -141,12 +162,37 @@ void AElevator::BeginPlay()
 		DoorTimeline->SetLooping(false);
 		DoorTimeline->SetIgnoreTimeDilation(true);
 	}
+	SetActorLocation(StartPoint);
+
+	FOnTimelineFloat MoveUpdate;
+	MoveUpdate.BindUFunction(this, FName("OnMoveTimelineUpdate"));
+
+	FOnTimelineEvent MoveFinished;
+	MoveFinished.BindUFunction(this, FName("OnMoveTimelineFinished"));
+
+	MoveTimeline->AddInterpFloat(MoveCurve, MoveUpdate);
+	MoveTimeline->SetTimelineFinishedFunc(MoveFinished);
+	MoveTimeline->SetLooping(false);
+	MoveTimeline->SetIgnoreTimeDilation(true);
+
+	if (MoveDuration > 0.f)
+	{
+		MoveTimeline->SetPlayRate(1.f / MoveDuration);
+	}
+	
+	OrigStartPoint = StartPoint;
+	OrigLoopPoint = LoopPoint;
+	MovePhase = 0;
 
 	// 4) Delegate Setup
 	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnOverlapBegin);
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
+<<<<<<< HEAD
 	PresenceTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnPresenceBegin);
 	PresenceTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnPresenceEnd);
+=======
+	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 
 	// 5) MoveElevator
 	if (!bIsNormalElevator)
@@ -172,8 +218,74 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 
 void AElevator::OnDoorTimelineFinished()
 {
+	bDoorOpen = bWantOpen;
 	SetPlayerInputEnabled(true);
+<<<<<<< HEAD
 	bIsDoorMoving = false;
+=======
+
+	if (!bDoorOpen && bMoveAfterClosePending)
+	{
+		bMoveAfterClosePending = false;
+		GetWorldTimerManager().ClearTimer(StartMoveTimer);
+		
+		GetWorldTimerManager().SetTimer(
+			StartMoveTimer,
+			[this]() {MoveUp();  },
+			StartMoveDelay,
+			false
+		);
+	}
+}
+
+#pragma endregion
+
+#pragma region MoveTimeline
+
+void AElevator::OnMoveTimelineUpdate(float Alpha)
+{
+	const FVector NewPos = FMath::Lerp(StartPoint, LoopPoint, Alpha);
+	SetActorLocation(NewPos);
+}
+
+void AElevator::OnMoveTimelineFinished()
+{
+	if (MovePhase == 0)
+	{
+		PerformLoopTeleport();
+
+		MovePhase = 1;
+		StartPoint = LoopSpawnPoint;
+		LoopPoint = OrigStartPoint;
+
+		if (MoveTimeline)
+		{
+			MoveTimeline->PlayFromStart();
+		}
+	}
+	else
+	{
+		bIsMoving = false;
+		MovePhase = 0;
+
+		StartPoint = OrigStartPoint;
+		LoopPoint = OrigLoopPoint;
+
+		bRideCompleted = true;
+		bSpawnSentThisStop = false;
+		bChoiceSentThisRide = false;
+
+		GetWorldTimerManager().ClearTimer(AutoOpenTimer);
+		GetWorldTimerManager().SetTimer(
+			AutoOpenTimer,
+			[this]()
+			{
+				OpenDoors();
+			},
+			AutoOpenTimeAtReturn, false
+		);
+	}
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 }
 
 #pragma endregion
@@ -181,8 +293,9 @@ void AElevator::OnDoorTimelineFinished()
 #pragma region DoorMovement
 
 // Open& Close
-void AElevator::MoveDoors(bool bIsOpening)
+void AElevator::OpenDoors()
 {
+<<<<<<< HEAD
 
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bIsDoorMoving) return;
@@ -195,16 +308,50 @@ void AElevator::MoveDoors(bool bIsOpening)
 		DoorTimeline->PlayFromStart();
 	else
 		DoorTimeline->ReverseFromEnd();
+=======
+	if (!DoorTimeline || !DoorCurve) return;
+	if (bDoorOpen) return;
+
+	SetPlayerInputEnabled(false);
+
+	DoorTimeline->Stop();
+	bWantOpen = true;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorOpenDuration));
+	DoorTimeline->PlayFromStart();
+}
+
+void AElevator::CloseDoors()
+{
+	if (!DoorTimeline || !DoorCurve) return;
+	if (!bDoorOpen) return;
+
+	// SetPlayerInputEnabled(false); -> 연출 대비
+
+	DoorTimeline->Stop();
+	bWantOpen = false;
+	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorCloseDuration));
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 }
 
 // Trigger Callbacks
 void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+<<<<<<< HEAD
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor) && !bIsPlayerInside)
 	{
 		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
 		MoveDoors(true);
+=======
+	// Player only
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+		OpenDoors();
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 	}
 }
 
@@ -230,6 +377,98 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	}
 }
 
+#pragma endregion
+
+#pragma region ElevatorMove
+
+// API
+void AElevator::MoveUp()
+{
+	if (!MoveTimeline || !MoveCurve) return;
+	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
+
+	MovePhase = 0;
+	StartPoint = OrigStartPoint;
+	LoopPoint = OrigLoopPoint;
+
+	MoveTimeline->PlayFromStart();
+}
+
+void AElevator::MoveDown()
+{
+	if (!MoveTimeline || !MoveCurve) return;
+	bIsMoving = true;
+	bRideCompleted = false;
+	bSpawnSentThisStop = false;
+
+	MovePhase = 0;
+	StartPoint = OrigStartPoint;
+	LoopPoint = OrigLoopPoint;
+
+	MoveTimeline->ReverseFromEnd();
+}
+
+// Teleport With Player
+void AElevator::PerformLoopTeleport()
+{
+	const FVector Delta = LoopSpawnPoint - LoopPoint;
+
+	const FBoxSphereBounds Bounds = (Car ? Car->Bounds : GetRootComponent()->Bounds);
+	const FVector Center = Bounds.Origin;
+	const FVector Extents = Bounds.BoxExtent + FVector(30.0f, 30.0f, 30.0f);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjTypes;
+	ObjTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(this);
+
+	TArray<AActor*> OverlapActors;
+	const bool bHit = UKismetSystemLibrary::BoxOverlapActors(
+		GetWorld(),
+		Center,
+		Extents,
+		ObjTypes,
+		ACharacter::StaticClass(),
+		ActorsToIgnore,
+		OverlapActors
+	);
+	AddActorWorldOffset(Delta, false, nullptr, ETeleportType::TeleportPhysics);
+
+	if (bHit && OverlapActors.Num() > 0)
+	{
+		TSet<ACharacter*> UniqueChars;
+		for (AActor* A : OverlapActors)
+		{
+			if (ACharacter* C = Cast<ACharacter>(A))
+			{
+				UniqueChars.Add(C);
+			}
+		}
+
+		for (ACharacter* C : UniqueChars)
+		{
+			if (!IsValid(C)) continue;
+
+			const FVector NewLoc = C->GetActorLocation() + Delta;
+			const FRotator NewRot = C->GetActorRotation();
+
+			const bool bOK = C->TeleportTo(NewLoc, NewRot, false, false);
+
+			if (bOK)
+			{
+				if (UCharacterMovementComponent* Move = C->GetCharacterMovement())
+				{
+					Move->StopMovementImmediately();
+					Move->Velocity = FVector::ZeroVector;
+				}
+			}
+		}
+	}
+}
+
 // Trigger Callbacks
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -239,6 +478,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
 
 		if (!bChoiceSentThisRide)
+<<<<<<< HEAD
 			NotifySubsystemElevatorChoice();
 	}
 }
@@ -254,6 +494,84 @@ void AElevator::OnPresenceEnd(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (!(OtherActor && PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
 	bIsPlayerInside = false;
 	MoveDoors(false);
+=======
+		{
+			UE_LOG(LogElevator, Log, TEXT("[IsNormalElevaotr: %d]"), bIsNormalElevator);
+			NotifySubsystemElevatorChoice();
+		}
+
+		if (bSequenceArmed || bIsMoving) return;
+		bSequenceArmed = true;
+		bPlayerOnboard = true;
+
+		const bool bWasOpen = bDoorOpen;
+		CloseDoors();
+
+		GetWorldTimerManager().ClearTimer(StartMoveTimer);
+		if (bWaitDoorCloseBeforMove && bWasOpen && DoorTimeline->IsPlaying())
+		{
+			bMoveAfterClosePending = true;
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(
+				StartMoveTimer,
+				[this]()
+				{
+					MoveUp();
+				},
+				StartMoveDelay,
+				false
+			);
+		}
+	}
+}
+
+void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor))
+	{
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)))
+		{
+			return;
+		}
+
+		bPlayerOnboard = false;
+
+		if (!bIsMoving)
+		{
+			if (bRideCompleted && !bSpawnSentThisStop)
+			{
+				bSpawnSentThisStop = true;
+				bRideCompleted = false;
+			}
+
+			GetWorldTimerManager().ClearTimer(StartMoveTimer);
+			bSequenceArmed = false;
+		}
+
+		GetWorldTimerManager().ClearTimer(AutoCloseTimer);
+		GetWorldTimerManager().SetTimer(
+			AutoCloseTimer,
+			[this]()
+			{
+				CloseDoors();
+				bSequenceArmed = false;
+			},
+			AutoCloseDelayAfterExit,
+			false
+		);
+	}
+}
+
+// Player Check Helper
+bool AElevator::IsMyPlayer(AActor* Other) const
+{
+	if (!Other) return false;
+	if (PlayerBPClass) return Other->IsA(PlayerBPClass);
+	return Cast<ACharacter>(Other) != nullptr;
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 }
 
 #pragma endregion
@@ -264,6 +582,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+<<<<<<< HEAD
 	RotatePlayer();
 	MoveDoors(false);
 	SetPlayerInputEnabled(false);
@@ -283,12 +602,18 @@ void AElevator::NotifySubsystemElevatorChoice()
 			bChoiceSentThisRide = true;
 			GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 		}, DoorDuration + ElevatorMoveDuration, false);
+=======
+	Sub->SetIsElevatorNormal(bIsNormalElevator);
+	Sub->ApplyVerdict();
+	bChoiceSentThisRide = true;
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 }
 
 #pragma endregion
 
-#pragma region PlayerMoveControl
+#pragma endregion
 
+#pragma region PlayerMoveControl
 void AElevator::SetPlayerInputEnabled(bool bEnable)
 {
 	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
@@ -300,6 +625,7 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 		}
 	}
 }
+<<<<<<< HEAD
 
 void AElevator::RotatePlayer()
 {
@@ -330,4 +656,6 @@ void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
 	}
 }
 
+=======
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 #pragma endregion

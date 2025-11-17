@@ -1,4 +1,4 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
+// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -33,9 +33,16 @@ public:
 
 #pragma endregion
 
-#pragma region Anomaly
-
+#pragma region Params
 public:
+	// Verdict Params
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsCorrectElevator = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	bool bIsSolved = false;
+
+	// ID
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
@@ -88,6 +95,5 @@ private:
 public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
-
 #pragma endregion
 };

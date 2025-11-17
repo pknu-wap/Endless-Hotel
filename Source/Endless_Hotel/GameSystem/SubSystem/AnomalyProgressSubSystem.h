@@ -63,11 +63,21 @@ private:
 public:
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
+<<<<<<< HEAD
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
+=======
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	void SetIsAnomalySolved(bool bNewValue) { bIsAnomalySolved = bNewValue; };
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
+<<<<<<< HEAD
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
+=======
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
+	void SetIsElevatorNormal(bool bNewValue) { bIsElevatorNormal = bNewValue; };
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 
 #pragma endregion
 
@@ -91,10 +101,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	EAnomalyVerdictMode VerdictMode;
 
+<<<<<<< HEAD
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
+=======
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	void SetVerdictMode(EAnomalyVerdictMode NewMode) { VerdictMode = NewMode; };
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	bool ComputeVerdict(bool bSolved, bool bCorrectElevator) const;
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 
 	void ApplyVerdict();
 
@@ -104,10 +122,10 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
-	uint8 AnomalyCount = 0;
+	int32 AnomalyCount = 0;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
-	TArray<uint8> AnomalyHistory;
+	TArray<int32> AnomalyHistory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 CurrentAnomalyID = -1;
@@ -124,10 +142,18 @@ public:
 	TArray<FAnomalyEntry> ActAnomaly;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	uint8 ActIndex = 0;
+	int32 ActIndex = 0;
 
 public:
+<<<<<<< HEAD
 	void InitializePool();
+=======
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	void InitializePool(bool bShuffle = true);
+
+	UFUNCTION(BlueprintCallable, Category = "Anomaly")
+	void ResetSequence(bool bShuffle = true);
+>>>>>>> parent of 0cbff4e (Merge remote-tracking branch 'origin/Develop' into origin/Feature/Anomaly)
 
 #pragma endregion
 
@@ -147,4 +173,5 @@ public:
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
 
 #pragma endregion
+
 };
