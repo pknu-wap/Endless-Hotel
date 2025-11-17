@@ -21,9 +21,6 @@ public:
 	uint8 HandPrintIndex = 0;
 
 protected:
-	UPROPERTY()
-	TObjectPtr<class USceneComponent> Root;
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UDecalComponent> Decal_HandPrint;
 
@@ -36,9 +33,6 @@ protected:
 
 public:
 	void StartCongCong(float& NextCong);
-
-protected:
-	void TurnOffLights();
 
 protected:
 	static bool bIsFirstHandPrint;

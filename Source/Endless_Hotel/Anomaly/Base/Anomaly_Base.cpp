@@ -18,17 +18,11 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 
 #pragma endregion
 
-#pragma region Anomaly
-
-void AAnomaly_Base::StartAnomalyAction()
+#pragma region Activities
+void AAnomaly_Base::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
-	for (auto* FoundActor : LinkedObjects)
-	{
-		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		AnomalyAction(AnomalyObject);
-	}
+	bIsActive = true;
 }
-
 #pragma endregion
 
 #pragma region Verdicts

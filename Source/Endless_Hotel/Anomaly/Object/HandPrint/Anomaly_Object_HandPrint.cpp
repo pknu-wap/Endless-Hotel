@@ -1,10 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/HandPrint/Anomaly_Object_HandPrint.h"
-#include "Anomaly/Object/Light/Anomaly_Object_Light.h"
 #include "Components/AudioComponent.h"
 #include "Components/DecalComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Base
 
@@ -13,11 +11,8 @@ bool AAnomaly_Object_HandPrint::bIsFirstHandPrint = true;
 AAnomaly_Object_HandPrint::AAnomaly_Object_HandPrint(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
-
 	Decal_HandPrint = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal_HandPrint"));
-	Decal_HandPrint->SetupAttachment(RootComponent);
+	RootComponent = Decal_HandPrint;
 	Decal_HandPrint->SetRelativeRotation(FRotator(90, 0, 0));
 	Decal_HandPrint->SetRelativeScale3D(FVector(0.2f, 0.2f, 0.2f));
 	Decal_HandPrint->SetVisibility(false);
@@ -36,8 +31,6 @@ void AAnomaly_Object_HandPrint::StartCongCong(float& NextCong)
 	{
 		AC->Sound = Sound_First;
 		NextCong = 0.1f;
-
-		TurnOffLights();
 	}
 	else
 	{
@@ -47,18 +40,6 @@ void AAnomaly_Object_HandPrint::StartCongCong(float& NextCong)
 	AC->Play();
 
 	Decal_HandPrint->SetVisibility(true);
-}
-
-void AAnomaly_Object_HandPrint::TurnOffLights()
-{
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
-
-	for (auto* FoundActor : FoundActors)
-	{
-		auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-		Light->TurnOffLight();
-	}
 }
 
 #pragma endregion

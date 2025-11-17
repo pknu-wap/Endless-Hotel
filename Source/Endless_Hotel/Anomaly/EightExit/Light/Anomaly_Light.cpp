@@ -2,6 +2,7 @@
 
 #include "Anomaly/EightExit/Light/Anomaly_Light.h"
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma region Activity
 
@@ -12,26 +13,24 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	switch (Anomaly_ID)
 	{
 	case 1:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-			{
-				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
-			});
+		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
 		NextActionDelay = 0.5f;
 		break;
 
 	case 2:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-			{
-				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();
-			});
+		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
 		NextActionDelay = 2;
 		break;
 	}
 
-	StartAnomalyAction();
+	StartLightAction();
 }
 
-void AAnomaly_Light::StartAnomalyAction()
+#pragma endregion
+
+#pragma region Light
+
+void AAnomaly_Light::StartLightAction()
 {
 	FTimerHandle LightHandle;
 	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
@@ -41,7 +40,7 @@ void AAnomaly_Light::StartAnomalyAction()
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
 				if (CurrentIndex == Light->LightIndex)
 				{
-					AnomalyAction(Light);
+					LightAction(Light);
 				}
 			}
 
