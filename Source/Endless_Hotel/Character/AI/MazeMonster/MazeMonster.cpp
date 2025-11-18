@@ -7,4 +7,5 @@ AMazeMonster::AMazeMonster(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
+	CurrentIndex = 0;
 }

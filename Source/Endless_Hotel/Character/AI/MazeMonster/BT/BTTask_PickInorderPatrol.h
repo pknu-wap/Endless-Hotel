@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_PickRandomPatrol.generated.h"
+#include "BTTask_PickInorderPatrol.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API UBTTask_PickRandomPatrol : public UBTTaskNode
+class ENDLESS_HOTEL_API UBTTask_PickInorderPatrol : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	UBTTask_PickRandomPatrol();
+	UBTTask_PickInorderPatrol();
 
 #pragma endregion
 

@@ -27,5 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
 	TArray<TObjectPtr<AActor>> PatrolPoints;
 
+	UPROPERTY(EditAnywhere, Category = "Patrol")
+	uint8 CurrentIndex;
 #pragma endregion
 };
