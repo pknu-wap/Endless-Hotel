@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Main/UI_Button_Main.h"
+#include "UI/Base/MainMenu/UI_MainMenu.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBoxSlot.h"
 
@@ -30,6 +31,8 @@ void UUI_Button_Main::OnButtonHover()
 	SetButtonSize(ButtonSize_Hover);
 	SetButtonTexture(Texture_Button_Hover);
 	SetFontSize(FontSize_Hover);
+
+	Cast<UUI_MainMenu>(ButtonOwner)->ResetOtherButton(ButtonIndex);
 }
 
 void UUI_Button_Main::SetButtonSize(const float& ButtonSize)

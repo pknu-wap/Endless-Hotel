@@ -55,9 +55,8 @@ protected:
 
 #pragma region Reset
 
-protected:
-	UFUNCTION()
-	void ResetOtherButton();
+public:
+	void ResetOtherButton(const uint8& CurrentIndex);
 
 #pragma endregion
 
