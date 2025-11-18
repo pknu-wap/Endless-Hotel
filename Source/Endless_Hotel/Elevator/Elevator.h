@@ -147,6 +147,7 @@ private:
 
 	bool bIsDoorMoving;
 	bool bIsPlayerInside;
+	bool bIsDoorOpened;
 
 	FTimerHandle DoorOpenTimerHandle;
 	FTimerHandle DoorCloseTimerHandle;
