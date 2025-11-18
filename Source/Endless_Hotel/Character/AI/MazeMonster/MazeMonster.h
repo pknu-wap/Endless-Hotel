@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/Character/EHCharacter.h"
+#include "Character/AI/BaseAI.h"
 #include "MazeMonster.generated.h"
 
-
+/**
+ * 
+ */
 UCLASS()
-class ENDLESS_HOTEL_API AMazeMonster : public AEHCharacter
+class ENDLESS_HOTEL_API AMazeMonster : public ABaseAI
 {
 	GENERATED_BODY()
 
@@ -16,9 +18,6 @@ class ENDLESS_HOTEL_API AMazeMonster : public AEHCharacter
 
 public:
 	AMazeMonster(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void Tick(float DeltaSeconds) override;
 
 #pragma endregion
 
@@ -29,5 +28,4 @@ public:
 	TArray<TObjectPtr<AActor>> PatrolPoints;
 
 #pragma endregion
-
 };

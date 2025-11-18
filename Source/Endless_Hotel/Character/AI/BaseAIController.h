@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "MazeMonsterController.generated.h"
+#include "BaseAIController.generated.h"
 
 #pragma region Declare
 
@@ -15,18 +15,17 @@ class UAISenseConfig_Sight;
 
 
 UCLASS()
-class ENDLESS_HOTEL_API AMazeMonsterController : public AAIController
+class ENDLESS_HOTEL_API ABaseAIController : public AAIController
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	AMazeMonsterController();
+	ABaseAIController();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
-	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -45,23 +44,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TObjectPtr<UBlackboardData> BBAsset;
-
-#pragma endregion
-
-#pragma region Search & Move
-
-protected:
-	UFUNCTION()
-	void OnTargetDetected(AActor* Actor, FAIStimulus Stimulus);
-
-#pragma endregion
-
-#pragma region Key
-
-public:
-	static const FName Key_TargetPlayer;
-	static const FName Key_LastKnownPos;
-	static const FName Key_PatrolPos;
 
 #pragma endregion
 
