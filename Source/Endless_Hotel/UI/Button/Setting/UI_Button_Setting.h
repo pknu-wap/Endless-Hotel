@@ -12,10 +12,12 @@ UENUM(BlueprintType)
 enum class ESettingCategory : uint8
 {
 	Grapic		UMETA(DisplayName = "Grapic"),
-	Language	UMETA(DisplayName = "Language"),
 	Resolution	UMETA(DisplayName = "Resolution"),
+	Frame		UMETA(DisplayName = "Frame"),
 	Screen		UMETA(DisplayName = "Screen"),
-	Sound		UMETA(DisplayName = "Sound")
+	Sound		UMETA(DisplayName = "Sound"),
+	Brightness	UMETA(DisplayName = "Brightness"),
+	Language	UMETA(DisplayName = "Language")
 };
 
 USTRUCT(BlueprintType)
