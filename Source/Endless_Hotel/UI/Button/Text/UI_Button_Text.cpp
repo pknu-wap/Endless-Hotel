@@ -19,15 +19,17 @@ UUI_Button_Text::UUI_Button_Text(const FObjectInitializer& ObjectInitializer)
 void UUI_Button_Text::ButtonHover()
 {
 	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
-	FLinearColor Text_Color = FColor::FromHex(Color_Hover).ReinterpretAsLinear();
-	ButtonText->SetColorAndOpacity(FSlateColor(Text_Color));
+	FColor TextColor = FColor::FromHex(Color_Hover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
 void UUI_Button_Text::ButtonUnhover()
 {
 	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
-	FLinearColor Text_Color = FColor::FromHex(Color_Unhover).ReinterpretAsLinear();
-	ButtonText->SetColorAndOpacity(FSlateColor(Text_Color));
+	FColor TextColor = FColor::FromHex(Color_Unhover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
 #pragma endregion
