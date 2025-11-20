@@ -65,4 +65,19 @@ protected:
 
 #pragma endregion
 
+#pragma region Highlight
+
+public:
+	void HighlightButton();
+	void UnhighlightButton();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> Texture_Normal;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> Texture_Highlight;
+
+#pragma endregion
+
 };

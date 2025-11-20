@@ -37,6 +37,9 @@ protected:
 #pragma region Setting
 
 protected:
+	void SettingButtonOwner(class UHorizontalBox* ButtonBox);
+
+protected:
 	UPROPERTY()
 	TObjectPtr<class UGameUserSettings> SettingHandle;
 
@@ -142,6 +145,13 @@ protected:
 	// 해당 기능은 최종 이후 추가 예정
 	/*UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_PopUp_Base> UI_Language;*/
+
+#pragma endregion
+
+#pragma region Hightlight
+
+public:
+	void HighlightButton(const enum ESettingCategory& ButtonType, const uint8& TargetIndex);
 
 #pragma endregion
 

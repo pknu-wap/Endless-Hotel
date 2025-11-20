@@ -41,6 +41,11 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
 	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Reset);
+
+	SettingButtonOwner(Buttons_Grapic);
+	SettingButtonOwner(Buttons_Resolution);
+	SettingButtonOwner(Buttons_Frame);
+	SettingButtonOwner(Buttons_Screen);
 }
 
 void UUI_PopUp_Setting::NativeConstruct()
@@ -56,6 +61,19 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Value_Sound = SaveData.Sound;
 
 	//Value_Language = SaveData.Language;
+}
+
+#pragma endregion
+
+#pragma region Setting
+
+void UUI_PopUp_Setting::SettingButtonOwner(UHorizontalBox* ButtonBox)
+{
+	for (auto* Button : ButtonBox->GetAllChildren())
+	{
+		auto* Target = Cast<UUI_Button_Base>(Button);
+		Target->SetButtonOwner(this);
+	}
 }
 
 #pragma endregion
@@ -129,6 +147,47 @@ void UUI_PopUp_Setting::ButtonClick_Reset()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenPopUpWidget(UI_Reset);
+}
+
+#pragma endregion
+
+#pragma region Highlight
+
+void UUI_PopUp_Setting::HighlightButton(const ESettingCategory& ButtonType, const uint8& TargetIndex)
+{
+	UHorizontalBox* SearchBox = nullptr;
+
+	switch (ButtonType)
+	{
+	case ESettingCategory::Grapic:
+		SearchBox = Buttons_Grapic;
+		break;
+
+	case ESettingCategory::Resolution:
+		SearchBox = Buttons_Resolution;
+		break;
+
+	case ESettingCategory::Frame:
+		SearchBox = Buttons_Frame;
+		break;
+
+	case ESettingCategory::Screen:
+		SearchBox = Buttons_Screen;
+		break;
+	}
+
+	for (auto* SearchTarget : SearchBox->GetAllChildren())
+	{
+		auto* Target = Cast<UUI_Button_Setting>(SearchTarget);
+
+		if (Target->GetButtonIndex() == TargetIndex)
+		{
+			Target->HighlightButton();
+			continue;
+		}
+
+		Target->UnhighlightButton();
+	}
 }
 
 #pragma endregion
