@@ -71,6 +71,7 @@ protected:
 	// FaceCover
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* IA_FaceCover;
+	bool bIsFaceCoverTransitioning = false;
 
 	//ESC
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -87,7 +88,8 @@ protected:
 	void OnRunCompleted();
 	void OnCrouchStarted();
 	void OnCrouchCompleted();
-	void OnFaceCoverTriggered();
+	void OnFaceCoverStarted();
+	void OnFaceCoverCompleted();
 	void OnInteract(const FInputActionValue& Value);
 	void OnESCTriggered();
 
@@ -109,11 +111,20 @@ protected:
 #pragma endregion
 
 #pragma region State
-protected:
+public:
 	bool bIsFaceCovering = false;
 	bool bIsCameraFixed = false;
 	bool bCanMove = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsRunning() const { return bIsRunning; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsCrouching() const { return bIsCrouching; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsFaceCovering() const { return bIsFaceCovering; }
 #pragma endregion
 };

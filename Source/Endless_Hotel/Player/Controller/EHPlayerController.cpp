@@ -77,7 +77,8 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &ThisClass::OnCrouchCompleted);
 
 		// FaceCover
-		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Triggered, this, &ThisClass::OnFaceCoverTriggered);
+		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Started, this, &ThisClass::OnFaceCoverStarted);
+		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
 
 		// ESC
 		// FaceCover
@@ -123,7 +124,7 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 			{
 				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();
 				float NewPitch = CurrentRotation.Pitch + (LookVector.Y * LookSensitivity);
-				NewPitch = FMath::Clamp(NewPitch, -45.0f, 0.0f);
+				NewPitch = FMath::Clamp(NewPitch, -79.0f, 79.0f);
 
 				CameraComponent->SetRelativeRotation(FRotator(NewPitch, CurrentRotation.Yaw, CurrentRotation.Roll));
 			}
@@ -193,7 +194,7 @@ void AEHPlayerController::OnCrouchCompleted()
 	}
 }
 
-void AEHPlayerController::OnFaceCoverTriggered()
+void AEHPlayerController::OnFaceCoverStarted()
 {
 	ACharacter* ControlledCharacter = GetCharacter();
 	if (!ControlledCharacter) return;
@@ -202,11 +203,12 @@ void AEHPlayerController::OnFaceCoverTriggered()
 	float Speed = Velocity.Size();
 
 	if (Speed > 0.0f) return; // 이동 중이면 전환 금지
+	if (bIsFaceCoverTransitioning) return;
 
-	// 상태 토글
-	bIsFaceCovering = !bIsFaceCovering;
-	bIsCameraFixed = !bIsCameraFixed;
-	bCanMove = !bCanMove;
+	bIsFaceCoverTransitioning = true;
+	bIsFaceCovering = true;
+	bIsCameraFixed = true;
+	bCanMove = false;
 
 	// SpringArm & Camera 초기화
 	if (!SpringArm)
@@ -221,17 +223,45 @@ void AEHPlayerController::OnFaceCoverTriggered()
 
 	if (!SpringArm || !PlayerCameraComponent) return;
 
-	// 카메라 전환 로직
-	if (bIsFaceCovering)
-	{
-		// 얼굴 보기 모드로 전환
+	
+	if (bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
-		PlayerCameraComponent->SetRelativeRotation(FRotator(0.f, -20.f, 0.f));
+		PlayerCameraComponent->SetRelativeRotation(FRotator(-25.f, 0.f, 0.f));
+		bIsFaceCoverTransitioning = false;
 	}
-	else
+}
+
+void AEHPlayerController::OnFaceCoverCompleted()
+{
+	ACharacter* ControlledCharacter = GetCharacter();
+	if (!ControlledCharacter) return;
+
+	FVector Velocity = ControlledCharacter->GetVelocity();
+	float Speed = Velocity.Size();
+
+	if (!bIsFaceCovering) return;
+	if (bIsFaceCoverTransitioning) return;
+
+	bIsFaceCoverTransitioning = true;
+	bIsFaceCovering = false;
+	bIsCameraFixed = false;
+	bCanMove = true;
+
+	if (!SpringArm)
 	{
-		// 원래 위치로 복귀
+		SpringArm = ControlledCharacter->FindComponentByClass<USpringArmComponent>();
+	}
+
+	if (!PlayerCameraComponent)
+	{
+		PlayerCameraComponent = ControlledCharacter->FindComponentByClass<UCameraComponent>();
+	}
+
+	if (!SpringArm || !PlayerCameraComponent) return;
+
+	if (!bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+		bIsFaceCoverTransitioning = false;
 	}
 }
 
