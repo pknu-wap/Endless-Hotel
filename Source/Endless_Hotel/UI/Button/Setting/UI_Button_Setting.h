@@ -25,13 +25,22 @@ struct FButtonInfo
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
 	ESettingCategory Category;
-	int32 Highlight_Index;
 
+	UPROPERTY(EditAnywhere)
 	int32 Value_Int;
+
+	UPROPERTY(EditAnywhere)
 	FString Value_String;
+
+	UPROPERTY(EditAnywhere)
 	FIntPoint Value_IntPoint;
-	EWindowMode::Type Value_WindowMode;
+
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EWindowMode::Type> Value_WindowMode;
+
+	UPROPERTY(EditAnywhere)
 	float Value_Float;
 };
 
@@ -44,8 +53,8 @@ class ENDLESS_HOTEL_API UUI_Button_Setting : public UUI_Button_Base
 
 #pragma region Base
 
-public:
-	UUI_Button_Setting(const FObjectInitializer& ObjectInitializer);
+protected:
+	virtual void SynchronizeProperties() override;
 
 #pragma endregion
 	

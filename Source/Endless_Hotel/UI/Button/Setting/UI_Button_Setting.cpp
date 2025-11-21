@@ -5,9 +5,10 @@
 
 #pragma region Base
 
-UUI_Button_Setting::UUI_Button_Setting(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+void UUI_Button_Setting::SynchronizeProperties()
 {
+	Super::SynchronizeProperties();
+
 	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
 }
 
