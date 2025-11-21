@@ -9,6 +9,7 @@ void UUI_Button_Setting::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();
 
+	OnClicked.Clear();
 	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
 }
 

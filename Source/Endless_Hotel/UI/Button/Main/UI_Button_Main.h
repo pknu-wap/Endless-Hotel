@@ -21,8 +21,6 @@ protected:
 #pragma region Button
 
 public:
-	uint8 GetButtonIndex() { return ButtonIndex; }
-
 	void ResetButton();
 
 protected:
