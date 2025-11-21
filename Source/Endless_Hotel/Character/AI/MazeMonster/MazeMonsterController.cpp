@@ -1,10 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Character/AI/MazeMonsterController.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardComponent.h"
+#include "Character/AI/MazeMonster/MazeMonsterController.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionSystem.h"
 
@@ -16,13 +15,8 @@ const FName AMazeMonsterController::Key_PatrolPos = TEXT("PatrolPos");
 
 #pragma endregion
 
-#pragma region Base
-
 AMazeMonsterController::AMazeMonsterController()
 {
-	Perception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
-	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
-
 	SightConfig->SightRadius = 800.f;
 	SightConfig->LoseSightRadius = 900.f;
 	SightConfig->PeripheralVisionAngleDegrees = 120.f;
@@ -40,19 +34,6 @@ void AMazeMonsterController::BeginPlay()
 {
 	Super::BeginPlay();
 	Perception->OnTargetPerceptionUpdated.AddDynamic(this, &AMazeMonsterController::OnTargetDetected);
-}
-
-#pragma endregion
-
-void AMazeMonsterController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	UBlackboardComponent* RawBB = nullptr;
-	if (UseBlackboard(BBAsset, RawBB))
-	{
-		RunBehaviorTree(BTAsset);
-	}
 }
 
 void AMazeMonsterController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)

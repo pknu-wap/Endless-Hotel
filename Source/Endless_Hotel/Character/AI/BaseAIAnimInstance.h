@@ -4,27 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "MonsterAnimInstance.generated.h"
+#include "BaseAIAnimInstance.generated.h"
 
 
 UENUM(BlueprintType)
-enum class EMonsterAnimState : uint8
+enum class EAIAnimState : uint8
 {
-	Locomotion		UMETA(DisplayName = "Chasing"),
+	Idle		UMETA(DisplayName = "Idle"),
+	Running		UMETA(DisplayName = "Running"),
 	Attacking	UMETA(DisplayName = "Attacking")
 };
 
 UCLASS()
-class ENDLESS_HOTEL_API UMonsterAnimInstance : public UAnimInstance
+class ENDLESS_HOTEL_API UBaseAIAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Speed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMonsterAnimState State;
+	EAIAnimState State;
 
 	UFUNCTION(BlueprintCallable)
 	void OnStateAnimationEnds();

@@ -142,5 +142,9 @@ public:
 
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
 
+	TSubclassOf<AAnomaly_Object_Base> GetObjectByName(FString ObjectName);
+
+	TSubclassOf<AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
+
 #pragma endregion
 };

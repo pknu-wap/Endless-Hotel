@@ -119,13 +119,42 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 
 TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 AnomalyID)
 {
-	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
+	for (auto& Pair : DataTable_Anomaly->GetRowMap())
+	{
+		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
+		if (Row->AnomalyID == AnomalyID)
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
+			return LoadedClass;
+		}
+	}
+	return nullptr;
+}
+
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByName(FString ObjectName)
+{
+	for (auto& Pair : DataTable_Anomaly->GetRowMap())
+	{
+		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
+		if (Row->Anomaly_En == ObjectName)
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
+			return LoadedClass;
+		}
+	}
+	return nullptr;
+}
+
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByRowIndex(uint8 RowIndex)
+{
+	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(RowIndex), TEXT("")))
 	{
 		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
 		return LoadedClass;
 	}
 	return nullptr;
 }
+
 #pragma endregion
 
 #pragma region Pool & Reset

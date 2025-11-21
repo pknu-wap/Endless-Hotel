@@ -192,9 +192,15 @@ void AElevator::MoveDoors(bool bIsOpening)
 	if(bIsPlayerInside) SetPlayerInputEnabled(false);
 
 	if (bIsOpening)
+	{
+		bIsDoorOpened = true;
 		DoorTimeline->PlayFromStart();
+	}
 	else
+	{
+		bIsDoorOpened = false;
 		DoorTimeline->ReverseFromEnd();
+	}
 }
 
 // Trigger Callbacks
@@ -203,7 +209,7 @@ void AElevator::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	if (OtherActor && OtherActor != this && Cast<ACharacter>(OtherActor) && !bIsPlayerInside)
 	{
-		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass))) return;
+		if (!(PlayerBPClass && OtherActor->IsA(PlayerBPClass)) || bIsDoorOpened) return;
 		MoveDoors(true);
 	}
 }
