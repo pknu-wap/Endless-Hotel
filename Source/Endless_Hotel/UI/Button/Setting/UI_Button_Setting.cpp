@@ -23,22 +23,22 @@ void UUI_Button_Setting::ButtonClick()
 	switch (ButtonInfo.Category)
 	{
 	case ESettingCategory::Grapic:
-		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo, ButtonIndex);
 		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonIndex);
 		break;
 
 	case ESettingCategory::Resolution:
-		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo, ButtonIndex);
 		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonIndex);
 		break;
 
 	case ESettingCategory::Frame:
-		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo, ButtonIndex);
 		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonIndex);
 		break;
 
 	case ESettingCategory::Screen:
-		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo, ButtonIndex);
 		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonIndex);
 		break;
 
