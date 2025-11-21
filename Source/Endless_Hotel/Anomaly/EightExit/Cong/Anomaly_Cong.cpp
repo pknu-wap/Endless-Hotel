@@ -21,20 +21,21 @@ void AAnomaly_Cong::StartCongAction()
 	const uint8 MaxIndex = 100;
 	uint8 CurrentIndex = 0;
 
-	GetWorld()->GetTimerManager().SetTimer(CongHandle, [this, MaxIndex, CurrentIndex]() mutable
+	TWeakObjectPtr<AAnomaly_Cong> Wrapper = this;
+	GetWorld()->GetTimerManager().SetTimer(CongHandle, [Wrapper, MaxIndex, CurrentIndex]() mutable
 		{
-			for (auto* FoundActor : LinkedObjects)
+			for (auto* FoundActor : Wrapper->LinkedObjects)
 			{
 				auto* HandPrint = Cast<AAnomaly_Object_HandPrint>(FoundActor);
 
 				if (++CurrentIndex == HandPrint->HandPrintIndex)
 				{
-					HandPrint->StartCongCong(NextCong);
+					HandPrint->StartCongCong(Wrapper->NextCong);
 				}
 
 				if (CurrentIndex >= MaxIndex)
 				{
-					GetWorld()->GetTimerManager().ClearTimer(CongHandle);
+					Wrapper->GetWorld()->GetTimerManager().ClearTimer(Wrapper->CongHandle);
 				}
 			}
 		}, NextCong, true);

@@ -6,9 +6,6 @@
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_Ceiling.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Ceiling : public AAnomaly_Base_EightExit
 {
@@ -30,4 +27,5 @@ protected:
 	TFunction<void(class AAnomaly_Object_Ceiling*)> CeilingAction;
 
 #pragma endregion
+
 };

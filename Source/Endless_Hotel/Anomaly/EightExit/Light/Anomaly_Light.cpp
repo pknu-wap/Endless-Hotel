@@ -33,21 +33,22 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Light::StartAnomalyAction()
 {
+	TWeakObjectPtr<AAnomaly_Light> Wrapper = this;
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [Wrapper, LightHandle]() mutable
 		{
-			for (auto* FoundActor : LinkedObjects)
+			for (auto* FoundActor : Wrapper->LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-				if (CurrentIndex == Light->LightIndex)
+				if (Wrapper->CurrentIndex == Light->LightIndex)
 				{
-					AnomalyAction(Light);
+					Wrapper->AnomalyAction(Light);
 				}
 			}
 
-			if (++CurrentIndex > MaxIndex)
+			if (++Wrapper->CurrentIndex > Wrapper->MaxIndex)
 			{
-				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
+				Wrapper->GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
 		}, NextActionDelay, true);
 }

@@ -28,13 +28,14 @@ void AAnomaly_Ceiling::StartCeilingAction()
 {
 	TArray<AActor*> FoundActors = LinkedObjects;
 
+	TWeakObjectPtr<AAnomaly_Ceiling> Wrapper = this;
 	FTimerHandle CeilingHandle;
-	GetWorld()->GetTimerManager().SetTimer(CeilingHandle, [this, CeilingHandle, FoundActors]() mutable
+	GetWorld()->GetTimerManager().SetTimer(CeilingHandle, [Wrapper, CeilingHandle, FoundActors]() mutable
 		{
 			for (auto* FoundActor : FoundActors)
 			{
 				auto* Ceiling = Cast<AAnomaly_Object_Ceiling>(FoundActor);
-				CeilingAction(Ceiling);
+				Wrapper->CeilingAction(Ceiling);
 			}
 		}, 0.5f, false);
 }

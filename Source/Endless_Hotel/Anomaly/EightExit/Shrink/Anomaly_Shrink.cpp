@@ -32,8 +32,9 @@ void AAnomaly_Shrink::ShrinkPlayer()
 
 	FVector TargetScale = FVector(Multi_Scale, Multi_Scale, Multi_Scale);
 
+	TWeakObjectPtr<AAnomaly_Shrink> Wrapper = this;
 	FTimerHandle ShrinkHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShrinkHandle, [this, PlayerRC, TargetScale, ShrinkHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(ShrinkHandle, [Wrapper, PlayerRC, TargetScale, ShrinkHandle]() mutable
 		{
 			FVector CurrentScale = PlayerRC->GetRelativeScale3D();
 			FVector ChangeScale = FMath::VInterpTo(CurrentScale, TargetScale, 0.01f, 1);
@@ -41,7 +42,7 @@ void AAnomaly_Shrink::ShrinkPlayer()
 
 			if (ChangeScale.Equals(TargetScale, 0.1f))
 			{
-				GetWorld()->GetTimerManager().ClearTimer(ShrinkHandle);
+				Wrapper->GetWorld()->GetTimerManager().ClearTimer(ShrinkHandle);
 			}
 		}, 0.01f, true);
 }

@@ -37,10 +37,11 @@ void AAnomaly_Blur::ShowBlurWiget()
 	AC->Sound = Sound_Blur;
 	AC->Play();
 
+	TWeakObjectPtr<AAnomaly_Blur> Wrapper = this;
 	FTimerHandle FadeOutHandle;
-	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, [this]()
+	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, [Wrapper]()
 		{
-			AC->FadeOut(1, 0);
+			Wrapper->AC->FadeOut(1, 0);
 		}, 9, false);
 }
 
