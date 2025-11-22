@@ -12,7 +12,6 @@ class AAnomaly_Object_Base;
 
 #pragma endregion
 
-
 UCLASS(Blueprintable, BlueprintType)
 class ENDLESS_HOTEL_API AAnomaly_Base : public AActor
 {
@@ -35,6 +34,9 @@ public:
 
 #pragma region Anomaly
 
+protected:
+	virtual void StartAnomalyAction();
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
@@ -42,6 +44,8 @@ public:
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	bool bIsActive = false;
+
+	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
 
 #pragma endregion
 
@@ -55,13 +59,12 @@ public:
 	bool bIsSolved = false;
 
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void SetSolved(bool bNewSolved);
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
+	UFUNCTION()
 	void SetCorrectElevator(bool bNewCorrect) { bIsCorrectElevator = bNewCorrect; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|VerdictMode")
+	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
 
 #pragma endregion
@@ -71,7 +74,7 @@ protected:
 public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
 	void ActivateAnomaly(uint8 Anomaly_ID);
-	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID);
+	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) { bIsActive = true; }
 
 #pragma endregion
 
@@ -91,4 +94,5 @@ public:
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
 
 #pragma endregion
+
 };

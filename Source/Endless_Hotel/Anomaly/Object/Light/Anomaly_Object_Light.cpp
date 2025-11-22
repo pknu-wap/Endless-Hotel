@@ -38,6 +38,16 @@ void AAnomaly_Object_Light::BeginPlay()
 
 #pragma endregion
 
+#pragma region Light
+
+void AAnomaly_Object_Light::TurnOffLight()
+{
+	PointLight->bAffectsWorld = false;
+	PointLight->MarkRenderStateDirty();
+}
+
+#pragma endregion
+
 #pragma region Destroy
 
 void AAnomaly_Object_Light::DropLight()

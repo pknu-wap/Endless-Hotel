@@ -21,10 +21,7 @@ public:
 #pragma region Light
 
 protected:
-	void StartLightAction();
-
-protected:
-	TFunction<void(class AAnomaly_Object_Light*)> LightAction;
+	virtual void StartAnomalyAction() override;
 
 protected:
 	uint8 CurrentIndex = 1;

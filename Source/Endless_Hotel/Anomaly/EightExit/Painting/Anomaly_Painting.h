@@ -6,9 +6,6 @@
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_Painting.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Painting : public AAnomaly_Base_EightExit
 {
@@ -21,13 +18,4 @@ public:
 
 #pragma endregion
 
-#pragma region Follow
-
-protected:
-	void StartFollowAction();
-
-protected:
-	TFunction<void(class AAnomaly_Object_Painting*)> FollowAction;
-
-#pragma endregion
 };

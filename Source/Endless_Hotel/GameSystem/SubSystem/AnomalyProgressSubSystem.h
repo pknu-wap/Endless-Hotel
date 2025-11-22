@@ -19,7 +19,7 @@ enum class EAnomalyVerdictMode : uint8
 	SolvedOnly,
 	Both_AND,
 	Normal
-}; //전부 E 붙이기
+};
 
 USTRUCT(BlueprintType)
 struct FAnomalyEntry
@@ -31,6 +31,7 @@ struct FAnomalyEntry
 
 	UPROPERTY()
 	TSubclassOf<AAnomaly_Base> AnomalyClass;
+
 	UPROPERTY()
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
 };
@@ -60,16 +61,12 @@ private:
 	bool bIsElevatorNormal = false;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|State")
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
@@ -80,13 +77,10 @@ public:
 	uint8 Floor = 9;
 
 private:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
 	void ResetFloor() { Floor = 9; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
 	void SubFloor();
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Floor")
 	void AddFloor();
 
 #pragma endregion
@@ -98,13 +92,10 @@ public:
 	EAnomalyVerdictMode VerdictMode;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Verdict")
 	void ApplyVerdict();
 
 #pragma endregion
@@ -136,7 +127,6 @@ public:
 	uint8 ActIndex = 0;
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly")
 	void InitializePool();
 
 #pragma endregion
