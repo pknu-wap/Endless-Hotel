@@ -12,7 +12,10 @@ void AAnomaly_Shrink::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
 	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, this, &ThisClass::ShrinkPlayer, 20, false);
+	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			ShrinkPlayer();
+		}), 20, false);
 }
 
 #pragma endregion
@@ -32,9 +35,8 @@ void AAnomaly_Shrink::ShrinkPlayer()
 
 	FVector TargetScale = FVector(Multi_Scale, Multi_Scale, Multi_Scale);
 
-	TWeakObjectPtr<AAnomaly_Shrink> Wrapper = this;
 	FTimerHandle ShrinkHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShrinkHandle, [Wrapper, PlayerRC, TargetScale, ShrinkHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(ShrinkHandle, FTimerDelegate::CreateWeakLambda(this, [this, PlayerRC, TargetScale, ShrinkHandle]() mutable
 		{
 			FVector CurrentScale = PlayerRC->GetRelativeScale3D();
 			FVector ChangeScale = FMath::VInterpTo(CurrentScale, TargetScale, 0.01f, 1);
@@ -42,9 +44,9 @@ void AAnomaly_Shrink::ShrinkPlayer()
 
 			if (ChangeScale.Equals(TargetScale, 0.1f))
 			{
-				Wrapper->GetWorld()->GetTimerManager().ClearTimer(ShrinkHandle);
+				GetWorld()->GetTimerManager().ClearTimer(ShrinkHandle);
 			}
-		}, 0.01f, true);
+		}), 0.01f, true);
 }
 
 #pragma endregion

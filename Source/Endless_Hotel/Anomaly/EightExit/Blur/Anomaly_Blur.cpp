@@ -22,7 +22,10 @@ void AAnomaly_Blur::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
 	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, this, &ThisClass::ShowBlurWiget, 10, false);
+	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			ShowBlurWiget();
+		}), 15, false);
 }
 
 #pragma endregion
@@ -37,12 +40,11 @@ void AAnomaly_Blur::ShowBlurWiget()
 	AC->Sound = Sound_Blur;
 	AC->Play();
 
-	TWeakObjectPtr<AAnomaly_Blur> Wrapper = this;
 	FTimerHandle FadeOutHandle;
-	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, [Wrapper]()
+	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Wrapper->AC->FadeOut(1, 0);
-		}, 9, false);
+			AC->FadeOut(1, 0);
+		}), 9, false);
 }
 
 #pragma endregion

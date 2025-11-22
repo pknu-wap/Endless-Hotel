@@ -7,7 +7,6 @@
 #include "GameFramework/PlayerController.h"
 #include "EHPlayerController.generated.h"
 
-
 class UInputMappingContext;
 class UInputAction;
 class UCameraComponent;
