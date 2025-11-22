@@ -205,7 +205,7 @@ void UAnomalyProgressSubSystem::GameClear()
 	//Todo:
 
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Demo);
+	UICon->OpenStrongPopUpWidget(UI_Demo);
 }
 
 #pragma endregion
