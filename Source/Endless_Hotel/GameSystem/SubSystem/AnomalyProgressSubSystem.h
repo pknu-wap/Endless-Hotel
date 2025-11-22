@@ -73,7 +73,7 @@ public:
 
 #pragma region Floor
 
-private:
+public:
 	uint8 Floor = 9;
 
 private:
