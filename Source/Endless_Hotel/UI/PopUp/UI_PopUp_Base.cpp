@@ -5,6 +5,14 @@
 
 #pragma region Base
 
+void UUI_PopUp_Base::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SetIsFocusable(true);
+	SetKeyboardFocus();
+}
+
 FReply UUI_PopUp_Base::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	return FReply::Handled();

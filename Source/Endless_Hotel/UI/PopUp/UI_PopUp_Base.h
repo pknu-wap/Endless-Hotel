@@ -14,6 +14,8 @@ class ENDLESS_HOTEL_API UUI_PopUp_Base : public UUI_Base
 #pragma region Base
 
 protected:
+	virtual void NativeConstruct() override;
+
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 

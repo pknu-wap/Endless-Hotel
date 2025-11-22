@@ -11,13 +11,6 @@ class ENDLESS_HOTEL_API UUI_Button_Base : public UButton
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
-
-#pragma endregion
-
 #pragma region Index
 
 public:
