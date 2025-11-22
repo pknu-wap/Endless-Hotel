@@ -73,7 +73,7 @@ public:
 
 #pragma region Floor
 
-private:
+public:
 	uint8 Floor = 9;
 
 private:
@@ -142,5 +142,19 @@ public:
 
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
 
+	TSubclassOf<AAnomaly_Object_Base> GetObjectByName(FString ObjectName);
+
+	TSubclassOf<AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
+
 #pragma endregion
+
+#pragma region Clear
+
+public:
+	bool bIsAlreadyClear = false;
+public:
+	void GameClear();
+
+#pragma endregion
+
 };

@@ -2,89 +2,34 @@
 
 #include "UI/Button/Text/UI_Button_Text.h"
 #include "Components/TextBlock.h"
-#include "Components/VerticalBoxSlot.h"
 
 #pragma region Base
 
-UUI_Button_Text::UUI_Button_Text()
+UUI_Button_Text::UUI_Button_Text(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
-	OnPressed.RemoveDynamic(this, &ThisClass::OnButtonClicked);
-	OnPressed.AddDynamic(this, &ThisClass::OnButtonClicked);
-
-	OnHovered.RemoveDynamic(this, &ThisClass::OnButtonHovered);
-	OnHovered.AddDynamic(this, &ThisClass::OnButtonHovered);
-
-	HoverEvent.RemoveDynamic(this, &ThisClass::OnButtonUnhovered);
-	HoverEvent.AddDynamic(this, &ThisClass::OnButtonUnhovered);
+	OnHovered.AddDynamic(this, &ThisClass::ButtonHover);
+	OnUnhovered.AddDynamic(this, &ThisClass::ButtonUnhover);
 }
 
 #pragma endregion
 
 #pragma region Button
 
-void UUI_Button_Text::OnButtonClicked()
+void UUI_Button_Text::ButtonHover()
 {
-	FLinearColor Text_Color = FColor::FromHex(TEXT("927F60FF")).ReinterpretAsLinear();
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FSlateColor(Text_Color));
-		}
-	}
+	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
+	FColor TextColor = FColor::FromHex(Color_Hover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
-void UUI_Button_Text::OnButtonHovered()
+void UUI_Button_Text::ButtonUnhover()
 {
-	UVerticalBoxSlot* VBoxSlot = Cast<UVerticalBoxSlot>(Slot);
-	VBoxSlot->Size.Value = ButtonSize_Hover;
-
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Button_Hover);
-	WidgetStyle.SetNormal(Brush);
-
-	FLinearColor Text_Color = FColor::FromHex(TEXT("D2B78AFF")).ReinterpretAsLinear();
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FSlateColor(Text_Color));
-
-			FSlateFontInfo FontInfo = TextBlock->Font;
-			FontInfo.Size = 96 * FontAdjustValue;
-			TextBlock->SetFont(FontInfo);
-		}
-	}
-
-	HoverEvent.Broadcast(ButtonIndex);
-}
-
-void UUI_Button_Text::OnButtonUnhovered(uint8 Index)
-{
-	if (ButtonIndex == Index)
-	{
-		return;
-	}
-
-	UVerticalBoxSlot* VBoxSlot = Cast<UVerticalBoxSlot>(Slot);
-	VBoxSlot->Size.Value = ButtonSize_Normal;
-
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Button_Normal);
-	WidgetStyle.SetNormal(Brush);
-
-	FLinearColor Text_Color = FColor::FromHex(TEXT("927F60FF")).ReinterpretAsLinear();
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FSlateColor(Text_Color));
-
-			FSlateFontInfo FontInfo = TextBlock->Font;
-			FontInfo.Size = 64 * FontAdjustValue;
-			TextBlock->SetFont(FontInfo);
-		}
-	}
+	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
+	FColor TextColor = FColor::FromHex(Color_Unhover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
 #pragma endregion

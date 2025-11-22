@@ -82,6 +82,10 @@ void UAnomalyProgressSubSystem::SubFloor()
 	{
 		Floor--;
 	}
+	else
+	{
+		GameClear();
+	}
 }
 
 void UAnomalyProgressSubSystem::AddFloor()
@@ -119,13 +123,42 @@ void UAnomalyProgressSubSystem::GetAnomalyData()
 
 TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 AnomalyID)
 {
-	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(AnomalyID), TEXT("")))
+	for (auto& Pair : DataTable_Anomaly->GetRowMap())
+	{
+		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
+		if (Row->AnomalyID == AnomalyID)
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
+			return LoadedClass;
+		}
+	}
+	return nullptr;
+}
+
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByName(FString ObjectName)
+{
+	for (auto& Pair : DataTable_Anomaly->GetRowMap())
+	{
+		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
+		if (Row->Anomaly_En == ObjectName)
+		{
+			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
+			return LoadedClass;
+		}
+	}
+	return nullptr;
+}
+
+TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByRowIndex(uint8 RowIndex)
+{
+	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(RowIndex), TEXT("")))
 	{
 		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
 		return LoadedClass;
 	}
 	return nullptr;
 }
+
 #pragma endregion
 
 #pragma region Pool & Reset
@@ -151,6 +184,17 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 	// Reset Index
 	ActIndex = 0;
+}
+
+#pragma endregion
+
+#pragma region Clear
+
+void UAnomalyProgressSubSystem::GameClear()
+{
+	bIsAlreadyClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
+	//Initialize();
+	//Todo:
 }
 
 #pragma endregion

@@ -5,9 +5,10 @@
 
 #pragma region Base
 
-UUI_Button_Setting::UUI_Button_Setting(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+void UUI_Button_Setting::SynchronizeProperties()
 {
+	Super::SynchronizeProperties();
+
 	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
 }
 
@@ -17,24 +18,53 @@ UUI_Button_Setting::UUI_Button_Setting(const FObjectInitializer& ObjectInitializ
 
 void UUI_Button_Setting::ButtonClick()
 {
+	auto* BtnOwner = Cast<UUI_PopUp_Setting>(ButtonOwner);
+
 	switch (ButtonInfo.Category)
 	{
 	case ESettingCategory::Grapic:
-		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo.Value_Int, ButtonInfo.Highlight_Index);
-		break;
-
-	case ESettingCategory::Language:
-		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo.Value_String, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonIndex);
 		break;
 
 	case ESettingCategory::Resolution:
-		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo.Value_IntPoint, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonIndex);
+		break;
+
+	case ESettingCategory::Frame:
+		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonIndex);
 		break;
 
 	case ESettingCategory::Screen:
-		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo.Value_WindowMode, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonIndex);
 		break;
+
+	/*case ESettingCategory::Language:
+		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		BtnOwner->HighlightButton(ESettingCategory::Language, ButtonIndex);
+		break;*/
 	}
+}
+
+#pragma endregion
+
+#pragma region Hightlight
+
+void UUI_Button_Setting::HighlightButton()
+{
+	FSlateBrush Brush;
+	Brush.SetResourceObject(Texture_Highlight);
+	WidgetStyle.SetNormal(Brush);
+}
+
+void UUI_Button_Setting::UnhighlightButton()
+{
+	FSlateBrush Brush;
+	Brush.SetResourceObject(Texture_Normal);
+	WidgetStyle.SetNormal(Brush);
 }
 
 #pragma endregion
