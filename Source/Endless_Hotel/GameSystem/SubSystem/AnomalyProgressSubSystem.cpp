@@ -82,6 +82,10 @@ void UAnomalyProgressSubSystem::SubFloor()
 	{
 		Floor--;
 	}
+	else
+	{
+		GameClear();
+	}
 }
 
 void UAnomalyProgressSubSystem::AddFloor()
@@ -180,6 +184,17 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 	// Reset Index
 	ActIndex = 0;
+}
+
+#pragma endregion
+
+#pragma region Clear
+
+void UAnomalyProgressSubSystem::GameClear()
+{
+	bIsAlreadyClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
+	//Initialize();
+	//Todo:
 }
 
 #pragma endregion

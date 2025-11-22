@@ -14,6 +14,7 @@ class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
+class AEHCharacter;
 
 #pragma endregion
 
@@ -99,25 +100,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-	// PresenceTrigger
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
-	TObjectPtr<UBoxComponent> PresenceTrigger;
+private:
+	UPROPERTY()
+	bool bSkipFirstInsideOverlap = false;
 
 protected:
 	UFUNCTION()
-	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	void OnEntranceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnPresenceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnPresenceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	void OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 #pragma endregion
@@ -145,15 +142,19 @@ private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
+	FTimerHandle DoorCloseTimerHandle;
+
+	TObjectPtr<ACharacter> CachedPlayer;
+
 	bool bIsDoorMoving;
 	bool bIsPlayerInside;
 	bool bIsDoorOpened;
 
-	FTimerHandle DoorOpenTimerHandle;
-	FTimerHandle DoorCloseTimerHandle;
 
 protected:
 	void MoveDoors(bool isOpening);
+
+	void TryCloseDoorAfterDelay();
 
 	UFUNCTION()
 	void OnDoorTimelineUpdate(float Alpha);
