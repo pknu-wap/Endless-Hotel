@@ -6,7 +6,7 @@
 #include "UI/Button/UI_Button_Base.h"
 #include "UI_Button_Text.generated.h"
 
-UCLASS(Meta = (DisableNativeTick))
+UCLASS()
 class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base
 {
 	GENERATED_BODY()
@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base
 #pragma region Base
 
 protected:
-	virtual TSharedRef<SWidget, ESPMode::ThreadSafe> RebuildWidget() override;
+	virtual void SynchronizeProperties() override;
 
 #pragma endregion
 
@@ -22,13 +22,17 @@ protected:
 
 protected:
 	UFUNCTION()
-	void OnButtonClicked();
+	void ButtonHover();
 
 	UFUNCTION()
-	void OnButtonHovered();
+	void ButtonUnhover();
 
-	UFUNCTION()
-	void OnButtonUnhovered();
+protected:
+	UPROPERTY(EditAnywhere)
+	FString Color_Hover;
+
+	UPROPERTY(EditAnywhere)
+	FString Color_Unhover;
 
 #pragma endregion
 

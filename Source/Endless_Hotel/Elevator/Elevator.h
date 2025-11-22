@@ -14,7 +14,7 @@ class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
-class AAnomaly_Generator;
+class AEHCharacter;
 
 #pragma endregion
 
@@ -32,33 +32,34 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
+
 #pragma endregion
 
 #pragma region Frames
 
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Frame")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
 	TObjectPtr<UStaticMeshComponent> Exterior_Structure;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Frame")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
 	TObjectPtr<UStaticMeshComponent> CallPanel;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Frame")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
 	TObjectPtr<UStaticMeshComponent> Entrance;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Frame")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
 	TObjectPtr<UStaticMeshComponent> Car;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Doors")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Doors")
 	TObjectPtr<UStaticMeshComponent> LeftDoor;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Doors")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Doors")
 	TObjectPtr<UStaticMeshComponent> RightDoor;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Doors")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Doors")
 	TObjectPtr<UStaticMeshComponent> RightGlass;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Doors")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Doors")
 	TObjectPtr<UStaticMeshComponent> LeftGlass;
 
 #pragma endregion
@@ -66,17 +67,16 @@ protected:
 #pragma region Buttons
 
 protected:
-	// Buttons
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Button")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
 	TObjectPtr<UStaticMeshComponent> CallDownButtonRing;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Button")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
 	TObjectPtr<UStaticMeshComponent> CallDownButton;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Button")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
 	TObjectPtr<UStaticMeshComponent> CallUpButtonRing;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Button")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
 	TObjectPtr<UStaticMeshComponent> CallUpButton;
 
 #pragma endregion
@@ -84,8 +84,7 @@ protected:
 #pragma region Light
 
 protected:
-	// Light
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Light")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Light")
 	TObjectPtr<UPointLightComponent> ElevatorLight;
 
 #pragma endregion
@@ -94,87 +93,94 @@ protected:
 
 protected:
 	// EntranceTrigger
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Trigger")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> GetInTrigger;
 
 	// InsideTrigger
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Trigger")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-#pragma endregion
-
-#pragma region TimeLine
+private:
+	UPROPERTY()
+	bool bSkipFirstInsideOverlap = false;
 
 protected:
-	// Timeline
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator|Movement|Door")
-	TObjectPtr<UTimelineComponent> DoorTimeline;
+	UFUNCTION()
+	void OnEntranceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Movement|Door")
-	TObjectPtr<UCurveFloat> DoorCurve;
+	UFUNCTION()
+	void OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 #pragma endregion
 
 #pragma region DoorMovement
 
 protected:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Elevator|Refs")
-	AAnomaly_Generator* AnomalyGenerator;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DoorOpenDuration = 1.0f;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement|Door")
+	TObjectPtr<UTimelineComponent> DoorTimeline;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
-	float DoorCloseDuration = 1.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement|Door")
+	TObjectPtr<UCurveFloat> DoorCurve;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door", meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float DoorDuration = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	float DoorGap = 40.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bSlideOnX = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
-	bool bWaitDoorCloseBeforMove = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Movement|Door")
-	bool bMoveAfterClosePending = false;
 
 private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
 
-	bool bIsDoorOpening = false;
-	bool bIsDoorOpened;
-
-	FTimerHandle DoorOpenTimerHandle;
 	FTimerHandle DoorCloseTimerHandle;
 
+	TObjectPtr<ACharacter> CachedPlayer;
+
+	bool bIsDoorMoving;
+	bool bIsPlayerInside;
+	bool bIsDoorOpened;
+
+
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Elevator|Movement|Door")
 	void MoveDoors(bool isOpening);
+
+	void TryCloseDoorAfterDelay();
 
 	UFUNCTION()
 	void OnDoorTimelineUpdate(float Alpha);
+
 	UFUNCTION()
 	void OnDoorTimelineFinished();
-
-	// Overlap
-	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 #pragma endregion
 
 #pragma region ElevatorMovement
 
 protected:
-	UFUNCTION()
-	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	FVector StartPos;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	FVector MapPos;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	FVector EndPos;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	float ElevatorMoveDuration = 3.0f;
+
+protected:
+	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
 
 #pragma endregion
 
@@ -184,11 +190,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int16 RotateAngle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Elevator|Trigger")
+	FTimerHandle RotateHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trigger")
 	TSubclassOf<ACharacter> PlayerBPClass;
+
 protected:
-	UFUNCTION()
 	void RotatePlayer();
+
+	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
@@ -198,7 +208,7 @@ private:
 #pragma region Subsystem
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elevator|Type")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Type")
 	bool bIsNormalElevator = true;
 
 private:
@@ -206,5 +216,6 @@ private:
 
 private:
 	void NotifySubsystemElevatorChoice();
+
 #pragma endregion
 };

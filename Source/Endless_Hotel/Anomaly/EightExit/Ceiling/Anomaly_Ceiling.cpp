@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Ceiling/Anomaly_Ceiling.h"
 #include "Anomaly/Object/Ceiling/Anomaly_Object_Ceiling.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Activity
 
@@ -12,31 +11,15 @@ void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 4:
-		CeilingAction = ([](AAnomaly_Object_Ceiling* Ceiling) {Ceiling->PlayCeilingRotate(); });
+	case 11:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
+			});
 		break;
 	}
 
-	StartCeilingAction();
-}
-
-#pragma endregion
-
-#pragma region Door
-
-void AAnomaly_Ceiling::StartCeilingAction()
-{
-	TArray<AActor*> FoundActors = LinkedObjects;
-
-	FTimerHandle CeilingHandle;
-	GetWorld()->GetTimerManager().SetTimer(CeilingHandle, [this, CeilingHandle, FoundActors]() mutable
-		{
-			for (auto* FoundActor : FoundActors)
-			{
-				auto* Ceiling = Cast<AAnomaly_Object_Ceiling>(FoundActor);
-				CeilingAction(Ceiling);
-			}
-		}, 0.5f, false);
+	StartAnomalyAction();
 }
 
 #pragma endregion

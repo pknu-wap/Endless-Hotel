@@ -5,57 +5,35 @@
 
 #pragma region Base
 
-TSharedRef<SWidget, ESPMode::ThreadSafe> UUI_Button_Text::RebuildWidget()
+void UUI_Button_Text::SynchronizeProperties()
 {
-	TSharedRef<SWidget, ESPMode::ThreadSafe> Btn = Super::RebuildWidget();
+	Super::SynchronizeProperties();
 
-	OnPressed.RemoveDynamic(this, &ThisClass::OnButtonClicked);
-	OnPressed.AddDynamic(this, &ThisClass::OnButtonClicked);
+	OnHovered.Clear();
+	OnHovered.AddDynamic(this, &ThisClass::ButtonHover);
 
-	OnHovered.RemoveDynamic(this, &ThisClass::OnButtonHovered);
-	OnHovered.AddDynamic(this, &ThisClass::OnButtonHovered);
-
-	OnUnhovered.RemoveDynamic(this, &ThisClass::OnButtonUnhovered);
-	OnUnhovered.AddDynamic(this, &ThisClass::OnButtonUnhovered);
-
-	return Btn;
+	OnUnhovered.Clear();
+	OnUnhovered.AddDynamic(this, &ThisClass::ButtonUnhover);
 }
 
 #pragma endregion
 
 #pragma region Button
 
-void UUI_Button_Text::OnButtonClicked()
+void UUI_Button_Text::ButtonHover()
 {
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FLinearColor(0.6f, 0.6f, 0.6f, 1));
-		}
-	}
+	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
+	FColor TextColor = FColor::FromHex(Color_Hover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
-void UUI_Button_Text::OnButtonHovered()
+void UUI_Button_Text::ButtonUnhover()
 {
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FLinearColor(1, 1, 1, 1));
-		}
-	}
-}
-
-void UUI_Button_Text::OnButtonUnhovered()
-{
-	for (auto* Child : GetAllChildren())
-	{
-		if (UTextBlock* TextBlock = Cast<UTextBlock>(Child))
-		{
-			TextBlock->SetColorAndOpacity(FLinearColor(0.3f, 0.3f, 0.3f, 1));
-		}
-	}
+	UTextBlock* ButtonText = Cast<UTextBlock>(GetChildAt(0));
+	FColor TextColor = FColor::FromHex(Color_Unhover);
+	FLinearColor TargetColor = FLinearColor::FromSRGBColor(TextColor);
+	ButtonText->SetColorAndOpacity(FSlateColor(TargetColor));
 }
 
 #pragma endregion

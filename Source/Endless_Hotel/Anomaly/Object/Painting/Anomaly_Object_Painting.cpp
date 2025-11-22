@@ -1,9 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "Niagara/Public/NiagaraComponent.h"
 
 #pragma region Base
 
@@ -22,6 +22,14 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Mesh_RightEye->SetupAttachment(RootComponent);
 	Mesh_RightEye->SetRelativeLocation(FVector(2, 3, 23));
 	Mesh_RightEye->SetRelativeRotation(FRotator(0, 0, -90));
+
+	Niagara_Blood_Left = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Left"));
+	Niagara_Blood_Left->SetupAttachment(RootComponent);
+	Niagara_Blood_Left->SetAutoActivate(false);
+
+	Niagara_Blood_Right = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Right"));
+	Niagara_Blood_Right->SetupAttachment(RootComponent);
+	Niagara_Blood_Right->SetAutoActivate(false);
 }
 
 #pragma endregion
@@ -33,9 +41,10 @@ void AAnomaly_Object_Painting::EyeFollowing()
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FTimerHandle Timer;
 
-	GetWorld()->GetTimerManager().SetTimer(Timer, [this, Player]()
+	TWeakObjectPtr<AAnomaly_Object_Painting> Wrapper = this;
+	GetWorld()->GetTimerManager().SetTimer(Timer, [Wrapper, Player]()
 		{
-			const FTransform SelfXform = GetActorTransform();
+			const FTransform SelfXform = Wrapper->GetActorTransform();
 			FVector PlayerLocal = SelfXform.InverseTransformPosition(Player->GetActorLocation());
 
 			const float lateralY = PlayerLocal.Y;
@@ -52,10 +61,25 @@ void AAnomaly_Object_Painting::EyeFollowing()
 			}
 
 			const FRotator EyeRot(0.f, targetYaw - 90, 0.f);
-			Mesh_LeftEye->SetRelativeRotation(EyeRot);
-			Mesh_RightEye->SetRelativeRotation(EyeRot);
+			Wrapper->Mesh_LeftEye->SetRelativeRotation(EyeRot);
+			Wrapper->Mesh_RightEye->SetRelativeRotation(EyeRot);
 
 		}, 0.17f, true);
+}
+
+#pragma endregion
+
+#pragma region Blood
+
+void AAnomaly_Object_Painting::BloodDropping()
+{
+	TWeakObjectPtr<AAnomaly_Object_Painting> Wrapper = this;
+	FTimerHandle BloodHandle;
+	GetWorld()->GetTimerManager().SetTimer(BloodHandle, [Wrapper]()
+		{
+			Wrapper->Niagara_Blood_Left->SetActive(true);
+			Wrapper->Niagara_Blood_Right->SetActive(true);
+		}, 15, false);
 }
 
 #pragma endregion

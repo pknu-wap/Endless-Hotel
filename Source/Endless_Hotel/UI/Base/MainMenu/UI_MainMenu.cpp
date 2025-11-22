@@ -3,8 +3,9 @@
 #include "UI/Base/MainMenu/UI_MainMenu.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/UI_PopUp_Base.h"
+#include "UI/Button/Main/UI_Button_Main.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "Components/Button.h"
+#include "Components/VerticalBox.h"
 
 #pragma region Base
 
@@ -12,17 +13,24 @@ void UUI_MainMenu::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	Buttons.Add(Cast<UButton>(VBox_Buttons->GetChildAt(Index_Start)));
+	Buttons.Add(Cast<UButton>(VBox_Buttons->GetChildAt(Index_Setting)));
+	Buttons.Add(Cast<UButton>(VBox_Buttons->GetChildAt(Index_Quit)));
 
-	Button_Start->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
+	Cast<UUI_Button_Base>(Buttons[Index_Start])->SetButtonOwner(this);
+	Cast<UUI_Button_Base>(Buttons[Index_Setting])->SetButtonOwner(this);
+	Cast<UUI_Button_Base>(Buttons[Index_Quit])->SetButtonOwner(this);
+
+	Buttons[Index_Start]->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Start);
+	Buttons[Index_Setting]->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
+	Buttons[Index_Quit]->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
+
 	Button_Compendium->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Compendium);
-	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
-	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 }
 
 #pragma endregion
 
-#pragma region Button
+#pragma region Click
 
 void UUI_MainMenu::ButtonClick_Start()
 {
@@ -32,21 +40,13 @@ void UUI_MainMenu::ButtonClick_Start()
 
 void UUI_MainMenu::ButtonClick_Compendium()
 {
-	if (!UI_Compendium)
-	{
-		return;
-	}
-
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenPopUpWidget(UI_Compendium);
 }
 
 void UUI_MainMenu::ButtonClick_Setting()
 {
-	if (!UI_Setting)
-	{
-		return;
-	}
-
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenPopUpWidget(UI_Setting);
 }
 
@@ -54,6 +54,25 @@ void UUI_MainMenu::ButtonClick_Quit()
 {
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->QuitGame();
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void UUI_MainMenu::ResetOtherButton(const uint8& CurrentIndex)
+{
+	for (UButton* Btn : Buttons)
+	{
+		auto* Button = Cast<UUI_Button_Main>(Btn);
+
+		if (Button->GetButtonIndex() == CurrentIndex)
+		{
+			continue;
+		}
+
+		Button->ResetButton();
+	}
 }
 
 #pragma endregion

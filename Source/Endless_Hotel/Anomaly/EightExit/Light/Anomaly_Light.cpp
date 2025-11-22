@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Light/Anomaly_Light.h"
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Activity
 
@@ -12,41 +11,45 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 1:
-		LightAction = ([](AAnomaly_Object_Light* Light) {Light->DropLight(); });
+	case 2:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
+			});
 		NextActionDelay = 0.5f;
 		break;
 
-	case 2:
-		LightAction = ([](AAnomaly_Object_Light* Light) {Light->ChangeLightColor(); });
-		NextActionDelay = 2;
+	case 3:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();
+			});
+		NextActionDelay = 0.5f;
 		break;
 	}
 
-	StartLightAction();
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
 }
 
-#pragma endregion
-
-#pragma region Light
-
-void AAnomaly_Light::StartLightAction()
+void AAnomaly_Light::StartAnomalyAction()
 {
+	TWeakObjectPtr<AAnomaly_Light> Wrapper = this;
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [Wrapper, LightHandle]() mutable
 		{
-			for (auto* FoundActor : LinkedObjects)
+			for (auto* FoundActor : Wrapper->LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-				if (CurrentIndex == Light->LightIndex)
+				if (Wrapper->CurrentIndex == Light->LightIndex)
 				{
-					LightAction(Light);
+					Wrapper->AnomalyAction(Light);
 				}
 			}
 
-			if (++CurrentIndex > MaxIndex)
+			if (++Wrapper->CurrentIndex > Wrapper->MaxIndex)
 			{
-				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
+				Wrapper->GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
 		}, NextActionDelay, true);
 }
