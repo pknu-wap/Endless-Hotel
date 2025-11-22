@@ -12,32 +12,15 @@ void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 11:
-		CeilingAction = ([](AAnomaly_Object_Ceiling* Ceiling) {Ceiling->PlayCeilingRotate(); });
+	case 12:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
+			});
 		break;
 	}
 
-	StartCeilingAction();
-}
-
-#pragma endregion
-
-#pragma region Door
-
-void AAnomaly_Ceiling::StartCeilingAction()
-{
-	TArray<AActor*> FoundActors = LinkedObjects;
-
-	TWeakObjectPtr<AAnomaly_Ceiling> Wrapper = this;
-	FTimerHandle CeilingHandle;
-	GetWorld()->GetTimerManager().SetTimer(CeilingHandle, [Wrapper, CeilingHandle, FoundActors]() mutable
-		{
-			for (auto* FoundActor : FoundActors)
-			{
-				auto* Ceiling = Cast<AAnomaly_Object_Ceiling>(FoundActor);
-				Wrapper->CeilingAction(Ceiling);
-			}
-		}, 0.5f, false);
+	StartAnomalyAction();
 }
 
 #pragma endregion
