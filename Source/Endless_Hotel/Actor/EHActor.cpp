@@ -1,16 +1,16 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Character/Character/EHCharacter.h"
+#include "Actor/EHActor.h"
 
 #pragma region Base
 
-AEHCharacter::AEHCharacter(const FObjectInitializer& ObjectInitializer)
+AEHActor::AEHActor(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AEHCharacter::EndPlay(EEndPlayReason::Type EndPlayReason)
+void AEHActor::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/EHActor.h"
 #include "RoomSignActor.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API ARoomSignActor : public AActor
+class ENDLESS_HOTEL_API ARoomSignActor : public AEHActor
 {
 	GENERATED_BODY()
 	

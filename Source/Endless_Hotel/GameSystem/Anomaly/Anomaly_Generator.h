@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/EHActor.h"
 #include "Anomaly_Generator.generated.h"
 
 #pragma region Declare
@@ -17,14 +17,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base*, S
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Generator : public AActor
+class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
 {
 	GENERATED_BODY()
 
 #pragma region Base
-
-public:
-	AAnomaly_Generator(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	virtual void BeginPlay() override;
@@ -78,4 +75,5 @@ protected:
 	void AddAnomaly();
 
 #pragma endregion
+
 };

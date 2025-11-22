@@ -18,8 +18,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
-
 	// 1) Root
 	ElevatorSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 	SetRootComponent(ElevatorSceneRoot);

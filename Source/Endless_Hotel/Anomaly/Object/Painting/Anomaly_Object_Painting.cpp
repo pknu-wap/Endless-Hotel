@@ -74,7 +74,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 void AAnomaly_Object_Painting::BloodDropping()
 {
 	FTimerHandle BloodHandle;
-	GetWorld()->GetTimerManager().SetTimer(BloodHandle, FTimerDelegate::CreateLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(BloodHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			Niagara_Blood_Left->SetActive(true);
 			Niagara_Blood_Right->SetActive(true);

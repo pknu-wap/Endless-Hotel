@@ -11,7 +11,6 @@
 AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
 	AnomalyID = -1;
 	bIsActive = false;
 }
