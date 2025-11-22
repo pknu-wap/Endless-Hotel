@@ -13,8 +13,8 @@ class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base
 	
 #pragma region Base
 
-public:
-	UUI_Button_Text(const FObjectInitializer& ObjectInitializer);
+protected:
+	virtual void SynchronizeProperties() override;
 
 #pragma endregion
 

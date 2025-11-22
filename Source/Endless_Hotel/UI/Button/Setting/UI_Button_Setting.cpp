@@ -9,6 +9,7 @@ void UUI_Button_Setting::SynchronizeProperties()
 {
 	Super::SynchronizeProperties();
 
+	OnClicked.Clear();
 	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
 }
 
@@ -23,27 +24,27 @@ void UUI_Button_Setting::ButtonClick()
 	switch (ButtonInfo.Category)
 	{
 	case ESettingCategory::Grapic:
-		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo, ButtonIndex);
+		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo);
 		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonIndex);
 		break;
 
 	case ESettingCategory::Resolution:
-		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo, ButtonIndex);
+		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo);
 		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonIndex);
 		break;
 
 	case ESettingCategory::Frame:
-		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo, ButtonIndex);
+		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo);
 		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonIndex);
 		break;
 
 	case ESettingCategory::Screen:
-		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo, ButtonIndex);
+		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo);
 		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonIndex);
 		break;
 
 	/*case ESettingCategory::Language:
-		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo, ButtonInfo.Highlight_Index);
+		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo);
 		BtnOwner->HighlightButton(ESettingCategory::Language, ButtonIndex);
 		break;*/
 	}

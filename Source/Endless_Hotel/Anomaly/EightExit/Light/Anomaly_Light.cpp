@@ -11,7 +11,7 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 1:
+	case 2:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
@@ -19,35 +19,37 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 		NextActionDelay = 0.5f;
 		break;
 
-	case 2:
+	case 3:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();
 			});
-		NextActionDelay = 2;
+		NextActionDelay = 0.5f;
 		break;
 	}
 
-	StartAnomalyAction();
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
 }
 
 void AAnomaly_Light::StartAnomalyAction()
 {
+	TWeakObjectPtr<AAnomaly_Light> Wrapper = this;
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [this, LightHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, [Wrapper, LightHandle]() mutable
 		{
-			for (auto* FoundActor : LinkedObjects)
+			for (auto* FoundActor : Wrapper->LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-				if (CurrentIndex == Light->LightIndex)
+				if (Wrapper->CurrentIndex == Light->LightIndex)
 				{
-					AnomalyAction(Light);
+					Wrapper->AnomalyAction(Light);
 				}
 			}
 
-			if (++CurrentIndex > MaxIndex)
+			if (++Wrapper->CurrentIndex > Wrapper->MaxIndex)
 			{
-				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
+				Wrapper->GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
 		}, NextActionDelay, true);
 }

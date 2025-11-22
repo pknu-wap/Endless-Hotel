@@ -21,7 +21,7 @@ public:
 #pragma region Cong
 
 protected:
-	void StartCongAction();
+	virtual void StartAnomalyAction() override;
 
 protected:
 	FTimerHandle CongHandle;

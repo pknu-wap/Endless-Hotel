@@ -11,13 +11,13 @@
 
 struct FButtonInfo;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSettingGrapic,		FButtonInfo, Value, int32, Index);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSettingResolution,	FButtonInfo, Value, int32, Index);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSettingFrame,			FButtonInfo, Value, int32, Index);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSettingScreen,		FButtonInfo, Value, int32, Index);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		FButtonInfo, Value);
 
 // 해당 기능은 최종 이후에 추가 예정
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSettingLanguage,		FButtonInfo, Value, int32, Index);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage,	FButtonInfo, Value);
 
 #pragma endregion
 
@@ -72,16 +72,16 @@ public:
 
 protected:
 	UFUNCTION()
-	void ButtonClick_Grapic(FButtonInfo Value, int32 Index);
+	void ButtonClick_Grapic(FButtonInfo Value);
 
 	UFUNCTION()
-	void ButtonClick_Resolution(FButtonInfo Value, int32 Index);
+	void ButtonClick_Resolution(FButtonInfo Value);
 
 	UFUNCTION()
-	void ButtonClick_Frame(FButtonInfo Value, int32 Index);
+	void ButtonClick_Frame(FButtonInfo Value);
 
 	UFUNCTION()
-	void ButtonClick_Screen(FButtonInfo Value, int32 Index);
+	void ButtonClick_Screen(FButtonInfo Value);
 
 	UFUNCTION()
 	void SliderClick_Sound(FButtonInfo Value);
@@ -91,7 +91,7 @@ protected:
 	void SliderClick_Brightness(FButtonInfo Value);
 
 	UFUNCTION()
-	void ButtonClick_Language(FButtonInfo Value, int32 Index);*/
+	void ButtonClick_Language(FButtonInfo Value);*/
 
 	UFUNCTION()
 	void ButtonClick_Apply();

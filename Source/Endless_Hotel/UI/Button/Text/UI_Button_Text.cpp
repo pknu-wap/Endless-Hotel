@@ -5,10 +5,14 @@
 
 #pragma region Base
 
-UUI_Button_Text::UUI_Button_Text(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+void UUI_Button_Text::SynchronizeProperties()
 {
+	Super::SynchronizeProperties();
+
+	OnHovered.Clear();
 	OnHovered.AddDynamic(this, &ThisClass::ButtonHover);
+
+	OnUnhovered.Clear();
 	OnUnhovered.AddDynamic(this, &ThisClass::ButtonUnhover);
 }
 

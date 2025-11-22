@@ -155,6 +155,10 @@ public:
 public:
 	void GameClear();
 
+protected:
+	UPROPERTY()
+	TSubclassOf<class UUI_PopUp_Base> UI_Demo;
+
 #pragma endregion
 
 };

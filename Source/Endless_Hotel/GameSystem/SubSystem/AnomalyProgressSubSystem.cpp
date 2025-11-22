@@ -6,6 +6,8 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "UI/Controller/UI_Controller.h"
+#include "UI/PopUp/Pause/Demo/UI_PopUp_Demo.h"
 
 #pragma region Base
 
@@ -15,6 +17,12 @@ UAnomalyProgressSubSystem::UAnomalyProgressSubSystem()
 	if (AnomalyFinder.Succeeded())
 	{
 		DataTable_Anomaly = AnomalyFinder.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUI_PopUp_Base> UIFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/Demo/WBP_Demo.WBP_Demo_C"));
+	if (UIFinder.Succeeded())
+	{
+		UI_Demo = UIFinder.Class;
 	}
 }
 
@@ -195,6 +203,9 @@ void UAnomalyProgressSubSystem::GameClear()
 	bIsAlreadyClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
 	//Initialize();
 	//Todo:
+
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenPopUpWidget(UI_Demo);
 }
 
 #pragma endregion

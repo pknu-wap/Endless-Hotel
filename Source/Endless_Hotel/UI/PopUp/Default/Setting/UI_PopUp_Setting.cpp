@@ -80,22 +80,22 @@ void UUI_PopUp_Setting::SettingButtonOwner(UHorizontalBox* ButtonBox)
 
 #pragma region Button
 
-void UUI_PopUp_Setting::ButtonClick_Grapic(FButtonInfo Value, int32 Index)
+void UUI_PopUp_Setting::ButtonClick_Grapic(FButtonInfo Value)
 {
 	Value_Grapic = Value.Value_Int;
 }
 
-void UUI_PopUp_Setting::ButtonClick_Resolution(FButtonInfo Value, int32 Index)
+void UUI_PopUp_Setting::ButtonClick_Resolution(FButtonInfo Value)
 {
 	Value_Resolution = Value.Value_IntPoint;
 }
 
-void UUI_PopUp_Setting::ButtonClick_Frame(FButtonInfo Value, int32 Index)
+void UUI_PopUp_Setting::ButtonClick_Frame(FButtonInfo Value)
 {
 	Value_Frame = Value.Value_Float;
 }
 
-void UUI_PopUp_Setting::ButtonClick_Screen(FButtonInfo Value, int32 Index)
+void UUI_PopUp_Setting::ButtonClick_Screen(FButtonInfo Value)
 {
 	Value_Screen = Value.Value_WindowMode;
 }
@@ -111,7 +111,7 @@ void UUI_PopUp_Setting::SliderClick_Sound(FButtonInfo Value)
 //
 //}
 //
-//void UUI_PopUp_Setting::ButtonClick_Language(FString Value, int32 Index)
+//void UUI_PopUp_Setting::ButtonClick_Language(FString Value)
 //{
 //	Value_Language = Value;
 //}
