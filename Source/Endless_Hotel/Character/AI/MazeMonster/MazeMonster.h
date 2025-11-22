@@ -29,5 +29,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Patrol")
 	uint8 CurrentIndex;
+
 #pragma endregion
 };
