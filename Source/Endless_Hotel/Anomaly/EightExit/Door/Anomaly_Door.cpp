@@ -11,7 +11,7 @@ void AAnomaly_Door::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-		case 3:
+		case 4:
 			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 				{
 					Cast<AAnomaly_Object_Door>(AnomalyObject)->ActiveTrigger();

@@ -11,14 +11,14 @@ void AAnomaly_Painting::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 10: // 임시 ID 번호
+	case 24:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
 			});
 		break;
 
-	case 11: // 임시 ID 번호
+	case 27:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
@@ -26,7 +26,8 @@ void AAnomaly_Painting::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 		break;
 	}
 
-	StartAnomalyAction();
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
 }
 
 #pragma endregion

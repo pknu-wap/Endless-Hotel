@@ -11,7 +11,7 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 1:
+	case 2:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
@@ -19,16 +19,17 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 		NextActionDelay = 0.5f;
 		break;
 
-	case 2:
+	case 3:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();
 			});
-		NextActionDelay = 2;
+		NextActionDelay = 0.5f;
 		break;
 	}
 
-	StartAnomalyAction();
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
 }
 
 void AAnomaly_Light::StartAnomalyAction()

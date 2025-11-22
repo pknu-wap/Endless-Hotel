@@ -12,7 +12,7 @@ void AAnomaly_Shrink::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
 	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, this, &ThisClass::ShrinkPlayer, 10, false);
+	GetWorld()->GetTimerManager().SetTimer(StartHandle, this, &ThisClass::ShrinkPlayer, 20, false);
 }
 
 #pragma endregion

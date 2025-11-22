@@ -12,7 +12,7 @@ void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 4:
+	case 11:
 		CeilingAction = ([](AAnomaly_Object_Ceiling* Ceiling) {Ceiling->PlayCeilingRotate(); });
 		break;
 	}

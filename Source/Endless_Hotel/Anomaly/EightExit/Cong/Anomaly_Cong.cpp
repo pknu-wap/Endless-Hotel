@@ -9,14 +9,15 @@ void AAnomaly_Cong::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
-	StartCongAction();
+	FTimerHandle Handle;
+	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 15, false);
 }
 
 #pragma endregion
 
 #pragma region Cong
 
-void AAnomaly_Cong::StartCongAction()
+void AAnomaly_Cong::StartAnomalyAction()
 {
 	const uint8 MaxIndex = 100;
 	uint8 CurrentIndex = 0;
