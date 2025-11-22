@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Ceiling/Anomaly_Ceiling.h"
 #include "Anomaly/Object/Ceiling/Anomaly_Object_Ceiling.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Activity
 
@@ -12,7 +11,7 @@ void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 12:
+	case 11:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
