@@ -74,7 +74,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 			return nullptr;
 		}
 		Index = 0;
-		SpawnAnomalyAtIndex(Index); // restart
+		return SpawnAnomalyAtIndex(Index); // restart
 	}
 
 	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].AnomalyClass;

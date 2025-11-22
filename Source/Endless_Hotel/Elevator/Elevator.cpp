@@ -271,12 +271,18 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	if(bIsStart)
 	{
 		FTimerHandle MoveHandle;
-		GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateLambda([&]()
-			{
-				MoveDoors(true);
-				SetPlayerInputEnabled(true);
-				GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-			}), ElevatorMoveDuration, false);
+		GetWorld()->GetTimerManager().SetTimer(
+			MoveHandle,
+			FTimerDelegate::CreateWeakLambda(this, [this, MoveHandle]() mutable
+				{
+					MoveDoors(true);
+					SetPlayerInputEnabled(true);
+					GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+				}),
+			ElevatorMoveDuration,
+			false
+		);
+
 	}
 }
 
@@ -293,19 +299,22 @@ void AElevator::NotifySubsystemElevatorChoice()
 	FTimerHandle WaitHandle;
 	FTimerHandle MoveHandle;
 	
-	GetWorld()->GetTimerManager().SetTimer(MoveHandle, [this, MoveHandle]() mutable
-		{
-			ElevatorMove(MapPos, EndPos, false);
-			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-		}, DoorDuration, false);
-
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, [this, Sub, WaitHandle]() mutable
+	FTimerDelegate WaitDelegate = FTimerDelegate::CreateWeakLambda(this, [this, Sub]()
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
-			GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
-		}, DoorDuration + ElevatorMoveDuration, false);
+		});
+
+	FTimerDelegate MoveDelegate = FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
+		{
+			ElevatorMove(MapPos, EndPos, false);
+			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+		});
+
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, MoveDelegate, DoorDuration, false);
+
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, WaitDelegate, DoorDuration + ElevatorMoveDuration, false);
 }
 
 #pragma endregion
@@ -330,11 +339,12 @@ void AElevator::RotatePlayer()
 	Player->bUseControllerRotationYaw = false;
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
 	FRotator PlayerRotation = Player->GetActorRotation();
-
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, [this, PlayerRotation, LookRotation]()
+	FTimerDelegate RotateDelegate = FTimerDelegate::CreateWeakLambda(this, [this, PlayerRotation, LookRotation]()
 		{
 			SmoothRotate(PlayerRotation, LookRotation);
-		}, 0.01f, true);
+		});
+
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, RotateDelegate, 0.01f, true);
 }
 
 void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
