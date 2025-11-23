@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Player/Controller/EHPlayerController.h"
+#include "UI/Controller/UI_Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
@@ -80,9 +81,8 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Started, this, &ThisClass::OnFaceCoverStarted);
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
 
-		// ESC
-		// FaceCover
-		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Triggered, this, &ThisClass::OnESCTriggered);
+		//ESC
+		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Started, this, &ThisClass::EscapeStarted);
 	}
 }
 
@@ -315,8 +315,17 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 	}
 }
 
-void AEHPlayerController::OnESCTriggered() {
+void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 
+	if (UICon->GetCurrentPopUpWidget())
+	{
+		UICon->ClosePopUpWidget(true);
+		return;
+	}
+
+	UICon->OpenPopUpWidget(UI_Escape);
 }
 
 

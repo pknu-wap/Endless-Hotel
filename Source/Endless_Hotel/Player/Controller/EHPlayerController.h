@@ -31,6 +31,7 @@ protected:
 #pragma region Input
 protected:
 	virtual void SetupInputComponent() override;
+	
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -74,14 +75,15 @@ protected:
 	bool bIsFaceCoverTransitioning = false;
 
 	//ESC
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_ESC;
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<class UInputAction> IA_ESC;
 
 	// Look Sensitivity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	float LookSensitivity = 0.3f;
 
 	// Input Callbacks
+	void EscapeStarted(const struct FInputActionValue& InputValue);
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void OnRunStarted();
@@ -91,10 +93,18 @@ protected:
 	void OnFaceCoverStarted();
 	void OnFaceCoverCompleted();
 	void OnInteract(const FInputActionValue& Value);
-	void OnESCTriggered();
 
 	/** Tick 내 상호작용 탐색 */
 	void CheckForInteractables();
+
+#pragma endregion
+
+
+#pragma region Widget
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<class UUI_PopUp_Base> UI_Escape;
 
 #pragma endregion
 
