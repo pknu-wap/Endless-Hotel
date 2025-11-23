@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
 
 #pragma region Compendium
@@ -64,6 +65,38 @@ void USaveManager::SaveSettingData(const FSettingSaveData& Data)
 	SaveManager->SettingData = Data;
 
 	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Setting"), 0);
+}
+
+#pragma endregion
+
+#pragma region Clear
+
+bool USaveManager::LoadGameClearData()
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Clear"), 0));
+	bool SaveData = false;
+
+	if (!SaveManager)
+	{
+		return SaveData;
+	}
+
+	SaveData = SaveManager->bGameClearData;
+
+	return SaveData;
+}
+
+void USaveManager::SaveGameClearData()
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
+	SaveManager->bGameClearData = true;
+
+	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Clear"), 0);
+}
+
+void USaveManager::DeleteGameClearData()
+{
+	UGameplayStatics::DeleteGameInSlot(TEXT("Save_Clear"), 0);
 }
 
 #pragma endregion

@@ -3,11 +3,10 @@
 #include "AnomalyProgressSubSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Pause/Demo/UI_PopUp_Demo.h"
 
 #pragma region Base
 
@@ -19,11 +18,7 @@ UAnomalyProgressSubSystem::UAnomalyProgressSubSystem()
 		DataTable_Anomaly = AnomalyFinder.Object;
 	}
 
-	static ConstructorHelpers::FClassFinder<UUI_PopUp_Base> UIFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/Demo/WBP_Demo.WBP_Demo_C"));
-	if (UIFinder.Succeeded())
-	{
-		UI_Demo = UIFinder.Class;
-	}
+	GameClearEvent.AddDynamic(this, &ThisClass::GameClear);
 }
 
 void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -92,7 +87,7 @@ void UAnomalyProgressSubSystem::SubFloor()
 	}
 	else
 	{
-		GameClear();
+		GameClearEvent.Broadcast();
 	}
 }
 
@@ -204,8 +199,7 @@ void UAnomalyProgressSubSystem::GameClear()
 	//Initialize();
 	//Todo:
 
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenStrongPopUpWidget(UI_Demo);
+	USaveManager::SaveGameClearData();
 }
 
 #pragma endregion

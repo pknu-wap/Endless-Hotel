@@ -3,7 +3,6 @@
 #include "UI/PopUp/Default/Reset/UI_PopUp_Reset.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Base
 
@@ -21,8 +20,8 @@ void UUI_PopUp_Reset::NativeOnInitialized()
 
 void UUI_PopUp_Reset::ButtonClick_Yes()
 {
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Recording"), 0));
-	SaveManager->DeleteCompendiumData();
+	USaveManager::DeleteCompendiumData();
+	USaveManager::DeleteGameClearData();
 
 	Input_ESC();
 }

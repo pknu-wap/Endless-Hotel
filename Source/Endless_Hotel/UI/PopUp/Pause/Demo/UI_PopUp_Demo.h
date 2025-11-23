@@ -30,4 +30,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Clear
+
+protected:
+	UFUNCTION()
+	void OpenDemoWidget();
+
+protected:
+	UPROPERTY()
+	TSubclassOf<UUI_PopUp_Demo> UI_Demo;
+
+#pragma endregion
+
 };
