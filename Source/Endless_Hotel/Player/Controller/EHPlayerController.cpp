@@ -188,7 +188,7 @@ void AEHPlayerController::OnCrouchCompleted()
 
 		if (UCapsuleComponent* Capsule = ControlledCharacter->GetCapsuleComponent())
 		{
-			Capsule->SetCapsuleSize(50.f, 100.f);
+			Capsule->SetCapsuleSize(45.f, 100.f);
 		}
 		
 	}
