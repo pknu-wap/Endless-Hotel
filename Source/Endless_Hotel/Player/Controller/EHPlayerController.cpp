@@ -134,6 +134,11 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 
 void AEHPlayerController::OnRunStarted()
 {
+	if (!bCanRun)
+	{
+		return;
+	}
+
 	bIsRunning = true;
 
 	if (ACharacter* ControlledCharacter = GetCharacter())

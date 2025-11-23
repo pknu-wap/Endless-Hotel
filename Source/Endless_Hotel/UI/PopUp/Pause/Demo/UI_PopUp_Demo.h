@@ -37,7 +37,7 @@ protected:
 	void OpenDemoWidget();
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUI_PopUp_Demo> UI_Demo;
 
 #pragma endregion

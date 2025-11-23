@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/Controller/EHPlayerController.h"
 
 #pragma region Activity
 
@@ -30,8 +31,8 @@ void AAnomaly_Shrink::ShrinkPlayer()
 	USceneComponent* PlayerRC = Player->GetRootComponent();
 	Player->GetCharacterMovement()->MaxWalkSpeed *= Multi_Scale;
 
-	// 아직 플레이어 C++ 코드가 없어서 달리기와 해제 시 이동 속도가 복구 되는 것은 막지 못함
-	// 추후 수정 예정
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->bCanRun = false;
 
 	FVector TargetScale = FVector(Multi_Scale, Multi_Scale, Multi_Scale);
 

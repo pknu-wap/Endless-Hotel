@@ -14,8 +14,6 @@ void UUI_PopUp_Demo::NativeOnInitialized()
 
 	Button_Return->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Return);
 
-	UI_Demo = StaticClass();
-
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 }

@@ -99,7 +99,6 @@ protected:
 
 #pragma endregion
 
-
 #pragma region Widget
 
 protected:
@@ -125,6 +124,7 @@ public:
 	bool bIsFaceCovering = false;
 	bool bIsCameraFixed = false;
 	bool bCanMove = true;
+	bool bCanRun = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 
