@@ -302,23 +302,18 @@ void AElevator::NotifySubsystemElevatorChoice()
 	SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
 	FTimerHandle MoveHandle;
-	
-	FTimerDelegate WaitDelegate = FTimerDelegate::CreateWeakLambda(this, [this, Sub]()
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
+		{
+			ElevatorMove(MapPos, EndPos, false);
+			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+		}), DoorDuration, false);
+
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub]()
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
-		});
-
-	FTimerDelegate MoveDelegate = FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
-		{
-			ElevatorMove(MapPos, EndPos, false);
-			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-		});
-
-	GetWorld()->GetTimerManager().SetTimer(MoveHandle, MoveDelegate, DoorDuration, false);
-
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, WaitDelegate, DoorDuration + ElevatorMoveDuration, false);
+		}), DoorDuration + ElevatorMoveDuration, false);
 }
 
 #pragma endregion
@@ -343,12 +338,16 @@ void AElevator::RotatePlayer()
 	Player->bUseControllerRotationYaw = false;
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
 	FRotator PlayerRotation = Player->GetActorRotation();
-	FTimerDelegate RotateDelegate = FTimerDelegate::CreateWeakLambda(this, [this, PlayerRotation, LookRotation]()
+	
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this, PlayerRotation, LookRotation]()
 		{
 			SmoothRotate(PlayerRotation, LookRotation);
-		});
+		}), 0.01f, true);
 
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, RotateDelegate, 0.01f, true);
+	FVector3d FixedLocation = Player->GetActorLocation();
+	FixedLocation.X = -690.f;
+	FixedLocation.Y = 570.f;
+	Player->SetActorLocation(FixedLocation);
 }
 
 void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
