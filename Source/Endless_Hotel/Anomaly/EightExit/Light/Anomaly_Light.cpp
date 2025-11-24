@@ -29,29 +29,31 @@ void AAnomaly_Light::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	}
 
 	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			StartAnomalyAction();
+		}), 20, false);
 }
 
 void AAnomaly_Light::StartAnomalyAction()
 {
-	TWeakObjectPtr<AAnomaly_Light> Wrapper = this;
 	FTimerHandle LightHandle;
-	GetWorld()->GetTimerManager().SetTimer(LightHandle, [Wrapper, LightHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, FTimerDelegate::CreateWeakLambda(this, [this, LightHandle]() mutable
 		{
-			for (auto* FoundActor : Wrapper->LinkedObjects)
+			for (auto* FoundActor : LinkedObjects)
 			{
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-				if (Wrapper->CurrentIndex == Light->LightIndex)
+				if (CurrentIndex == Light->LightIndex)
 				{
-					Wrapper->AnomalyAction(Light);
+					AnomalyAction(Light);
 				}
 			}
 
-			if (++Wrapper->CurrentIndex > Wrapper->MaxIndex)
+			if (++CurrentIndex > MaxIndex)
 			{
-				Wrapper->GetWorld()->GetTimerManager().ClearTimer(LightHandle);
+				GetWorld()->GetTimerManager().ClearTimer(LightHandle);
 			}
-		}, NextActionDelay, true);
+		}), NextActionDelay, true);
 }
 
 #pragma endregion

@@ -9,11 +9,6 @@
 
 #pragma region Base
 
-AAnomaly_Generator::AAnomaly_Generator(const FObjectInitializer& ObjectInitializer)
-{
-	PrimaryActorTick.bCanEverTick = false;
-}
-
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();

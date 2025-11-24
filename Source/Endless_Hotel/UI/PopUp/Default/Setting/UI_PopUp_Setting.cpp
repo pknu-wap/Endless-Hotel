@@ -8,7 +8,6 @@
 #include "Components/HorizontalBox.h"
 #include "Components/Button.h"
 #include "Sound/SoundClass.h"
-#include "Kismet/GameplayStatics.h"
 
 #pragma region Delegate
 
@@ -51,9 +50,8 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 void UUI_PopUp_Setting::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Setting"), 0));
-	FSettingSaveData SaveData = SaveManager->LoadSettingData();
+	
+	FSettingSaveData SaveData = USaveManager::LoadSettingData();
 
 	Value_Grapic = SaveData.Grapic;
 	Value_Resolution = SaveData.Resolution;
@@ -128,7 +126,6 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 	SettingHandle->ApplySettings(false);
 	SettingHandle->SaveSettings();
 
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Setting"), 0));
 	FSettingSaveData SaveData;
 
 	SaveData.Grapic = Value_Grapic;
@@ -138,7 +135,7 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 
 	//SaveData.Language = Value_Language;
 
-	SaveManager->SaveSettingData(SaveData);
+	USaveManager::SaveSettingData(SaveData);
 
 	Input_ESC();
 }

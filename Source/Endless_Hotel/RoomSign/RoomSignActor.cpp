@@ -5,16 +5,15 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
-// Sets default values
-ARoomSignActor::ARoomSignActor(const FObjectInitializer& ObjectInitializer)
-{
-	PrimaryActorTick.bCanEverTick = false;
+#pragma region Base
 
+ARoomSignActor::ARoomSignActor(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
 	SignMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SignMesh"));
 	SetRootComponent(SignMesh);
 }
 
-// Called when the game starts or when spawned
 void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();

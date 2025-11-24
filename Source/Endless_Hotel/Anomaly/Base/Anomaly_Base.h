@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/EHActor.h"
 #include "Anomaly_Base.generated.h"
 
 #pragma region Declare
@@ -13,7 +13,7 @@ class AAnomaly_Object_Base;
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
-class ENDLESS_HOTEL_API AAnomaly_Base : public AActor
+class ENDLESS_HOTEL_API AAnomaly_Base : public AEHActor
 {
 	GENERATED_BODY()
 

@@ -73,13 +73,12 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	TWeakObjectPtr<AAnomaly_Object_Painting> Wrapper = this;
 	FTimerHandle BloodHandle;
-	GetWorld()->GetTimerManager().SetTimer(BloodHandle, [Wrapper]()
+	GetWorld()->GetTimerManager().SetTimer(BloodHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Wrapper->Niagara_Blood_Left->SetActive(true);
-			Wrapper->Niagara_Blood_Right->SetActive(true);
-		}, 15, false);
+			Niagara_Blood_Left->SetActive(true);
+			Niagara_Blood_Right->SetActive(true);
+		}), 15, false);
 }
 
 #pragma endregion

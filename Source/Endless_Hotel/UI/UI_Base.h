@@ -10,5 +10,12 @@ UCLASS(Abstract, Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+#pragma region Base
+
+protected:
+	virtual void NativeDestruct() override;
+
+#pragma endregion
+
 };

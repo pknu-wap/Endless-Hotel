@@ -5,7 +5,10 @@
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "UI/Button/Main/UI_Button_Main.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/VerticalBox.h"
+#include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma region Base
 
@@ -26,6 +29,29 @@ void UUI_MainMenu::NativeOnInitialized()
 	Buttons[Index_Quit]->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 
 	Button_Compendium->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Compendium);
+}
+
+void UUI_MainMenu::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SetTitleImage();
+}
+
+#pragma endregion
+
+#pragma region Title
+
+void UUI_MainMenu::SetTitleImage()
+{
+	bool Data = USaveManager::LoadGameClearData();
+
+	if (!Data)
+	{
+		return;
+	}
+
+	Image_Title->SetBrushFromTexture(Texture_Clear);
 }
 
 #pragma endregion

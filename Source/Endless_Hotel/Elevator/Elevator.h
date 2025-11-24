@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/EHActor.h"
 #include "Elevator.generated.h"
 
 #pragma region ForwardDeclarations
@@ -19,9 +19,10 @@ class AEHCharacter;
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator : public AActor
+class ENDLESS_HOTEL_API AElevator : public AEHActor
 {
 	GENERATED_BODY()
+
 #pragma region Base
 
 public:
@@ -232,4 +233,5 @@ private:
 	void NotifySubsystemElevatorChoice();
 
 #pragma endregion
+
 };

@@ -10,7 +10,10 @@ void AAnomaly_Cong::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
 	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 15, false);
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			StartAnomalyAction();
+		}), 15, false);
 }
 
 #pragma endregion
@@ -22,24 +25,23 @@ void AAnomaly_Cong::StartAnomalyAction()
 	const uint8 MaxIndex = 100;
 	uint8 CurrentIndex = 0;
 
-	TWeakObjectPtr<AAnomaly_Cong> Wrapper = this;
-	GetWorld()->GetTimerManager().SetTimer(CongHandle, [Wrapper, MaxIndex, CurrentIndex]() mutable
+	GetWorld()->GetTimerManager().SetTimer(CongHandle, FTimerDelegate::CreateWeakLambda(this, [this, MaxIndex, CurrentIndex]() mutable
 		{
-			for (auto* FoundActor : Wrapper->LinkedObjects)
+			for (auto* FoundActor : LinkedObjects)
 			{
 				auto* HandPrint = Cast<AAnomaly_Object_HandPrint>(FoundActor);
 
 				if (++CurrentIndex == HandPrint->HandPrintIndex)
 				{
-					HandPrint->StartCongCong(Wrapper->NextCong);
+					HandPrint->StartCongCong(NextCong);
 				}
 
 				if (CurrentIndex >= MaxIndex)
 				{
-					Wrapper->GetWorld()->GetTimerManager().ClearTimer(Wrapper->CongHandle);
+					GetWorld()->GetTimerManager().ClearTimer(CongHandle);
 				}
 			}
-		}, NextCong, true);
+		}), NextCong, true);
 }
 
 #pragma endregion

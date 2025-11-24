@@ -6,18 +6,30 @@
 #include "GameSystem/GameMode/EHGameMode_Base.h"
 #include "EHGameMode_InGame.generated.h"
 
+#pragma region Declare
+
 class AAnomaly_Generator;
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API AEHGameMode_InGame : public AEHGameMode_Base
 {
 	GENERATED_BODY()
-	
-protected:
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AAnomaly_Generator> Generator;
+#pragma region Base
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Anomaly
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AAnomaly_Generator> Generator;
+
+#pragma endregion
+
 };

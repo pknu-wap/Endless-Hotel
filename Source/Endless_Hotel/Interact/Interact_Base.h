@@ -3,18 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Interact_Base.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AInteract_Base : public AActor
+class ENDLESS_HOTEL_API AInteract_Base : public AAnomaly_Object_Base
 {
     GENERATED_BODY()
+
+#pragma region Base
 
 public:
     AInteract_Base(const FObjectInitializer& ObjectInitializer);
 
-    //상호작용 함수 선언
+#pragma endregion
+
+#pragma region Interact
+
+public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
     void Interact(APlayerController* InteractingController);
+
+#pragma endregion
+
 };

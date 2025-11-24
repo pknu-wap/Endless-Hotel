@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Delegates/DelegateCombinations.h"
 #include "AnomalyProgressSubSystem.generated.h"
 
 class AAnomaly_Generator;
@@ -36,8 +37,9 @@ struct FAnomalyEntry
 	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
 };
 
-#pragma endregion
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsystem
@@ -151,13 +153,13 @@ public:
 #pragma region Clear
 
 public:
-	bool bIsAlreadyClear = false;
-public:
+	UFUNCTION()
 	void GameClear();
 
-protected:
-	UPROPERTY()
-	TSubclassOf<class UUI_PopUp_Base> UI_Demo;
+public:
+	bool bIsAlreadyClear = false;
+
+	FGameClearEvent GameClearEvent;
 
 #pragma endregion
 

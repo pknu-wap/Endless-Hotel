@@ -19,4 +19,11 @@ void AEHGameMode_Base::BeginPlay()
 	UICon->OpenMapBaseWidget();
 }
 
+void AEHGameMode_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+
+	Super::EndPlay(EndPlayReason);
+}
+
 #pragma endregion

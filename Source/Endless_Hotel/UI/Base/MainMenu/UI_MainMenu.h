@@ -15,6 +15,21 @@ class ENDLESS_HOTEL_API UUI_MainMenu : public UUI_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+
+#pragma endregion
+
+#pragma region Title
+
+protected:
+	void SetTitleImage();
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_Title;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTexture2D> Texture_Clear;
 
 #pragma endregion
 

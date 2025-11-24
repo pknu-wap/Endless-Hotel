@@ -90,40 +90,38 @@ void AAnomaly_Object_Door::PlayShake_Handle()
 
 	Timeline_Handle->PlayFromStart();
 
-	TWeakObjectPtr<AAnomaly_Object_Door> Wrapper = this;
-	GetWorld()->GetTimerManager().SetTimer(HandleHandle, [Wrapper]()
+	GetWorld()->GetTimerManager().SetTimer(HandleHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Wrapper->Timeline_Handle->PlayFromStart();
-			Wrapper->ShakeCount_Handle++;
+			Timeline_Handle->PlayFromStart();
+			ShakeCount_Handle++;
 
-			if (Wrapper->ShakeCount_Handle >= Wrapper->MaxShakeCount_Handle)
+			if (ShakeCount_Handle >= MaxShakeCount_Handle)
 			{
-				Wrapper->GetWorld()->GetTimerManager().ClearTimer(Wrapper->HandleHandle);
+				GetWorld()->GetTimerManager().ClearTimer(HandleHandle);
 
-				Wrapper->ShakeCount_Handle = 0;
+				ShakeCount_Handle = 0;
 
-				Wrapper->PlayShake_Door();
+				PlayShake_Door();
 			}
-		}, 0.17f, true);
+		}), 0.17f, true);
 }
 
 void AAnomaly_Object_Door::PlayShake_Door()
 {
 	Timeline_Door->PlayFromStart();
 
-	TWeakObjectPtr<AAnomaly_Object_Door> Wrapper = this;
-	GetWorld()->GetTimerManager().SetTimer(DoorHandle, [Wrapper]()
+	GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Wrapper->Timeline_Door->PlayFromStart();
-			Wrapper->ShakeCount_Door++;
+			Timeline_Door->PlayFromStart();
+			ShakeCount_Door++;
 
-			if (Wrapper->ShakeCount_Door >= Wrapper->MaxShakeCount_Door)
+			if (ShakeCount_Door >= MaxShakeCount_Door)
 			{
-				Wrapper->GetWorld()->GetTimerManager().ClearTimer(Wrapper->DoorHandle);
+				GetWorld()->GetTimerManager().ClearTimer(DoorHandle);
 
-				Wrapper->ShakeCount_Door = 0;
+				ShakeCount_Door = 0;
 			}
-		}, 0.3f, true);
+		}), 0.3f, true);
 }
 
 #pragma endregion
