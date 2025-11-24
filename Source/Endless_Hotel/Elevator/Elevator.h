@@ -89,6 +89,20 @@ protected:
 
 #pragma endregion
 
+#pragma region Sound
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_DoorMove;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_ElevatorMove;
+
+#pragma endregion
+
 #pragma region Trigger
 
 protected:

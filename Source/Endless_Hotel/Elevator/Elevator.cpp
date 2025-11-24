@@ -10,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -68,7 +69,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
 	ElevatorLight->SetupAttachment(Car);
 
-	// 7) EntranceTrigger
+	// 7) Sound
+	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+
+	// 8) EntranceTrigger
 	GetInTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("GetInTrigger"));
 	GetInTrigger->SetupAttachment(Entrance);
 	GetInTrigger->SetBoxExtent(FVector(120.f, 60.0f, 120.0f));
@@ -77,7 +81,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	GetInTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GetInTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// 8) InsideTrigger
+	// 9) InsideTrigger
 	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
 	InsideTrigger->SetupAttachment(Car);
 	InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 120.0f));
@@ -86,10 +90,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// 9) Timeline
+	// 10) Timeline
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
 
-	// 10) Mobility Settings
+	// 11) Mobility Settings
 	ElevatorSceneRoot->SetMobility(EComponentMobility::Movable);
 	Car->SetMobility(EComponentMobility::Movable);
 	LeftDoor->SetMobility(EComponentMobility::Movable);
@@ -97,7 +101,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	LeftGlass->SetMobility(EComponentMobility::Movable);
 	RightGlass->SetMobility(EComponentMobility::Movable);
 
-	// 11) Location Settings
+	// 12) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
 }
@@ -181,7 +185,8 @@ void AElevator::MoveDoors(bool bIsOpening)
 
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
-
+	AC->Sound = Sound_DoorMove;
+	AC->Play();
 	if (bIsOpening)
 	{
 		bIsDoorOpened = true;
@@ -261,7 +266,8 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
 	SetPlayerInputEnabled(false);
-
+	AC->Sound = Sound_ElevatorMove;
+	AC->Play();
 	SetActorLocation(Start);
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
