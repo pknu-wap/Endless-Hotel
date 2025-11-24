@@ -3,7 +3,6 @@
 #include "UI/PopUp/Default/Compendium/UI_PopUp_Compendium.h"
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "Kismet/GameplayStatics.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
 #include "Components/HorizontalBox.h"
@@ -34,8 +33,7 @@ void UUI_PopUp_Compendium::NativeConstruct()
 
 void UUI_PopUp_Compendium::CheckCompendiumData()
 {
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Compendium"), 0));
-	TArray<FCompendiumData> Data = SaveManager->LoadCompendiumData();
+	TArray<FCompendiumData> Data = USaveManager::LoadCompendiumData();
 
 	if (Data.IsEmpty())
 	{

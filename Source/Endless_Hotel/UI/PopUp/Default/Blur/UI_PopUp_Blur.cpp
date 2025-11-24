@@ -21,17 +21,16 @@ void UUI_PopUp_Blur::StartSightBlur()
 	const float TargetStrength = 20.f;
 	float CurrentStrength = 0.f;
 
-	TWeakObjectPtr<UUI_PopUp_Blur> Wrapper = this;
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, [Wrapper, TargetStrength, CurrentStrength]() mutable
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
 		{
 			CurrentStrength += 0.1f;
-			Wrapper->BackBlur->SetBlurStrength(CurrentStrength);
+			BackBlur->SetBlurStrength(CurrentStrength);
 
 			if (CurrentStrength >= TargetStrength)
 			{
-				Wrapper->GetWorld()->GetTimerManager().ClearTimer(Wrapper->BlurHandle);
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
 			}
-		}, 0.01f, true);
+		}), 0.01f, true);
 }
 
 #pragma endregion

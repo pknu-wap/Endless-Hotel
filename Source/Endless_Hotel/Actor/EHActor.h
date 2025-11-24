@@ -3,18 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "EHCharacter.generated.h"
+#include "GameFramework/Actor.h"
+#include "EHActor.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AEHCharacter : public ACharacter
+class ENDLESS_HOTEL_API AEHActor : public AActor
 {
 	GENERATED_BODY()
-
+	
 #pragma region Base
 
 public:
-	AEHCharacter(const FObjectInitializer& ObjectInitializer);
+	AEHActor(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;

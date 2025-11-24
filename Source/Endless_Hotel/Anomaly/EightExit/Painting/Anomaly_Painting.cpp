@@ -27,7 +27,10 @@ void AAnomaly_Painting::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 	}
 
 	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, this, &ThisClass::StartAnomalyAction, 20, false);
+	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			StartAnomalyAction();
+		}), 20, false);
 }
 
 #pragma endregion

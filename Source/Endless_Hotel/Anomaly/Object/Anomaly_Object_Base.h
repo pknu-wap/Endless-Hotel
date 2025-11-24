@@ -3,19 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Actor/EHActor.h"
 #include "Anomaly_Object_Base.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AActor
+class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-public:
-	AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 };

@@ -44,9 +44,9 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 #pragma region Compendium
 
 public:
-	TArray<FCompendiumData> LoadCompendiumData();
-	void SaveCompendiumData(const FCompendiumData& Data);
-	void DeleteCompendiumData();
+	static TArray<FCompendiumData> LoadCompendiumData();
+	static void SaveCompendiumData(const FCompendiumData& Data);
+	static void DeleteCompendiumData();
 
 protected:
 	UPROPERTY(SaveGame)
@@ -57,12 +57,25 @@ protected:
 #pragma region Setting
 
 public:
-	FSettingSaveData LoadSettingData();
-	void SaveSettingData(const FSettingSaveData& Data);
+	static FSettingSaveData LoadSettingData();
+	static void SaveSettingData(const FSettingSaveData& Data);
 
 protected:
 	UPROPERTY(SaveGame)
 	FSettingSaveData SettingData;
+
+#pragma endregion
+
+#pragma region Clear
+
+public:
+	static bool LoadGameClearData();
+	static void SaveGameClearData();
+	static void DeleteGameClearData();
+
+protected:
+	UPROPERTY(SaveGame)
+	bool bGameClearData = false;
 
 #pragma endregion
 
