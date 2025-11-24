@@ -5,6 +5,10 @@
 
 #pragma region Base
 
+AInteract_Base::AInteract_Base()
+{
+}
+
 AInteract_Base::AInteract_Base(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {

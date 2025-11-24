@@ -14,6 +14,7 @@ class ENDLESS_HOTEL_API AInteract_Base : public AAnomaly_Object_Base
 #pragma region Base
 
 public:
+    AInteract_Base();
     AInteract_Base(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion

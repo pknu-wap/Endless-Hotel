@@ -71,7 +71,7 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &ThisClass::OnRunCompleted);
 
 		// Interact
-		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Triggered, this, &ThisClass::OnInteract);
+		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Started, this, &ThisClass::OnInteract);
 
 		// Crouch - Started/Completed 사용
 		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &ThisClass::OnCrouchStarted);
