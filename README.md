@@ -1,4 +1,8 @@
 # 🏨 **Endless Hotel** 🏨
+
+<img width="768" height="432" alt="스플래쉬 이미지" src="https://github.com/user-attachments/assets/dc9f079c-7d54-458c-bbc9-104f7d8886c6" />
+
+
 ### 📒 **스토리**
 > **1901년, 이탈리아. 한 인물이 외딴 시골 호텔에서 눈을 뜬다. 곧 호텔 곳곳에서 기묘한 이상 현상이 나타나고,**  
 > **그 원인을 해결하기 위해 마지막 로비 층에 도달해야만 한다.**  
@@ -25,12 +29,48 @@ _`#심리적공포` `#퍼즐` `#초현실적` `#분위기있는` `#3D`_
 ### 🔧 **기술 스택**
 <table>
   <tr>
-    <td><img/></td>
+    <td><img src="https://img.icons8.com/ios_filled/1200/unreal-engine.jpg" width="100px;" alt=""/></td>
+    <td><img src="https://e7.pngegg.com/pngimages/46/626/png-clipart-c-logo-the-c-programming-language-computer-icons-computer-programming-source-code-programming-miscellaneous-template.png" width="100px;" alt=""/></td>
+    <td><img src="https://ih1.redbubble.net/image.5513011185.9723/st,small,507x507-pad,600x600,f8f8f8.jpg" width="100px;" alt=""/></td>
+    <td><img src="https://w7.pngwing.com/pngs/54/524/png-transparent-figma-app-logo-tech-companies-thumbnail.png" width="100px;" alt=""/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Unreal Engine</b></td>
+    <td align="center"><b>C++</b></td>
+    <td align="center"><b>Blender</b></td>
+    <td align="center"><b>Figma</b></td>
   </tr>
 </table>
 
-### **협업**
+### 🙏 **협업**
+<table>
+  <tr>
+    <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1DNsfskjJtWhewcdCt8_4spNsZf7lmL3wKQ&s" width="100px;" alt=""/></td>
+    <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWHx8rhkj-NfrL6OTHBYsFvgxI2ysF3R-YIg&s" width="100px;" alt=""/></td>
+    <td><img src="https://i.namu.wiki/i/1Hiv-mf3x_xkYU1kd6PRSAA9TZycl-A3h-HM--kersQF5fL6_fF2PmO8757fj9CqhXnmcy2lFaQkwToWTxtIHw.webp" width="100px;" alt=""/></td>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/KakaoTalk_logo.svg/2048px-KakaoTalk_logo.svg.png" width="100px;" alt=""/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Github</b></td>
+    <td align="center"><b>Notion</b></td>
+    <td align="center"><b>Discord</b></td>
+    <td align="center"><b>Kakao Talk</b></td>
+  </tr>
+</table>
 
+### 🎮 **출시**
+⭐ **2026년 1분기 출시 예정** ⭐
+<table>
+  <tr>
+    <td align="center"><b>Platform</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/768px-Steam_icon_logo.svg.png" width="100px;" alt=""/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Steam</b></td>
+  </tr>
+</table>
 
 ### 😃 **팀원 소개**
 <table>
@@ -53,7 +93,7 @@ _`#심리적공포` `#퍼즐` `#초현실적` `#분위기있는` `#3D`_
     <td align="center"><a href="https://github.com/Jinu219" title="Code">김경원</a></td>
     <td align="center"><a href="https://github.com/hyeokbini" title="Code">심서은</a></td>
     <td align="center"><a href="https://github.com/acastracity" title="Code">조성범</a></td>
-    <td align="center"><a href="https://www.instagram.com/ye_l05?igsh=MW0zcjgzaWlvbTFtNg%3D%3D&utm_source=qr" title="Code">권명진</a></td>
+    <td align="center"><a href="" title="Code">권명진</a></td>
   </tr>
   <tr>
     <td align="center"><b>UI & 코드 설계</b></td>
