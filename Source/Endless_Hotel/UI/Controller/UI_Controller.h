@@ -49,14 +49,11 @@ public:
 
 #pragma endregion
 
-#pragma region Open & Close & Get
+#pragma region Open & Close
 
 public:
 	UUI_Base* OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
 	void CloseWidget(const EWidgetType& WidgetType, const EInputModeType& InputMode = EInputModeType::GameOnly);
-
-	UUI_Base* GetCurrentBaseWidget() { return BaseWidget; }
-	UUI_Base* GetCurrentPopUpWidget();
 
 protected:
 	void SetInputMode(const EInputModeType& InputMode);
@@ -66,13 +63,14 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<UUI_Base> BaseWidget;
-
-	UPROPERTY()
 	TArray<FPopUpWidget> PopUpWidgets;
 
 	const int32 BaseWidget_ZOrder = 0;
 	int32 PopUpWidget_ZOrder = 1;
+
+public:
+	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[BaseWidget_ZOrder].PopUpWidget; }
+	UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets[PopUpWidget_ZOrder].PopUpWidget; }
 
 #pragma endregion
 

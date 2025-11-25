@@ -39,13 +39,7 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<
 	{
 	case EWidgetType::Base:
 	{
-		if (BaseWidget)
-		{
-			BaseWidget->RemoveFromViewport();
-			BaseWidget = nullptr;
-		}
-		BaseWidget = OpenedWidget;
-		BaseWidget->AddToViewport(BaseWidget_ZOrder);
+		PopUpWidgets[BaseWidget_ZOrder].PopUpWidget->AddToViewport(BaseWidget_ZOrder);
 		break;
 	}
 	default:
@@ -69,38 +63,23 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<
 
 void UUI_Controller::CloseWidget(const EWidgetType& WidgetType, const EInputModeType& InputMode)
 {
-	switch (WidgetType)
+	if (PopUpWidgets.IsEmpty())
 	{
-	case EWidgetType::Base:
-	{
-		if (!BaseWidget)
-		{
-			return;
-		}
-		BaseWidget->RemoveFromViewport();
-		BaseWidget = nullptr;
-		break;
-	}
-	default:
-	{
-		if (PopUpWidgets.IsEmpty())
-		{
-			return;
-		}
-		FPopUpWidget PopUpWidget = PopUpWidgets[PopUpWidget_ZOrder - 1];
-		if (PopUpWidget.WidgetType == EWidgetType::PopUp)
-		{
-			PopUpWidget.PopUpWidget->RemoveFromViewport();
-		}
-		else
-		{
-			GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
-		}
-		AdjustPopUpZOrder(false);
-		break;
-	}
+		return;
 	}
 
+	FPopUpWidget PopUpWidget = PopUpWidgets[PopUpWidget_ZOrder - 1];
+
+	if (PopUpWidget.WidgetType == EWidgetType::PopUp)
+	{
+		PopUpWidget.PopUpWidget->RemoveFromViewport();
+	}
+	else
+	{
+		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
+	}
+
+	AdjustPopUpZOrder(false);
 	SetInputMode(InputMode);
 }
 
@@ -116,11 +95,6 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 	{
 	case EInputModeType::GameOnly:
 	{
-		if (PopUpWidget)
-		{
-			return;
-		}
-
 		PC->SetInputMode(FInputModeGameOnly());
 		PC->bShowMouseCursor = false;
 
