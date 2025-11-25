@@ -25,108 +25,83 @@ UUI_Controller::UUI_Controller()
 
 #pragma endregion
 
-#pragma region Open
+#pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenBaseWidget(TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode)
+UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode)
 {
-	if (BaseWidget)
-	{
-		CloseBaseWidget(false);
-	}
+	UUI_Base* OpenedWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
 
-	if (PopUpWidget)
+	FPopUpWidget PopUpWidget;
+	PopUpWidget.WidgetType = WidgetType;
+	PopUpWidget.PopUpWidget = OpenedWidget;
+
+	switch (WidgetType)
 	{
-		ClosePopUpWidget(false);
+	case EWidgetType::Base:
+	{
+		if (BaseWidget)
+		{
+			BaseWidget->RemoveFromViewport();
+			BaseWidget = nullptr;
+		}
+		BaseWidget = OpenedWidget;
+		BaseWidget->AddToViewport(BaseWidget_ZOrder);
+		break;
 	}
-	
-	BaseWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
-	BaseWidget->AddToViewport(BASE_UI_ZORDER);
+	default:
+	{
+		AdjustPopUpZOrder(true);
+		PopUpWidgets.Add(PopUpWidget);
+		if (PopUpWidget.WidgetType == EWidgetType::PopUp)
+		{
+			PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
+			break;
+		}
+		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), PopUpWidget_ZOrder);
+		break;
+	}
+	}
 
 	SetInputMode(InputMode);
 
-	return BaseWidget;
+	return OpenedWidget;
 }
 
-UUI_PopUp_Base* UUI_Controller::OpenPopUpWidget(TSubclassOf<UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode)
+void UUI_Controller::CloseWidget(const EWidgetType& WidgetType, const EInputModeType& InputMode)
 {
-	if (PopUpWidget)
+	switch (WidgetType)
 	{
-		ClosePopUpWidget(false);
+	case EWidgetType::Base:
+	{
+		if (!BaseWidget)
+		{
+			return;
+		}
+		BaseWidget->RemoveFromViewport();
+		BaseWidget = nullptr;
+		break;
 	}
-
-	PopUpWidget = CreateWidget<UUI_PopUp_Base>(GetWorld(), WidgetClass);
-	PopUpWidget->AddToViewport(POPUP_UI_ZORDER);
+	default:
+	{
+		if (PopUpWidgets.IsEmpty())
+		{
+			return;
+		}
+		FPopUpWidget PopUpWidget = PopUpWidgets[PopUpWidget_ZOrder - 1];
+		if (PopUpWidget.WidgetType == EWidgetType::PopUp)
+		{
+			PopUpWidget.PopUpWidget->RemoveFromViewport();
+		}
+		else
+		{
+			GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
+		}
+		AdjustPopUpZOrder(false);
+		break;
+	}
+	}
 
 	SetInputMode(InputMode);
-
-	return PopUpWidget;
-}
-
-UUI_PopUp_Base* UUI_Controller::OpenStrongPopUpWidget(TSubclassOf<UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode)
-{
-	if (PopUpWidget)
-	{
-		ClosePopUpWidget(false);
-	}
-
-	PopUpWidget = CreateWidget<UUI_PopUp_Base>(GetWorld(), WidgetClass);
-	GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget->TakeWidget(), POPUP_UI_ZORDER);
-
-	SetInputMode(InputMode);
-
-	return PopUpWidget;
-}
-
-#pragma endregion
-
-#pragma region Close
-
-void UUI_Controller::CloseBaseWidget(bool bIsChangeMode, const EInputModeType& InputMode)
-{
-	if (!BaseWidget)
-	{
-		return;
-	}
-
-	BaseWidget->RemoveFromViewport();
-	BaseWidget = nullptr;
-
-	if (bIsChangeMode)
-	{
-		SetInputMode(InputMode);
-	}
-}
-
-void UUI_Controller::ClosePopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode)
-{
-	if (!PopUpWidget)
-	{
-		return;
-	}
-
-	PopUpWidget->RemoveFromViewport();
-	PopUpWidget = nullptr;
-
-	if (bIsChangeMode)
-	{
-		SetInputMode(InputMode);
-	}
-}
-
-void UUI_Controller::CloseStrongPopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode)
-{
-	if (!PopUpWidget)
-	{
-		return;
-	}
-
-	GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget->TakeWidget());
-	PopUpWidget = nullptr;
-
-	if (bIsChangeMode)
-	{
-		SetInputMode(InputMode);
-	}
 }
 
 #pragma endregion
@@ -188,6 +163,24 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 		break;
 	}
 	}
+}
+
+#pragma endregion
+
+#pragma region Adjust
+
+void UUI_Controller::AdjustPopUpZOrder(bool bUp)
+{
+	const int32 Max_ZOrder = 100;
+	const int32 Min_ZOrder = 1;
+
+	if (bUp)
+	{
+		PopUpWidget_ZOrder = FMath::Clamp(PopUpWidget_ZOrder + 1, Min_ZOrder, Max_ZOrder);
+		return;
+	}
+
+	PopUpWidget_ZOrder = FMath::Clamp(PopUpWidget_ZOrder - 1, Min_ZOrder, Max_ZOrder);
 }
 
 #pragma endregion

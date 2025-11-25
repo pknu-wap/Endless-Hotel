@@ -8,8 +8,15 @@
 
 #pragma region Declare
 
-#define BASE_UI_ZORDER 0
-#define POPUP_UI_ZORDER 1
+class UUI_Base;
+
+UENUM(BlueprintType)
+enum class EWidgetType : uint8
+{
+	Base			UMETA(DisplayName = "BaseWidget"),
+	PopUp			UMETA(DisplayName = "PopUp"),
+	PopUpStrong		UMETA(DisplayName = "PopUpStrong")
+};
 
 UENUM(BlueprintType)
 enum class EInputModeType : uint8
@@ -17,6 +24,15 @@ enum class EInputModeType : uint8
 	GameOnly	UMETA(DisplayName = "GameOnly"),
 	UIOnly		UMETA(DisplayName = "UIOnly"),
 	GameAndUI	UMETA(DisplayName = "GameAndUI")
+};
+
+USTRUCT(BlueprintType)
+struct FPopUpWidget
+{
+	GENERATED_BODY()
+
+	EWidgetType WidgetType;
+	TObjectPtr<UUI_Base> PopUpWidget;
 };
 
 #pragma endregion
@@ -33,29 +49,30 @@ public:
 
 #pragma endregion
 
-#pragma region Open & Close
+#pragma region Open & Close & Get
 
 public:
-	class UUI_Base* OpenBaseWidget(TSubclassOf<class UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
-	class UUI_PopUp_Base* OpenPopUpWidget(TSubclassOf<class UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
-	class UUI_PopUp_Base* OpenStrongPopUpWidget(TSubclassOf<class UUI_PopUp_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
+	UUI_Base* OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
+	void CloseWidget(const EWidgetType& WidgetType, const EInputModeType& InputMode = EInputModeType::GameOnly);
 
-	void CloseBaseWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
-	void ClosePopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
-	void CloseStrongPopUpWidget(bool bIsChangeMode, const EInputModeType& InputMode = EInputModeType::GameOnly);
-
-	class UUI_Base* GetCurrentBaseWidget() { return BaseWidget; }
-	class UUI_PopUp_Base* GetCurrentPopUpWidget() { return PopUpWidget; }
+	UUI_Base* GetCurrentBaseWidget() { return BaseWidget; }
+	UUI_Base* GetCurrentPopUpWidget();
 
 protected:
 	void SetInputMode(const EInputModeType& InputMode);
 
 protected:
+	void AdjustPopUpZOrder(bool bUp);
+
+protected:
 	UPROPERTY()
-	TObjectPtr<class UUI_Base> BaseWidget;
+	TObjectPtr<UUI_Base> BaseWidget;
 
 	UPROPERTY()
-	TObjectPtr<class UUI_PopUp_Base> PopUpWidget;
+	TArray<FPopUpWidget> PopUpWidgets;
+
+	const int32 BaseWidget_ZOrder = 0;
+	int32 PopUpWidget_ZOrder = 1;
 
 #pragma endregion
 
@@ -66,10 +83,10 @@ public:
 
 protected:
 	UPROPERTY()
-	TSubclassOf<class UUI_Base> UI_MainMenu;
+	TSubclassOf<UUI_Base> UI_MainMenu;
 
 	UPROPERTY()
-	TSubclassOf<class UUI_Base> UI_InGame;
+	TSubclassOf<UUI_Base> UI_InGame;
 
 #pragma endregion
 
