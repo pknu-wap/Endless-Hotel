@@ -50,4 +50,12 @@ protected:
 
 #pragma endregion
 
+
+#pragma region Blur
+
+public:
+	void BlurPaint();
+
+#pragma endregion
+
 };

@@ -24,6 +24,13 @@ void AAnomaly_Painting::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
 			});
 		break;
+
+	case 31:
+		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
+			{
+				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
+			});
+		break;
 	}
 
 	FTimerHandle Handle;

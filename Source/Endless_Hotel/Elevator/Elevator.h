@@ -90,6 +90,20 @@ protected:
 
 #pragma endregion
 
+#pragma region Sound
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_DoorMove;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_ElevatorMove;
+
+#pragma endregion
+
 #pragma region Trigger
 
 protected:
@@ -195,6 +209,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trigger")
 	TSubclassOf<ACharacter> PlayerBPClass;
+
+	UPROPERTY(EditAnywhere, Category = "Position")
+	FVector2D PlayerLocationInElevator;
 
 protected:
 	void RotatePlayer();
