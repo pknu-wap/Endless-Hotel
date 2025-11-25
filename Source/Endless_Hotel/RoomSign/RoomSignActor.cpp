@@ -18,10 +18,13 @@ void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(0);
+	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(2);
+	FLinearColor Offset = FLinearColor::Black;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	uint8 SignIndex = Sub->Floor + 5;
-	DynamicMaterial->SetScalarParameterValue(TEXT("SignIndex"), SignIndex);
+	uint8 UVFloorValue = FMath::Clamp(Sub->Floor - 1, 1, 8);
+	EFloorUV UVFloor = static_cast<EFloorUV>(UVFloorValue);
+	float GValue = GetOffsetG(UVFloor);
+	DynamicMaterial->GetVectorParameterValue(FName("OffsetUV"), Offset);
+	Offset.G = GValue;
+	DynamicMaterial->SetVectorParameterValue(FName("OffsetUV"), Offset);
 }
-
-#pragma endregion

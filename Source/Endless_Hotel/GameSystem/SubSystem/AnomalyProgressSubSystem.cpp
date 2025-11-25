@@ -93,7 +93,7 @@ void UAnomalyProgressSubSystem::SubFloor()
 
 void UAnomalyProgressSubSystem::AddFloor()
 {
-	if (Floor < 9)
+	if (Floor < 8)
 	{
 		Floor++;
 	}

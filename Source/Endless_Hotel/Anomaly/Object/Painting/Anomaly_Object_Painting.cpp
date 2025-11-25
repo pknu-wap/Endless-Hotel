@@ -39,12 +39,12 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 void AAnomaly_Object_Painting::EyeFollowing()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	FTimerHandle Timer;
-
-	TWeakObjectPtr<AAnomaly_Object_Painting> Wrapper = this;
-	GetWorld()->GetTimerManager().SetTimer(Timer, [Wrapper, Player]()
+	FTimerHandle EyeFollowHandle;
+	GetWorld()->GetTimerManager().SetTimer(EyeFollowHandle, FTimerDelegate::CreateWeakLambda(
+		this,
+		[this, Player]()
 		{
-			const FTransform SelfXform = Wrapper->GetActorTransform();
+			const FTransform SelfXform = GetActorTransform();
 			FVector PlayerLocal = SelfXform.InverseTransformPosition(Player->GetActorLocation());
 
 			const float lateralY = PlayerLocal.Y;
@@ -61,10 +61,9 @@ void AAnomaly_Object_Painting::EyeFollowing()
 			}
 
 			const FRotator EyeRot(0.f, targetYaw - 90, 0.f);
-			Wrapper->Mesh_LeftEye->SetRelativeRotation(EyeRot);
-			Wrapper->Mesh_RightEye->SetRelativeRotation(EyeRot);
-
-		}, 0.17f, true);
+			Mesh_LeftEye->SetRelativeRotation(EyeRot);
+			Mesh_RightEye->SetRelativeRotation(EyeRot);
+		}), 0.17f, true);
 }
 
 #pragma endregion
@@ -79,6 +78,15 @@ void AAnomaly_Object_Painting::BloodDropping()
 			Niagara_Blood_Left->SetActive(true);
 			Niagara_Blood_Right->SetActive(true);
 		}), 15, false);
+}
+
+#pragma endregion
+
+#pragma region Blur
+
+void AAnomaly_Object_Painting::BlurPaint()
+{
+
 }
 
 #pragma endregion
