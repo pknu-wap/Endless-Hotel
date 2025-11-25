@@ -27,18 +27,7 @@ void AEHPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn)
-	{
-		UCameraComponent* PlayerCamera = ControlledPawn->FindComponentByClass<UCameraComponent>();
-		if (PlayerCamera)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Camera Founded!: %s"), *PlayerCamera->GetName());
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Camera Component on Pawn!"));
-		}
-	}
+	UCameraComponent* PlayerCamera = ControlledPawn->FindComponentByClass<UCameraComponent>();
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -71,7 +60,7 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &ThisClass::OnRunCompleted);
 
 		// Interact
-		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Triggered, this, &ThisClass::OnInteract);
+		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Started, this, &ThisClass::OnInteract);
 
 		// Crouch - Started/Completed 사용
 		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &ThisClass::OnCrouchStarted);
@@ -316,7 +305,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 
 	if (AInteract_Base* Interactable = Cast<AInteract_Base>(CurrentInteractActor))
 	{
-		Interactable->Interact(this);
+		Interactable->Interacted();
 	}
 }
 

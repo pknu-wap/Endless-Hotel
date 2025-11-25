@@ -39,15 +39,15 @@ protected:
 
 	// Move
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Move;
+	TObjectPtr<class UInputAction> IA_Move;
 
 	// Look
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Look;
+	TObjectPtr<class UInputAction> IA_Look;
 
 	// Run
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Run;
+	TObjectPtr<class UInputAction> IA_Run;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
 	float WalkSpeed = 300.0f;
@@ -57,21 +57,21 @@ protected:
 
 	// Interact 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Interact;
+	TObjectPtr<class UInputAction> IA_Interact;
 
 	bool bCanInteract;
 	float TraceDistance;
 
 	UPROPERTY()
-	AActor* CurrentInteractActor;
+	TObjectPtr<class AActor> CurrentInteractActor;
 
 	// Crouch
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_Crouch;
+	TObjectPtr<class UInputAction> IA_Crouch;
 
 	// FaceCover
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* IA_FaceCover;
+	TObjectPtr<class UInputAction> IA_FaceCover;
 	bool bIsFaceCoverTransitioning = false;
 
 	//ESC
@@ -128,13 +128,8 @@ public:
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 
-	UFUNCTION(BlueprintCallable)
 	bool GetIsRunning() const { return bIsRunning; }
-
-	UFUNCTION(BlueprintCallable)
 	bool GetIsCrouching() const { return bIsCrouching; }
-
-	UFUNCTION(BlueprintCallable)
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
 #pragma endregion
 };
