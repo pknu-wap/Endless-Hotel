@@ -44,7 +44,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Demo;
+	TSubclassOf<class UUI_Base> UI_Demo;
 
 #pragma endregion
 

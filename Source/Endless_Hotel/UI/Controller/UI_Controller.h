@@ -33,6 +33,11 @@ struct FPopUpWidget
 
 	EWidgetType WidgetType;
 	TObjectPtr<UUI_Base> PopUpWidget;
+
+	bool operator==(const FPopUpWidget& Widget)
+	{
+		return PopUpWidget == Widget.PopUpWidget;
+	}
 };
 
 #pragma endregion
@@ -53,7 +58,7 @@ public:
 
 public:
 	UUI_Base* OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
-	void CloseWidget(const EWidgetType& WidgetType, const EInputModeType& InputMode = EInputModeType::GameOnly);
+	void CloseWidget(const EInputModeType& InputMode = EInputModeType::GameOnly);
 
 protected:
 	void SetInputMode(const EInputModeType& InputMode);
@@ -65,11 +70,10 @@ protected:
 	UPROPERTY()
 	TArray<FPopUpWidget> PopUpWidgets;
 
-	const int32 BaseWidget_ZOrder = 0;
-	int32 PopUpWidget_ZOrder = 1;
+	int32 PopUpWidget_ZOrder = 0;
 
 public:
-	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[BaseWidget_ZOrder].PopUpWidget; }
+	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0].PopUpWidget; }
 	UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets[PopUpWidget_ZOrder].PopUpWidget; }
 
 #pragma endregion
