@@ -11,16 +11,14 @@ void AAnomaly_FootStep::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 {
     Super::ActivateAnomaly_Implementation(Anomaly_ID);
 
-    FootStep();   // Footstep 실행
+    switch (Anomaly_ID) {
+    case 15:
+        FootStep();
+        break;
+    }
 }
 
 void AAnomaly_FootStep::FootStep()
-{
-    // 5초 뒤 애니메이션 BP 변수 변경
-    AAnomaly_FootStep::SetAnomalyGenerated();
-}
-
-void AAnomaly_FootStep::SetAnomalyGenerated()
 {
     // 1) 플레이어 가져오기
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -34,7 +32,7 @@ void AAnomaly_FootStep::SetAnomalyGenerated()
     UEHPlayerAnimInstance* Anim = Cast<UEHPlayerAnimInstance>(Mesh->GetAnimInstance());
     if (!Anim) return;
 
-    // 4) ★ AnimBP의 bool 값 변경
+    // 4) AnimBP의 bool 값 변경
     Anim->bIsAnomalyGenerated = true;
 
     UE_LOG(LogTemp, Warning, TEXT("Footstep anomaly generated: bIsAnomalyGenerated = true"));

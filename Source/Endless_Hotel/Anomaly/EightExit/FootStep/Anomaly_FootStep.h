@@ -25,6 +25,5 @@ public:
 
 protected:
 	void FootStep();
-	void SetAnomalyGenerated();
 #pragma endregion
 };
