@@ -5,14 +5,14 @@
 #include "Components/StaticMeshComponent.h"
 
 // 기본 생성자
-AInteractTest::AInteractTest()
+AInteractTest::AInteractTest(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-    PrimaryActorTick.bCanEverTick = true;
-
+    PrimaryActorTick.bCanEverTick = false;
 }
 
 // 실제 Interact 동작
-void AInteractTest::Interact_Implementation(APlayerController* Controller)
+void AInteractTest::Interacted()
 {
     RootComponent->AddLocalRotation(FRotator(0, 45, 0));
 

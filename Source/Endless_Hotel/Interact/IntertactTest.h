@@ -12,13 +12,13 @@ class ENDLESS_HOTEL_API AInteractTest : public AInteract_Base
     GENERATED_BODY()
 
 public:
-    AInteractTest();
+    AInteractTest(const FObjectInitializer& ObjectInitializer);
 
 protected:
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* CubeMesh;
 
 public:
-    virtual void Interact_Implementation(APlayerController* Controller) override;
+    virtual void Interacted();
 
 };

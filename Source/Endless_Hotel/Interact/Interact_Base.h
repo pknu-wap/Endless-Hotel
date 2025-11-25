@@ -14,7 +14,6 @@ class ENDLESS_HOTEL_API AInteract_Base : public AAnomaly_Object_Base
 #pragma region Base
 
 public:
-    AInteract_Base();
     AInteract_Base(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion
@@ -22,8 +21,7 @@ public:
 #pragma region Interact
 
 public:
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-    void Interact(APlayerController* InteractingController);
+    virtual void Interacted();
 
 #pragma endregion
 

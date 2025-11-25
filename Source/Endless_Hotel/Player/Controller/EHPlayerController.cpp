@@ -316,7 +316,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 
 	if (AInteract_Base* Interactable = Cast<AInteract_Base>(CurrentInteractActor))
 	{
-		Interactable->Interact(this);
+		Interactable->Interacted();
 	}
 }
 

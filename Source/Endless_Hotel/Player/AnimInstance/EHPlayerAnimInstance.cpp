@@ -8,23 +8,23 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/Controller/EHPlayerController.h"
 
+
+
 void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
 
-    APawn* OwnerPawn = TryGetPawnOwner();
-    if (!OwnerPawn)
+    if (!CachedPawnOwner)
     {
-        return;
+        CachedPawnOwner = TryGetPawnOwner();
+        if (!CachedPawnOwner) return;
     }
 
-    FVector Velocity = OwnerPawn->GetVelocity();
+    FVector Velocity = CachedPawnOwner->GetVelocity();
     Velocity.Z = 0.f;
     ActualSpeed = Velocity.Size();
 
-
-    const float StopThreshold = 5.0f;
     if (ActualSpeed < StopThreshold)
     {
         TargetSpeed = 0.f;
@@ -34,7 +34,7 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
         TargetSpeed = ActualSpeed;
     }
 
-    if (AController* Controller = OwnerPawn->GetController())
+    if (AController* Controller = CachedPawnOwner->GetController())
     {
         if (AEHPlayerController* EHPC = Cast<AEHPlayerController>(Controller))
         {
@@ -45,7 +45,6 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
         }
     }
 
-    const float InterpSpeedValue = 20.0f;
     const float InterpedSpeed =
         FMath::FInterpTo(ActualSpeed, TargetSpeed, DeltaSeconds, InterpSpeedValue);
 
