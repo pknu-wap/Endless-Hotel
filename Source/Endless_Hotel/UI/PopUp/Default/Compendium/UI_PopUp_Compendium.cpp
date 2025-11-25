@@ -79,13 +79,13 @@ void UUI_PopUp_Compendium::ActiveCompendiumData(TArray<FCompendiumData> Data, UV
 void UUI_PopUp_Compendium::ButtonClick_Previous()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Previous);
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Previous);
 }
 
 void UUI_PopUp_Compendium::ButtonClick_Next()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Next);
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Next);
 }
 
 #pragma endregion

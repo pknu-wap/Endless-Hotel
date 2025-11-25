@@ -43,7 +43,7 @@ FReply UUI_PopUp_Base::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEv
 void UUI_PopUp_Base::Input_ESC()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->ClosePopUpWidget(true);
+	UICon->CloseWidget();
 }
 
 #pragma endregion

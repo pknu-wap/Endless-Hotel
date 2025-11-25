@@ -52,10 +52,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Previous;
+	TSubclassOf<class UUI_Base> UI_Previous;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Next;
+	TSubclassOf<class UUI_Base> UI_Next;
 
 	UPROPERTY(EditAnywhere)
 	int32 Page_Left;
