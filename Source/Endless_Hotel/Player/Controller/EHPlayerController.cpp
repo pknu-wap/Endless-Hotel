@@ -27,18 +27,7 @@ void AEHPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn)
-	{
-		UCameraComponent* PlayerCamera = ControlledPawn->FindComponentByClass<UCameraComponent>();
-		if (PlayerCamera)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Camera Founded!: %s"), *PlayerCamera->GetName());
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No Camera Component on Pawn!"));
-		}
-	}
+	UCameraComponent* PlayerCamera = ControlledPawn->FindComponentByClass<UCameraComponent>();
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{

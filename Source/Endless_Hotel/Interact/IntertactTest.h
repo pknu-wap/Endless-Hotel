@@ -20,5 +20,4 @@ protected:
 
 public:
     virtual void Interacted();
-
 };
