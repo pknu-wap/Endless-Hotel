@@ -240,4 +240,12 @@ private:
 
 #pragma endregion
 
+#pragma region Rule
+	
+protected:
+	UPROPERTY(EditAnywhere, Category = "Rule")
+	TObjectPtr<UStaticMeshComponent> Rule;
+
+#pragma endregion
+
 };
