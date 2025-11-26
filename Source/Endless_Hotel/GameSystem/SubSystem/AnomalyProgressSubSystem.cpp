@@ -71,6 +71,11 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	}
 	bIsAnomalySolved = false;
 
+	if (bPassed && Floor <= 2)
+	{
+		return;
+	}
+
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->OpenMap(EMapType::Hotel);
 }
