@@ -113,7 +113,7 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 			{
 				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();
 				float NewPitch = CurrentRotation.Pitch + (LookVector.Y * LookSensitivity);
-				NewPitch = FMath::Clamp(NewPitch, -79.0f, 79.0f);
+				NewPitch = FMath::Clamp(NewPitch, -70.0f, 70.0f);
 
 				CameraComponent->SetRelativeRotation(FRotator(NewPitch, CurrentRotation.Yaw, CurrentRotation.Roll));
 			}
@@ -140,7 +140,12 @@ void AEHPlayerController::OnRunStarted()
 }
 
 void AEHPlayerController::OnRunCompleted()
-{
+{	
+	if (!bCanRun)
+	{
+		return;
+	}
+
 	bIsRunning = false;
 
 	if (ACharacter* ControlledCharacter = GetCharacter())
@@ -155,6 +160,11 @@ void AEHPlayerController::OnRunCompleted()
 void AEHPlayerController::OnCrouchStarted()
 {
 	if (bIsCrouching) return;
+
+	if (!bCanCrouch)
+	{
+		return;
+	}
 
 	bIsCrouching = true;
 
@@ -173,6 +183,11 @@ void AEHPlayerController::OnCrouchStarted()
 void AEHPlayerController::OnCrouchCompleted()
 {
 	if (!bIsCrouching) return;
+
+	if (!bCanCrouch)
+	{
+		return;
+	}
 
 	bIsCrouching = false;
 

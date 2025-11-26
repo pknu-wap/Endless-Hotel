@@ -125,6 +125,7 @@ public:
 	bool bIsCameraFixed = false;
 	bool bCanMove = true;
 	bool bCanRun = true;
+	bool bCanCrouch = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 
