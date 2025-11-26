@@ -71,11 +71,6 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	}
 	bIsAnomalySolved = false;
 
-	if (bPassed && Floor <= 2)
-	{
-		return;
-	}
-
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->OpenMap(EMapType::Hotel);
 }
@@ -200,6 +195,7 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 void UAnomalyProgressSubSystem::GameClear()
 {
+	// USaveManager에 로드 세이브 데이터로 클리어 여부 가져올 수 있음
 	bIsAlreadyClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
 	//Initialize();
 	//Todo:
