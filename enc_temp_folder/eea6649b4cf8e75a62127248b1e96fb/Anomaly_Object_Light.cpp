@@ -26,7 +26,6 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 	PointLight->SetupAttachment(RootComponent);
 
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->SetupAttachment(RootComponent);
 }
 
 void AAnomaly_Object_Light::BeginPlay()
