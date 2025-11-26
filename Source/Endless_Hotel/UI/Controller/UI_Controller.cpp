@@ -37,12 +37,12 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<
 
 	switch (WidgetType)
 	{
-	default:
-		PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
-		break;
-
 	case EWidgetType::PopUpStrong:
 		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), PopUpWidget_ZOrder);
+		break;
+
+	default:
+		PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
 		break;
 	}
 
