@@ -55,7 +55,7 @@ void AAnomaly_Object_Door::BeginPlay()
 void AAnomaly_Object_Door::ShakeDoor(float Value)
 {
 	FVector Target = Door_Origin;
-	Target.X += Value;
+	Target.Y += Value;
 
 	Mesh_Door->SetWorldLocation(Target);
 }
