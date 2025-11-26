@@ -70,6 +70,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	// 7) Sound
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AC->SetupAttachment(Car);
 
 	// 8) EntranceTrigger
 	GetInTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("GetInTrigger"));
@@ -103,6 +104,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	// 12) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
+
+	// 13) Rule
+	Rule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rule"));
+	Rule->SetupAttachment(Car);
 }
 
 void AElevator::BeginPlay()

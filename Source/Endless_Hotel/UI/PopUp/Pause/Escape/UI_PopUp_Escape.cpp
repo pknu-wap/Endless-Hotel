@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Pause/Escape/UI_PopUp_Escape.h"
+#include "UI/Controller/UI_Controller.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Components/Button.h"
 
@@ -11,6 +12,7 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	Button_Resume->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Setting);
 	Button_MainMenu->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_MainMenu);
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Quit);
 }
@@ -18,6 +20,12 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 #pragma endregion
 
 #pragma region Button
+
+void UUI_PopUp_Escape::ButtonClick_Setting()
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Setting);
+}
 
 void UUI_PopUp_Escape::ButtonClick_MainMenu()
 {

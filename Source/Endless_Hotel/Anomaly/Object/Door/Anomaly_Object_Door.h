@@ -71,7 +71,7 @@ protected:
 	FTimerHandle HandleHandle;
 	FTimerHandle DoorHandle;
 
-	const uint8 MaxShakeCount_Handle = 30;
+	const uint8 MaxShakeCount_Handle = 29;
 	uint8 ShakeCount_Handle = 0;
 
 	const uint8 MaxShakeCount_Door = 4;

@@ -81,7 +81,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 
 void UAnomalyProgressSubSystem::SubFloor()
 {
-	if (Floor > 1)
+	if (Floor > 2)
 	{
 		Floor--;
 	}

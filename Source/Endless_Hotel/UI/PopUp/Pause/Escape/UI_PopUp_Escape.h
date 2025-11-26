@@ -22,6 +22,9 @@ protected:
 
 protected:
 	UFUNCTION()
+	void ButtonClick_Setting();
+
+	UFUNCTION()
 	void ButtonClick_MainMenu();
 
 	UFUNCTION()
@@ -32,10 +35,21 @@ protected:
 	TObjectPtr<class UButton> Button_Resume;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Setting;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_MainMenu;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Quit;
+
+#pragma endregion
+
+#pragma region Widget
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Setting;
 
 #pragma endregion
 
