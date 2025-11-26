@@ -24,7 +24,11 @@ protected:
 	virtual void StartAnomalyAction() override;
 
 protected:
+	FTimerDelegate CongDelegate;
 	FTimerHandle CongHandle;
+
+	const uint8 MaxIndex = 50;
+	uint8 CurrentIndex = 0;
 
 	float NextCong = 3;
 

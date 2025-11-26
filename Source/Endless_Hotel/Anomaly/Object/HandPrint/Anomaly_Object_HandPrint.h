@@ -40,9 +40,10 @@ public:
 protected:
 	void TurnOffLights();
 
-protected:
+public:
 	static bool bIsFirstHandPrint;
 
+protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USoundWave> Sound_First;
 
