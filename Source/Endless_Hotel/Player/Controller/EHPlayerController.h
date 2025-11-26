@@ -80,7 +80,7 @@ protected:
 
 	// Look Sensitivity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	float LookSensitivity = 0.3f;
+	float LookSensitivity = 1;
 
 	// Input Callbacks
 	void EscapeStarted(const struct FInputActionValue& InputValue);

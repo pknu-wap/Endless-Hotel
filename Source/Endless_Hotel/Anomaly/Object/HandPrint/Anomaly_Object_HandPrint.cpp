@@ -35,7 +35,8 @@ void AAnomaly_Object_HandPrint::StartCongCong(float& NextCong)
 	if (bIsFirstHandPrint)
 	{
 		AC->Sound = Sound_First;
-		NextCong = 0.1f;
+
+		bIsFirstHandPrint = false;
 
 		TurnOffLights();
 	}
@@ -43,6 +44,8 @@ void AAnomaly_Object_HandPrint::StartCongCong(float& NextCong)
 	{
 		AC->Sound = Sound_Default;
 	}
+
+	NextCong = FMath::Clamp(NextCong - 0.3f, 0.1f, 3);
 
 	AC->Play();
 

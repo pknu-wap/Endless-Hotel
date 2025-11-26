@@ -22,26 +22,31 @@ void AAnomaly_Cong::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_Cong::StartAnomalyAction()
 {
-	const uint8 MaxIndex = 100;
-	uint8 CurrentIndex = 0;
-
-	GetWorld()->GetTimerManager().SetTimer(CongHandle, FTimerDelegate::CreateWeakLambda(this, [this, MaxIndex, CurrentIndex]() mutable
+	CongDelegate = FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			for (auto* FoundActor : LinkedObjects)
 			{
 				auto* HandPrint = Cast<AAnomaly_Object_HandPrint>(FoundActor);
 
-				if (++CurrentIndex == HandPrint->HandPrintIndex)
+				if (CurrentIndex == HandPrint->HandPrintIndex)
 				{
 					HandPrint->StartCongCong(NextCong);
 				}
-
-				if (CurrentIndex >= MaxIndex)
-				{
-					GetWorld()->GetTimerManager().ClearTimer(CongHandle);
-				}
 			}
-		}), NextCong, true);
+
+			if (CurrentIndex >= MaxIndex)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(CongHandle);
+				return;
+			}
+
+			CurrentIndex++;
+			GetWorld()->GetTimerManager().SetTimer(CongHandle, CongDelegate, NextCong, false);
+		});
+
+	GetWorld()->GetTimerManager().SetTimer(CongHandle, CongDelegate, NextCong, false);
+
+	AAnomaly_Object_HandPrint::bIsFirstHandPrint = true;
 }
 
 #pragma endregion
