@@ -143,7 +143,7 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 void UUI_PopUp_Setting::ButtonClick_Reset()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Reset);
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Reset);
 }
 
 #pragma endregion

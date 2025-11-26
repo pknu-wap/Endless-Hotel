@@ -80,7 +80,7 @@ protected:
 
 	// Look Sensitivity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
-	float LookSensitivity = 0.3f;
+	float LookSensitivity = 1;
 
 	// Input Callbacks
 	void EscapeStarted(const struct FInputActionValue& InputValue);
@@ -103,7 +103,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_PopUp_Base> UI_Escape;
+	TSubclassOf<class UUI_Base> UI_Escape;
 
 #pragma endregion
 

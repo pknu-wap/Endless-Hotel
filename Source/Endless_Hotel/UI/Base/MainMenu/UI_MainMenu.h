@@ -79,10 +79,10 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Compendium;
+	TSubclassOf<class UUI_Base> UI_Compendium;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Setting;
+	TSubclassOf<class UUI_Base> UI_Setting;
 
 #pragma endregion
 

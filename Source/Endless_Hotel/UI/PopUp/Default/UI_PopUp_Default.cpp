@@ -8,7 +8,7 @@
 void UUI_PopUp_Default::Input_ESC()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->ClosePopUpWidget(true, EInputModeType::UIOnly);
+	UICon->CloseWidget(EInputModeType::UIOnly);
 }
 
 #pragma endregion
