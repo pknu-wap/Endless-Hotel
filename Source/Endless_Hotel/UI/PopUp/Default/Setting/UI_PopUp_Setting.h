@@ -140,11 +140,11 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Reset;
+	TSubclassOf<class UUI_Base> UI_Reset;
 
 	// 해당 기능은 최종 이후 추가 예정
 	/*UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_PopUp_Base> UI_Language;*/
+	TSubclassOf<class UUI_Base> UI_Language;*/
 
 #pragma endregion
 

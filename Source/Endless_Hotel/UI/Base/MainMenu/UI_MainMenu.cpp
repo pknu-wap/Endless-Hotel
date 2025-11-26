@@ -67,13 +67,13 @@ void UUI_MainMenu::ButtonClick_Start()
 void UUI_MainMenu::ButtonClick_Compendium()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Compendium);
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Compendium);
 }
 
 void UUI_MainMenu::ButtonClick_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenPopUpWidget(UI_Setting);
+	UICon->OpenWidget(EWidgetType::PopUp, UI_Setting);
 }
 
 void UUI_MainMenu::ButtonClick_Quit()

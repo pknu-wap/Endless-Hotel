@@ -103,7 +103,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_PopUp_Base> UI_Escape;
+	TSubclassOf<class UUI_Base> UI_Escape;
 
 #pragma endregion
 

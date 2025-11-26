@@ -32,7 +32,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_PopUp_Base> UI_Blur;
+	TSubclassOf<class UUI_Base> UI_Blur;
 
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC;

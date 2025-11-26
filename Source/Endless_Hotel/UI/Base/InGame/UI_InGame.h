@@ -36,4 +36,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Demo
+
+protected:
+	UFUNCTION()
+	void OpenDemoWidget();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Demo;
+
+#pragma endregion
+
 };
