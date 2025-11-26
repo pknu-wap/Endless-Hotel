@@ -70,6 +70,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	// 7) Sound
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AC->SetupAttachment(Car);
 
 	// 8) EntranceTrigger
 	GetInTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("GetInTrigger"));
@@ -103,6 +104,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	// 12) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
+
+	// 13) Rule
+	Rule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rule"));
+	Rule->SetupAttachment(Car);
 }
 
 void AElevator::BeginPlay()
@@ -144,7 +149,7 @@ void AElevator::BeginPlay()
 	// 5) MoveElevator
 	if (!bIsNormalElevator)
 	{
-		ElevatorLight->SetIntensity(100000.f);
+		ElevatorLight->SetIntensity(LightOnIntensity);
 		ElevatorMove(StartPos, MapPos, true);
 		bSkipFirstInsideOverlap = true;
 	}
@@ -221,7 +226,7 @@ void AElevator::OnEntranceBegin(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	if (!bIsPlayerInside && !bIsDoorOpened)
 	{
 		MoveDoors(true);
-		if (!bSkipFirstInsideOverlap) ElevatorLight->SetIntensity(100000.f);
+		if (!bSkipFirstInsideOverlap) ElevatorLight->SetIntensity(LightOnIntensity);
 	}
 }
 
@@ -239,7 +244,7 @@ void AElevator::OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* Other
 			false
 		);
 		if(bSkipFirstInsideOverlap) bSkipFirstInsideOverlap = false;
-		if(!bIsPlayerInside) ElevatorLight->SetIntensity(5000.f);
+		if(!bIsPlayerInside) ElevatorLight->SetIntensity(LightOffIntensity);
 	}
 }
 
@@ -252,7 +257,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (bIsPlayerInside) return;
 	bIsPlayerInside = true;
 	MoveDoors(false);
-	ElevatorLight->SetIntensity(100000.f);
+	ElevatorLight->SetIntensity(LightOnIntensity);
 	if (!bChoiceSentThisRide)
 		NotifySubsystemElevatorChoice();
 }

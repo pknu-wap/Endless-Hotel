@@ -88,6 +88,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Light")
 	TObjectPtr<UPointLightComponent> ElevatorLight;
 
+	const float LightOnIntensity = 100000.f;
+	const float LightOffIntensity = 5000.f;
+
 #pragma endregion
 
 #pragma region Sound
@@ -234,6 +237,14 @@ private:
 
 private:
 	void NotifySubsystemElevatorChoice();
+
+#pragma endregion
+
+#pragma region Rule
+	
+protected:
+	UPROPERTY(EditAnywhere, Category = "Rule")
+	TObjectPtr<UStaticMeshComponent> Rule;
 
 #pragma endregion
 

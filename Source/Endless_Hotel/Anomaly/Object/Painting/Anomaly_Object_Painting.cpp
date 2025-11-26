@@ -38,6 +38,8 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
+	Mesh_LeftEye->SetVisibleFlag(true);
+	Mesh_RightEye->SetVisibleFlag(true);
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FTimerHandle EyeFollowHandle;
 	GetWorld()->GetTimerManager().SetTimer(EyeFollowHandle, FTimerDelegate::CreateWeakLambda(
