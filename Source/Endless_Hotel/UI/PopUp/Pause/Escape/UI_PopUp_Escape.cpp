@@ -24,7 +24,7 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 void UUI_PopUp_Escape::ButtonClick_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Setting);
+	UICon->OpenWidget(UI_Setting, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 void UUI_PopUp_Escape::ButtonClick_MainMenu()

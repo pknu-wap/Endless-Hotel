@@ -67,13 +67,13 @@ void UUI_MainMenu::ButtonClick_Start()
 void UUI_MainMenu::ButtonClick_Compendium()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Compendium);
+	UICon->OpenWidget(UI_Compendium, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 void UUI_MainMenu::ButtonClick_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Setting);
+	UICon->OpenWidget(UI_Setting, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 void UUI_MainMenu::ButtonClick_Quit()

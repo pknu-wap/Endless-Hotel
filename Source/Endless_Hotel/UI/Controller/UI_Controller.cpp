@@ -27,55 +27,70 @@ UUI_Controller::UUI_Controller()
 
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode)
+UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass, const EWidgetType& WidgetType, const EInputModeType& InputMode)
 {
 	FPopUpWidget PopUpWidget;
 	PopUpWidget.WidgetType = WidgetType;
+	PopUpWidget.InputModeType = InputMode;
 	PopUpWidget.PopUpWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
 
-	PopUpWidgets.Add(PopUpWidget);
+	if (!PopUpWidgets.IsEmpty())
+	{
+		AdjustZOrder(true);
+	}
 
 	switch (WidgetType)
 	{
-	case EWidgetType::PopUpStrong:
-		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), PopUpWidget_ZOrder);
-		break;
-
-	default:
-		PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
+	case EWidgetType::Base:
+	{
+		if (!PopUpWidgets.IsEmpty())
+		{
+			PopUpWidgets[0] = PopUpWidget;
+		}
+		else
+		{
+			PopUpWidgets.Add(PopUpWidget);
+		}
+		PopUpWidget.PopUpWidget->AddToViewport(Widget_ZOrder);
 		break;
 	}
+	case EWidgetType::PopUp:
+	{
+		PopUpWidget.PopUpWidget->AddToViewport(Widget_ZOrder);
+		PopUpWidgets.Add(PopUpWidget);
+		break;
+	}
+	}
 
-	SetInputMode(InputMode);
-	AdjustPopUpZOrder(true);
+	SetInputMode(PopUpWidget.InputModeType);
 
 	return PopUpWidget.PopUpWidget;
 }
 
-void UUI_Controller::CloseWidget(const EInputModeType& InputMode)
+void UUI_Controller::CloseWidget()
 {
 	if (PopUpWidgets.IsEmpty())
 	{
 		return;
 	}
 
-	AdjustPopUpZOrder(false);
-	SetInputMode(InputMode);
+	FPopUpWidget PopUpWidget = PopUpWidgets[Widget_ZOrder];
+	PopUpWidgets.RemoveAt(Widget_ZOrder);
 
-	FPopUpWidget PopUpWidget = PopUpWidgets[PopUpWidget_ZOrder];
-
-	PopUpWidgets.RemoveAt(PopUpWidget_ZOrder);
-
-	switch (PopUpWidget.WidgetType)
+	if (!PopUpWidgets.IsEmpty())
 	{
-	default:
-		PopUpWidget.PopUpWidget->RemoveFromViewport();
-		break;
-
-	case EWidgetType::PopUpStrong:
-		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
-		break;
+		AdjustZOrder(false);
 	}
+
+	SetInputMode(PopUpWidgets[Widget_ZOrder].InputModeType);
+
+	PopUpWidget.PopUpWidget->RemoveFromViewport();
+}
+
+void UUI_Controller::ClearAllWidget()
+{
+	PopUpWidgets.Empty();
+	Widget_ZOrder = 0;
 }
 
 #pragma endregion
@@ -97,7 +112,7 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 	case EInputModeType::UIOnly:
 	{
 		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets[PopUpWidget_ZOrder].PopUpWidget->TakeWidget());
+		InputMode.SetWidgetToFocus(PopUpWidgets[Widget_ZOrder].PopUpWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -105,7 +120,7 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 	case EInputModeType::GameAndUI:
 	{
 		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets[PopUpWidget_ZOrder].PopUpWidget->TakeWidget());
+		InputMode.SetWidgetToFocus(PopUpWidgets[Widget_ZOrder].PopUpWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -117,18 +132,18 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 
 #pragma region Adjust
 
-void UUI_Controller::AdjustPopUpZOrder(bool bUp)
+void UUI_Controller::AdjustZOrder(bool bUp)
 {
 	constexpr int32 Max_ZOrder = 100;
-	constexpr int32 Min_ZOrder = 1;
+	constexpr int32 Min_ZOrder = 0;
 
 	if (bUp)
 	{
-		PopUpWidget_ZOrder = FMath::Clamp(PopUpWidget_ZOrder + 1, Min_ZOrder, Max_ZOrder);
+		Widget_ZOrder = FMath::Clamp(Widget_ZOrder + 1, Min_ZOrder, Max_ZOrder);
 		return;
 	}
 
-	PopUpWidget_ZOrder = FMath::Clamp(PopUpWidget_ZOrder - 1, Min_ZOrder, Max_ZOrder);
+	Widget_ZOrder = FMath::Clamp(Widget_ZOrder - 1, Min_ZOrder, Max_ZOrder);
 }
 
 #pragma endregion
@@ -137,14 +152,16 @@ void UUI_Controller::AdjustPopUpZOrder(bool bUp)
 
 void UUI_Controller::OpenMapBaseWidget()
 {
+	Widget_ZOrder = 0;
+
 	switch (UEHGameInstance::CurrentMap)
 	{
 	case EMapType::MainMenu:
-		OpenWidget(EWidgetType::Base, UI_MainMenu);
+		OpenWidget(UI_MainMenu, EWidgetType::Base, EInputModeType::UIOnly);
 		break;
 
 	case EMapType::Hotel:
-		OpenWidget(EWidgetType::Base, UI_InGame, EInputModeType::GameOnly);
+		OpenWidget(UI_InGame, EWidgetType::Base, EInputModeType::GameOnly);
 		break;
 	}
 }

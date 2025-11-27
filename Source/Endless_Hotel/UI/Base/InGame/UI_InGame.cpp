@@ -57,7 +57,7 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 void UUI_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUpStrong, UI_Demo);
+	UICon->OpenWidget(UI_Demo, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 #pragma endregion

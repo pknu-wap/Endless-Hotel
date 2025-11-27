@@ -157,7 +157,7 @@ public:
 	void GameClear();
 
 public:
-	bool bIsAlreadyClear = false;
+	bool bIsClear = false;
 
 	FGameClearEvent GameClearEvent;
 

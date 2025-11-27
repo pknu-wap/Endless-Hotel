@@ -79,13 +79,13 @@ void UUI_PopUp_Compendium::ActiveCompendiumData(TArray<FCompendiumData> Data, UV
 void UUI_PopUp_Compendium::ButtonClick_Previous()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Previous);
+	UICon->OpenWidget(UI_Previous, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 void UUI_PopUp_Compendium::ButtonClick_Next()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Next);
+	UICon->OpenWidget(UI_Next, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 #pragma endregion
