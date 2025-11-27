@@ -18,4 +18,10 @@ public:
 
 #pragma endregion
 
+#pragma region AutoLink
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
 };
