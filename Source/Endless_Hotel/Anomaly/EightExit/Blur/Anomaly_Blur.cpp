@@ -35,7 +35,7 @@ void AAnomaly_Blur::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 void AAnomaly_Blur::ShowBlurWiget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Blur, EInputModeType::GameOnly);
+	UICon->OpenWidget(UI_Blur, EWidgetType::PopUp, EInputModeType::GameOnly);
 
 	AC->Sound = Sound_Blur;
 	AC->Play();

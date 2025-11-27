@@ -327,7 +327,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp, UI_Escape);
+	UICon->OpenWidget(UI_Escape, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 
