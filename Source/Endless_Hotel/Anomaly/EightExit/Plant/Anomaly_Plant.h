@@ -17,5 +17,4 @@ public:
 	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) override;
 
 #pragma endregion
-
 };
