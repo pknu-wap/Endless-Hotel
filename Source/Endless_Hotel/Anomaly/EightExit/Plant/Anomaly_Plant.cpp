@@ -23,22 +23,7 @@ void AAnomaly_Plant::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
         });
         break;
     }
-}
-
-#pragma endregion
-
-#pragma region AutoLink
-
-void AAnomaly_Plant::BeginPlay()
-{
-    Super::BeginPlay();
-
-    TArray<AActor*> FoundPlants;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Plant::StaticClass(), FoundPlants);
-
-    LinkedObjects = FoundPlants;
-
-    UE_LOG(LogTemp, Warning, TEXT("Anomaly_Plant: Linked %d plant objects."), FoundPlants.Num());
+    StartAnomalyAction();
 }
 
 #pragma endregion

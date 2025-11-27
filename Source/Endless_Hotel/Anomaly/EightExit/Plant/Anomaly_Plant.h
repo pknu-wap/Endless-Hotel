@@ -17,11 +17,4 @@ public:
 	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) override;
 
 #pragma endregion
-
-#pragma region AutoLink
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
 };
