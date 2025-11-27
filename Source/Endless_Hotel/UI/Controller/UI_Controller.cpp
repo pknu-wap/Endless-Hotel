@@ -33,17 +33,33 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, TSubclassOf<
 	PopUpWidget.WidgetType = WidgetType;
 	PopUpWidget.PopUpWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
 
-	PopUpWidgets.Add(PopUpWidget);
-
 	switch (WidgetType)
 	{
-	case EWidgetType::PopUpStrong:
-		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), PopUpWidget_ZOrder);
-		break;
-
-	default:
+	case EWidgetType::Base:
+	{
+		if (!PopUpWidgets.IsEmpty())
+		{
+			PopUpWidgets[0] = PopUpWidget;
+		}
+		else
+		{
+			PopUpWidgets.Add(PopUpWidget);
+		}
 		PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
 		break;
+	}
+	case EWidgetType::PopUp:
+	{
+		PopUpWidget.PopUpWidget->AddToViewport(PopUpWidget_ZOrder);
+		PopUpWidgets.Add(PopUpWidget);
+		break;
+	}
+	case EWidgetType::PopUpStrong:
+	{
+		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), PopUpWidget_ZOrder);
+		PopUpWidgets.Add(PopUpWidget);
+		break;
+	}
 	}
 
 	SetInputMode(InputMode);
@@ -63,7 +79,6 @@ void UUI_Controller::CloseWidget(const EInputModeType& InputMode)
 	SetInputMode(InputMode);
 
 	FPopUpWidget PopUpWidget = PopUpWidgets[PopUpWidget_ZOrder];
-
 	PopUpWidgets.RemoveAt(PopUpWidget_ZOrder);
 
 	switch (PopUpWidget.WidgetType)
@@ -76,6 +91,19 @@ void UUI_Controller::CloseWidget(const EInputModeType& InputMode)
 		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
 		break;
 	}
+}
+
+void UUI_Controller::ClearAllPopUpWidget()
+{
+	for (int32 Index = 0; Index < PopUpWidgets.Num(); Index++)
+	{
+		if (PopUpWidgets[Index].WidgetType == EWidgetType::PopUp)
+		{
+			PopUpWidgets.RemoveAt(Index);
+		}
+	}
+
+	PopUpWidget_ZOrder = PopUpWidgets.Num() - 1;
 }
 
 #pragma endregion

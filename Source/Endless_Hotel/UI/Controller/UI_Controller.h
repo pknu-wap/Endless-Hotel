@@ -60,6 +60,9 @@ public:
 	UUI_Base* OpenWidget(const EWidgetType& WidgetType, TSubclassOf<UUI_Base> WidgetClass, const EInputModeType& InputMode = EInputModeType::UIOnly);
 	void CloseWidget(const EInputModeType& InputMode = EInputModeType::GameOnly);
 
+public:
+	void ClearAllPopUpWidget();
+
 protected:
 	void SetInputMode(const EInputModeType& InputMode);
 

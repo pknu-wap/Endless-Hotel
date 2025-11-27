@@ -83,7 +83,8 @@ void UAnomalyProgressSubSystem::SubFloor()
 {
 	if (Floor > 2)
 	{
-		Floor--;
+		//Floor--;
+		Floor -= 8;
 	}
 	else
 	{
