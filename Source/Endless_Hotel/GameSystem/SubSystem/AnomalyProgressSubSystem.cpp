@@ -71,8 +71,11 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	}
 	bIsAnomalySolved = false;
 
-	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenMap(EMapType::Hotel);
+	if (!bIsClear)
+	{
+		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+		GameInstance->OpenMap(EMapType::Hotel);
+	}
 }
 
 #pragma endregion
@@ -83,8 +86,7 @@ void UAnomalyProgressSubSystem::SubFloor()
 {
 	if (Floor > 2)
 	{
-		//Floor--;
-		Floor -= 8;
+		Floor--;
 	}
 	else
 	{
@@ -197,7 +199,7 @@ void UAnomalyProgressSubSystem::InitializePool()
 void UAnomalyProgressSubSystem::GameClear()
 {
 	// USaveManager에 로드 세이브 데이터로 클리어 여부 가져올 수 있음
-	bIsAlreadyClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
+	bIsClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
 	//Initialize();
 	//Todo:
 

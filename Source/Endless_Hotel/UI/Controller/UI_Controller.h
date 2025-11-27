@@ -14,8 +14,7 @@ UENUM(BlueprintType)
 enum class EWidgetType : uint8
 {
 	Base			UMETA(DisplayName = "BaseWidget"),
-	PopUp			UMETA(DisplayName = "PopUp"),
-	PopUpStrong		UMETA(DisplayName = "PopUpStrong")
+	PopUp			UMETA(DisplayName = "PopUp")
 };
 
 UENUM(BlueprintType)
@@ -62,7 +61,7 @@ public:
 	void CloseWidget();
 
 public:
-	void ClearAllPopUpWidget();
+	void ClearAllWidget();
 
 protected:
 	void SetInputMode(const EInputModeType& InputMode);

@@ -60,12 +60,6 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass, const EW
 		PopUpWidgets.Add(PopUpWidget);
 		break;
 	}
-	case EWidgetType::PopUpStrong:
-	{
-		GEngine->GameViewport->AddViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget(), Widget_ZOrder);
-		PopUpWidgets.Add(PopUpWidget);
-		break;
-	}
 	}
 
 	SetInputMode(PopUpWidget.InputModeType);
@@ -90,29 +84,13 @@ void UUI_Controller::CloseWidget()
 
 	SetInputMode(PopUpWidgets[Widget_ZOrder].InputModeType);
 
-	switch (PopUpWidget.WidgetType)
-	{
-	default:
-		PopUpWidget.PopUpWidget->RemoveFromViewport();
-		break;
-
-	case EWidgetType::PopUpStrong:
-		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidget.PopUpWidget->TakeWidget());
-		break;
-	}
+	PopUpWidget.PopUpWidget->RemoveFromViewport();
 }
 
-void UUI_Controller::ClearAllPopUpWidget()
+void UUI_Controller::ClearAllWidget()
 {
-	for (int32 Index = 0; Index < PopUpWidgets.Num(); Index++)
-	{
-		if (PopUpWidgets[Index].WidgetType != EWidgetType::PopUpStrong)
-		{
-			PopUpWidgets.RemoveAt(Index);
-		}
-	}
-
-	Widget_ZOrder = PopUpWidgets.Num() - 1;
+	PopUpWidgets.Empty();
+	Widget_ZOrder = 0;
 }
 
 #pragma endregion

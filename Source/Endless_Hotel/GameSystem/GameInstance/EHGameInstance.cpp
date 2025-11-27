@@ -38,7 +38,7 @@ EMapType UEHGameInstance::CurrentMap = EMapType::MainMenu;
 void UEHGameInstance::OpenMap(const EMapType& MapName)
 {
 	UUI_Controller* UICon = GetSubsystem<UUI_Controller>();
-	UICon->ClearAllPopUpWidget();
+	UICon->ClearAllWidget();
 
 	CurrentMap = MapName;
 	FName TargetMapName = FName(FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(CurrentMap)));
