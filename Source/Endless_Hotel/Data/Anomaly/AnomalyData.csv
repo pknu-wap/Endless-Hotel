@@ -7,9 +7,10 @@
 6,6,Cong,/Game/EndlessHotel/Anomaly/Base/BP_Cong.BP_Cong_C,/Game/EndlessHotel/Anomaly/Object/HandPrint/BP_HandPrint.BP_HandPrint_C
 7,7,Shrink,/Game/EndlessHotel/Anomaly/Base/BP_Shrink.BP_Shrink_C,
 8,8,Blur,/Game/EndlessHotel/Anomaly/Base/BP_Blur.BP_Blur_C,
-9,10,Plant_Change,/Game/EndlessHotel/Anomaly/Base/BP_Flower.BP_Flower_C,
-10,11,Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
-11,24,Portrait_Eye,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
-12,26,Hand,/Game/EndlessHotel/Anomaly/Base/BP_Hand.BP_Hand_C,
-13,27,Portrait_Blood,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
-14,15,FootStep,/Game/EndlessHotel/Anomaly/Base/BP_FootStep.BP_FootStep_C,
+9,9,BookCase_Drop,/Game/EndlessHotel/Anomaly/Base/BP_Book_Case.BP_Book_Case_C,
+10,10,Plant_Change,/Game/EndlessHotel/Anomaly/Base/BP_Flower.BP_Flower_C,
+11,11,Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
+12,24,Portrait_Eye,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
+13,26,Hand,/Game/EndlessHotel/Anomaly/Base/BP_Hand.BP_Hand_C,
+14,27,Portrait_Blood,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
+15,15,FootStep,/Game/EndlessHotel/Anomaly/Base/BP_FootStep.BP_FootStep_C,
