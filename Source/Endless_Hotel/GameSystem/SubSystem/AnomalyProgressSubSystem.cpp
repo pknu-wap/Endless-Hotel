@@ -203,6 +203,8 @@ void UAnomalyProgressSubSystem::GameClear()
 	//Initialize();
 	//Todo:
 
+	Floor = 9;
+
 	USaveManager::SaveGameClearData();
 }
 

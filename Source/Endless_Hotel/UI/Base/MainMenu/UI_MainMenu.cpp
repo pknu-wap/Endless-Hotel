@@ -6,6 +6,7 @@
 #include "UI/Button/Main/UI_Button_Main.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Components/VerticalBox.h"
 #include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
@@ -60,6 +61,10 @@ void UUI_MainMenu::SetTitleImage()
 
 void UUI_MainMenu::ButtonClick_Start()
 {
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	Subsystem->bIsClear = false;
+	Subsystem->Floor = 9;
+
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->OpenMap(EMapType::Hotel);
 }
