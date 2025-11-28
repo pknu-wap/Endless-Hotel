@@ -69,6 +69,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 			return nullptr;
 		}
 		Index = 0;
+		Sub->InitializePool();
 		return SpawnAnomalyAtIndex(Index); // restart
 	}
 
