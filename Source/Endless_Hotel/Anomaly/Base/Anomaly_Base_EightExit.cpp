@@ -16,7 +16,6 @@ void AAnomaly_Base_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
     SetVerdictMode(EAnomalyVerdictMode::AnomalyElevatorOnly); // VerdictMode Setting
-    bIsActive = true;
 }
 
 #pragma endregion

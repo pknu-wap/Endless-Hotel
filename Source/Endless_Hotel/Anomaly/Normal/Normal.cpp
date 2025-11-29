@@ -18,7 +18,6 @@ void ANormal::BeginPlay()
     Super::BeginPlay();
     UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyID);
     SetVerdictMode(EAnomalyVerdictMode::Normal); // VerdictMode Setting
-    bIsActive = true;
 }
 
 #pragma endregion

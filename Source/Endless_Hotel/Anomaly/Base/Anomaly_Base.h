@@ -42,9 +42,6 @@ public:
 	uint8 AnomalyID = -1;
 
 protected:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	bool bIsActive = false;
-
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
 
 #pragma endregion
@@ -72,7 +69,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) { bIsActive = true; }
+	virtual void ActivateAnomaly(uint8 Anomaly_ID) {}
 	virtual void DisableAnomaly(uint8 Anomaly_ID) {}
 
 #pragma endregion
