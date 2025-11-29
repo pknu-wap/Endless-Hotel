@@ -12,7 +12,6 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AnomalyID = -1;
-	bIsActive = false;
 }
 
 #pragma endregion
@@ -54,8 +53,6 @@ void AAnomaly_Base::FinalizeAnomaly(bool bPassed)
 {
 	if (bPassed)	MarkSolved();
 	else			MarkFailed();
-
-	bIsActive = false;
 }
 
 void AAnomaly_Base::MarkSolved()

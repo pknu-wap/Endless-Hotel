@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/Plant/Anomaly_Plant.h"
@@ -7,9 +7,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Plant::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Plant::ActivateAnomaly(uint8 Anomaly_ID)
 {
-    Super::ActivateAnomaly_Implementation(Anomaly_ID);
+    Super::ActivateAnomaly(Anomaly_ID);
 
     switch (Anomaly_ID)
     {

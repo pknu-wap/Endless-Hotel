@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+ï»¿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/FootStep/Anomaly_FootStep.h"
@@ -7,9 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 
-void AAnomaly_FootStep::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_FootStep::ActivateAnomaly(uint8 Anomaly_ID)
 {
-    Super::ActivateAnomaly_Implementation(Anomaly_ID);
+    Super::ActivateAnomaly(Anomaly_ID);
 
     switch (Anomaly_ID) {
     case 15:
@@ -20,19 +20,19 @@ void AAnomaly_FootStep::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
 
 void AAnomaly_FootStep::FootStep()
 {
-    // 1) ÇÃ·¹ÀÌ¾î °¡Á®¿À±â
+    // 1) í”Œë ˆì´ì–´ ê°€ì ¸ì˜¤ê¸°
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!Player) return;
 
-    // 2) ¸Þ½Ã °¡Á®¿À±â
+    // 2) ë©”ì‹œ ê°€ì ¸ì˜¤ê¸°
     USkeletalMeshComponent* Mesh = Player->GetMesh();
     if (!Mesh) return;
 
-    // 3) AnimInstance °¡Á®¿À±â
+    // 3) AnimInstance ê°€ì ¸ì˜¤ê¸°
     UEHPlayerAnimInstance* Anim = Cast<UEHPlayerAnimInstance>(Mesh->GetAnimInstance());
     if (!Anim) return;
 
-    // 4) AnimBPÀÇ bool °ª º¯°æ
+    // 4) AnimBPì˜ bool ê°’ ë³€ê²½
     Anim->bIsAnomalyGenerated = true;
 
     UE_LOG(LogTemp, Warning, TEXT("Footstep anomaly generated: bIsAnomalyGenerated = true"));
