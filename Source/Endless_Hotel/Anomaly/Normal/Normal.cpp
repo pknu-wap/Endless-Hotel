@@ -26,7 +26,7 @@ void ANormal::BeginPlay()
 #pragma region Activities
 
 // Anomaly_Base_EightExit.cpp
-void ANormal::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void ANormal::ActivateAnomaly(uint8 Anomaly_ID)
 {
     // Activites
     UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyID);

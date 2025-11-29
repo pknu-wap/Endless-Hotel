@@ -72,9 +72,10 @@ protected:
 #pragma region Activity
 
 public:
-	UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
-	void ActivateAnomaly(uint8 Anomaly_ID);
-	virtual void ActivateAnomaly_Implementation(uint8 Anomaly_ID) { bIsActive = true; }
+	//UFUNCTION(BlueprintNativeEvent, Category = "Anomaly|Lifecycle")
+	virtual void ActivateAnomaly(uint8 Anomaly_ID) { bIsActive = true; }
+
+	virtual void DisableAnomaly(uint8 Anomaly_ID) {}
 
 #pragma endregion
 

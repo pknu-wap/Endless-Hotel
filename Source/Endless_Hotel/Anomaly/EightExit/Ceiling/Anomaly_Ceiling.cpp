@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Ceiling::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Ceiling::ActivateAnomaly(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation(Anomaly_ID);
+	Super::ActivateAnomaly(Anomaly_ID);
 
 	switch (Anomaly_ID)
 	{
