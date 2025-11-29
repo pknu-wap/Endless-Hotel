@@ -16,7 +16,7 @@ void AAnomaly_Generator::BeginPlay()
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 
 	uint8 IsNormal = FMath::RandRange(1, 10);
-	if (IsNormal > 7)
+	if (IsNormal > 8)
 	{
 		SpawnNormal();
 		return;
