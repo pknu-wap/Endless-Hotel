@@ -2,7 +2,6 @@
 
 #include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/Button/Setting/UI_Button_Setting.h"
 #include "GameFramework/GameUserSettings.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/HorizontalBox.h"
@@ -15,9 +14,6 @@ FSettingGrapic UUI_PopUp_Setting::SettingGrapic;
 FSettingResolution UUI_PopUp_Setting::SettingResolution;
 FSettingFrame UUI_PopUp_Setting::SettingFrame;
 FSettingScreen UUI_PopUp_Setting::SettingScreen;
-
-// 해당 기능은 최종 이후에 추가 예정
-//FSettingLanguage UUI_PopUp_Setting::SettingLanguage;
 
 #pragma endregion
 
@@ -34,12 +30,11 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	SettingFrame.AddDynamic(this, &ThisClass::ButtonClick_Resolution);
 	SettingScreen.AddDynamic(this, &ThisClass::ButtonClick_Screen);
 
-	// 해당 기능은 최종 이후에 추가 예정
-	//SettingLanguage.AddDynamic(this, &ThisClass::ButtonClick_Language);
-
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
+
 	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Reset);
+	Button_Brightness->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Brightness);
 
 	SettingButtonOwner(Buttons_Grapic);
 	SettingButtonOwner(Buttons_Resolution);
@@ -51,14 +46,21 @@ void UUI_PopUp_Setting::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	FSettingSaveData SaveData = USaveManager::LoadSettingData();
+	LoadSettingData();
+}
 
-	Value_Grapic = SaveData.Grapic;
-	Value_Resolution = SaveData.Resolution;
-	Value_Screen = static_cast<EWindowMode::Type>(SaveData.Screen);
-	Value_Sound = SaveData.Sound;
+#pragma endregion
 
-	//Value_Language = SaveData.Language;
+#pragma region Data
+
+void UUI_PopUp_Setting::LoadSettingData()
+{
+	SettingData = USaveManager::LoadSettingData();
+
+	HighlightButton(ESettingCategory::Grapic, SettingData.Index_Grapic);
+	HighlightButton(ESettingCategory::Resolution, SettingData.Index_Resolution);
+	HighlightButton(ESettingCategory::Frame, SettingData.Index_Frame);
+	HighlightButton(ESettingCategory::Screen, SettingData.Index_Screen);
 }
 
 #pragma endregion
@@ -80,62 +82,46 @@ void UUI_PopUp_Setting::SettingButtonOwner(UHorizontalBox* ButtonBox)
 
 void UUI_PopUp_Setting::ButtonClick_Grapic(FButtonInfo Value)
 {
-	Value_Grapic = Value.Value_Int;
+	SettingData.Value_Grapic = Value.Value_Int;
+	SettingData.Index_Grapic = Value.ButtonIndex;
 }
 
 void UUI_PopUp_Setting::ButtonClick_Resolution(FButtonInfo Value)
 {
-	Value_Resolution = Value.Value_IntPoint;
+	SettingData.Value_Resolution = Value.Value_IntPoint;
+	SettingData.Index_Resolution = Value.ButtonIndex;
 }
 
 void UUI_PopUp_Setting::ButtonClick_Frame(FButtonInfo Value)
 {
-	Value_Frame = Value.Value_Float;
+	SettingData.Value_Frame = Value.Value_Float;
+	SettingData.Index_Frame = Value.ButtonIndex;
 }
 
 void UUI_PopUp_Setting::ButtonClick_Screen(FButtonInfo Value)
 {
-	Value_Screen = Value.Value_WindowMode;
+	SettingData.Value_Screen = Value.Value_WindowMode;
+	SettingData.Index_Screen = Value.ButtonIndex;
 }
 
 void UUI_PopUp_Setting::SliderClick_Sound(FButtonInfo Value)
 {
-	Value_Sound = Value.Value_Float;
+	SettingData.Value_Sound = Value.Value_Float;
 }
-
-// 해당 기능은 최종 이후 추가 예정
-//void UUI_PopUp_Setting::SliderClick_Brightness(FButtonInfo Value)
-//{
-//
-//}
-//
-//void UUI_PopUp_Setting::ButtonClick_Language(FString Value)
-//{
-//	Value_Language = Value;
-//}
 
 void UUI_PopUp_Setting::ButtonClick_Apply()
 {
-	SettingHandle->SetOverallScalabilityLevel(Value_Grapic);
-	SettingHandle->SetScreenResolution(Value_Resolution);
-	SettingHandle->SetFullscreenMode(Value_Screen);
-	SoundMaster->Properties.Volume = Value_Sound;
+	SettingHandle->SetOverallScalabilityLevel(SettingData.Value_Grapic);
+	SettingHandle->SetScreenResolution(SettingData.Value_Resolution);
+	SettingHandle->SetFullscreenMode(SettingData.Value_Screen);
+	SoundMaster->Properties.Volume = SettingData.Value_Sound;
 
 	//FInternationalization::Get().SetCurrentCulture(Value_Language);
 
 	SettingHandle->ApplySettings(false);
 	SettingHandle->SaveSettings();
 
-	FSettingSaveData SaveData;
-
-	SaveData.Grapic = Value_Grapic;
-	SaveData.Resolution = Value_Resolution;
-	SaveData.Screen = Value_Screen;
-	SaveData.Sound = Value_Sound;
-
-	//SaveData.Language = Value_Language;
-
-	USaveManager::SaveSettingData(SaveData);
+	USaveManager::SaveSettingData(SettingData);
 
 	Input_ESC();
 }
@@ -144,6 +130,12 @@ void UUI_PopUp_Setting::ButtonClick_Reset()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Reset, EWidgetType::PopUp, EInputModeType::UIOnly);
+}
+
+void UUI_PopUp_Setting::ButtonClick_Brightness()
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_Brightness, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 #pragma endregion

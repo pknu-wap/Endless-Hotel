@@ -25,28 +25,23 @@ void UUI_Button_Setting::ButtonClick()
 	{
 	case ESettingCategory::Grapic:
 		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonInfo.ButtonIndex);
 		break;
 
 	case ESettingCategory::Resolution:
 		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonInfo.ButtonIndex);
 		break;
 
 	case ESettingCategory::Frame:
 		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonInfo.ButtonIndex);
 		break;
 
 	case ESettingCategory::Screen:
 		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonIndex);
+		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonInfo.ButtonIndex);
 		break;
-
-	/*case ESettingCategory::Language:
-		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Language, ButtonIndex);
-		break;*/
 	}
 }
 

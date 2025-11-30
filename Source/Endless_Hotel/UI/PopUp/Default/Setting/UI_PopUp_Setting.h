@@ -4,20 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
+#include "UI/Button/Setting/UI_Button_Setting.h"
 #include "Delegates/DelegateCombinations.h"
 #include "UI_PopUp_Setting.generated.h"
 
 #pragma region Declare
 
-struct FButtonInfo;
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		FButtonInfo, Value);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	FButtonInfo, Value);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		FButtonInfo, Value);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		FButtonInfo, Value);
-
-// 해당 기능은 최종 이후에 추가 예정
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage,	FButtonInfo, Value);
 
 #pragma endregion
 
@@ -34,6 +30,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Data
+
+protected:
+	void LoadSettingData();
+
+protected:
+	struct FSettingSaveData SettingData;
+
+#pragma endregion
+
 #pragma region Setting
 
 protected:
@@ -42,16 +48,6 @@ protected:
 protected:
 	UPROPERTY()
 	TObjectPtr<class UGameUserSettings> SettingHandle;
-
-	int32 Value_Grapic;
-	FIntPoint Value_Resolution;
-	float Value_Frame;
-	EWindowMode::Type Value_Screen;
-	float Value_Sound;
-
-	// 해당 기능은 최종 이후에 추가 예정
-	//float Value_Brightness;
-	//FString Value_Language;
 
 #pragma endregion
 
@@ -62,9 +58,6 @@ public:
 	static FSettingResolution SettingResolution;
 	static FSettingFrame SettingFrame;
 	static FSettingScreen SettingScreen;
-
-	// 해당 기능은 최종 이후에 추가 예정
-	//static FSettingLanguage SettingLanguage;
 
 #pragma endregion
 
@@ -86,18 +79,16 @@ protected:
 	UFUNCTION()
 	void SliderClick_Sound(FButtonInfo Value);
 
-	// 해당 기능은 최종 이후에 추가 예정
-	/*UFUNCTION()
-	void SliderClick_Brightness(FButtonInfo Value);
-
-	UFUNCTION()
-	void ButtonClick_Language(FButtonInfo Value);*/
-
+protected:
 	UFUNCTION()
 	void ButtonClick_Apply();
 
+protected:
 	UFUNCTION()
 	void ButtonClick_Reset();
+
+	UFUNCTION()
+	void ButtonClick_Brightness();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -118,21 +109,22 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USoundClass> SoundMaster;
 
-	// 해당 기능은 최종 이후에 추가 예정
-	/*UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class USlider> Slider_Brightness;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Language;*/
-
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Reset;
+
+	/*UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Language;*/
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Brightness;
 
 #pragma endregion
 
@@ -145,6 +137,9 @@ protected:
 	// 해당 기능은 최종 이후 추가 예정
 	/*UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_Language;*/
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Brightness;
 
 #pragma endregion
 

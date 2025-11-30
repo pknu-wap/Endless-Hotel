@@ -26,6 +26,9 @@ struct FButtonInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
+	int32 ButtonIndex;
+
+	UPROPERTY(EditAnywhere)
 	ESettingCategory Category;
 
 	UPROPERTY(EditAnywhere)

@@ -3,6 +3,7 @@
 #include "UI/Base/InGame/UI_InGame.h"
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/Image.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Player/Character/EHPlayer.h"
@@ -20,6 +21,13 @@ void UUI_InGame::NativeOnInitialized()
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
+}
+
+void UUI_InGame::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	SetBrightness();
 }
 
 #pragma endregion
@@ -48,6 +56,19 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	}
 
 	Crosshair->SetBrush(Brush);
+}
+
+#pragma endregion
+
+#pragma region Brightness
+
+void UUI_InGame::SetBrightness()
+{
+	float BrightnessValue = USaveManager::LoadSettingData().Value_Brightness * 0.6f;
+
+	FLinearColor ColorValue = Image_Brightness->GetColorAndOpacity();
+	ColorValue.A = BrightnessValue;
+	Image_Brightness->SetColorAndOpacity(ColorValue);
 }
 
 #pragma endregion

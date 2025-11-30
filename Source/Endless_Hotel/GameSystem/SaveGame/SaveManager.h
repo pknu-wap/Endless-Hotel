@@ -27,11 +27,19 @@ struct FSettingSaveData
 {
 	GENERATED_BODY()
 
-	int32 Grapic;
-	FString Language;
-	FIntPoint Resolution;
-	uint8 Screen;
-	float Sound = 0.5f;
+	int32				Value_Grapic;
+	FString				Value_Language;
+	FIntPoint			Value_Resolution;
+	EWindowMode::Type	Value_Screen;
+	float				Value_Frame;
+	float				Value_Sound = 0.5f;
+	float				Value_Brightness = 0;
+
+	int32 Index_Grapic;
+	int32 Index_Language;
+	int32 Index_Resolution;
+	int32 Index_Screen;
+	int32 Index_Frame;
 };
 
 #pragma endregion
