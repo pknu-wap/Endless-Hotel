@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Cong::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Cong::ActivateAnomaly(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation(Anomaly_ID);
+	Super::ActivateAnomaly(Anomaly_ID);
 
 	FTimerHandle Handle;
 	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this]()

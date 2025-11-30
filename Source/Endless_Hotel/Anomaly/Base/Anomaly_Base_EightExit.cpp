@@ -16,7 +16,6 @@ void AAnomaly_Base_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
     SetVerdictMode(EAnomalyVerdictMode::AnomalyElevatorOnly); // VerdictMode Setting
-    bIsActive = true;
 }
 
 #pragma endregion
@@ -24,7 +23,7 @@ void AAnomaly_Base_EightExit::BeginPlay()
 #pragma region Activities
 
 // Anomaly_Base_EightExit.cpp
-void AAnomaly_Base_EightExit::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Base_EightExit::ActivateAnomaly(uint8 Anomaly_ID)
 {
     // Activites
     UE_LOG(LogTemp, Log, TEXT("[EightExit] AnomalyID: %d Activated."), AnomalyID);

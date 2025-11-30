@@ -16,9 +16,9 @@ AAnomaly_Cry::AAnomaly_Cry(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Cry::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Cry::ActivateAnomaly(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation(Anomaly_ID);
+	Super::ActivateAnomaly(Anomaly_ID);
 
 	FTimerHandle SoundHandle;
 	GetWorld()->GetTimerManager().SetTimer(SoundHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
