@@ -12,6 +12,8 @@
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "Player/Controller/EHPlayerController.h"
+#include "Elevator/Elevator_Button.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -48,21 +50,8 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
 	Entrance->SetupAttachment(ElevatorSceneRoot);
 
-	// 5) Buttons
-	CallPanel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallPanel"));
-	CallPanel->SetupAttachment(Entrance);
-
-	CallDownButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallDownButtonRing"));
-	CallDownButtonRing->SetupAttachment(CallPanel);
-
-	CallDownButton = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallDownButton"));
-	CallDownButton->SetupAttachment(CallDownButtonRing);
-
-	CallUpButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallUpButtonRing"));
-	CallUpButtonRing->SetupAttachment(CallPanel);
-
-	CallUpButton = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CallUpButton"));
-	CallUpButton->SetupAttachment(CallUpButtonRing);
+	// 5) Button
+	ElevatorButton = CreateDefaultSubobject<AElevator_Button>(TEXT("ElevatorButton"));
 
 	// 6) Light
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
@@ -72,16 +61,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(Car);
 
-	// 8) EntranceTrigger
-	GetInTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("GetInTrigger"));
-	GetInTrigger->SetupAttachment(Entrance);
-	GetInTrigger->SetBoxExtent(FVector(120.f, 60.0f, 120.0f));
-	GetInTrigger->SetCollisionProfileName(TEXT("Trigger"));
-	GetInTrigger->SetGenerateOverlapEvents(true);
-	GetInTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
-	GetInTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-	// 9) InsideTrigger
+	// 8) Trigger
 	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
 	InsideTrigger->SetupAttachment(Car);
 	InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 120.0f));
@@ -90,10 +70,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// 10) Timeline
+	// 9) Timeline
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
 
-	// 11) Mobility Settings
+	// 10) Mobility Settings
 	ElevatorSceneRoot->SetMobility(EComponentMobility::Movable);
 	Car->SetMobility(EComponentMobility::Movable);
 	LeftDoor->SetMobility(EComponentMobility::Movable);
@@ -101,11 +81,11 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	LeftGlass->SetMobility(EComponentMobility::Movable);
 	RightGlass->SetMobility(EComponentMobility::Movable);
 
-	// 12) Location Settings
+	// 11) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
 
-	// 13) Rule
+	// 12) Rule
 	Rule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rule"));
 	Rule->SetupAttachment(Car);
 }
@@ -113,7 +93,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 void AElevator::BeginPlay()
 {
 	Super::BeginPlay();
-	check(LeftDoor && RightDoor && DoorTimeline && GetInTrigger && InsideTrigger);
+	check(LeftDoor && RightDoor && DoorTimeline && InsideTrigger);
 
 	// 1) Closed Location Save
 	LeftDoorClosed = LeftDoor->GetRelativeLocation();
@@ -142,11 +122,13 @@ void AElevator::BeginPlay()
 	}
 
 	// 4) Delegate Setup
-	GetInTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnEntranceBegin);
-	GetInTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnEntranceEnd);
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
+	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
 
-	// 5) MoveElevator
+	// 5) Buttons
+	ElevatorButton->SetOwnerElevator(this);
+
+	// 6) MoveElevator
 	if (!bIsNormalElevator)
 	{
 		ElevatorLight->SetIntensity(LightOnIntensity);
@@ -172,8 +154,33 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	bIsDoorMoving = false;
-	GetInTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SetPlayerInputEnabled(true);
+	if (bPendingMovePlayerAfterOpen)
+	{
+		bPendingMovePlayerAfterOpen = false;
+
+		FTimerHandle MovePlayerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			MovePlayerHandle,
+			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+				{
+					TakePlayer();
+					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+				}),
+			0.5f,
+			false
+		);
+		GetWorld()->GetTimerManager().SetTimer(
+			MovePlayerHandle,
+			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+				{
+					RotatePlayer();
+					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+				}),
+			0.1f,
+			false
+		);
+	}
 }
 
 #pragma endregion
@@ -182,7 +189,6 @@ void AElevator::OnDoorTimelineFinished()
 
 void AElevator::MoveDoors(bool bIsOpening)
 {
-	GetInTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bIsDoorMoving && bIsOpening == bIsDoorOpened) return;
 
@@ -208,7 +214,6 @@ void AElevator::MoveDoors(bool bIsOpening)
 void AElevator::TryCloseDoorAfterDelay()
 {
 	if (bIsPlayerInside) return;
-	if (GetInTrigger->IsOverlappingActor(CachedPlayer.Get())) return;
 	if(bIsDoorOpened && !bIsDoorMoving) MoveDoors(false);
 }
 
@@ -216,21 +221,20 @@ void AElevator::TryCloseDoorAfterDelay()
 
 #pragma region Trigger
 
-void AElevator::OnEntranceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AEHCharacter* Player = Cast<AEHCharacter>(OtherActor);
 	if (!Player) return;
-	CachedPlayer = Player;
-	GetWorld()->GetTimerManager().ClearTimer(DoorCloseTimerHandle);
-	if (!bIsPlayerInside && !bIsDoorOpened)
-	{
-		MoveDoors(true);
-		if (!bSkipFirstInsideOverlap) ElevatorLight->SetIntensity(LightOnIntensity);
-	}
+	if (bIsPlayerInside) return;
+	bIsPlayerInside = true;
+	MoveDoors(false);
+	ElevatorLight->SetIntensity(LightOnIntensity);
+	if (!bChoiceSentThisRide)
+		NotifySubsystemElevatorChoice();
 }
 
-void AElevator::OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AEHCharacter* Player = Cast<AEHCharacter>(OtherActor);
 	if (!Player) return;
@@ -243,28 +247,19 @@ void AElevator::OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* Other
 			DoorDuration,
 			false
 		);
-		if(bSkipFirstInsideOverlap) bSkipFirstInsideOverlap = false;
-		if(!bIsPlayerInside) ElevatorLight->SetIntensity(LightOffIntensity);
+		if (!bIsPlayerInside) ElevatorLight->SetIntensity(LightOffIntensity);
 	}
-}
-
-void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AEHCharacter* Player = Cast<AEHCharacter>(OtherActor);
-	if (!Player) return;
-	if (bSkipFirstInsideOverlap) return;
-	if (bIsPlayerInside) return;
-	bIsPlayerInside = true;
-	MoveDoors(false);
-	ElevatorLight->SetIntensity(LightOnIntensity);
-	if (!bChoiceSentThisRide)
-		NotifySubsystemElevatorChoice();
 }
 
 #pragma endregion
 
 #pragma region ElevatorMovement
+
+void AElevator::CallElevator()
+{
+	bPendingMovePlayerAfterOpen = true;
+	MoveDoors(true);
+}
 
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
@@ -302,7 +297,6 @@ void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	RotatePlayer();
 	SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
 	FTimerHandle MoveHandle;
@@ -328,10 +322,13 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 {
 	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
 	{
-		if (APlayerController* PC = Cast<APlayerController>(Player->GetController()))
+		if (AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController()))
 		{
 			PC->SetIgnoreMoveInput(!bEnable);
 			PC->SetIgnoreLookInput(!bEnable);
+			PC->bIsCameraFixed = !bEnable;
+			PC->bCanCrouch = bEnable;
+
 		}
 	}
 }
@@ -339,10 +336,8 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
 	FRotator PlayerRotation = Player->GetActorRotation();
-	Player->bUseControllerRotationYaw = false;
 	Player->bUseControllerRotationYaw = false;
 	auto* MoveComp = Player->GetCharacterMovement();
 	MoveComp->StopMovementImmediately();
@@ -351,11 +346,7 @@ void AElevator::RotatePlayer()
 		{
 			SmoothRotate(PlayerRotation, LookRotation);
 		}), 0.01f, true);
-
-	FVector3d FixedLocation = Player->GetActorLocation();
-	FixedLocation.X = PlayerLocationInElevator.X;
-	FixedLocation.Y = PlayerLocationInElevator.Y;
-	Player->SetActorLocation(FixedLocation);
+	TakePlayer();
 	MoveComp->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
@@ -371,8 +362,19 @@ void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
 	{
 		SmoothRotation = TargetRotation;
+		Player->SetActorRotation(SmoothRotation);
+		TakePlayer();
 		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 	}
+}
+
+void AElevator::TakePlayer()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FVector3d FixedLocation = Player->GetActorLocation();
+	FixedLocation.X = PlayerLocationInElevator.X;
+	FixedLocation.Y = PlayerLocationInElevator.Y;
+	Player->SetActorLocation(FixedLocation);
 }
 
 #pragma endregion
