@@ -110,13 +110,13 @@ protected:
 	TObjectPtr<class UHorizontalBox> Buttons_Screen;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class USlider> Slider_Sound;
+	TObjectPtr<class UUI_Slider_Custom> Slider_Sound;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USoundClass> SoundMaster;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class USlider> Slider_Sensitivity;
+	TObjectPtr<class UUI_Slider_Custom> Slider_Sensitivity;
 
 protected:
 	UPROPERTY(meta = (BindWidget))

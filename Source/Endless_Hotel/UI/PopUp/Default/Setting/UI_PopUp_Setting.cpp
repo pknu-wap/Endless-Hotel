@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/Slider/Custom/UI_Slider_Custom.h"
 #include "GameFramework/GameUserSettings.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/HorizontalBox.h"
@@ -32,8 +33,8 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	SettingFrame.AddDynamic(this, &ThisClass::ButtonClick_Frame);
 	SettingScreen.AddDynamic(this, &ThisClass::ButtonClick_Screen);
 
-	Slider_Sound->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sound);
-	Slider_Sensitivity->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sensitivity);
+	Slider_Sound->Slider_Main->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sound);
+	Slider_Sensitivity->Slider_Main->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sensitivity);
 
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
@@ -67,8 +68,8 @@ void UUI_PopUp_Setting::LoadSettingData()
 	HighlightButton(ESettingCategory::Frame, SettingData.Index_Frame);
 	HighlightButton(ESettingCategory::Screen, SettingData.Index_Screen);
 
-	Slider_Sound->SetValue(SettingData.Value_Sound);
-	Slider_Sensitivity->SetValue(SettingData.Value_Sensitivity);
+	Slider_Sound->Slider_Main->SetValue(SettingData.Value_Sound);
+	Slider_Sensitivity->Slider_Main->SetValue(SettingData.Value_Sensitivity);
 }
 
 #pragma endregion
