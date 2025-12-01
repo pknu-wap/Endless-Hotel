@@ -69,7 +69,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) {}
+	virtual void ActivateAnomaly(uint8 Anomaly_ID) PURE_VIRTUAL(AAnomaly_Base::ActivateAnomaly, ;);
 	virtual void DisableAnomaly(uint8 Anomaly_ID) {}
 
 #pragma endregion
