@@ -6,6 +6,7 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Button.h"
+#include "Components/Slider.h"
 #include "Sound/SoundClass.h"
 
 #pragma region Delegate
@@ -27,8 +28,10 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	SettingGrapic.AddDynamic(this, &ThisClass::ButtonClick_Grapic);
 	SettingResolution.AddDynamic(this, &ThisClass::ButtonClick_Resolution);
-	SettingFrame.AddDynamic(this, &ThisClass::ButtonClick_Resolution);
+	SettingFrame.AddDynamic(this, &ThisClass::ButtonClick_Frame);
 	SettingScreen.AddDynamic(this, &ThisClass::ButtonClick_Screen);
+
+	Slider_Sound->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sound);
 
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
@@ -61,6 +64,8 @@ void UUI_PopUp_Setting::LoadSettingData()
 	HighlightButton(ESettingCategory::Resolution, SettingData.Index_Resolution);
 	HighlightButton(ESettingCategory::Frame, SettingData.Index_Frame);
 	HighlightButton(ESettingCategory::Screen, SettingData.Index_Screen);
+
+	Slider_Sound->SetValue(SettingData.Value_Sound);
 }
 
 #pragma endregion
@@ -104,16 +109,16 @@ void UUI_PopUp_Setting::ButtonClick_Screen(FButtonInfo Value)
 	SettingData.Index_Screen = Value.ButtonIndex;
 }
 
-void UUI_PopUp_Setting::SliderClick_Sound(FButtonInfo Value)
+void UUI_PopUp_Setting::Slide_Sound(float Value)
 {
-	SettingData.Value_Sound = Value.Value_Float;
+	SettingData.Value_Sound = Value;
 }
 
 void UUI_PopUp_Setting::ButtonClick_Apply()
 {
 	SettingHandle->SetOverallScalabilityLevel(SettingData.Value_Grapic);
 	SettingHandle->SetScreenResolution(SettingData.Value_Resolution);
-	SettingHandle->SetFullscreenMode(SettingData.Value_Screen);
+	SettingHandle->SetFullscreenMode(static_cast<EWindowMode::Type>(SettingData.Value_Screen));
 	SoundMaster->Properties.Volume = SettingData.Value_Sound;
 
 	//FInternationalization::Get().SetCurrentCulture(Value_Language);

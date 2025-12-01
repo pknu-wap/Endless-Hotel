@@ -77,7 +77,7 @@ protected:
 	void ButtonClick_Screen(FButtonInfo Value);
 
 	UFUNCTION()
-	void SliderClick_Sound(FButtonInfo Value);
+	void Slide_Sound(float Value);
 
 protected:
 	UFUNCTION()
