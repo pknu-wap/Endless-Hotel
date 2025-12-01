@@ -4,7 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include "Delegates/DelegateCombinations.h"
 #include "UI_PopUp_Brightness.generated.h"
+
+#pragma region Declare
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingBrightness);
+
+#pragma endregion
 
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Brightness : public UUI_PopUp_Default
@@ -19,10 +27,17 @@ protected:
 
 #pragma endregion
 
+#pragma region Delegate
+	
+public:
+	static FSettingBrightness SettingBrightness;
+
+#pragma endregion
+
 #pragma region Data
 
 protected:
-	FSettingSaveData SettingData;
+	struct FSettingSaveData SettingData;
 
 #pragma endregion
 

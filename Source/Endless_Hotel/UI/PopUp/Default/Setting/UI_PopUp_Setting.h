@@ -5,15 +5,17 @@
 #include "CoreMinimal.h"
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
 #include "UI/Button/Setting/UI_Button_Setting.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Delegates/DelegateCombinations.h"
 #include "UI_PopUp_Setting.generated.h"
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingSensitivity, float,		  Value);
 
 #pragma endregion
 
@@ -36,7 +38,7 @@ protected:
 	void LoadSettingData();
 
 protected:
-	struct FSettingSaveData SettingData;
+	FSettingSaveData SettingData;
 
 #pragma endregion
 
@@ -58,6 +60,7 @@ public:
 	static FSettingResolution SettingResolution;
 	static FSettingFrame SettingFrame;
 	static FSettingScreen SettingScreen;
+	static FSettingSensitivity SettingSensitivity;
 
 #pragma endregion
 
@@ -78,6 +81,9 @@ protected:
 
 	UFUNCTION()
 	void Slide_Sound(float Value);
+
+	UFUNCTION()
+	void Slide_Sensitivity(float Value);
 
 protected:
 	UFUNCTION()
@@ -108,6 +114,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USoundClass> SoundMaster;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class USlider> Slider_Sensitivity;
 
 protected:
 	UPROPERTY(meta = (BindWidget))

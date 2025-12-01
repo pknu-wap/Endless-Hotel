@@ -8,6 +8,8 @@
 
 #pragma region Base
 
+FSettingBrightness UUI_PopUp_Brightness::SettingBrightness;
+
 void UUI_PopUp_Brightness::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -32,6 +34,8 @@ void UUI_PopUp_Brightness::NativeConstruct()
 void UUI_PopUp_Brightness::ButtonClick_Apply()
 {
 	USaveManager::SaveSettingData(SettingData);
+
+	SettingBrightness.Broadcast();
 
 	Input_ESC();
 }

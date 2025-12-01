@@ -40,6 +40,7 @@ protected:
 #pragma region Brightness
 
 protected:
+	UFUNCTION()
 	void SetBrightness();
 
 protected:

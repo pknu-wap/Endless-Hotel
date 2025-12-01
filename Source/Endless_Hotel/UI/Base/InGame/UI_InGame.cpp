@@ -2,6 +2,7 @@
 
 #include "UI/Base/InGame/UI_InGame.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/PopUp/Default/Setting/UI_PopUp_Brightness.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/Image.h"
@@ -16,11 +17,12 @@ void UUI_InGame::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	AEHPlayer* EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
 	EHPlayer->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
+
+	UUI_PopUp_Brightness::SettingBrightness.AddDynamic(this, &ThisClass::SetBrightness);
 }
 
 void UUI_InGame::NativeConstruct()

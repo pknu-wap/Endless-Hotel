@@ -15,6 +15,7 @@ FSettingGrapic UUI_PopUp_Setting::SettingGrapic;
 FSettingResolution UUI_PopUp_Setting::SettingResolution;
 FSettingFrame UUI_PopUp_Setting::SettingFrame;
 FSettingScreen UUI_PopUp_Setting::SettingScreen;
+FSettingSensitivity UUI_PopUp_Setting::SettingSensitivity;
 
 #pragma endregion
 
@@ -32,6 +33,7 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	SettingScreen.AddDynamic(this, &ThisClass::ButtonClick_Screen);
 
 	Slider_Sound->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sound);
+	Slider_Sensitivity->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sensitivity);
 
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
@@ -66,6 +68,7 @@ void UUI_PopUp_Setting::LoadSettingData()
 	HighlightButton(ESettingCategory::Screen, SettingData.Index_Screen);
 
 	Slider_Sound->SetValue(SettingData.Value_Sound);
+	Slider_Sensitivity->SetValue(SettingData.Value_Sensitivity);
 }
 
 #pragma endregion
@@ -114,12 +117,20 @@ void UUI_PopUp_Setting::Slide_Sound(float Value)
 	SettingData.Value_Sound = Value;
 }
 
+void UUI_PopUp_Setting::Slide_Sensitivity(float Value)
+{
+	SettingData.Value_Sensitivity = Value;
+}
+
 void UUI_PopUp_Setting::ButtonClick_Apply()
 {
 	SettingHandle->SetOverallScalabilityLevel(SettingData.Value_Grapic);
 	SettingHandle->SetScreenResolution(SettingData.Value_Resolution);
+	SettingHandle->SetFrameRateLimit(SettingData.Value_Frame);
 	SettingHandle->SetFullscreenMode(static_cast<EWindowMode::Type>(SettingData.Value_Screen));
+
 	SoundMaster->Properties.Volume = SettingData.Value_Sound;
+	SettingSensitivity.Broadcast(SettingData.Value_Sensitivity);
 
 	//FInternationalization::Get().SetCurrentCulture(Value_Language);
 

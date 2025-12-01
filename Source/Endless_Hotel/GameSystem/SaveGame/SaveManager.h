@@ -49,7 +49,10 @@ struct FSettingSaveData
 	float Value_Sound = 0.5f;
 
 	UPROPERTY(SaveGame)
-	float Value_Brightness = 0;
+	float Value_Sensitivity = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float Value_Brightness = 1;
 
 	UPROPERTY(SaveGame)
 	int32 Index_Grapic;
