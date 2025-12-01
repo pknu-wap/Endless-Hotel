@@ -10,9 +10,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Shrink::ActivateAnomaly_Implementation(uint8 Anomaly_ID)
+void AAnomaly_Shrink::ActivateAnomaly(uint8 Anomaly_ID)
 {
-	Super::ActivateAnomaly_Implementation(Anomaly_ID);
+	Super::ActivateAnomaly(Anomaly_ID);
 
 	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
