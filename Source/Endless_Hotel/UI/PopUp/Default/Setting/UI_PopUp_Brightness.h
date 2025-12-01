@@ -51,8 +51,6 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Brightness;
 
-	float Value_Brightness = 0.5f;
-
 #pragma endregion
 
 };

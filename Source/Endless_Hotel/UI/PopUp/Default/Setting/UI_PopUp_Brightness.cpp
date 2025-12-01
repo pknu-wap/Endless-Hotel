@@ -22,8 +22,7 @@ void UUI_PopUp_Brightness::NativeConstruct()
 	Super::NativeConstruct();
 
 	SettingData = USaveManager::LoadSettingData();
-	Slider_Brightness->Value = SettingData.Value_Brightness;
-	Value_Brightness = SettingData.Value_Brightness;
+	Slider_Brightness->SetValue(SettingData.Value_Brightness);
 }
 
 #pragma endregion
@@ -32,8 +31,6 @@ void UUI_PopUp_Brightness::NativeConstruct()
 
 void UUI_PopUp_Brightness::ButtonClick_Apply()
 {
-	SettingData = USaveManager::LoadSettingData();
-	SettingData.Value_Brightness = Value_Brightness;
 	USaveManager::SaveSettingData(SettingData);
 
 	Input_ESC();
@@ -45,10 +42,10 @@ void UUI_PopUp_Brightness::ButtonClick_Apply()
 
 void UUI_PopUp_Brightness::Slide_Brightness(float Value)
 {
-	Value_Brightness = 1 - Value;
+	SettingData.Value_Brightness = Value;
 
 	FLinearColor ColorValue = Image_Brightness->GetColorAndOpacity();
-	ColorValue.A = Value;
+	ColorValue.A = Value * 0.9f + 0.1f;
 	Image_Brightness->SetColorAndOpacity(ColorValue);
 }
 

@@ -64,10 +64,8 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 
 void UUI_InGame::SetBrightness()
 {
-	float BrightnessValue = USaveManager::LoadSettingData().Value_Brightness * 0.6f;
-
 	FLinearColor ColorValue = Image_Brightness->GetColorAndOpacity();
-	ColorValue.A = BrightnessValue;
+	ColorValue.A = (1 - USaveManager::LoadSettingData().Value_Brightness) * 0.6f;
 	Image_Brightness->SetColorAndOpacity(ColorValue);
 }
 
