@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Niagara/Public/NiagaraComponent.h"
+#include "Components/WidgetComponent.h"
 
 #pragma region Base
 
@@ -30,6 +31,9 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Niagara_Blood_Right = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Right"));
 	Niagara_Blood_Right->SetupAttachment(RootComponent);
 	Niagara_Blood_Right->SetAutoActivate(false);
+
+	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
+	Widget_PaintingBlur->SetupAttachment(RootComponent);
 }
 
 #pragma endregion
@@ -88,7 +92,7 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
-
+	Widget_PaintingBlur->SetVisibility(true);
 }
 
 #pragma endregion

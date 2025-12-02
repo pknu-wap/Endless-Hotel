@@ -56,6 +56,10 @@ protected:
 public:
 	void BlurPaint();
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
+
 #pragma endregion
 
 };
