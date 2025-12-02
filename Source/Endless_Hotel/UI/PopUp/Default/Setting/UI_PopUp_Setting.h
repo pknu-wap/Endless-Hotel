@@ -152,11 +152,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Hightlight
-
-public:
-	void HighlightButton(const enum ESettingCategory& ButtonType, const uint8& TargetIndex);
-
-#pragma endregion
-
 };

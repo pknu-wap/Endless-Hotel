@@ -4,7 +4,6 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/Slider/Custom/UI_Slider_Custom.h"
 #include "GameFramework/GameUserSettings.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Button.h"
 #include "Components/Slider.h"
@@ -63,10 +62,10 @@ void UUI_PopUp_Setting::LoadSettingData()
 {
 	SettingData = USaveManager::LoadSettingData();
 
-	HighlightButton(ESettingCategory::Grapic, SettingData.Index_Grapic);
-	HighlightButton(ESettingCategory::Resolution, SettingData.Index_Resolution);
-	HighlightButton(ESettingCategory::Frame, SettingData.Index_Frame);
-	HighlightButton(ESettingCategory::Screen, SettingData.Index_Screen);
+	HighlightButton(ESettingButtonType::Grapic, SettingData.Index_Grapic);
+	HighlightButton(ESettingButtonType::Resolution, SettingData.Index_Resolution);
+	HighlightButton(ESettingButtonType::Frame, SettingData.Index_Frame);
+	HighlightButton(ESettingButtonType::Screen, SettingData.Index_Screen);
 
 	Slider_Sound->Slider_Main->SetValue(SettingData.Value_Sound);
 	Slider_Sensitivity->Slider_Main->SetValue(SettingData.Value_Sensitivity);
@@ -133,8 +132,6 @@ void UUI_PopUp_Setting::ButtonClick_Apply()
 	SoundMaster->Properties.Volume = SettingData.Value_Sound;
 	SettingSensitivity.Broadcast(SettingData.Value_Sensitivity);
 
-	//FInternationalization::Get().SetCurrentCulture(Value_Language);
-
 	SettingHandle->ApplySettings(false);
 	SettingHandle->SaveSettings();
 
@@ -153,47 +150,6 @@ void UUI_PopUp_Setting::ButtonClick_Brightness()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Brightness, EWidgetType::PopUp, EInputModeType::UIOnly);
-}
-
-#pragma endregion
-
-#pragma region Highlight
-
-void UUI_PopUp_Setting::HighlightButton(const ESettingCategory& ButtonType, const uint8& TargetIndex)
-{
-	UHorizontalBox* SearchBox = nullptr;
-
-	switch (ButtonType)
-	{
-	case ESettingCategory::Grapic:
-		SearchBox = Buttons_Grapic;
-		break;
-
-	case ESettingCategory::Resolution:
-		SearchBox = Buttons_Resolution;
-		break;
-
-	case ESettingCategory::Frame:
-		SearchBox = Buttons_Frame;
-		break;
-
-	case ESettingCategory::Screen:
-		SearchBox = Buttons_Screen;
-		break;
-	}
-
-	for (auto* SearchTarget : SearchBox->GetAllChildren())
-	{
-		auto* Target = Cast<UUI_Button_Setting>(SearchTarget);
-
-		if (Target->GetButtonIndex() == TargetIndex)
-		{
-			Target->HighlightButton();
-			continue;
-		}
-
-		Target->UnhighlightButton();
-	}
 }
 
 #pragma endregion

@@ -30,11 +30,9 @@ struct FSettingSaveData
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(SaveGame)
 	int32 Value_Grapic;
-
-	UPROPERTY(SaveGame)
-	FString Value_Language;
 
 	UPROPERTY(SaveGame)
 	FIntPoint Value_Resolution;
@@ -55,10 +53,11 @@ struct FSettingSaveData
 	float Value_Brightness = 1;
 
 	UPROPERTY(SaveGame)
-	int32 Index_Grapic;
+	FString Value_Language;
 
+public:
 	UPROPERTY(SaveGame)
-	int32 Index_Language;
+	int32 Index_Grapic;
 
 	UPROPERTY(SaveGame)
 	int32 Index_Resolution;
@@ -68,6 +67,9 @@ struct FSettingSaveData
 
 	UPROPERTY(SaveGame)
 	int32 Index_Frame;
+
+	UPROPERTY(SaveGame)
+	int32 Index_Language;
 };
 
 #pragma endregion

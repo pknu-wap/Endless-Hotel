@@ -9,14 +9,12 @@
 #pragma region Declare
 
 UENUM(BlueprintType)
-enum class ESettingCategory : uint8
+enum class ESettingButtonType : uint8
 {
 	Grapic		UMETA(DisplayName = "Grapic"),
 	Resolution	UMETA(DisplayName = "Resolution"),
 	Frame		UMETA(DisplayName = "Frame"),
 	Screen		UMETA(DisplayName = "Screen"),
-	Sound		UMETA(DisplayName = "Sound"),
-	Brightness	UMETA(DisplayName = "Brightness"),
 	Language	UMETA(DisplayName = "Language")
 };
 
@@ -29,7 +27,7 @@ struct FButtonInfo
 	int32 ButtonIndex;
 
 	UPROPERTY(EditAnywhere)
-	ESettingCategory Category;
+	ESettingButtonType Category;
 
 	UPROPERTY(EditAnywhere)
 	int32 Value_Int;
@@ -74,21 +72,6 @@ public:
 protected:
 	UFUNCTION()
 	void ButtonClick();
-
-#pragma endregion
-
-#pragma region Highlight
-
-public:
-	void HighlightButton();
-	void UnhighlightButton();
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Normal;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Highlight;
 
 #pragma endregion
 
