@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
+#include "UI/Button/Setting/UI_Button_Setting.h"
 #include "Delegates/DelegateCombinations.h"
 #include "UI_PopUp_Setting.generated.h"
 
