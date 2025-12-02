@@ -15,6 +15,7 @@ class UTimelineComponent;
 class UCurveFloat;
 class ACharacter;
 class AEHCharacter;
+class AElevator_Button;
 
 #pragma endregion
 
@@ -43,9 +44,6 @@ protected:
 	TObjectPtr<UStaticMeshComponent> Exterior_Structure;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
-	TObjectPtr<UStaticMeshComponent> CallPanel;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
 	TObjectPtr<UStaticMeshComponent> Entrance;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Frame")
@@ -68,17 +66,8 @@ protected:
 #pragma region Buttons
 
 protected:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> CallDownButtonRing;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> CallDownButton;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> CallUpButtonRing;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> CallUpButton;
+	UPROPERTY(EditAnywhere, Category = "Button")
+	TObjectPtr<AElevator_Button> ElevatorButton;
 
 #pragma endregion
 
@@ -110,10 +99,6 @@ protected:
 #pragma region Trigger
 
 protected:
-	// EntranceTrigger
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
-	TObjectPtr<UBoxComponent> GetInTrigger;
-
 	// InsideTrigger
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
@@ -124,23 +109,22 @@ private:
 
 protected:
 	UFUNCTION()
-	void OnEntranceBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnEntranceEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 #pragma endregion
 
 #pragma region DoorMovement
 
-protected:
+public:
+	bool bIsDoorMoving;
+	bool bIsDoorOpened;
 
+protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Movement|Door")
 	TObjectPtr<UTimelineComponent> DoorTimeline;
 
@@ -156,6 +140,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bSlideOnX = true;
 
+	bool bPendingMovePlayerAfterOpen = false;
+
 private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
@@ -164,12 +150,10 @@ private:
 
 	TObjectPtr<ACharacter> CachedPlayer;
 
-	bool bIsDoorMoving;
 	bool bIsPlayerInside;
-	bool bIsDoorOpened;
 
 
-protected:
+public:
 	void MoveDoors(bool isOpening);
 
 	void TryCloseDoorAfterDelay();
@@ -197,6 +181,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	float ElevatorMoveDuration = 3.0f;
 
+public:
+	void CallElevator();
+
 protected:
 	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
 
@@ -218,8 +205,8 @@ protected:
 
 protected:
 	void RotatePlayer();
-
 	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
+	void TakePlayer();
 
 private:
 	void SetPlayerInputEnabled(bool bEnable);
