@@ -2,6 +2,8 @@
 
 #include "UI/PopUp/Default/Setting/UI_PopUp_Language.h"
 #include "Components/Button.h"
+#include "Components/ScrollBox.h"
+#include "Components/TextBlock.h"
 
 #pragma region Base
 
@@ -11,6 +13,8 @@ void UUI_PopUp_Language::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	Buttons_Language->SetAlwaysShowScrollbar(true);
+
 	SettingLanguage.AddDynamic(this, &ThisClass::ButtonClick_Language);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
 }
@@ -19,7 +23,20 @@ void UUI_PopUp_Language::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	LoadSettingData();
+}
+
+#pragma endregion
+
+#pragma region Data
+
+void UUI_PopUp_Language::LoadSettingData()
+{
 	SettingData = USaveManager::LoadSettingData();
+
+	HighlightButton(Buttons_Language, SettingData.Index_Language);
+
+	Text_Current->SetText(FText::FromString(SettingData.Value_Language));
 }
 
 #pragma endregion
@@ -30,6 +47,10 @@ void UUI_PopUp_Language::ButtonClick_Language(FButtonInfo Value)
 {
 	SettingData.Value_Language = Value.Value_String;
 	SettingData.Index_Language = Value.ButtonIndex;
+
+	HighlightButton(Buttons_Language, SettingData.Index_Language);
+
+	Text_Current->SetText(FText::FromString(Value.Value_String));
 }
 
 void UUI_PopUp_Language::ButtonClick_Apply()

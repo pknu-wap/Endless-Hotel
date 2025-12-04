@@ -38,6 +38,9 @@ public:
 #pragma region Data
 
 protected:
+	void LoadSettingData();
+
+protected:
 	FSettingSaveData SettingData;
 
 #pragma endregion
@@ -52,6 +55,12 @@ protected:
 	void ButtonClick_Apply();
 
 protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Current;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UScrollBox> Buttons_Language;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 

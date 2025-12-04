@@ -39,6 +39,7 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Apply);
 
 	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Reset);
+	Button_Language->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Language);
 	Button_Brightness->OnClicked.AddDynamic(this, &ThisClass::ButtonClick_Brightness);
 
 	SettingButtonOwner(Buttons_Grapic);
@@ -62,10 +63,10 @@ void UUI_PopUp_Setting::LoadSettingData()
 {
 	SettingData = USaveManager::LoadSettingData();
 
-	HighlightButton(ESettingButtonType::Grapic, SettingData.Index_Grapic);
-	HighlightButton(ESettingButtonType::Resolution, SettingData.Index_Resolution);
-	HighlightButton(ESettingButtonType::Frame, SettingData.Index_Frame);
-	HighlightButton(ESettingButtonType::Screen, SettingData.Index_Screen);
+	HighlightButton(Buttons_Grapic, SettingData.Index_Grapic);
+	HighlightButton(Buttons_Resolution, SettingData.Index_Resolution);
+	HighlightButton(Buttons_Frame, SettingData.Index_Frame);
+	HighlightButton(Buttons_Screen, SettingData.Index_Screen);
 
 	Slider_Sound->Slider_Main->SetValue(SettingData.Value_Sound);
 	Slider_Sensitivity->Slider_Main->SetValue(SettingData.Value_Sensitivity);
@@ -92,24 +93,32 @@ void UUI_PopUp_Setting::ButtonClick_Grapic(FButtonInfo Value)
 {
 	SettingData.Value_Grapic = Value.Value_Int;
 	SettingData.Index_Grapic = Value.ButtonIndex;
+
+	HighlightButton(Buttons_Grapic, Value.ButtonIndex);
 }
 
 void UUI_PopUp_Setting::ButtonClick_Resolution(FButtonInfo Value)
 {
 	SettingData.Value_Resolution = Value.Value_IntPoint;
 	SettingData.Index_Resolution = Value.ButtonIndex;
+
+	HighlightButton(Buttons_Resolution, Value.ButtonIndex);
 }
 
 void UUI_PopUp_Setting::ButtonClick_Frame(FButtonInfo Value)
 {
 	SettingData.Value_Frame = Value.Value_Float;
 	SettingData.Index_Frame = Value.ButtonIndex;
+
+	HighlightButton(Buttons_Frame, Value.ButtonIndex);
 }
 
 void UUI_PopUp_Setting::ButtonClick_Screen(FButtonInfo Value)
 {
 	SettingData.Value_Screen = Value.Value_WindowMode;
 	SettingData.Index_Screen = Value.ButtonIndex;
+
+	HighlightButton(Buttons_Screen, Value.ButtonIndex);
 }
 
 void UUI_PopUp_Setting::Slide_Sound(float Value)
@@ -144,6 +153,12 @@ void UUI_PopUp_Setting::ButtonClick_Reset()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Reset, EWidgetType::PopUp, EInputModeType::UIOnly);
+}
+
+void UUI_PopUp_Setting::ButtonClick_Language()
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_Language, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 void UUI_PopUp_Setting::ButtonClick_Brightness()

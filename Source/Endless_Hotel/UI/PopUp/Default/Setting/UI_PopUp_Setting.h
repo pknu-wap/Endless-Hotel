@@ -94,6 +94,9 @@ protected:
 	void ButtonClick_Reset();
 
 	UFUNCTION()
+	void ButtonClick_Language();
+
+	UFUNCTION()
 	void ButtonClick_Brightness();
 
 protected:
@@ -129,8 +132,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Reset;
 
-	/*UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Language;*/
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Language;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Brightness;
@@ -143,9 +146,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_Reset;
 
-	// 해당 기능은 최종 이후 추가 예정
-	/*UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Language;*/
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Language;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_Brightness;
