@@ -1,17 +1,17 @@
-// Copyright by 2025-2 WAP Game 2 team
+ï»¿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Interact/IntertactTest.h"
 #include "Components/StaticMeshComponent.h"
 
-// ±âº» »ý¼ºÀÚ
+// ê¸°ë³¸ ìƒì„±ìž
 AInteractTest::AInteractTest(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     PrimaryActorTick.bCanEverTick = false;
 }
 
-// ½ÇÁ¦ Interact µ¿ÀÛ
+// ì‹¤ì œ Interact ë™ìž‘
 void AInteractTest::Interacted()
 {
     RootComponent->AddLocalRotation(FRotator(0, 45, 0));

@@ -24,7 +24,7 @@ void AAnomaly_Base_Neapolitan::ActivateAnomaly(uint8 Anomaly_ID)
     UE_LOG(LogTemp, Log, TEXT("[Neapolitan] Activated."));
 }
 
-void AAnomaly_Base_Neapolitan::InteractSolve()
+void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
 {
     //상호작용 기반 해결여부
     UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();

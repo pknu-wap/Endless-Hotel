@@ -25,7 +25,7 @@ protected:
 
 protected:
     virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
-    virtual void InteractSolve();   //상호작용 이상현상 판정
+    virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
 
 #pragma endregion
 
