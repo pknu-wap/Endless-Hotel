@@ -106,15 +106,15 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 void AEHPlayerController::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookVector = Value.Get<FVector2D>();
-
-	if (LookVector.SizeSquared() > 0.0f)
-	{
+	if (!bIsCameraFixed)
+			{
+		if (LookVector.SizeSquared() > 0.0f)
+		{
 		// Yaw (좌우)
 		AddYawInput(LookVector.X * LookSensitivity);
 
 		// Pitch (상하) - 카메라가 고정되지 않았을 때만
-		if (!bIsCameraFixed)
-		{
+		
 			if (UCameraComponent* CameraComponent = GetPlayerCamera())
 			{
 				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();
