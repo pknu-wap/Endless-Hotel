@@ -131,6 +131,7 @@ void AElevator::BeginPlay()
 	// 6) MoveElevator
 	if (!bIsNormalElevator)
 	{
+		SetPlayerInputEnabled(false);
 		ElevatorLight->SetIntensity(LightOnIntensity);
 		ElevatorMove(StartPos, MapPos, true);
 		bSkipFirstInsideOverlap = true;
@@ -155,32 +156,6 @@ void AElevator::OnDoorTimelineFinished()
 {
 	bIsDoorMoving = false;
 	SetPlayerInputEnabled(true);
-	if (bPendingMovePlayerAfterOpen)
-	{
-		bPendingMovePlayerAfterOpen = false;
-
-		FTimerHandle MovePlayerHandle;
-		GetWorld()->GetTimerManager().SetTimer(
-			MovePlayerHandle,
-			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-				{
-					TakePlayer();
-					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-				}),
-			0.5f,
-			false
-		);
-		GetWorld()->GetTimerManager().SetTimer(
-			MovePlayerHandle,
-			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-				{
-					RotatePlayer();
-					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-				}),
-			0.1f,
-			false
-		);
-	}
 }
 
 #pragma endregion
@@ -228,6 +203,32 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (!Player) return;
 	if (bIsPlayerInside) return;
 	bIsPlayerInside = true;
+	if (bPendingMovePlayerAfterOpen)
+	{
+		bPendingMovePlayerAfterOpen = false;
+
+		FTimerHandle MovePlayerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			MovePlayerHandle,
+			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+				{
+					TakePlayer();
+					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+				}),
+			0.5f,
+			false
+		);
+		GetWorld()->GetTimerManager().SetTimer(
+			MovePlayerHandle,
+			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+				{
+					RotatePlayer();
+					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+				}),
+			0.1f,
+			false
+		);
+	}
 	MoveDoors(false);
 	ElevatorLight->SetIntensity(LightOnIntensity);
 	if (!bChoiceSentThisRide)

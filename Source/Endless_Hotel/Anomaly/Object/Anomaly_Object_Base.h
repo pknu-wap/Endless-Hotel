@@ -10,5 +10,4 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor
 {
 	GENERATED_BODY()
-	
 };

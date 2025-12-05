@@ -26,4 +26,9 @@ void AElevator_Button::Interacted()
 {
 	if (OwnerElevator->bIsDoorMoving || OwnerElevator-> bIsDoorOpened) return;
 	OwnerElevator->CallElevator();
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]() mutable
+		{
+			OwnerElevator->TryCloseDoorAfterDelay();
+		}), 4.0f, false);
 }
