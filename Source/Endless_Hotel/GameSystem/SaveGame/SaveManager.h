@@ -13,7 +13,10 @@ struct FCompendiumData
 {
 	GENERATED_BODY()
 
+	UPROPERTY(SaveGame)
 	int32 Index;
+
+	UPROPERTY(SaveGame)
 	bool bIsChecked;
 
 	bool operator==(const FCompendiumData& Data) const
@@ -27,11 +30,46 @@ struct FSettingSaveData
 {
 	GENERATED_BODY()
 
-	int32 Grapic;
-	FString Language;
-	FIntPoint Resolution;
-	uint8 Screen;
-	float Sound = 0.5f;
+public:
+	UPROPERTY(SaveGame)
+	int32 Value_Grapic;
+
+	UPROPERTY(SaveGame)
+	FIntPoint Value_Resolution;
+
+	UPROPERTY(SaveGame)
+	uint8 Value_Screen;
+
+	UPROPERTY(SaveGame)
+	float Value_Frame;
+
+	UPROPERTY(SaveGame)
+	float Value_Sound = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float Value_Sensitivity = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float Value_Brightness = 1;
+
+	UPROPERTY(SaveGame)
+	FString Value_Language;
+
+public:
+	UPROPERTY(SaveGame)
+	int32 Index_Grapic;
+
+	UPROPERTY(SaveGame)
+	int32 Index_Resolution;
+
+	UPROPERTY(SaveGame)
+	int32 Index_Screen;
+
+	UPROPERTY(SaveGame)
+	int32 Index_Frame;
+
+	UPROPERTY(SaveGame)
+	int32 Index_Language;
 };
 
 #pragma endregion

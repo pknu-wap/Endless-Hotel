@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API UUI_InGame : public UUI_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 
 #pragma endregion
 
@@ -33,6 +34,18 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UTexture2D> Crosshair_Interact;
+
+#pragma endregion
+
+#pragma region Brightness
+
+protected:
+	UFUNCTION()
+	void SetBrightness();
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_Brightness;
 
 #pragma endregion
 
