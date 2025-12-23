@@ -11,7 +11,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Interact/Interact_Base.h"
+#include "Interact/InteractableObject.h"
 
 AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -307,7 +307,7 @@ void AEHPlayerController::CheckForInteractables()
 	{
 		AActor* HitActor = HitResult.GetActor();
 
-		if (HitActor->IsA(AInteract_Base::StaticClass()))
+		if (HitActor->GetClass()->ImplementsInterface(UInteractableObject::StaticClass()))
 		{
 			bCanInteract = true;
 			CurrentInteractActor = HitActor;
@@ -324,9 +324,9 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 {
 	if (!bCanInteract || !CurrentInteractActor) return;
 
-	if (AInteract_Base* Interactable = Cast<AInteract_Base>(CurrentInteractActor))
+	if (CurrentInteractActor->GetClass()->ImplementsInterface(UInteractableObject::StaticClass()))
 	{
-		Interactable->Interacted();
+		IInteractableObject::Execute_Interacted(CurrentInteractActor);
 	}
 }
 
@@ -335,7 +335,6 @@ void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Escape, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
-
 
 UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 {
