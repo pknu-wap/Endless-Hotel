@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interact/Interact_Base.h"
+#include "Actor/EHActor.h"
+#include "Interact/InteractableObject.h"
 #include "Elevator_Button.generated.h"
 
 #pragma region Declare
@@ -13,7 +14,7 @@ class AElevator;
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator_Button : public AInteract_Base
+class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractableObject
 {
 	GENERATED_BODY()
 
@@ -34,7 +35,6 @@ public:
 	void SetOwnerElevator(AElevator* InElevator) { OwnerElevator = InElevator; }
 
 #pragma endregion
-
 
 #pragma region Button
 
@@ -59,7 +59,9 @@ public:
 #pragma region Interact
 
 public:
-	virtual void Interacted();
+	virtual void Interacted_Implementation() override;
+
+	virtual FText GetDescriptionText_Implementation() override;
 
 #pragma endregion
 
