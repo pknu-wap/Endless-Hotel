@@ -1,13 +1,13 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Elevator/Elevator_Button.h"
 #include "Elevator/Elevator.h"
+
+#define LOCTEXT_NAMESPACE "Elevator"
 
 AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
 	Pannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button_Mesh"));
 	Pannel->SetupAttachment(RootComponent);
 	Pannel->SetRelativeLocation(FVector3d(40.f, 47.f, -19.f));
@@ -22,7 +22,7 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 	Down_ButtonRing->SetupAttachment(Pannel);
 }
 
-void AElevator_Button::Interacted()
+void AElevator_Button::Interacted_Implementation()
 {
 	if (OwnerElevator->bIsDoorMoving || OwnerElevator-> bIsDoorOpened) return;
 	OwnerElevator->CallElevator();
@@ -32,3 +32,10 @@ void AElevator_Button::Interacted()
 			OwnerElevator->TryCloseDoorAfterDelay();
 		}), 4.0f, false);
 }
+
+FText AElevator_Button::GetDescriptionText_Implementation()
+{
+	return LOCTEXT("Key1", "버튼 누르기");
+}
+
+#undef LOCTEXT_NAMESPACE
