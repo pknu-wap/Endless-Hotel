@@ -205,7 +205,7 @@ protected:
 
 protected:
 	void RotatePlayer();
-	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
+	void SmoothRotate(FRotator OriginRoatation);
 	void TakePlayer();
 
 private:

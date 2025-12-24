@@ -32,11 +32,11 @@ void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
     for (auto* FoundActor : LinkedObjects)
     {
         auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-        if (!AnomalyObject->bSolved)
+        /*if (!AnomalyObject->bSolved)
         {
             bAllSolved = false;
             break;
-        }
+        }*/
     }
     bIsSolved = bAllSolved;
     Sub->SetIsAnomalySolved(bIsSolved);

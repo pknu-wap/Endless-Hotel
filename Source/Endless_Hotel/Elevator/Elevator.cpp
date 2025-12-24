@@ -14,6 +14,7 @@
 #include "Components/AudioComponent.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Elevator/Elevator_Button.h"
+#include "Camera/CameraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -329,7 +330,6 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 			PC->SetIgnoreLookInput(!bEnable);
 			PC->bIsCameraFixed = !bEnable;
 			PC->bCanCrouch = bEnable;
-
 		}
 	}
 }
@@ -338,26 +338,26 @@ void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
-	FRotator PlayerRotation = Player->GetActorRotation();
 	Player->bUseControllerRotationYaw = false;
 	auto* MoveComp = Player->GetCharacterMovement();
 	MoveComp->StopMovementImmediately();
 	MoveComp->DisableMovement();
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this, PlayerRotation, LookRotation]()
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this, LookRotation]()
 		{
-			SmoothRotate(PlayerRotation, LookRotation);
+			SmoothRotate(LookRotation);
 		}), 0.01f, true);
 	TakePlayer();
 	MoveComp->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
-void AElevator::SmoothRotate(FRotator PlayerRotation, FRotator TargetRotation)
+void AElevator::SmoothRotate(FRotator TargetRotation)
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	FRotator CurrentRotation = Player->GetActorRotation();
+	FRotator CurrentRotation = FRotator(0, Player->GetActorRotation().Yaw, 0);
 	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
-
+	UCameraComponent* PlayerCamera = Player->FindComponentByClass<UCameraComponent>();
 	Player->SetActorRotation(SmoothRotation);
+	PlayerCamera->SetRelativeRotation(FRotator(-3,0,0));
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(SmoothRotation);
 
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
