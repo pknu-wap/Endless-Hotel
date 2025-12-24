@@ -49,6 +49,9 @@ class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsyste
 #pragma region Base
 
 public:
+	bool bIsStartFloor = true;
+
+public:
 	UAnomalyProgressSubSystem();
 
 private:
@@ -64,11 +67,8 @@ private:
 
 public:
 	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
-
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
-
 	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
-
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
@@ -80,9 +80,7 @@ public:
 
 private:
 	void ResetFloor() { Floor = 9; };
-
 	void SubFloor();
-
 	void AddFloor();
 
 #pragma endregion
@@ -95,9 +93,7 @@ public:
 
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
-
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
-
 	void ApplyVerdict();
 
 #pragma endregion
@@ -143,9 +139,7 @@ public:
 	void GetAnomalyData();
 
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
-
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByName(FString ObjectName);
-
 	TSubclassOf<AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
 
 #pragma endregion
