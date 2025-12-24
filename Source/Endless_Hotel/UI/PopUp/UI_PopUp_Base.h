@@ -32,4 +32,11 @@ protected:
 
 #pragma endregion
 
+#pragma region Highlight
+
+public:
+	virtual void HighlightButton(UPanelWidget* ButtonGroup, const uint8& TargetIndex);
+
+#pragma endregion
+
 };

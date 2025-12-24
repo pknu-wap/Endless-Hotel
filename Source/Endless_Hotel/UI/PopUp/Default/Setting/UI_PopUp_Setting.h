@@ -5,20 +5,17 @@
 #include "CoreMinimal.h"
 #include "UI/PopUp/Default/UI_PopUp_Default.h"
 #include "UI/Button/Setting/UI_Button_Setting.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Delegates/DelegateCombinations.h"
 #include "UI_PopUp_Setting.generated.h"
 
 #pragma region Declare
 
-struct FButtonInfo;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		FButtonInfo, Value);
-
-// 해당 기능은 최종 이후에 추가 예정
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage,	FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		 FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingSensitivity, float,		  Value);
 
 #pragma endregion
 
@@ -35,6 +32,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Data
+
+protected:
+	void LoadSettingData();
+
+protected:
+	FSettingSaveData SettingData;
+
+#pragma endregion
+
 #pragma region Setting
 
 protected:
@@ -43,16 +50,6 @@ protected:
 protected:
 	UPROPERTY()
 	TObjectPtr<class UGameUserSettings> SettingHandle;
-
-	int32 Value_Grapic;
-	FIntPoint Value_Resolution;
-	float Value_Frame;
-	EWindowMode::Type Value_Screen;
-	float Value_Sound;
-
-	// 해당 기능은 최종 이후에 추가 예정
-	//float Value_Brightness;
-	//FString Value_Language;
 
 #pragma endregion
 
@@ -63,9 +60,7 @@ public:
 	static FSettingResolution SettingResolution;
 	static FSettingFrame SettingFrame;
 	static FSettingScreen SettingScreen;
-
-	// 해당 기능은 최종 이후에 추가 예정
-	//static FSettingLanguage SettingLanguage;
+	static FSettingSensitivity SettingSensitivity;
 
 #pragma endregion
 
@@ -85,20 +80,24 @@ protected:
 	void ButtonClick_Screen(FButtonInfo Value);
 
 	UFUNCTION()
-	void SliderClick_Sound(FButtonInfo Value);
-
-	// 해당 기능은 최종 이후에 추가 예정
-	/*UFUNCTION()
-	void SliderClick_Brightness(FButtonInfo Value);
+	void Slide_Sound(float Value);
 
 	UFUNCTION()
-	void ButtonClick_Language(FButtonInfo Value);*/
+	void Slide_Sensitivity(float Value);
 
+protected:
 	UFUNCTION()
 	void ButtonClick_Apply();
 
+protected:
 	UFUNCTION()
 	void ButtonClick_Reset();
+
+	UFUNCTION()
+	void ButtonClick_Language();
+
+	UFUNCTION()
+	void ButtonClick_Brightness();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -114,26 +113,30 @@ protected:
 	TObjectPtr<class UHorizontalBox> Buttons_Screen;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class USlider> Slider_Sound;
+	TObjectPtr<class UUI_Slider_Custom> Slider_Sound;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class USoundClass> SoundMaster;
 
-	// 해당 기능은 최종 이후에 추가 예정
-	/*UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class USlider> Slider_Brightness;
-
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Language;*/
+	TObjectPtr<class UUI_Slider_Custom> Slider_Sensitivity;
 
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Reset;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Language;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Brightness;
 
 #pragma endregion
 
@@ -143,16 +146,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_Reset;
 
-	// 해당 기능은 최종 이후 추가 예정
-	/*UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Language;*/
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Language;
 
-#pragma endregion
-
-#pragma region Hightlight
-
-public:
-	void HighlightButton(const enum ESettingCategory& ButtonType, const uint8& TargetIndex);
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_Brightness;
 
 #pragma endregion
 

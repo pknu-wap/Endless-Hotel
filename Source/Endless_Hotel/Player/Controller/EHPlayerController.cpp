@@ -2,9 +2,11 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -20,6 +22,8 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	bCanInteract = false;
 	TraceDistance = 300.f;
 	CurrentInteractActor = nullptr;
+
+	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 }
 
 void AEHPlayerController::BeginPlay()
@@ -33,6 +37,8 @@ void AEHPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
+
+	SetLookSensitivity(USaveManager::LoadSettingData().Value_Sensitivity);
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
@@ -100,15 +106,15 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 void AEHPlayerController::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookVector = Value.Get<FVector2D>();
-
-	if (LookVector.SizeSquared() > 0.0f)
-	{
+	if (!bIsCameraFixed)
+			{
+		if (LookVector.SizeSquared() > 0.0f)
+		{
 		// Yaw (좌우)
 		AddYawInput(LookVector.X * LookSensitivity);
 
 		// Pitch (상하) - 카메라가 고정되지 않았을 때만
-		if (!bIsCameraFixed)
-		{
+		
 			if (UCameraComponent* CameraComponent = GetPlayerCamera())
 			{
 				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();

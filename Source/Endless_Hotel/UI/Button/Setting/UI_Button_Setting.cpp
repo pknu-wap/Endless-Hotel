@@ -2,6 +2,7 @@
 
 #include "UI/Button/Setting/UI_Button_Setting.h"
 #include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
+#include "UI/PopUp/Default/Setting/UI_PopUp_Language.h"
 
 #pragma region Base
 
@@ -23,49 +24,26 @@ void UUI_Button_Setting::ButtonClick()
 
 	switch (ButtonInfo.Category)
 	{
-	case ESettingCategory::Grapic:
+	case ESettingButtonType::Grapic:
 		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Grapic, ButtonIndex);
 		break;
 
-	case ESettingCategory::Resolution:
+	case ESettingButtonType::Resolution:
 		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Resolution, ButtonIndex);
 		break;
 
-	case ESettingCategory::Frame:
+	case ESettingButtonType::Frame:
 		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Frame, ButtonIndex);
 		break;
 
-	case ESettingCategory::Screen:
+	case ESettingButtonType::Screen:
 		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Screen, ButtonIndex);
 		break;
 
-	/*case ESettingCategory::Language:
-		UUI_PopUp_Setting::SettingLanguage.Broadcast(ButtonInfo);
-		BtnOwner->HighlightButton(ESettingCategory::Language, ButtonIndex);
-		break;*/
+	case ESettingButtonType::Language:
+		UUI_PopUp_Language::SettingLanguage.Broadcast(ButtonInfo);
+		break;
 	}
-}
-
-#pragma endregion
-
-#pragma region Hightlight
-
-void UUI_Button_Setting::HighlightButton()
-{
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Highlight);
-	WidgetStyle.SetNormal(Brush);
-}
-
-void UUI_Button_Setting::UnhighlightButton()
-{
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Normal);
-	WidgetStyle.SetNormal(Brush);
 }
 
 #pragma endregion

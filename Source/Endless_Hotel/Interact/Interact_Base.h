@@ -25,4 +25,8 @@ public:
 
 #pragma endregion
 
+#pragma region Neapolitan
+public:
+    bool bSolved;
+#pragma endregion
 };
