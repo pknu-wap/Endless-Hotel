@@ -357,7 +357,7 @@ void AElevator::SmoothRotate(FRotator TargetRotation)
 	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
 	UCameraComponent* PlayerCamera = Player->FindComponentByClass<UCameraComponent>();
 	Player->SetActorRotation(SmoothRotation);
-	PlayerCamera->SetRelativeRotation(FRotator(-3,0,0));
+	PlayerCamera->SetRelativeRotation(FRotator(-3, -0.000768, -0.000162));
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(SmoothRotation);
 
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
