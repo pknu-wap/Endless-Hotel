@@ -2,19 +2,7 @@
 
 
 #include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
-
 #include "Components/BackgroundBlur.h"
-
-#pragma region Base
-
-void UUI_PopUp_PaintingBlur::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	StartPaintingBlur();
-}
-
-#pragma endregion
 
 #pragma region Blur
 
