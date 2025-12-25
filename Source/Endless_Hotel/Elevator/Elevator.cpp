@@ -135,7 +135,6 @@ void AElevator::BeginPlay()
 		SetPlayerInputEnabled(false);
 		ElevatorLight->SetIntensity(LightOnIntensity);
 		ElevatorMove(StartPos, MapPos, true);
-		bSkipFirstInsideOverlap = true;
 	}
 }
 #pragma endregion
@@ -175,7 +174,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 	if (bIsOpening)
 	{
 		bIsDoorOpened = true;
-		if (!bSkipFirstInsideOverlap) SetPlayerInputEnabled(false);
+		SetPlayerInputEnabled(false);
 		DoorTimeline->PlayFromStart();
 	}
 	else
