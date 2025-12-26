@@ -11,6 +11,23 @@ class ENDLESS_HOTEL_API AAnomaly_Shrink : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
+public:
+	AAnomaly_Shrink(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class USkeletalMeshComponent> PlayerSM;
+
+	UPROPERTY()
+	TObjectPtr<class UCharacterMovementComponent> PlayerMC;
+
+#pragma endregion
+
 #pragma region Activity
 
 public:
@@ -21,7 +38,18 @@ public:
 #pragma region Shrink
 
 protected:
-	void ShrinkPlayer();
+	UFUNCTION()
+	void ShrinkPlayer(float Value);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Shrink;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
+	TObjectPtr<UCurveFloat> Curve_Shrink;
+
+	FVector OriginalScale;
+	float OriginalSpeed;
 
 #pragma endregion
 
