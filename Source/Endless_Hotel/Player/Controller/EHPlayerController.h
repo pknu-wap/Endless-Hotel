@@ -26,6 +26,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class AEHPlayer> EHPlayer;
 #pragma endregion
 
 #pragma region Input
