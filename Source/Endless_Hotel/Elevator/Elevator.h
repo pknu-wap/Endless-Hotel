@@ -103,10 +103,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
-private:
-	UPROPERTY()
-	bool bSkipFirstInsideOverlap = false;
-
 protected:
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -205,7 +201,7 @@ protected:
 
 protected:
 	void RotatePlayer();
-	void SmoothRotate(FRotator PlayerRotation, FRotator OriginRoatation);
+	void SmoothRotate(FRotator OriginRoatation);
 	void TakePlayer();
 
 private:

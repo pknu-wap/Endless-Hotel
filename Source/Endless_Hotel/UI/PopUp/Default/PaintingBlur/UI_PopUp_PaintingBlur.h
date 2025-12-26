@@ -11,16 +11,9 @@ class ENDLESS_HOTEL_API UUI_PopUp_PaintingBlur : public UUI_PopUp_Default
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-	virtual void NativeConstruct() override;
-
-#pragma endregion
-
 #pragma region Blur
 
-protected:
+public:
 	void StartPaintingBlur();
 
 protected:
