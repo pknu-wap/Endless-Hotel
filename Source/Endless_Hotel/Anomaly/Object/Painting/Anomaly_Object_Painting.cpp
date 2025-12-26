@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "Niagara/Public/NiagaraComponent.h"
 #include "Components/WidgetComponent.h"
+#include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "Components/BoxComponent.h"
 
 #pragma region Base
 
@@ -34,6 +36,43 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
 	Widget_PaintingBlur->SetupAttachment(RootComponent);
+
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	TriggerBox->SetupAttachment(RootComponent);
+	TriggerBox->InitBoxExtent(FVector(100, 100, 100));
+	TriggerBox->SetRelativeLocation(FVector(100, -100, -40));
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+#pragma endregion
+
+#pragma region Trigger
+
+void AAnomaly_Object_Painting::ActiveTrigger()
+{
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+}
+
+void AAnomaly_Object_Painting::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	switch (CurrentAnomalyID)
+	{
+	case 24:
+		EyeFollowing();
+		break;
+	case 27:
+		BloodDropping();
+		break;
+	case 31:
+		BlurPaint();
+		break;
+	default:
+		break;
+	}
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion
@@ -93,6 +132,9 @@ void AAnomaly_Object_Painting::BloodDropping()
 void AAnomaly_Object_Painting::BlurPaint()
 {
 	Widget_PaintingBlur->SetVisibility(true);
+	UUserWidget* UW = Widget_PaintingBlur->GetUserWidgetObject();
+	UUI_PopUp_PaintingBlur* BlurWidget = Cast<UUI_PopUp_PaintingBlur>(UW);
+	BlurWidget->StartPaintingBlur();
 }
 
 #pragma endregion

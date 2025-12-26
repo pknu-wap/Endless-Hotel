@@ -14,30 +14,28 @@ void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
 	case 24:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
+				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 24;
+				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
 			});
 		break;
 
 	case 27:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
+				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 27;
+				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
 			});
 		break;
 
 	case 31:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
+				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 31;
+				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
 			});
 		break;
 	}
-
-	FTimerHandle Handle;
-	GetWorld()->GetTimerManager().SetTimer(Handle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			StartAnomalyAction();
-		}), 20, false);
+	StartAnomalyAction();
 }
 
 #pragma endregion
