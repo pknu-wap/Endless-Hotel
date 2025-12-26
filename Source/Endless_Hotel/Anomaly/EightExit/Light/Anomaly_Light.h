@@ -50,7 +50,7 @@ protected:
 
 protected:
 	uint8 CurrentIndex = 1;
-	const uint8 MaxIndex = 15;
+	const uint8 MaxIndex = 20;
 
 	float NextActionDelay = 0.5f;
 
