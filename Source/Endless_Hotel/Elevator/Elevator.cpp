@@ -325,9 +325,8 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 	{
 		if (AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController()))
 		{
-			PC->SetIgnoreMoveInput(!bEnable);
-			PC->SetIgnoreLookInput(!bEnable);
 			PC->bIsCameraFixed = !bEnable;
+			PC->bCanMove = bEnable;
 			PC->bCanCrouch = bEnable;
 		}
 	}
