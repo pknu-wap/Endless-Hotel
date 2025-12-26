@@ -29,7 +29,6 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	ActIndex = 0;
 	GetAnomalyData();
 	InitializePool();
-	bIsStartFloor = true;
 }
 #pragma endregion
 

@@ -49,9 +49,6 @@ class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsyste
 #pragma region Base
 
 public:
-	bool bIsStartFloor = true;
-
-public:
 	UAnomalyProgressSubSystem();
 
 private:
