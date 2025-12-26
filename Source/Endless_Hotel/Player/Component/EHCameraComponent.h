@@ -31,12 +31,14 @@ protected:
 
 #pragma region Eye Effect
 
+public:
+	void StartEyeEffect(bool bIsOpen);
+
 protected:
 	void SettingEyeEffect();
-	void StartEyeEffect();
 
 	UFUNCTION()
-	void EyeEffect(float Value);
+	void ApplyEyeEffect(float Value);
 
 	UFUNCTION()
 	void EndEyeEffect();
@@ -46,7 +48,10 @@ protected:
 	TObjectPtr<class UTimelineComponent> Timeline_EyeEffect;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UCurveFloat> Curve_EyeEffect;
+	TObjectPtr<UCurveFloat> Curve_EyeOpen;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UCurveFloat> Curve_EyeClose;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UMaterial> Mat_EyeEffect;
