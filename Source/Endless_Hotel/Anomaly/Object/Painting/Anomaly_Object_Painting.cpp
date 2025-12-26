@@ -71,8 +71,8 @@ void AAnomaly_Object_Painting::OnTriggerBeginOverlap(UPrimitiveComponent* Overla
 		break;
 	default:
 		break;
-		TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion
