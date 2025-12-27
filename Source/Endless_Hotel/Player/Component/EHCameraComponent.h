@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/Component/EHComponent.h"
+#include "Component/EHComponent.h"
 #include "EHCameraComponent.generated.h"
 
 UCLASS()

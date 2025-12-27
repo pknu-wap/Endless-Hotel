@@ -296,8 +296,14 @@ void AEHPlayerController::CheckForInteractables()
 			bCanInteract = true;
 			CurrentInteractActor = HitActor;
 			EHPlayer->CanInteract.Broadcast(true);
+			IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, true);
 			return;
 		}
+	}
+
+	if (CurrentInteractActor)
+	{
+		IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, false);
 	}
 
 	// 트레이스 실패 or 유효하지 않음
