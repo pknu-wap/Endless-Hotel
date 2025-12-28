@@ -53,10 +53,10 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
-	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
+	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
 	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
 		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
-	if (bPassed) 
+	if (bPassed)
 	{
 		SubFloor();
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))

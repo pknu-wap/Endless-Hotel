@@ -88,6 +88,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	EAnomalyVerdictMode VerdictMode;
 
+	bool bPassed = false;
+
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;

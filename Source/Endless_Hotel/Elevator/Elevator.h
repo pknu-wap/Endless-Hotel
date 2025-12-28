@@ -136,8 +136,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement|Door")
 	bool bSlideOnX = true;
 
-	bool bPendingMovePlayerAfterOpen = false;
-
 private:
 	FVector LeftDoorClosed, RightDoorClosed;
 	FVector LeftDoorOpenPos, RightDoorOpenPos;
@@ -198,6 +196,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Position")
 	FVector2D PlayerLocationInElevator;
+
+	UPROPERTY(EditAnywhere, Category = "Position")
+	FVector3d PlayerLocationInRoom;
 
 protected:
 	void RotatePlayer();
