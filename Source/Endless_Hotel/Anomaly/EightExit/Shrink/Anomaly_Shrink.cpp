@@ -5,8 +5,32 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/TimelineComponent.h"
+
+#pragma region Base
+
+AAnomaly_Shrink::AAnomaly_Shrink(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	Timeline_Shrink = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Shrink"));
+}
+
+void AAnomaly_Shrink::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FOnTimelineFloat Update_Size;
+	Update_Size.BindUFunction(this, FName("ShrinkPlayer"));
+	Timeline_Shrink->AddInterpFloat(Curve_Shrink, Update_Size);
+
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	PlayerSM = Player->GetMesh();
+	PlayerMC = Player->GetCharacterMovement();
+	OriginalScale = PlayerSM->GetRelativeScale3D();
+	OriginalSpeed = PlayerMC->MaxWalkSpeed;
+}
+
+#pragma endregion
 
 #pragma region Activity
 
@@ -17,60 +41,22 @@ void AAnomaly_Shrink::ActivateAnomaly(uint8 Anomaly_ID)
 	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			ShrinkPlayer();
-		}), 20, false);
+			Timeline_Shrink->PlayFromStart();
+		}), 5, false);
 }
 
 #pragma endregion
 
 #pragma region Shrink
 
-void AAnomaly_Shrink::ShrinkPlayer()
+void AAnomaly_Shrink::ShrinkPlayer(float Value)
 {
-	const float Multi_Scale = 0.3f;
-
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	USceneComponent* PlayerRC = Player->GetRootComponent();
-	Player->GetCharacterMovement()->MaxWalkSpeed *= Multi_Scale;
-
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PC->bCanRun = false;
 	PC->bCanCrouch = false;
 
-	FVector TargetScale = FVector(Multi_Scale, Multi_Scale, Multi_Scale);
-
-	USpringArmComponent* SpringArm = Player->FindComponentByClass<USpringArmComponent>();
-	FVector SpringArmStartLoc = SpringArm->GetRelativeLocation();
-	FVector SpringArmTargetLoc = FVector(22.f, 10.f, 0.f);
-
-	UCapsuleComponent* Capsule = Player->GetCapsuleComponent();
-	float OriginalRadius = Capsule->GetUnscaledCapsuleRadius();
-	float OriginalHalf = Capsule->GetUnscaledCapsuleHalfHeight();
-
-	float TargetRadius = OriginalRadius * 2.f;
-	float TargetHalf = OriginalHalf * 1.0;
-
-	FTimerHandle ShrinkHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShrinkHandle, FTimerDelegate::CreateWeakLambda(this, [this, PlayerRC, TargetScale, SpringArm, SpringArmStartLoc, SpringArmTargetLoc, Capsule, TargetRadius, TargetHalf, ShrinkHandle]() mutable
-		{
-			FVector CurrentScale = PlayerRC->GetRelativeScale3D();
-			FVector ChangeScale = FMath::VInterpTo(CurrentScale, TargetScale, 0.01f, 1);
-			PlayerRC->SetRelativeScale3D(ChangeScale);
-
-			FVector CurrentLoc = SpringArm->GetRelativeLocation();
-			FVector NewLoc = FMath::VInterpTo(CurrentLoc, SpringArmTargetLoc, 0.01f, 1.0f);
-			SpringArm->SetRelativeLocation(NewLoc);
-
-			float NewRad = FMath::FInterpTo(Capsule->GetUnscaledCapsuleRadius(), TargetRadius, 0.01f, 1.0f);
-			float NewHalf = FMath::FInterpTo(Capsule->GetUnscaledCapsuleHalfHeight(), TargetHalf, 0.01f, 1.0f);
-			Capsule->SetCapsuleSize(NewRad, NewHalf);
-
-			if (ChangeScale.Equals(TargetScale, 0.1f))
-			{
-				GetWorld()->GetTimerManager().ClearTimer(ShrinkHandle);
-			}
-		}), 0.01f, true);
+	PlayerSM->SetRelativeScale3D(OriginalScale * Value);
+	PlayerMC->MaxWalkSpeed = OriginalSpeed * Value;
 }
 
 #pragma endregion
-

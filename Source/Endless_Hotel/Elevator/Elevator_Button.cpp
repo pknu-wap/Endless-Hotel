@@ -2,8 +2,13 @@
 
 #include "Elevator/Elevator_Button.h"
 #include "Elevator/Elevator.h"
+#include "Component/LookAt/LookAtComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Base/InGame/Interact/UI_Interact.h"
 
 #define LOCTEXT_NAMESPACE "Elevator"
+
+#pragma region Base
 
 AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -20,11 +25,30 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 	Down_Button->SetupAttachment(Pannel);
 	Down_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_ButtonRing"));
 	Down_ButtonRing->SetupAttachment(Pannel);
+
+	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
+	WC->SetupAttachment(Pannel);
+
+	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
 }
+
+void AElevator_Button::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
+	UI_Interact->SetDescription(LOCTEXT("Key1", "버튼 누르기"));
+
+	LAC->SettingWidgetComponent(WC);
+}
+
+#pragma endregion
+
+#pragma region Interact
 
 void AElevator_Button::Interacted_Implementation()
 {
-	if (OwnerElevator->bIsDoorMoving || OwnerElevator-> bIsDoorOpened) return;
+	if (OwnerElevator->bIsDoorMoving || OwnerElevator->bIsDoorOpened) return;
 	OwnerElevator->CallElevator();
 	FTimerHandle WaitHandle;
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]() mutable
@@ -33,9 +57,11 @@ void AElevator_Button::Interacted_Implementation()
 		}), 4.0f, false);
 }
 
-FText AElevator_Button::GetDescriptionText_Implementation()
+void AElevator_Button::ShowInteractWidget_Implementation(bool bIsShow)
 {
-	return LOCTEXT("Key1", "버튼 누르기");
+	UI_Interact->ShowDescription(bIsShow);
 }
+
+#pragma endregion
 
 #undef LOCTEXT_NAMESPACE

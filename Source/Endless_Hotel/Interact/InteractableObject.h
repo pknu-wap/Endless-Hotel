@@ -19,7 +19,7 @@ class ENDLESS_HOTEL_API IInteractableObject
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Interacted();
-
+	
 	UFUNCTION(BlueprintNativeEvent)
-	FText GetDescriptionText();
+	void ShowInteractWidget(bool bIsShow);
 };

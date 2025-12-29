@@ -39,17 +39,22 @@ void AAnomaly_Object_HandPrint::StartCongCong(float& NextCong)
 		bIsFirstHandPrint = false;
 
 		TurnOffLights();
+
+		FTimerHandle FirstHandle;
+		GetWorld()->GetTimerManager().SetTimer(FirstHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				Decal_HandPrint->SetVisibility(true);
+			}), 2.1f, false);
 	}
 	else
 	{
 		AC->Sound = Sound_Default;
+		Decal_HandPrint->SetVisibility(true);
 	}
 
 	NextCong = FMath::Clamp(NextCong - 0.3f, 0.1f, 3);
 
 	AC->Play();
-
-	Decal_HandPrint->SetVisibility(true);
 }
 
 void AAnomaly_Object_HandPrint::TurnOffLights()

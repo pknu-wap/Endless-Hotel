@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
 #include "EnhancedInputComponent.h"
@@ -30,8 +31,8 @@ void AEHPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APawn* ControlledPawn = GetPawn();
-	UCameraComponent* PlayerCamera = ControlledPawn->FindComponentByClass<UCameraComponent>();
+	EHPlayer = Cast<AEHPlayer>(GetCharacter());
+	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -85,8 +86,7 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
 
-	ACharacter* ControlledCharacter = GetCharacter();
-	if (!ControlledCharacter) return;
+	if (!EHPlayer) return;
 
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -98,8 +98,8 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 		const FVector ForwardDirection = RotationMatrix.GetUnitAxis(EAxis::X);
 		const FVector RightDirection = RotationMatrix.GetUnitAxis(EAxis::Y);
 
-		ControlledCharacter->AddMovementInput(ForwardDirection, MovementVector.Y);
-		ControlledCharacter->AddMovementInput(RightDirection, MovementVector.X);
+		EHPlayer->AddMovementInput(ForwardDirection, MovementVector.Y);
+		EHPlayer->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
 
@@ -107,14 +107,14 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookVector = Value.Get<FVector2D>();
 	if (!bIsCameraFixed)
-			{
+	{
 		if (LookVector.SizeSquared() > 0.0f)
 		{
-		// Yaw (좌우)
-		AddYawInput(LookVector.X * LookSensitivity);
+			// Yaw (좌우)
+			AddYawInput(LookVector.X * LookSensitivity);
 
-		// Pitch (상하) - 카메라가 고정되지 않았을 때만
-		
+			// Pitch (상하) - 카메라가 고정되지 않았을 때만
+
 			if (UCameraComponent* CameraComponent = GetPlayerCamera())
 			{
 				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();
@@ -136,17 +136,14 @@ void AEHPlayerController::OnRunStarted()
 
 	bIsRunning = true;
 
-	if (ACharacter* ControlledCharacter = GetCharacter())
+	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
 	{
-		if (UCharacterMovementComponent* MovementComp = ControlledCharacter->GetCharacterMovement())
-		{
-			MovementComp->MaxWalkSpeed = RunSpeed;
-		}
+		MovementComp->MaxWalkSpeed = RunSpeed;
 	}
 }
 
 void AEHPlayerController::OnRunCompleted()
-{	
+{
 	if (!bCanRun)
 	{
 		return;
@@ -154,12 +151,9 @@ void AEHPlayerController::OnRunCompleted()
 
 	bIsRunning = false;
 
-	if (ACharacter* ControlledCharacter = GetCharacter())
+	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
 	{
-		if (UCharacterMovementComponent* MovementComp = ControlledCharacter->GetCharacterMovement())
-		{
-			MovementComp->MaxWalkSpeed = WalkSpeed;
-		}
+		MovementComp->MaxWalkSpeed = WalkSpeed;
 	}
 }
 
@@ -174,15 +168,11 @@ void AEHPlayerController::OnCrouchStarted()
 
 	bIsCrouching = true;
 
-	if (ACharacter* ControlledCharacter = GetCharacter())
+	EHPlayer->Crouch();
+
+	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
-		ControlledCharacter->Crouch();
-
-		if (UCapsuleComponent* Capsule = ControlledCharacter->GetCapsuleComponent())
-		{
-			Capsule->SetCapsuleSize(70.f, 60.f);
-		}
-
+		Capsule->SetCapsuleSize(70.f, 60.f);
 	}
 }
 
@@ -197,24 +187,19 @@ void AEHPlayerController::OnCrouchCompleted()
 
 	bIsCrouching = false;
 
-	if (ACharacter* ControlledCharacter = GetCharacter())
-	{
-		ControlledCharacter->UnCrouch();
+	EHPlayer->UnCrouch();
 
-		if (UCapsuleComponent* Capsule = ControlledCharacter->GetCapsuleComponent())
-		{
-			Capsule->SetCapsuleSize(45.f, 100.f);
-		}
-		
+	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
+	{
+		Capsule->SetCapsuleSize(45.f, 100.f);
 	}
 }
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	ACharacter* ControlledCharacter = GetCharacter();
-	if (!ControlledCharacter) return;
+	if (!EHPlayer) return;
 
-	FVector Velocity = ControlledCharacter->GetVelocity();
+	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
 
 	if (Speed > 0.0f) return; // 이동 중이면 전환 금지
@@ -228,17 +213,17 @@ void AEHPlayerController::OnFaceCoverStarted()
 	// SpringArm & Camera 초기화
 	if (!SpringArm)
 	{
-		SpringArm = ControlledCharacter->FindComponentByClass<USpringArmComponent>();
+		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
 	}
 
 	if (!PlayerCameraComponent)
 	{
-		PlayerCameraComponent = ControlledCharacter->FindComponentByClass<UCameraComponent>();
+		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
 
 	if (!SpringArm || !PlayerCameraComponent) return;
 
-	
+
 	if (bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 		PlayerCameraComponent->SetRelativeRotation(FRotator(-25.f, 0.f, 0.f));
@@ -248,10 +233,9 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 void AEHPlayerController::OnFaceCoverCompleted()
 {
-	ACharacter* ControlledCharacter = GetCharacter();
-	if (!ControlledCharacter) return;
+	if (!EHPlayer) return;
 
-	FVector Velocity = ControlledCharacter->GetVelocity();
+	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
 
 	if (!bIsFaceCovering) return;
@@ -264,12 +248,12 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 	if (!SpringArm)
 	{
-		SpringArm = ControlledCharacter->FindComponentByClass<USpringArmComponent>();
+		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
 	}
 
 	if (!PlayerCameraComponent)
 	{
-		PlayerCameraComponent = ControlledCharacter->FindComponentByClass<UCameraComponent>();
+		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
 
 	if (!SpringArm || !PlayerCameraComponent) return;
@@ -311,13 +295,21 @@ void AEHPlayerController::CheckForInteractables()
 		{
 			bCanInteract = true;
 			CurrentInteractActor = HitActor;
+			EHPlayer->CanInteract.Broadcast(true);
+			IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, true);
 			return;
 		}
+	}
+
+	if (CurrentInteractActor)
+	{
+		IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, false);
 	}
 
 	// 트레이스 실패 or 유효하지 않음
 	bCanInteract = false;
 	CurrentInteractActor = nullptr;
+	EHPlayer->CanInteract.Broadcast(false);
 }
 
 void AEHPlayerController::OnInteract(const FInputActionValue& Value)
@@ -338,9 +330,9 @@ void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 
 UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 {
-	if (ACharacter* ControlledCharacter = GetCharacter())
+	if (EHPlayer)
 	{
-		return ControlledCharacter->FindComponentByClass<UCameraComponent>();
+		return EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
 	return nullptr;
 }
