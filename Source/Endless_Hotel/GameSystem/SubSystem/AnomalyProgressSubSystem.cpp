@@ -27,6 +27,18 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	Floor = 9;
 	AnomalyCount = 0;
 	ActIndex = 0;
+
+	bIsAlreadyClear = USaveManager::LoadGameClearData();
+	if (bIsAlreadyClear)
+	{
+		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+		LoadedAnomalySet.Reset();
+		for (uint8 ID : LoadedHistory)
+		{
+			LoadedAnomalySet.Add(ID);
+		}
+	}
+
 	GetAnomalyData();
 	InitializePool();
 }
@@ -62,6 +74,11 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))
 		{
 			AnomalyHistory.Add(CurrentAnomalyID);
+		}
+		if (bIsAlreadyClear)
+		{
+			LoadedAnomalySet.Add(CurrentAnomalyID);
+			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
 		AnomalyCount++;
 	}
@@ -175,6 +192,15 @@ void UAnomalyProgressSubSystem::InitializePool()
 	ActAnomaly = OriginAnomaly;
 
 	ActIndex = 0;
+
+	if (bIsClear && LoadedAnomalySet.Num() > 0)
+	{
+		ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
+			{
+				return LoadedAnomalySet.Contains(Entry.AnomalyID);
+			});
+	}
+
 	// Shuffle
 	if (ActAnomaly.Num() > 1)
 	{
