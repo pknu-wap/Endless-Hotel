@@ -66,8 +66,6 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
 	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
-	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
-		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
 	if (bPassed)
 	{
 		SubFloor();
@@ -193,7 +191,7 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 	ActIndex = 0;
 
-	if (bIsClear && LoadedAnomalySet.Num() > 0)
+	if (bIsAlreadyClear && LoadedAnomalySet.Num() > 0)
 	{
 		ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
 			{
