@@ -11,10 +11,28 @@ class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Activity
+#pragma region Base
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	AAnomaly_Cong(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Trigger
+
+protected:
+	UFUNCTION()
+	void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UBoxComponent> TriggerBox;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
+	FTransform Transform_TriggerBox;
 
 #pragma endregion
 
@@ -30,7 +48,7 @@ protected:
 	const uint8 MaxIndex = 50;
 	uint8 CurrentIndex = 0;
 
-	float NextCong = 3;
+	float NextCong = 2.9f;
 
 #pragma endregion
 

@@ -9,8 +9,6 @@
 UEHCameraComponent::UEHCameraComponent(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PrimaryComponentTick.bCanEverTick = true;
-
 	Timeline_EyeEffect = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_EyeEffect"));
 }
 
@@ -19,26 +17,23 @@ void UEHCameraComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SettingEyeEffect();
-	StartEyeEffect();
 }
 
 #pragma endregion
 
 #pragma region Eye Effect
 
-void UEHCameraComponent::SettingEyeEffect()
+void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
-	FOnTimelineFloat UpdateFunc;
-	UpdateFunc.BindUFunction(this, FName("EyeEffect"));
-	Timeline_EyeEffect->AddInterpFloat(Curve_EyeEffect, UpdateFunc);
+	if (bIsOpen)
+	{
+		Timeline_EyeEffect->SetFloatCurve(Curve_EyeOpen, FName("Eye"));
+	}
+	else
+	{
+		Timeline_EyeEffect->SetFloatCurve(Curve_EyeClose, FName("Eye"));
+	}
 
-	FOnTimelineEvent FinishFunc;
-	FinishFunc.BindUFunction(this, FName("EndEyeEffect"));
-	Timeline_EyeEffect->SetTimelineFinishedFunc(FinishFunc);
-}
-
-void UEHCameraComponent::StartEyeEffect()
-{
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundActors);
 	PostProcessVolume = Cast<APostProcessVolume>(FoundActors[0]);
@@ -52,9 +47,20 @@ void UEHCameraComponent::StartEyeEffect()
 	Timeline_EyeEffect->PlayFromStart();
 }
 
-void UEHCameraComponent::EyeEffect(float Value)
+void UEHCameraComponent::SettingEyeEffect()
 {
-	DynMat_EyeEffect->SetScalarParameterValue(FName("EyeOpen"), Value);
+	FOnTimelineFloat Update_Open;
+	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
+	Timeline_EyeEffect->AddInterpFloat(Curve_EyeOpen, Update_Open, FName("Eye"), FName("Eye"));
+
+	FOnTimelineEvent FinishFunc;
+	FinishFunc.BindUFunction(this, FName("EndEyeEffect"));
+	Timeline_EyeEffect->SetTimelineFinishedFunc(FinishFunc);
+}
+
+void UEHCameraComponent::ApplyEyeEffect(float Value)
+{
+	DynMat_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), Value);
 }
 
 void UEHCameraComponent::EndEyeEffect()

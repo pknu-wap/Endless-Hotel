@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Component/EHCameraComponent.h"
 #include "Elevator/Elevator_Button.h"
 #include "Camera/CameraComponent.h"
 
@@ -181,6 +182,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
 	AC->Sound = Sound_DoorMove;
 	AC->Play();
+
 	if (bIsOpening)
 	{
 		bIsDoorOpened = true;
@@ -277,7 +279,10 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, End, GetActorRotation(),
 		false, false, ElevatorMoveDuration, false, EMoveComponentAction::Type::Move, LatentInfo);
 
-	if(bIsStart)
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
+
+	if (bIsStart)
 	{
 		FTimerHandle MoveHandle;
 		GetWorld()->GetTimerManager().SetTimer(
@@ -291,6 +296,12 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 			ElevatorMoveDuration,
 			false
 		);
+
+		PlayerCC->StartEyeEffect(true);
+	}
+	else
+	{
+		PlayerCC->StartEyeEffect(false);
 	}
 }
 

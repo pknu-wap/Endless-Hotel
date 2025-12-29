@@ -20,8 +20,11 @@ class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
 
 #pragma region Base
 
-protected:
+public:
 	AElevator_Button(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -60,8 +63,17 @@ public:
 
 public:
 	virtual void Interacted_Implementation() override;
+	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 
-	virtual FText GetDescriptionText_Implementation() override;
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UWidgetComponent> WC;
+
+	UPROPERTY()
+	TObjectPtr<class UUI_Interact> UI_Interact;
+
+	UPROPERTY()
+	TObjectPtr<class ULookAtComponent> LAC;
 
 #pragma endregion
 

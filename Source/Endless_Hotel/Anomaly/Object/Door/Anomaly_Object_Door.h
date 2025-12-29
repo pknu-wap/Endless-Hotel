@@ -19,6 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	UPROPERTY(EditAnywhere)
+	int32 DoorIndex = 0;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Door;
@@ -26,24 +30,20 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> TriggerBox;
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_Effect;
 
 	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
+	TObjectPtr<class UAudioComponent> AC_Voice;
 
 #pragma endregion
 
 #pragma region Shake
 
 public:
-	void ActiveTrigger();
+	void PlayShake_Handle();
 
 protected:
-	UFUNCTION()
-	void OnDoorShakeRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	void PlayShake_Handle();
 	void PlayShake_Door();
 
 	UFUNCTION()
@@ -59,10 +59,10 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline_Handle;
 
-	UPROPERTY(EditAnywhere, Category = "Time")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
 	TObjectPtr<UCurveFloat> Curve_Door;
 
-	UPROPERTY(EditAnywhere, Category = "Time")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
 	TObjectPtr<UCurveFloat> Curve_Handle;
 
 	FVector Door_Origin;
@@ -77,8 +77,11 @@ protected:
 	const uint8 MaxShakeCount_Door = 4;
 	uint8 ShakeCount_Door = 0;
 
-	UPROPERTY(EditAnywhere, Category = "Sound")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorShake;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	TArray<TObjectPtr<class USoundWave>> Sounds_Voice;
 
 #pragma endregion
 
