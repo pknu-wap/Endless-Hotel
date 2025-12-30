@@ -33,6 +33,10 @@ private:
     void MoveStep();
     void FinishSequence();
     void FadeScreen(bool bFadeOut);
+    void TurnOffLights();
+    void TurnOnLights();
+    void RevealWithLightDelay();
+    void Hide();
 
 private:
     UPROPERTY(EditAnywhere)
@@ -44,6 +48,21 @@ private:
     UPROPERTY(EditAnywhere, Category = "Ghost|Effects")
     TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
+    UPROPERTY()
+    TObjectPtr<class UAudioComponent> AC;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundWave> Sound_On;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundWave> Sound_Off;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundWave> Sound_Shake;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundWave> Sound_Fin;
+
     ACharacter* Player;
     APlayerController* PC;
 
@@ -54,6 +73,7 @@ public:
     bool bTriggerEnabled = false;
     bool bAnomalyTriggered = false;
     bool bHasTriggered = false;
+    bool bHasRevealedOnce = false;
 };
 
 #pragma endregion

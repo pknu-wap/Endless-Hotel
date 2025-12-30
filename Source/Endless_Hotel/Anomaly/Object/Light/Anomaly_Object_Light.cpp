@@ -47,6 +47,12 @@ void AAnomaly_Object_Light::TurnOffLight()
 	PointLight->MarkRenderStateDirty();
 }
 
+void AAnomaly_Object_Light::TurnOnLight()
+{
+	PointLight->bAffectsWorld = true;
+	PointLight->MarkRenderStateDirty();
+}
+
 #pragma endregion
 
 #pragma region Destroy
