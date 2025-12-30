@@ -108,7 +108,7 @@ TArray<uint8> USaveManager::LoadClearedAnomalyID()
 	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_ClearedAnomaly"), 0));
 	if (!SaveManager)
 	{
-		return {};
+		SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
 	}
 	return SaveManager->ClearedAnomalyID;
 }
