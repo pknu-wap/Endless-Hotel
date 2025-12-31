@@ -131,11 +131,21 @@ void AElevator::BeginPlay()
 	ElevatorButton->SetOwnerElevator(this);
 
 	// 6) MoveElevator
-	if (!bIsNormalElevator)
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	if (Sub->bPassed)
 	{
-		SetPlayerInputEnabled(false);
-		ElevatorLight->SetIntensity(LightOnIntensity);
-		ElevatorMove(StartPos, MapPos, true);
+		if (!bIsNormalElevator)
+		{
+			SetPlayerInputEnabled(false);
+			ElevatorLight->SetIntensity(LightOnIntensity);
+			ElevatorMove(StartPos, MapPos, true);
+		}
+	}
+	else
+	{
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		Player->SetActorLocation(PlayerLocationInRoom);
+		SetActorLocation(MapPos);
 	}
 }
 #pragma endregion
@@ -205,32 +215,27 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (!Player) return;
 	if (bIsPlayerInside) return;
 	bIsPlayerInside = true;
-	if (bPendingMovePlayerAfterOpen)
-	{
-		bPendingMovePlayerAfterOpen = false;
-
-		FTimerHandle MovePlayerHandle;
-		GetWorld()->GetTimerManager().SetTimer(
-			MovePlayerHandle,
-			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-				{
-					TakePlayer();
-					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-				}),
-			0.5f,
-			false
-		);
-		GetWorld()->GetTimerManager().SetTimer(
-			MovePlayerHandle,
-			FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-				{
-					RotatePlayer();
-					GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-				}),
-			0.1f,
-			false
-		);
-	}
+	FTimerHandle MovePlayerHandle;
+	GetWorld()->GetTimerManager().SetTimer(
+		MovePlayerHandle,
+		FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+			{
+				TakePlayer();
+				GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+			}),
+		0.5f,
+		false
+	);
+	GetWorld()->GetTimerManager().SetTimer(
+		MovePlayerHandle,
+		FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
+			{
+				RotatePlayer();
+				GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
+			}),
+		0.1f,
+		false
+	);
 	MoveDoors(false);
 	ElevatorLight->SetIntensity(LightOnIntensity);
 	if (!bChoiceSentThisRide)
@@ -260,7 +265,6 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 void AElevator::CallElevator()
 {
-	bPendingMovePlayerAfterOpen = true;
 	MoveDoors(true);
 }
 

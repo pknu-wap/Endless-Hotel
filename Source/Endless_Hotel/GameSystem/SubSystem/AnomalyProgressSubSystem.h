@@ -88,6 +88,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	EAnomalyVerdictMode VerdictMode;
 
+	bool bPassed = false;
+
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
@@ -132,6 +134,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
 
+private:
+	TSet<uint8> LoadedAnomalySet;
+
 public:
 	void GetAnomalyData();
 
@@ -149,7 +154,7 @@ public:
 
 public:
 	bool bIsClear = false;
-
+	bool bIsAlreadyClear = false;
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
