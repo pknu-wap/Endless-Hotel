@@ -23,6 +23,23 @@ protected:
 public:
 	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
 
+
+#pragma region Trigger
+
+public:
+	void ActiveTrigger();
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UBoxComponent> TriggerBox;
+
+	UFUNCTION()
+	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+#pragma endregion
+
+#pragma region Hair
+	
 protected:
 	UPROPERTY()
 	FTimeline HairTimeline;
@@ -45,9 +62,9 @@ protected:
 	UFUNCTION()
 	void UpdateHair(float Value);
 
-	UFUNCTION()
-	void HairFinished();
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
 	float StartDelay = 0.5f;
 };
+
+#pragma endregion
