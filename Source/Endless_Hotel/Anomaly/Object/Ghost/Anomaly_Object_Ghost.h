@@ -52,10 +52,10 @@ private:
     TObjectPtr<class UAudioComponent> AC;
 
     UPROPERTY(EditAnywhere)
-    TObjectPtr<class USoundWave> Sound_On;
+    TObjectPtr<class USoundBase> Sound_On;
 
     UPROPERTY(EditAnywhere)
-    TObjectPtr<class USoundWave> Sound_Off;
+    TObjectPtr<class USoundBase> Sound_Off;
 
     UPROPERTY(EditAnywhere)
     TObjectPtr<class USoundWave> Sound_Shake;
