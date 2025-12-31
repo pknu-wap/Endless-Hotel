@@ -101,7 +101,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);
-
+	Sub->CurrentAnomalyID = Spawned->AnomalyID;
 	return Spawned;
 }
 

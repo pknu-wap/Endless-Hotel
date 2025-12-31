@@ -27,6 +27,18 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	Floor = 9;
 	AnomalyCount = 0;
 	ActIndex = 0;
+
+	bIsAlreadyClear = USaveManager::LoadGameClearData();
+	if (bIsAlreadyClear)
+	{
+		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+		LoadedAnomalySet.Reset();
+		for (uint8 ID : LoadedHistory)
+		{
+			LoadedAnomalySet.Add(ID);
+		}
+	}
+
 	GetAnomalyData();
 	InitializePool();
 }
@@ -53,15 +65,18 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
-	const bool bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
-	UE_LOG(LogTemp, Log, TEXT("[Verdict] Verdict Mode is %s, Verdict Result is %s"),
-		*UEnum::GetValueAsString(VerdictMode), bPassed ? TEXT("Pass") : TEXT("FAIL"))
-	if (bPassed) 
+	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
+	if (bPassed)
 	{
 		SubFloor();
 		if(!AnomalyHistory.Contains(CurrentAnomalyID))
 		{
 			AnomalyHistory.Add(CurrentAnomalyID);
+		}
+		if (bIsAlreadyClear)
+		{
+			LoadedAnomalySet.Add(CurrentAnomalyID);
+			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
 		AnomalyCount++;
 	}
@@ -175,6 +190,15 @@ void UAnomalyProgressSubSystem::InitializePool()
 	ActAnomaly = OriginAnomaly;
 
 	ActIndex = 0;
+
+	if (bIsAlreadyClear && LoadedAnomalySet.Num() > 0)
+	{
+		ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
+			{
+				return LoadedAnomalySet.Contains(Entry.AnomalyID);
+			});
+	}
+
 	// Shuffle
 	if (ActAnomaly.Num() > 1)
 	{
