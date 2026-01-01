@@ -46,3 +46,16 @@ void AAnomaly_Object_ShelfDoll::ActivateShelfBook_Hide()
 }
 
 #pragma endregion
+
+#pragma region Plant
+
+void AAnomaly_Object_ShelfDoll::ActivatePlant_Hide()
+{
+	if (!BP_PlantBeforeActor)
+	{
+		return;
+	}
+	BP_PlantBeforeActor->SetActorHiddenInGame(true);
+}
+
+#pragma endregion

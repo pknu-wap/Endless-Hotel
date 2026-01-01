@@ -36,4 +36,13 @@ protected:
 public:
 	void ActivateShelfBook_Hide();
 #pragma endregion
+
+#pragma region Plant
+protected:
+	UPROPERTY(EditAnywhere, Category="ShelfDoll|Plant")
+	TObjectPtr<AActor> BP_PlantBeforeActor;
+
+public:
+	void ActivatePlant_Hide();
+#pragma endregion
 };

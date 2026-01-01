@@ -10,7 +10,7 @@ void AAnomaly_ShelfDoll::ActivateAnomaly(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 11:
+	case 98:
 			AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
 				AAnomaly_Object_ShelfDoll* ShelfDollObj = Cast<AAnomaly_Object_ShelfDoll>(Object);
@@ -21,6 +21,7 @@ void AAnomaly_ShelfDoll::ActivateAnomaly(uint8 Anomaly_ID)
 
 				ShelfDollObj->ActivateDoll_Show();
 				ShelfDollObj->ActivateShelfBook_Hide();
+				ShelfDollObj->ActivatePlant_Hide();
 			});
 			break;
 
