@@ -11,31 +11,30 @@ void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
 
 	switch (Anomaly_ID)
 	{
-	case 24:
+	case 99:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 24;
-				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
+				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
 			});
+		ActiveTrigger();
 		break;
 
-	case 27:
+	case 96:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 27;
-				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
+				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
 			});
+		ActiveTrigger();
 		break;
 
-	case 31:
+	case 95:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->CurrentAnomalyID = 31;
-				Cast<AAnomaly_Object_Painting>(Portrait)->ActiveTrigger();
+				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
 			});
+		StartImmediate();
 		break;
 	}
-	StartAnomalyAction();
 }
 
 #pragma endregion

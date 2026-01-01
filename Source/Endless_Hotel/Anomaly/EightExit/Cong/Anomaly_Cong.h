@@ -16,24 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Base_EightExit
 public:
 	AAnomaly_Cong(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
-#pragma region Trigger
-
-protected:
-	UFUNCTION()
-	void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-protected:
-	UPROPERTY()
-	TObjectPtr<class UBoxComponent> TriggerBox;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
-	FTransform Transform_TriggerBox;
-
 #pragma endregion
 
 #pragma region Cong

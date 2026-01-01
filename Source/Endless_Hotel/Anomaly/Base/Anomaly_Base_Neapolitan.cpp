@@ -32,7 +32,6 @@ void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
     for (auto* FoundActor : LinkedObjects)
     {
         auto* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(FoundActor);
-        // 해당 부분은 컴파일 오류가 나서 일단 주석처리함
         if (!AnomalyObject->bSolved)
         {
             bAllSolved = false;

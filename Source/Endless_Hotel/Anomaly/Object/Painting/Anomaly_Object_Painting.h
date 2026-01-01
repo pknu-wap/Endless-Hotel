@@ -28,23 +28,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Trigger
-
-public:
-	void ActiveTrigger();
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> TriggerBox;
-
-	UFUNCTION()
-	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-public:
-	uint8 CurrentAnomalyID = 0;
-
-#pragma endregion
-
 #pragma region EyeMove
 
 public:
