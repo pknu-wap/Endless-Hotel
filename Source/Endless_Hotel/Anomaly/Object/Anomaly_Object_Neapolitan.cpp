@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "Components/WidgetComponent.h"
+#include <Components/WidgetComponent.h>
 #include "UI/Base/InGame/Interact/UI_Interact.h"
 #include "Component/LookAt/LookAtComponent.h"
 

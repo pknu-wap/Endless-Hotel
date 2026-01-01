@@ -3,11 +3,11 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Anomaly_Object_Painting.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
@@ -76,6 +76,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
+#pragma endregion
+
+#pragma region Interact
+	virtual void Interacted_Implementation() override;
+	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 #pragma endregion
 
 };

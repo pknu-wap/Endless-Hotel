@@ -31,40 +31,10 @@ void AAnomaly_Base::StartAnomalyAction()
 
 #pragma region Verdicts
 
-void AAnomaly_Base::SetSolved(bool bNewSolved)
-{
-	if (bNewSolved)
-		MarkSolved();
-	else
-		MarkFailed();
-}
-
 void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Sub->SetVerdictMode(NewMode); // VerdictMode Setting
-}
-
-#pragma endregion
-
-#pragma region Inner Verdicts
-
-void AAnomaly_Base::FinalizeAnomaly(bool bPassed)
-{
-	if (bPassed)	MarkSolved();
-	else			MarkFailed();
-}
-
-void AAnomaly_Base::MarkSolved()
-{
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->SetIsAnomalySolved(true);
-}
-
-void AAnomaly_Base::MarkFailed()
-{
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->SetIsAnomalySolved(false);
 }
 
 #pragma endregion

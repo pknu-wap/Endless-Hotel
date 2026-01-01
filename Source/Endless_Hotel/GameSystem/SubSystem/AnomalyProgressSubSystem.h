@@ -94,10 +94,11 @@ public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 	void ApplyVerdict();
+	void TryInteractSolveVerdict();
 
 #pragma endregion
 
-#pragma region AnomalyCount
+#pragma region Anomaly
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
@@ -108,6 +109,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 CurrentAnomalyID = -1;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	TObjectPtr<class AAnomaly_Base> CurrentAnomaly;
 
 #pragma endregion
 

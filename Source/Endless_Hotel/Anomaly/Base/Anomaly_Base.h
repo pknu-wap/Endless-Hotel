@@ -56,10 +56,6 @@ public:
 	bool bIsSolved = false;
 
 protected:
-	void SetSolved(bool bNewSolved);
-
-	UFUNCTION()
-	void SetCorrectElevator(bool bNewCorrect) { bIsCorrectElevator = bNewCorrect; };
 
 	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
@@ -71,15 +67,6 @@ protected:
 public:
 	virtual void ActivateAnomaly(uint8 Anomaly_ID) PURE_VIRTUAL(AAnomaly_Base::ActivateAnomaly, ;);
 	virtual void DisableAnomaly(uint8 Anomaly_ID) {}
-
-#pragma endregion
-
-#pragma region Inner Verdicts
-
-private:
-	void FinalizeAnomaly(bool bPassed);
-	void MarkSolved();
-	void MarkFailed();
 
 #pragma endregion
 

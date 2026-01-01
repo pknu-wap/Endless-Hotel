@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Anomaly/EightExit/Painting/Anomaly_Painting.h"
+#include "Anomaly/Neapolitan/Painting/Anomaly_Painting.h"
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 
 #pragma region Activity

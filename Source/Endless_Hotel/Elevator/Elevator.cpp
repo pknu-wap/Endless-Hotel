@@ -325,6 +325,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub]()
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
+			Sub->TryInteractSolveVerdict();
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
 		}), DoorDuration + ElevatorMoveDuration, false);

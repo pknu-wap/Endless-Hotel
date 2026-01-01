@@ -65,15 +65,4 @@ protected:
 
 #pragma endregion
 
-#pragma region ForTest
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Test")
-	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
-
-protected:
-	void AddAnomaly();
-
-#pragma endregion
-
 };

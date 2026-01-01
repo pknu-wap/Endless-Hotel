@@ -33,7 +33,7 @@ public:
 #pragma region Verdict
 
 public:
-	bool bSolved;
+	bool bSolved = false;
 
 #pragma endregion
 

@@ -3,7 +3,7 @@
 
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 
 // Anomaly_Base_Neapolitan.cpp
 
@@ -31,13 +31,13 @@ void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
     bool bAllSolved = true;
     for (auto* FoundActor : LinkedObjects)
     {
-        auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+        auto* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(FoundActor);
         // 해당 부분은 컴파일 오류가 나서 일단 주석처리함
-        /*if (!AnomalyObject->bSolved)
+        if (!AnomalyObject->bSolved)
         {
             bAllSolved = false;
             break;
-        }*/
+        }
     }
     bIsSolved = bAllSolved;
     Sub->SetIsAnomalySolved(bIsSolved);

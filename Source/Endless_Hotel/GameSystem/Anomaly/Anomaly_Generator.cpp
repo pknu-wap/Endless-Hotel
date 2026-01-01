@@ -102,6 +102,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);
 	Sub->CurrentAnomalyID = Spawned->AnomalyID;
+	Sub->CurrentAnomaly = Spawned;
 	return Spawned;
 }
 
@@ -130,20 +131,4 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal()
 
 	return Spawned;
 }
-#pragma endregion
-
-#pragma region ForTest
-
-void AAnomaly_Generator::AddAnomaly()
-{
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	for (const TSubclassOf<AAnomaly_Base>& AnomalyClass : OriginAnomaly)
-	{
-		AAnomaly_Base* CDO = AnomalyClass->GetDefaultObject<AAnomaly_Base>();
-		const uint8 AnomalyID = CDO->AnomalyID;
-		TSubclassOf<AAnomaly_Object_Base> ObjectClass = CDO->ObjectClass->GetClass();
-		Sub->OriginAnomaly.Add(FAnomalyEntry{ AnomalyID, AnomalyClass, ObjectClass });
-	}
-}
-
 #pragma endregion
