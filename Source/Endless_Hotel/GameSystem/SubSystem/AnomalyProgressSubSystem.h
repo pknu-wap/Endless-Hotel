@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
-#include "Delegates/DelegateCombinations.h"
+#include <CoreMinimal.h>
+#include <Subsystems/GameInstanceSubsystem.h>
+#include <Delegates/DelegateCombinations.h>
 #include "AnomalyProgressSubSystem.generated.h"
 
 class AAnomaly_Generator;

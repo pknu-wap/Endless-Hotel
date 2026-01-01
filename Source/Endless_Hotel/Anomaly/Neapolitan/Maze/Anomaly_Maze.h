@@ -1,8 +1,8 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include "Anomaly_Maze.generated.h"
 

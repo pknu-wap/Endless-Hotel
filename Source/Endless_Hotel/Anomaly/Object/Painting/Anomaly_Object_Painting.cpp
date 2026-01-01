@@ -1,12 +1,12 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
-#include "Niagara/Public/NiagaraComponent.h"
-#include "Components/WidgetComponent.h"
 #include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "Components/BoxComponent.h"
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/Character.h>
+#include <Niagara/Public/NiagaraComponent.h>
+#include <Components/WidgetComponent.h>
+#include <Components/BoxComponent.h>
 
 #pragma region Base
 

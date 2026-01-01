@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Anomaly_Generator.generated.h"
 

@@ -3,8 +3,8 @@
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Engine/GameInstance.h"
-#include "Kismet/GameplayStatics.h"
+#include <Engine/GameInstance.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 

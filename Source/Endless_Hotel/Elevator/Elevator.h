@@ -1,7 +1,7 @@
 ﻿// Elevator.h
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Elevator.generated.h"
 

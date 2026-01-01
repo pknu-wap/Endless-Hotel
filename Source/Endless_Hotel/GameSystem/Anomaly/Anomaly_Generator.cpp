@@ -1,11 +1,11 @@
 ﻿// Anomaly_Generator.cpp
 
 #include "Anomaly_Generator.h"
-#include "Kismet/GameplayStatics.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
