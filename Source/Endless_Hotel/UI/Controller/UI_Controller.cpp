@@ -2,9 +2,9 @@
 
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "GameFramework/PlayerController.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "Kismet/GameplayStatics.h"
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/PlayerController.h>
 
 #pragma region Base
 
@@ -27,68 +27,55 @@ UUI_Controller::UUI_Controller()
 
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass, const EWidgetType& WidgetType, const EInputModeType& InputMode)
+UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 {
-	FPopUpWidget PopUpWidget;
-	PopUpWidget.WidgetType = WidgetType;
-	PopUpWidget.InputModeType = InputMode;
-	PopUpWidget.PopUpWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
+	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
 
-	if (!PopUpWidgets.IsEmpty())
+	switch (CreatedWidget->WidgetType)
 	{
-		AdjustZOrder(true);
-	}
+	case EWidgetType::PopUp_Pause:
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
 
-	switch (WidgetType)
-	{
-	case EWidgetType::Base:
-	{
-		if (!PopUpWidgets.IsEmpty())
-		{
-			PopUpWidgets[0] = PopUpWidget;
-		}
-		else
-		{
-			PopUpWidgets.Add(PopUpWidget);
-		}
-		PopUpWidget.PopUpWidget->AddToViewport(Widget_ZOrder);
-		break;
-	}
+	case EWidgetType::HUD:
 	case EWidgetType::PopUp:
-	{
-		PopUpWidget.PopUpWidget->AddToViewport(Widget_ZOrder);
-		PopUpWidgets.Add(PopUpWidget);
+		CreatedWidget->AddToViewport(Widget_ZOrder);
+		PopUpWidgets.Add(CreatedWidget);
 		break;
 	}
-	}
 
-	SetInputMode(PopUpWidget.InputModeType);
+	AdjustZOrder(true);
+	SetInputMode(CreatedWidget->InputModeType);
 
-	return PopUpWidget.PopUpWidget;
+	return CreatedWidget;
 }
 
 void UUI_Controller::CloseWidget()
 {
-	if (PopUpWidgets.IsEmpty())
+	switch (PopUpWidgets.Top()->WidgetType)
 	{
+	case EWidgetType::HUD:
 		return;
+
+	case EWidgetType::PopUp_Pause:
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		break;
 	}
 
-	FPopUpWidget PopUpWidget = PopUpWidgets[Widget_ZOrder];
-	PopUpWidgets.RemoveAt(Widget_ZOrder);
+	AdjustZOrder(false);
 
-	if (!PopUpWidgets.IsEmpty())
-	{
-		AdjustZOrder(false);
-	}
+	PopUpWidgets.Top()->RemoveFromViewport();
+	PopUpWidgets.Pop();
 
-	SetInputMode(PopUpWidgets[Widget_ZOrder].InputModeType);
-
-	PopUpWidget.PopUpWidget->RemoveFromViewport();
+	SetInputMode(PopUpWidgets.Top()->InputModeType);
 }
 
 void UUI_Controller::ClearAllWidget()
 {
+	for (auto Target : PopUpWidgets)
+	{
+		Target->RemoveFromViewport();
+	}
+
 	PopUpWidgets.Empty();
 	Widget_ZOrder = 0;
 }
@@ -112,7 +99,7 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 	case EInputModeType::UIOnly:
 	{
 		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets[Widget_ZOrder].PopUpWidget->TakeWidget());
+		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -120,7 +107,7 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 	case EInputModeType::GameAndUI:
 	{
 		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets[Widget_ZOrder].PopUpWidget->TakeWidget());
+		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -134,9 +121,6 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 
 void UUI_Controller::AdjustZOrder(bool bUp)
 {
-	constexpr int32 Max_ZOrder = 100;
-	constexpr int32 Min_ZOrder = 0;
-
 	if (bUp)
 	{
 		Widget_ZOrder = FMath::Clamp(Widget_ZOrder + 1, Min_ZOrder, Max_ZOrder);
@@ -152,16 +136,16 @@ void UUI_Controller::AdjustZOrder(bool bUp)
 
 void UUI_Controller::OpenMapBaseWidget()
 {
-	Widget_ZOrder = 0;
+	ClearAllWidget();
 
 	switch (UEHGameInstance::CurrentMap)
 	{
 	case EMapType::MainMenu:
-		OpenWidget(UI_MainMenu, EWidgetType::Base, EInputModeType::UIOnly);
+		OpenWidget(UI_MainMenu);
 		break;
 
 	case EMapType::Hotel:
-		OpenWidget(UI_InGame, EWidgetType::Base, EInputModeType::GameOnly);
+		OpenWidget(UI_InGame);
 		break;
 	}
 }

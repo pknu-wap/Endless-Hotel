@@ -4,7 +4,7 @@
 #include "Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include "Components/WidgetComponent.h"
-#include "UI/Base/InGame/Interact/UI_Interact.h"
+#include "UI/World/Interact/UI_Interact.h"
 
 #define LOCTEXT_NAMESPACE "Elevator"
 

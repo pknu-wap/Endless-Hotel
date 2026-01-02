@@ -5,7 +5,7 @@
 #include "GameFramework/Character.h"
 #include "Niagara/Public/NiagaraComponent.h"
 #include "Components/WidgetComponent.h"
-#include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
 #include "Components/BoxComponent.h"
 
 #pragma region Base

@@ -147,10 +147,6 @@ void AElevator::BeginPlay()
 		Player->SetActorLocation(PlayerLocationInRoom);
 		SetActorLocation(MapPos);
 	}
-
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
-	PlayerCC->StartEyeEffect(true);
 }
 #pragma endregion
 
