@@ -147,6 +147,10 @@ void AElevator::BeginPlay()
 		Player->SetActorLocation(PlayerLocationInRoom);
 		SetActorLocation(MapPos);
 	}
+
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
+	PlayerCC->StartEyeEffect(true);
 }
 #pragma endregion
 
@@ -279,9 +283,6 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, End, GetActorRotation(),
 		false, false, ElevatorMoveDuration, false, EMoveComponentAction::Type::Move, LatentInfo);
 
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
-
 	if (bIsStart)
 	{
 		FTimerHandle MoveHandle;
@@ -296,11 +297,11 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 			ElevatorMoveDuration,
 			false
 		);
-
-		PlayerCC->StartEyeEffect(true);
 	}
 	else
 	{
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
 		PlayerCC->StartEyeEffect(false);
 	}
 }
