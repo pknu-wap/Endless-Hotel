@@ -1,6 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Player/Component/EHCameraComponent.h"
+#include "UI/Controller/UI_Controller.h"
+#include "UI/PopUp/Default/Blur/UI_PopUp_Blur.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/TimelineComponent.h"
 
@@ -25,12 +27,17 @@ void UEHCameraComponent::BeginPlay()
 
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
+	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur, EWidgetType::PopUp, EInputModeType::GameOnly);
+
 	if (bIsOpen)
 	{
+		Cast<UUI_PopUp_Blur>(BlurWidget)->EyeEffectBlur(true);
 		Timeline_EyeEffect->SetFloatCurve(Curve_EyeOpen, FName("Eye"));
 	}
 	else
 	{
+		Cast<UUI_PopUp_Blur>(BlurWidget)->EyeEffectBlur(false);
 		Timeline_EyeEffect->SetFloatCurve(Curve_EyeClose, FName("Eye"));
 	}
 

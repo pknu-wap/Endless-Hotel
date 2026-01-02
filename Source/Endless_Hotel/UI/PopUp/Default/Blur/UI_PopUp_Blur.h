@@ -11,20 +11,16 @@ class ENDLESS_HOTEL_API UUI_PopUp_Blur : public UUI_PopUp_Default
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void NativeConstruct() override;
-
-#pragma endregion
-
 #pragma region Blur
 
-protected:
-	void StartSightBlur();
+public:
+	void AnomalyBlur();
+	void EyeEffectBlur(bool bIsStart);
 
 protected:
 	FTimerHandle BlurHandle;
+
+	const float EyeEffectValue = 40.f;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBackgroundBlur> BackBlur;

@@ -3,23 +3,12 @@
 #include "UI/PopUp/Default/Blur/UI_PopUp_Blur.h"
 #include "Components/BackgroundBlur.h"
 
-#pragma region Base
-
-void UUI_PopUp_Blur::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	StartSightBlur();
-}
-
-#pragma endregion
-
 #pragma region Blur
 
-void UUI_PopUp_Blur::StartSightBlur()
+void UUI_PopUp_Blur::AnomalyBlur()
 {
-	const float TargetStrength = 20.f;
-	float CurrentStrength = 0.f;
+	const float TargetStrength = 20;
+	float CurrentStrength = 0;
 
 	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
 		{
@@ -29,6 +18,42 @@ void UUI_PopUp_Blur::StartSightBlur()
 			if (CurrentStrength >= TargetStrength)
 			{
 				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+		}), 0.01f, true);
+}
+
+void UUI_PopUp_Blur::EyeEffectBlur(bool bIsStart)
+{
+	float TargetStrength = 0;
+	float CurrentStrength = 20;
+
+	if (!bIsStart)
+	{
+		TargetStrength = 20;
+		CurrentStrength = 0;
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart, TargetStrength, CurrentStrength]() mutable
+		{
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (bIsStart)
+			{
+				CurrentStrength -= 0.05f;
+
+				if (CurrentStrength <= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
+			}
+			else
+			{
+				CurrentStrength += 0.05f;
+
+				if (CurrentStrength >= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
 			}
 		}), 0.01f, true);
 }
