@@ -35,8 +35,8 @@ void UUI_PopUp_Escape::ButtonClick_MainMenu()
 
 void UUI_PopUp_Escape::ButtonClick_Quit()
 {
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->QuitGame();
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_QuitCheck, EWidgetType::PopUp, EInputModeType::UIOnly);
 }
 
 #pragma endregion

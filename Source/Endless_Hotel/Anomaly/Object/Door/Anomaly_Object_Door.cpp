@@ -74,9 +74,12 @@ void AAnomaly_Object_Door::PlayShake_Handle()
 
 	if (!AC_Voice->IsPlaying())
 	{
-		int32 RandomInt = FMath::RandRange(0, Sounds_Voice.Num() - 1);
-		AC_Voice->Sound = Sounds_Voice[RandomInt];
-		AC_Voice->Play();
+		int32 RandomInt = FMath::RandRange(0, Sounds_Voice.Num() + 4);
+		if (RandomInt < Sounds_Voice.Num())
+		{
+			AC_Voice->Sound = Sounds_Voice[RandomInt];
+			AC_Voice->Play();
+		}
 	}
 
 	Timeline_Handle->PlayFromStart();

@@ -117,4 +117,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Anomaly
+
+public:
+	static TArray<uint8> LoadClearedAnomalyID();
+	static void SaveClearedAnomalyID(uint8 AnomalyID);
+
+protected:
+	UPROPERTY(SaveGame)
+	TArray<uint8> ClearedAnomalyID;
+
+#pragma endregion
+
 };

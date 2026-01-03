@@ -47,13 +47,16 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline_EyeEffect;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
+	TSubclassOf<class UUI_Base> UI_Blur;
+
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> Curve_EyeOpen;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> Curve_EyeClose;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> Mat_EyeEffect;
 
 	UPROPERTY()
