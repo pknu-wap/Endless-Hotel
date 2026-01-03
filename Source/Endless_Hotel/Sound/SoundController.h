@@ -52,13 +52,14 @@ protected:
 #pragma region Fade In & Out
 
 public:
-	void StartFadeSound(bool bIsOpen);
+	void FadeSFXSound(bool bIsOpen);
 
 protected:
-	const float OpenValue = 0;
-	const float CloseValue = 1;
+	UPROPERTY()
+	TObjectPtr<class USoundMix> SCM_SFX_Mute;
 
-	float CurrentSFXValue;
+	UPROPERTY()
+	TObjectPtr<class USoundMix> SCM_SFX_Fade;
 
 #pragma endregion
 

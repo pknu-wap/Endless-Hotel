@@ -1,14 +1,18 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Sound/SoundController.h"
+#include <Sound/SoundMix.h>
 #include <Sound/SoundClass.h>
-#include <Components/TimelineComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
 void USoundController::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	SCM_SFX_Mute = LoadObject<USoundMix>(nullptr, TEXT("/Game/EndlessHotel/Sound/SoundClass/SCM_SFX_Mute.SCM_SFX_Mute"));
+	SCM_SFX_Fade = LoadObject<USoundMix>(nullptr, TEXT("/Game/EndlessHotel/Sound/SoundClass/SCM_SFX_Fade.SCM_SFX_Fade"));
 
 	SC_Master = LoadObject<USoundClass>(nullptr, TEXT("/Game/EndlessHotel/Sound/SoundClass/SC_Master.SC_Master"));
 	SC_BGM = SC_Master->ChildClasses[Index_BGM];
@@ -74,22 +78,17 @@ void USoundController::SetSoundClassValue(const ESoundClassType& Type, float Val
 
 #pragma region Fade In & Out
 
-void USoundController::StartFadeSound(bool bIsOpen)
+void USoundController::FadeSFXSound(bool bIsOpen)
 {
-	CurrentSFXValue = SC_SFX->Properties.Volume;
-
-	float TargetValue = bIsOpen ? OpenValue : CloseValue;
-	FTimerHandle FadeHandle;
-	GetWorld()->GetTimerManager().SetTimer(FadeHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetValue, bIsOpen, FadeHandle]() mutable
-		{
-			SetSoundClassValue(ESoundClassType::SFX, CurrentSFXValue * TargetValue);
-			TargetValue = bIsOpen ? TargetValue + 0.02f : TargetValue - 0.02f;
-
-			if (TargetValue <= OpenValue || TargetValue >= CloseValue)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(FadeHandle);
-			}
-		}), 0.1f, true);
+	if (bIsOpen)
+	{
+		UGameplayStatics::PopSoundMixModifier(this, SCM_SFX_Mute);
+		UGameplayStatics::PushSoundMixModifier(this, SCM_SFX_Fade);
+	}
+	else
+	{
+		UGameplayStatics::PushSoundMixModifier(this, SCM_SFX_Mute);
+	}
 }
 
 #pragma endregion

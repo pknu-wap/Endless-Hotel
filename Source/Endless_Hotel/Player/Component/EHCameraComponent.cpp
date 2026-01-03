@@ -33,7 +33,7 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur);
 
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
-	SoundCon->StartFadeSound(bIsOpen);
+	SoundCon->FadeSFXSound(bIsOpen);
 
 	if (bIsOpen)
 	{

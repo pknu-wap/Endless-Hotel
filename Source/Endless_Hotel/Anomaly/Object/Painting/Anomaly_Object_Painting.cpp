@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
-#include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "UI/Base/InGame/Interact/UI_Interact.h"
+#include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "UI/World/Interact/UI_Interact.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
