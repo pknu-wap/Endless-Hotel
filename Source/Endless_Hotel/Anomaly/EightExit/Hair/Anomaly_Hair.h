@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -27,10 +27,7 @@ public:
 #pragma region Trigger
 
 public:
-	void ActiveTrigger();
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> TriggerBox;
+	virtual void ActiveTrigger() override;
 
 	UFUNCTION()
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
