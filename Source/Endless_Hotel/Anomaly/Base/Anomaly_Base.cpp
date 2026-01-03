@@ -3,8 +3,9 @@
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Engine/GameInstance.h"
-#include "Kismet/GameplayStatics.h"
+#include <Engine/GameInstance.h>
+#include <Kismet/GameplayStatics.h>
+#include <Components/BoxComponent.h>
 
 #pragma region Base
 
@@ -12,6 +13,15 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AnomalyID = -1;
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	TriggerBox->SetupAttachment(RootComponent);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AAnomaly_Base::BeginPlay()
+{
+	Super::BeginPlay();
+	TriggerBox->SetWorldTransform(Transform_TriggerBox);
 }
 
 #pragma endregion
@@ -31,14 +41,6 @@ void AAnomaly_Base::StartAnomalyAction()
 
 #pragma region Verdicts
 
-void AAnomaly_Base::SetSolved(bool bNewSolved)
-{
-	if (bNewSolved)
-		MarkSolved();
-	else
-		MarkFailed();
-}
-
 void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
@@ -47,24 +49,37 @@ void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma endregion
 
-#pragma region Inner Verdicts
+#pragma region StartType
 
-void AAnomaly_Base::FinalizeAnomaly(bool bPassed)
+void AAnomaly_Base::ActiveTrigger()
 {
-	if (bPassed)	MarkSolved();
-	else			MarkFailed();
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBox);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
 }
 
-void AAnomaly_Base::MarkSolved()
+void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->SetIsAnomalySolved(true);
+	StartAnomalyAction();
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::MarkFailed()
+void AAnomaly_Base::StartDelay(float delay)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	Sub->SetIsAnomalySolved(false);
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
+		this,
+		[this]()
+		{
+			StartAnomalyAction();
+		}), delay, false);
+}
+
+void AAnomaly_Base::StartImmediate()
+{
+	StartAnomalyAction();
 }
 
 #pragma endregion

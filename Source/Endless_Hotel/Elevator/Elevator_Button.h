@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Interact/InteractableObject.h"
 #include "Elevator_Button.generated.h"

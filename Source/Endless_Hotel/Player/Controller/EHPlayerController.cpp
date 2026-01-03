@@ -21,8 +21,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 
 	// Interact
 	bCanInteract = false;
-	TraceDistance = 300.f;
-	CurrentInteractActor = nullptr;
+	TraceDistance = 100.f;
 
 	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 }
@@ -131,6 +130,14 @@ void AEHPlayerController::OnRunStarted()
 {
 	if (!bCanRun)
 	{
+		return;
+	}
+
+	FVector Velocity = EHPlayer->GetVelocity();
+	FRotator ActorRotation = EHPlayer->GetActorRotation();
+	FVector LocalVelocity = ActorRotation.UnrotateVector(Velocity);
+
+	if (LocalVelocity.X <= 0) {
 		return;
 	}
 

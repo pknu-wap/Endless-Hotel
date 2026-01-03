@@ -1,13 +1,14 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
-#include "Niagara/Public/NiagaraComponent.h"
-#include "Components/WidgetComponent.h"
-#include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "Components/BoxComponent.h"
-
+#include "UI/PopUp/Default/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "UI/Base/InGame/Interact/UI_Interact.h"
+#include "Component/LookAt/LookAtComponent.h"
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/Character.h>
+#include <Niagara/Public/NiagaraComponent.h>
+#include <Components/WidgetComponent.h>
+#include <Components/BoxComponent.h>
 #pragma region Base
 
 AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer)
@@ -36,43 +37,7 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
 	Widget_PaintingBlur->SetupAttachment(RootComponent);
-
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	TriggerBox->SetupAttachment(RootComponent);
-	TriggerBox->InitBoxExtent(FVector(100, 100, 100));
-	TriggerBox->SetRelativeLocation(FVector(100, -100, -40));
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-}
-
-#pragma endregion
-
-#pragma region Trigger
-
-void AAnomaly_Object_Painting::ActiveTrigger()
-{
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
-	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBeginOverlap);
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBeginOverlap);
-}
-
-void AAnomaly_Object_Painting::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	switch (CurrentAnomalyID)
-	{
-	case 24:
-		EyeFollowing();
-		break;
-	case 27:
-		BloodDropping();
-		break;
-	case 31:
-		BlurPaint();
-		break;
-	default:
-		break;
-	}
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	bSolved = false;
 }
 
 #pragma endregion
@@ -138,3 +103,13 @@ void AAnomaly_Object_Painting::BlurPaint()
 }
 
 #pragma endregion
+
+void AAnomaly_Object_Painting::Interacted_Implementation()
+{
+	bSolved = !bSolved;
+}
+
+void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
+{
+	UI_Interact->ShowDescription(bIsShow);
+}

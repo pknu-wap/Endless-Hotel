@@ -3,8 +3,8 @@
 #include "Elevator/Elevator_Button.h"
 #include "Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
-#include "Components/WidgetComponent.h"
-#include "UI/World/Interact/UI_Interact.h"
+#include "UI/Base/InGame/Interact/UI_Interact.h"
+#include <Components/WidgetComponent.h>
 
 #define LOCTEXT_NAMESPACE "Elevator"
 

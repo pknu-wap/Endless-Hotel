@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly_Object_Ceiling.generated.h"
 

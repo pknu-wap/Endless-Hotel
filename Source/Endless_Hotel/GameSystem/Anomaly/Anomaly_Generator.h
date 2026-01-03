@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Anomaly_Generator.generated.h"
 
@@ -62,17 +62,6 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
 	TSubclassOf<AAnomaly_Base> NormalClass;
-
-#pragma endregion
-
-#pragma region ForTest
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Test")
-	TArray<TSubclassOf<AAnomaly_Base>> OriginAnomaly;
-
-protected:
-	void AddAnomaly();
 
 #pragma endregion
 

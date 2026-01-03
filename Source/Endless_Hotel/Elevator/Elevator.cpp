@@ -2,20 +2,20 @@
 
 #include "Elevator.h"
 #include "Character/Character/EHCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/PointLightComponent.h"
-#include "Components/TimelineComponent.h"
-#include "Curves/CurveFloat.h"
-#include "GameFramework/Character.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/AudioComponent.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Component/EHCameraComponent.h"
 #include "Elevator/Elevator_Button.h"
-#include "Camera/CameraComponent.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include <Components/StaticMeshComponent.h>
+#include <Components/PointLightComponent.h>
+#include <Components/TimelineComponent.h>
+#include <Curves/CurveFloat.h>
+#include <GameFramework/Character.h>
+#include <Kismet/GameplayStatics.h>
+#include <Components/AudioComponent.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/BoxComponent.h>
+#include <Camera/CameraComponent.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -143,8 +143,6 @@ void AElevator::BeginPlay()
 	}
 	else
 	{
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		Player->SetActorLocation(PlayerLocationInRoom);
 		SetActorLocation(MapPos);
 	}
 }
@@ -322,6 +320,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub]()
 		{
 			Sub->SetIsElevatorNormal(bIsNormalElevator);
+			Sub->TryInteractSolveVerdict();
 			Sub->ApplyVerdict();
 			bChoiceSentThisRide = true;
 		}), DoorDuration + ElevatorMoveDuration, false);

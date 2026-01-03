@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include <CoreMinimal.h>
+#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Anomaly_Object_Painting.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
@@ -25,23 +25,6 @@ protected:
 
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
-
-#pragma endregion
-
-#pragma region Trigger
-
-public:
-	void ActiveTrigger();
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UBoxComponent> TriggerBox;
-
-	UFUNCTION()
-	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-public:
-	uint8 CurrentAnomalyID = 0;
 
 #pragma endregion
 
@@ -76,6 +59,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
+#pragma endregion
+
+#pragma region Interact
+	virtual void Interacted_Implementation() override;
+	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 #pragma endregion
 
 };

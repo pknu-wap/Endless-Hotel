@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Ceiling/Anomaly_Object_Ceiling.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/TimelineComponent.h"
+#include <Components/StaticMeshComponent.h>
+#include <Components/TimelineComponent.h>
 
 #pragma region Base
 

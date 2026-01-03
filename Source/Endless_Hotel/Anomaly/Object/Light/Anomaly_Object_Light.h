@@ -42,6 +42,7 @@ protected:
 
 public:
 	void TurnOffLight();
+	void TurnOnLight();
 
 #pragma endregion
 

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
-#include "Delegates/DelegateCombinations.h"
+#include <CoreMinimal.h>
+#include <Subsystems/GameInstanceSubsystem.h>
+#include <Delegates/DelegateCombinations.h>
 #include "AnomalyProgressSubSystem.generated.h"
 
 class AAnomaly_Generator;
@@ -94,10 +94,11 @@ public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
 	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
 	void ApplyVerdict();
+	void TryInteractSolveVerdict();
 
 #pragma endregion
 
-#pragma region AnomalyCount
+#pragma region Anomaly
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
@@ -108,6 +109,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 CurrentAnomalyID = -1;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	TObjectPtr<class AAnomaly_Base> CurrentAnomaly;
 
 #pragma endregion
 

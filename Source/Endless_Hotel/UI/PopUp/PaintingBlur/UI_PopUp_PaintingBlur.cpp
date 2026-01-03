@@ -10,16 +10,7 @@ void UUI_PopUp_PaintingBlur::StartPaintingBlur()
 	const float TargetStrength = 20.f;
 	float CurrentStrength = 0.f;
 
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
-		{
-			CurrentStrength += 0.1f;
-			BackBlur->SetBlurStrength(CurrentStrength);
-
-			if (CurrentStrength >= TargetStrength)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-			}
-		}), 0.01f, true);
+	BackBlur->SetBlurStrength(TargetStrength);
 }
 
 #pragma endregion

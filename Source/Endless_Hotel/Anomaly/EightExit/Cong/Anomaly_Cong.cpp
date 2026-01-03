@@ -9,27 +9,6 @@
 AAnomaly_Cong::AAnomaly_Cong(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	TriggerBox->SetupAttachment(RootComponent);
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
-}
-
-void AAnomaly_Cong::BeginPlay()
-{
-	Super::BeginPlay();
-
-	TriggerBox->SetWorldTransform(Transform_TriggerBox);
-}
-
-#pragma endregion
-
-#pragma region Trigger
-
-void AAnomaly_Cong::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	StartAnomalyAction();
-
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion

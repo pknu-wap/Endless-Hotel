@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include <CoreMinimal.h>
+#include <Anomaly/Base/Anomaly_Base.h>
 #include "Anomaly_Base_Neapolitan.generated.h"
 
 // Anomaly_Base_Neapolitan.h
@@ -23,10 +23,11 @@ protected:
 
 #pragma region Activities
 
+public:
+    virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
 protected:
     virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
-    virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
-
+    
 #pragma endregion
 
 };
