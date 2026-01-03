@@ -45,16 +45,16 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	if (bCanInteract)
 	{
 		Brush.SetResourceObject(Crosshair_Interact);
-		Brush.TintColor = FSlateColor(FLinearColor(1, 1, 1, 0.3f));
-		CPSlot->SetSize(FVector2D(18, 18));
-		CPSlot->SetPosition(FVector2D(-9, -9));
+		Brush.TintColor = FSlateColor(FLinearColor(1, 1, 1, 0.6f));
+		CPSlot->SetSize(FVector2D(12, 12));
+		CPSlot->SetPosition(FVector2D(-6, -6));
 	}
 	else
 	{
 		Brush.SetResourceObject(Crosshair_Normal);
 		Brush.TintColor = FSlateColor(FLinearColor(1, 1, 1, 0.3f));
-		CPSlot->SetSize(FVector2D(14, 14));
-		CPSlot->SetPosition(FVector2D(-7, -7));
+		CPSlot->SetSize(FVector2D(18, 18));
+		CPSlot->SetPosition(FVector2D(-9, -9));
 	}
 
 	Crosshair->SetBrush(Brush);
