@@ -26,13 +26,31 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float ActualSpeed = 0.f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+    float ActualSpeed_X = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+    float ActualSpeed_Y = 0.f;
+
     // 목표 속도
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float TargetSpeed = 0.f;
 
-    // 최종 애니메이션용 속도 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-    float Speed = 0.f;
+    float TargetSpeed_X = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+    float TargetSpeed_Y = 0.f;
+
+    // 최종 애니메이션용 속도 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+    float Speed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+    float HorizontalSpeed; // 좌우 성분
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+    float VerticalSpeed;   // 전후 성분
 
     // 컨트롤러에서 가져오는 상태 값
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))

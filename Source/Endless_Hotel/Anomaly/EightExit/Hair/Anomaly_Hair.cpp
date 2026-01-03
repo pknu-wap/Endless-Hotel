@@ -5,16 +5,24 @@
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "Components/StaticMeshComponent.h"
 #include "TimerManager.h"
+#include "Components/BoxComponent.h"
 
 AAnomaly_Hair::AAnomaly_Hair(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	TriggerBox->SetupAttachment(RootComponent);
+	TriggerBox->InitBoxExtent(FVector(100, 100, 100));
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AAnomaly_Hair::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TriggerBox->SetWorldLocation(FVector(-1800.f, 580.f, 680.f));
 
 	// Timeline ¼³°è
 	if (Curve_HairOpacity)
@@ -41,6 +49,8 @@ void AAnomaly_Hair::ActivateAnomaly(uint8 Anomaly_ID)
 {
 	Super::ActivateAnomaly(Anomaly_ID);
 
+	ActiveTrigger();
+
 	APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	if (!Pawn) return;
 
@@ -55,18 +65,6 @@ void AAnomaly_Hair::ActivateAnomaly(uint8 Anomaly_ID)
 			break;
 		}
 	}
-
-	if (!HairMesh)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[Hair] Mesh Not Found!"));
-		return;
-	}
-
-	FTimerHandle H;
-	GetWorld()->GetTimerManager().SetTimer(H, FTimerDelegate::CreateLambda([this]()
-		{
-			HairTimeline.PlayFromStart();
-		}), StartDelay, false);
 }
 
 void AAnomaly_Hair::UpdateHair(float Value)
@@ -83,7 +81,25 @@ void AAnomaly_Hair::UpdateHair(float Value)
 	}
 }
 
-void AAnomaly_Hair::HairFinished()
+#pragma region Trigger
+
+void AAnomaly_Hair::ActiveTrigger()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[Hair] Finished"));
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBeginOverlap);
 }
+
+void AAnomaly_Hair::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	FTimerHandle H;
+	GetWorld()->GetTimerManager().SetTimer(H, FTimerDelegate::CreateLambda([this]()
+		{
+			HairTimeline.PlayFromStart();
+		}), StartDelay, false);
+
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+#pragma endregion

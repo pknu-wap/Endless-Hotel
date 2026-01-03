@@ -9,6 +9,8 @@
 #include "Camera/CameraComponent.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "TimerManager.h"
+#include "Components/AudioComponent.h"
+#include "Anomaly/Object/Light/Anomaly_Object_Light.h"
 
 #pragma region Base
 
@@ -22,6 +24,9 @@ AAnomaly_Object_Ghost::AAnomaly_Object_Ghost(const FObjectInitializer& ObjectIni
 
     StepIndex = 0;
     bHasTriggered = false;
+
+    AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+    AC->SetupAttachment(RootComponent);
 }
 
 #pragma endregion
@@ -33,6 +38,10 @@ void AAnomaly_Object_Ghost::BeginPlay()
     Super::BeginPlay();
 
     // 게임 시작 시에는 절대 보이면 안 됨
+    SpawnLocation = FVector(-2890.0, 570.f, 600.f);
+
+    SetActorLocation(SpawnLocation);
+
     SetActorHiddenInGame(true);
     Mesh->SetVisibility(false, true);
 }
@@ -43,10 +52,6 @@ void AAnomaly_Object_Ghost::StartGhostSequence()
     Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     if (!Player || !PC) return;
-
-    SpawnLocation = FVector(-2890.0, 570.f, 600.f);
-
-    SetActorLocation(SpawnLocation);
 
     StepIndex = 0;
     StartStep();
@@ -65,20 +70,48 @@ void AAnomaly_Object_Ghost::Tick(float DeltaSeconds)
             Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
         FVector P = Player->GetActorLocation();
+        float Dist = FVector::Dist(P, SpawnLocation);
 
-        if (P.X < -1300.f)
-        {   
-            Reveal();
-            if (P.X < -1600.f) {
-                bHasTriggered = true;
-                StartGhostSequence();
-            }
+        if (Dist < 1600.f && !bHasRevealedOnce)
+        {
+            bHasRevealedOnce = true;
+            RevealWithLightDelay();
+        }
+
+        if (Dist < 1300.f && !bHasTriggered)
+        {
+            bHasTriggered = true;
+            StartGhostSequence();
         }
     }
 }
+
+void AAnomaly_Object_Ghost::RevealWithLightDelay()
+{
+    TurnOffLights();
+    Reveal();
+
+    FTimerHandle LightHandle;
+    GetWorld()->GetTimerManager().SetTimer(
+        LightHandle,
+        this,
+        &AAnomaly_Object_Ghost::TurnOnLights,
+        0.3f,
+        false
+    );
+}
+
 void AAnomaly_Object_Ghost::Reveal() {
     SetActorHiddenInGame(false);
     Mesh->SetVisibility(true, true);
+}
+
+void AAnomaly_Object_Ghost::Hide() {
+    SetActorHiddenInGame(true);
+    Mesh->SetVisibility(false, true);
+    
+    AC->Sound = Sound_Fin;
+    AC->Play();
 }
 
 void AAnomaly_Object_Ghost::StartStep()
@@ -91,7 +124,7 @@ void AAnomaly_Object_Ghost::StartStep()
     }
 
     // 화면 어둡게
-    FadeScreen(true);
+    TurnOffLights();
 
     // 0.3초 후 이동
     FTimerHandle TH;
@@ -127,7 +160,7 @@ void AAnomaly_Object_Ghost::MoveStep()
 
         SetActorLocation(NearLoc);
 
-        FadeScreen(false);
+        TurnOnLights();
         StepIndex++;
 
         // 바로 FinishSequence() 호출
@@ -156,7 +189,7 @@ void AAnomaly_Object_Ghost::MoveStep()
     NewLoc.Z = SpawnLocation.Z;
 
     SetActorLocation(NewLoc);
-    FadeScreen(false);
+    TurnOnLights();
 
     StepIndex++;
 
@@ -180,35 +213,52 @@ void AAnomaly_Object_Ghost::FinishSequence()
     FinalLoc.Z = SpawnLocation.Z;
 
     SetActorLocation(FinalLoc);
+    AC->Sound = Sound_Shake;
+    AC->Play();
 
-    FadeScreen(false);
     if (PC && CameraShakeClass)
     {
         PC->PlayerCameraManager->StartCameraShake(CameraShakeClass, 3.0f);
     }
 
-    SetLifeSpan(3.f);
-
+    FTimerHandle TH;
+    GetWorld()->GetTimerManager().SetTimer(
+        TH, this, &AAnomaly_Object_Ghost::Hide,
+        3.0f, false
+    );
 }
 
 #pragma endregion
 
-#pragma region Fade
+#pragma region LightOnOff
 
-void AAnomaly_Object_Ghost::FadeScreen(bool bFadeOut)
+void AAnomaly_Object_Ghost::TurnOffLights()
 {
-    if (!PC) return;
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
 
-    float From = bFadeOut ? 0.f : 1.f;
-    float To = bFadeOut ? 1.f : 0.f;
+    for (auto* FoundActor : FoundActors)
+    {
+        auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
+        Light->TurnOffLight();
+    }
 
-    PC->PlayerCameraManager->StartCameraFade(
-        From, To,
-        0.25f,
-        FLinearColor::Black,
-        false,
-        true
-    );
+    AC->Sound = Sound_Off;
+    AC->Play();
 }
 
+void AAnomaly_Object_Ghost::TurnOnLights()
+{
+    TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
+
+    for (auto* FoundActor : FoundActors)
+    {
+        auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
+        Light->TurnOnLight();
+    }
+
+    AC->Sound = Sound_On;
+    AC->Play();
+}
 #pragma endregion
