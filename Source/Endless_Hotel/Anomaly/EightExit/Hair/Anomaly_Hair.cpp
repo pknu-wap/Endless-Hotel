@@ -1,4 +1,4 @@
-#include "Anomaly/EightExit/Hair/Anomaly_Hair.h"
+ï»¿#include "Anomaly/EightExit/Hair/Anomaly_Hair.h"
 #include "Kismet/GameplayStatics.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialParameterCollection.h"
@@ -12,7 +12,6 @@ AAnomaly_Hair::AAnomaly_Hair(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->InitBoxExtent(FVector(100, 100, 100));
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -24,7 +23,7 @@ void AAnomaly_Hair::BeginPlay()
 
 	TriggerBox->SetWorldLocation(FVector(-1800.f, 580.f, 680.f));
 
-	// Timeline ¼³°è
+	// Timeline ì„¤ê³„
 	if (Curve_HairOpacity)
 	{
 		FOnTimelineFloat UpdateDelegate;
@@ -32,7 +31,7 @@ void AAnomaly_Hair::BeginPlay()
 		HairTimeline.AddInterpFloat(Curve_HairOpacity, UpdateDelegate);
 	}
 
-	// Timeline Á¾·á µ¨¸®°ÔÀÌÆ®
+	// Timeline ì¢…ë£Œ ë¸ë¦¬ê²Œì´íŠ¸
 	FOnTimelineEvent FinishedDelegate;
 	FinishedDelegate.BindUFunction(this, "HairFinished");
 	HairTimeline.SetTimelineFinishedFunc(FinishedDelegate);
@@ -85,6 +84,8 @@ void AAnomaly_Hair::UpdateHair(float Value)
 
 void AAnomaly_Hair::ActiveTrigger()
 {
+	Super::ActiveTrigger();
+
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBeginOverlap);
