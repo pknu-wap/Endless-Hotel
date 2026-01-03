@@ -197,8 +197,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Position")
 	FVector2D PlayerLocationInElevator;
 
+public:
 	UPROPERTY(EditAnywhere, Category = "Position")
-	FVector3d PlayerLocationInRoom;
+	FVector PlayerLocationInRoom;
 
 protected:
 	void RotatePlayer();

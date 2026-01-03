@@ -143,8 +143,6 @@ void AElevator::BeginPlay()
 	}
 	else
 	{
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		Player->SetActorLocation(PlayerLocationInRoom);
 		SetActorLocation(MapPos);
 	}
 

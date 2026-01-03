@@ -16,8 +16,8 @@ class ENDLESS_HOTEL_API AAnomaly_Light : public AAnomaly_Base_EightExit
 public:
 	AAnomaly_Light(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
+//protected:
+//	virtual void BeginPlay() override;
 
 #pragma endregion
 
