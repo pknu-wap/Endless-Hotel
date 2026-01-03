@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Anomaly_Base.generated.h"
 
@@ -21,6 +21,9 @@ class ENDLESS_HOTEL_API AAnomaly_Base : public AEHActor
 
 public:
 	AAnomaly_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+protected:
+	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -56,10 +59,6 @@ public:
 	bool bIsSolved = false;
 
 protected:
-	void SetSolved(bool bNewSolved);
-
-	UFUNCTION()
-	void SetCorrectElevator(bool bNewCorrect) { bIsCorrectElevator = bNewCorrect; };
 
 	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
@@ -74,20 +73,33 @@ public:
 
 #pragma endregion
 
-#pragma region Inner Verdicts
-
-private:
-	void FinalizeAnomaly(bool bPassed);
-	void MarkSolved();
-	void MarkFailed();
-
-#pragma endregion
-
-#pragma region ForTest
+#pragma region Trigger
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
+	TObjectPtr<class UBoxComponent> TriggerBox;
+
+	UPROPERTY(EditAnywhere, Category = "Trigger")
+	FTransform Transform_TriggerBox;
+
+#pragma endregion
+
+
+#pragma region StartType
+
+protected:
+	// 트리거
+	virtual void ActiveTrigger();
+
+	UFUNCTION()
+	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	// 타이머
+	virtual void StartDelay(float delay);
+
+	// 초기
+	virtual void StartImmediate();
 
 #pragma endregion
 

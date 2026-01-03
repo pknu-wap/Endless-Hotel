@@ -1,7 +1,7 @@
 ﻿// Elevator.h
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
 #include "Elevator.generated.h"
 
@@ -197,8 +197,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Position")
 	FVector2D PlayerLocationInElevator;
 
+public:
 	UPROPERTY(EditAnywhere, Category = "Position")
-	FVector3d PlayerLocationInRoom;
+	FVector PlayerLocationInRoom;
 
 protected:
 	void RotatePlayer();

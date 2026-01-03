@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Normal.generated.h"
 

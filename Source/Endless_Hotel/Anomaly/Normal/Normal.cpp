@@ -2,7 +2,6 @@
 
 
 #include "Anomaly/Normal/Normal.h"
-
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 #pragma region Base

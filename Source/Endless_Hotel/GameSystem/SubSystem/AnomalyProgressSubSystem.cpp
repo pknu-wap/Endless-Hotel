@@ -7,6 +7,7 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 
 #pragma region Base
 
@@ -90,6 +91,14 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	{
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		GameInstance->OpenMap(EMapType::Hotel);
+	}
+}
+
+void UAnomalyProgressSubSystem::TryInteractSolveVerdict()
+{
+	if (AAnomaly_Base_Neapolitan* Neo = Cast<AAnomaly_Base_Neapolitan>(CurrentAnomaly))
+	{
+		Neo->InteractSolveVerdict();
 	}
 }
 
