@@ -13,10 +13,8 @@
 
 AAnomaly_Object_Neapolitan::AAnomaly_Object_Neapolitan(const FObjectInitializer& ObjectInitializer)
 {
-	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
-	Object->SetupAttachment(RootComponent);
 	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
-	WC->SetupAttachment(Object);
+	WC->SetupAttachment(RootComponent);
 	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
 }
 

@@ -62,8 +62,31 @@ protected:
 #pragma endregion
 
 #pragma region Interact
+
+protected:
 	virtual void Interacted_Implementation() override;
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
+
+	UFUNCTION()
+	void InteractedMoveStep(int32 step);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector DefaultLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector InteractingLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector InteractedLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	float RotateAngle = 180.f;
+
+	FRotator OriginRotation;
+
+	bool bIsRotated = false;
+
 #pragma endregion
 
 };

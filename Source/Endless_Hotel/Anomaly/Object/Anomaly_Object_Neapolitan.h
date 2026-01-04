@@ -22,14 +22,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Object
-
-public:
-	UPROPERTY(EditAnywhere, Category = "AnomalyObject")
-	TObjectPtr<UStaticMeshComponent> Object;
-
-#pragma endregion
-
 #pragma region Verdict
 
 public:
