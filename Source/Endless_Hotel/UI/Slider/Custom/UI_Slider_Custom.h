@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "UI/UI_Base.h"
-#include "UI_Slider_Custom.generated.h"
+#include <CoreMinimal.h>
+#include <UI_Slider_Custom.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Slider_Custom : public UUI_Base

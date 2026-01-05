@@ -2,9 +2,8 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/Enum/EnumConverter.h"
-#include "UI/Controller/UI_Controller.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
 
@@ -37,9 +36,6 @@ EMapType UEHGameInstance::CurrentMap = EMapType::MainMenu;
 
 void UEHGameInstance::OpenMap(const EMapType& MapName)
 {
-	UUI_Controller* UICon = GetSubsystem<UUI_Controller>();
-	UICon->ClearAllWidget();
-
 	CurrentMap = MapName;
 	FName TargetMapName = FName(FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(CurrentMap)));
 	UGameplayStatics::OpenLevel(GetWorld(), TargetMapName, true);

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "UI/Button/UI_Button_Base.h"
-#include "UI_Button_Text.generated.h"
+#include <CoreMinimal.h>
+#include <UI_Button_Text.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base

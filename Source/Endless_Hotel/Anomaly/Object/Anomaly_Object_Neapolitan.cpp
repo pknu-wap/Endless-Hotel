@@ -2,9 +2,9 @@
 
 
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include <Components/WidgetComponent.h>
-#include "UI/Base/InGame/Interact/UI_Interact.h"
+#include "UI/World/Interact/UI_Interact.h"
 #include "Component/LookAt/LookAtComponent.h"
+#include <Components/WidgetComponent.h>
 
 #define LOCTEXT_NAMESPACE "Anomaly_Object_Neapolitan"
 

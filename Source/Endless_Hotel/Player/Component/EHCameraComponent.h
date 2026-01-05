@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Component/EHComponent.h"
-#include "EHCameraComponent.generated.h"
+#include <CoreMinimal.h>
+#include <EHCameraComponent.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UEHCameraComponent : public UEHComponent

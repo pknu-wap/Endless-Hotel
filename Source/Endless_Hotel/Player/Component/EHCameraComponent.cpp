@@ -2,9 +2,10 @@
 
 #include "Player/Component/EHCameraComponent.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Default/Blur/UI_PopUp_Blur.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/TimelineComponent.h"
+#include "UI/PopUp/Blur/UI_PopUp_Blur.h"
+#include "Sound/SoundController.h"
+#include <Kismet/GameplayStatics.h>
+#include <Components/TimelineComponent.h>
 
 #pragma region Base
 
@@ -19,6 +20,7 @@ void UEHCameraComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SettingEyeEffect();
+	StartEyeEffect(true);
 }
 
 #pragma endregion
@@ -28,7 +30,10 @@ void UEHCameraComponent::BeginPlay()
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
 	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur, EWidgetType::PopUp, EInputModeType::GameOnly);
+	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur);
+
+	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(bIsOpen);
 
 	if (bIsOpen)
 	{

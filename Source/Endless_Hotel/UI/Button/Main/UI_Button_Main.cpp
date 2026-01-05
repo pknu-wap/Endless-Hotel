@@ -1,9 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Main/UI_Button_Main.h"
-#include "UI/Base/MainMenu/UI_MainMenu.h"
-#include "Components/TextBlock.h"
-#include "Components/VerticalBoxSlot.h"
+#include "UI/HUD/MainMenu/UI_MainMenu.h"
+#include <Components/TextBlock.h>
+#include <Components/VerticalBoxSlot.h>
 
 #pragma region Base
 

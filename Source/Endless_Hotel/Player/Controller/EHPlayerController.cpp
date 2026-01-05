@@ -3,7 +3,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Default/Setting/UI_PopUp_Setting.h"
+#include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
@@ -332,7 +332,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Escape, EWidgetType::PopUp, EInputModeType::UIOnly);
+	UICon->OpenWidget(UI_Escape);
 }
 
 UCameraComponent* AEHPlayerController::GetPlayerCamera() const

@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Slider/Custom/UI_Slider_Custom.h"
-#include "Components/Slider.h"
-#include "Components/ProgressBar.h"
+#include <Components/Slider.h>
+#include <Components/ProgressBar.h>
 
 #pragma region Base
 
