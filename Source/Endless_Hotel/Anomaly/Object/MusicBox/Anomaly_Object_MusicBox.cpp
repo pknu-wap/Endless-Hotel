@@ -31,6 +31,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 	GetWorld()->GetTimerManager().SetTimer(FailTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			bWaitingInteract = false;
+			AC->Stop();
 			bSolved = false;
 		}), LimitTime, false);
 }
@@ -42,6 +43,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 void AAnomaly_Object_MusicBox::Interacted_Implementation()
 {
 	if (!bWaitingInteract) return;
+	AC->Stop();
 	bWaitingInteract = false;
 	bSolved = true;
 	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);

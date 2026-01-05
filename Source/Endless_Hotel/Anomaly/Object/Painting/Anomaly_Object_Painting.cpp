@@ -19,25 +19,25 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	SetRootComponent(Mesh_Painting);
 
 	Mesh_LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_LeftEye"));
-	Mesh_LeftEye->SetupAttachment(Mesh_Painting);
+	Mesh_LeftEye->SetupAttachment(RootComponent);
 	Mesh_LeftEye->SetRelativeLocation(FVector(2, -12, 23));
 	Mesh_LeftEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Mesh_RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_RightEye"));
-	Mesh_RightEye->SetupAttachment(Mesh_Painting);
+	Mesh_RightEye->SetupAttachment(RootComponent);
 	Mesh_RightEye->SetRelativeLocation(FVector(2, 3, 23));
 	Mesh_RightEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Niagara_Blood_Left = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Left"));
-	Niagara_Blood_Left->SetupAttachment(Mesh_Painting);
+	Niagara_Blood_Left->SetupAttachment(RootComponent);
 	Niagara_Blood_Left->SetAutoActivate(false);
 
 	Niagara_Blood_Right = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Right"));
-	Niagara_Blood_Right->SetupAttachment(Mesh_Painting);
+	Niagara_Blood_Right->SetupAttachment(RootComponent);
 	Niagara_Blood_Right->SetAutoActivate(false);
 
 	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
-	Widget_PaintingBlur->SetupAttachment(Mesh_Painting);
+	Widget_PaintingBlur->SetupAttachment(RootComponent);
 	bSolved = false;
 }
 
