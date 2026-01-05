@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
-#include "Anomaly_Generator.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Generator.generated.h>
 
 #pragma region Declare
 

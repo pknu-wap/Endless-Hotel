@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include <Anomaly/Base/Anomaly_Base.h>
-#include "Anomaly_Base_Neapolitan.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Base_Neapolitan.generated.h>
 
 // Anomaly_Base_Neapolitan.h
 UCLASS()

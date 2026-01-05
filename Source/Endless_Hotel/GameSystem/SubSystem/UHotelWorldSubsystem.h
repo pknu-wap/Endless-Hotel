@@ -4,7 +4,7 @@
 
 #include <CoreMinimal.h>
 #include <Subsystems/WorldSubsystem.h>
-#include "UHotelWorldSubsystem.generated.h"
+#include <UHotelWorldSubsystem.generated.h
 
 UCLASS()
 class ENDLESS_HOTEL_API UUHotelWorldSubsystem : public UWorldSubsystem
