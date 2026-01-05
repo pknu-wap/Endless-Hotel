@@ -2,8 +2,8 @@
 
 #include "Anomaly/EightExit/Blur/Anomaly_Blur.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Default/Blur/UI_PopUp_Blur.h"
-#include "Components/AudioComponent.h"
+#include "UI/PopUp/Blur/UI_PopUp_Blur.h"
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -36,7 +36,7 @@ void AAnomaly_Blur::ActivateAnomaly(uint8 Anomaly_ID)
 void AAnomaly_Blur::ShowBlurWiget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur, EWidgetType::PopUp, EInputModeType::GameOnly);
+	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur);
 	Cast<UUI_PopUp_Blur>(BlurWidget)->AnomalyBlur();
 
 	AC->Sound = Sound_Blur;

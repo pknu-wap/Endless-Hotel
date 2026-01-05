@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Text/UI_Button_Text.h"
-#include "Components/TextBlock.h"
+#include <Components/TextBlock.h>
 
 #pragma region Base
 

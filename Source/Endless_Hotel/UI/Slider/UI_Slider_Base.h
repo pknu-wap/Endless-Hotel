@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Components/Slider.h"
-#include "UI_Slider_Base.generated.h"
+#include <CoreMinimal.h>
+#include <Components/Slider.h>
+#include <UI_Slider_Base.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Slider_Base : public USlider

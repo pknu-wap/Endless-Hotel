@@ -2,95 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/SaveGame.h"
-#include "SaveManager.generated.h"
-
-#pragma region Declare
-
-USTRUCT(BlueprintType)
-struct FCompendiumData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(SaveGame)
-	int32 Index;
-
-	UPROPERTY(SaveGame)
-	bool bIsChecked;
-
-	bool operator==(const FCompendiumData& Data) const
-	{
-		return Index == Data.Index;
-	}
-};
-
-USTRUCT(BlueprintType)
-struct FSettingSaveData
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(SaveGame)
-	int32 Value_Grapic;
-
-	UPROPERTY(SaveGame)
-	FIntPoint Value_Resolution;
-
-	UPROPERTY(SaveGame)
-	uint8 Value_Screen;
-
-	UPROPERTY(SaveGame)
-	float Value_Frame;
-
-	UPROPERTY(SaveGame)
-	float Value_Sound = 0.5f;
-
-	UPROPERTY(SaveGame)
-	float Value_Sensitivity = 0.5f;
-
-	UPROPERTY(SaveGame)
-	float Value_Brightness = 1;
-
-	UPROPERTY(SaveGame)
-	FString Value_Language;
-
-public:
-	UPROPERTY(SaveGame)
-	int32 Index_Grapic;
-
-	UPROPERTY(SaveGame)
-	int32 Index_Resolution;
-
-	UPROPERTY(SaveGame)
-	int32 Index_Screen;
-
-	UPROPERTY(SaveGame)
-	int32 Index_Frame;
-
-	UPROPERTY(SaveGame)
-	int32 Index_Language;
-};
-
-#pragma endregion
+#include "Type/Save/Type_Save.h"
+#include <CoreMinimal.h>
+#include <GameFramework/SaveGame.h>
+#include <SaveManager.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API USaveManager : public USaveGame
 {
 	GENERATED_BODY()
-
-#pragma region Compendium
-
-public:
-	static TArray<FCompendiumData> LoadCompendiumData();
-	static void SaveCompendiumData(const FCompendiumData& Data);
-	static void DeleteCompendiumData();
-
-protected:
-	UPROPERTY(SaveGame)
-	TArray<FCompendiumData> CompendiumData;
-
-#pragma endregion
 
 #pragma region Setting
 

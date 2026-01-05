@@ -2,45 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
-#include "UI_Controller.generated.h"
-
-#pragma region Declare
-
-class UUI_Base;
-
-UENUM(BlueprintType)
-enum class EWidgetType : uint8
-{
-	Base			UMETA(DisplayName = "BaseWidget"),
-	PopUp			UMETA(DisplayName = "PopUp")
-};
-
-UENUM(BlueprintType)
-enum class EInputModeType : uint8
-{
-	GameOnly	UMETA(DisplayName = "GameOnly"),
-	UIOnly		UMETA(DisplayName = "UIOnly"),
-	GameAndUI	UMETA(DisplayName = "GameAndUI")
-};
-
-USTRUCT(BlueprintType)
-struct FPopUpWidget
-{
-	GENERATED_BODY()
-
-	EWidgetType WidgetType;
-	EInputModeType InputModeType;
-	TObjectPtr<UUI_Base> PopUpWidget;
-
-	bool operator==(const FPopUpWidget& Widget)
-	{
-		return PopUpWidget == Widget.PopUpWidget;
-	}
-};
-
-#pragma endregion
+#include "Type/UI/Type_UI.h"
+#include <CoreMinimal.h>
+#include <Subsystems/GameInstanceSubsystem.h>
+#include <UI_Controller.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
@@ -57,10 +22,8 @@ public:
 #pragma region Open & Close
 
 public:
-	UUI_Base* OpenWidget(TSubclassOf<UUI_Base> WidgetClass, const EWidgetType& WidgetType, const EInputModeType& InputMode);
+	UUI_Base* OpenWidget(TSubclassOf<class UUI_Base> WidgetClass);
 	void CloseWidget();
-
-public:
 	void ClearAllWidget();
 
 protected:
@@ -69,15 +32,18 @@ protected:
 protected:
 	void AdjustZOrder(bool bUp);
 
+public:
+	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
+	UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
+
 protected:
 	UPROPERTY()
-	TArray<FPopUpWidget> PopUpWidgets;
+	TArray<TObjectPtr<class UUI_Base>> PopUpWidgets;
+
+	const int32 Max_ZOrder = 100;
+	const int32 Min_ZOrder = 0;
 
 	int32 Widget_ZOrder = 0;
-
-public:
-	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0].PopUpWidget; }
-	UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets[Widget_ZOrder].PopUpWidget; }
 
 #pragma endregion
 
@@ -88,10 +54,10 @@ public:
 
 protected:
 	UPROPERTY()
-	TSubclassOf<UUI_Base> UI_MainMenu;
+	TSubclassOf<class UUI_Base> UI_MainMenu;
 
 	UPROPERTY()
-	TSubclassOf<UUI_Base> UI_InGame;
+	TSubclassOf<class UUI_Base> UI_InGame;
 
 #pragma endregion
 
