@@ -34,6 +34,14 @@ void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
 			});
 		StartImmediate();
 		break;
+
+	case 92:
+		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
+			{
+				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
+			});
+		ActiveTrigger();
+		break;
 	}
 }
 
