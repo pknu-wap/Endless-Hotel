@@ -105,6 +105,8 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 #pragma endregion
 
+#pragma region Interact
+
 void AAnomaly_Object_Painting::Interacted_Implementation()
 {
 	OriginRotation = GetActorRotation();
@@ -133,13 +135,15 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 	FVector Location;
 	if (step == 2)
 	{
-		Location = (bIsRotated) ? DefaultLocation: InteractedLocation;
+		Location = (bIsRotated) ? DefaultLocation : InteractedLocation;
 	}
 	else
 	{
 		Location = InteractingLocation;
 	}
-	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0,180,0);
+	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, 180, 0);
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, Location, Rotation,
 		true, true, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
+
+#pragma endregion
