@@ -104,6 +104,10 @@ protected:
 	/** Tick 내 상호작용 탐색 */
 	void CheckForInteractables();
 
+public:
+	void OnButtonPressStarted();
+	void OnButtonPressCompleted();
+
 #pragma endregion
 
 #pragma region Widget
@@ -135,9 +139,11 @@ public:
 	bool bCanCrouch = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
+	bool bIsButtonPressing = false;
 
 	bool GetIsRunning() const { return bIsRunning; }
 	bool GetIsCrouching() const { return bIsCrouching; }
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
+	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
 #pragma endregion
 };

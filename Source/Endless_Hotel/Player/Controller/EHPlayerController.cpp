@@ -21,7 +21,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 
 	// Interact
 	bCanInteract = false;
-	TraceDistance = 100.f;
+	TraceDistance = 50.f;
 
 	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 }
@@ -269,6 +269,18 @@ void AEHPlayerController::OnFaceCoverCompleted()
 		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
+}
+
+void AEHPlayerController::OnButtonPressStarted()
+{
+	bIsButtonPressing = true;
+	bCanMove = false;
+}
+
+void AEHPlayerController::OnButtonPressCompleted()
+{
+	bIsButtonPressing = false;
+	bCanMove = true;
 }
 
 void AEHPlayerController::CheckForInteractables()
