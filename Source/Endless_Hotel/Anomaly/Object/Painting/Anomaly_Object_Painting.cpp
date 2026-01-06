@@ -103,13 +103,3 @@ void AAnomaly_Object_Painting::BlurPaint()
 }
 
 #pragma endregion
-
-void AAnomaly_Object_Painting::Interacted_Implementation()
-{
-	bSolved = !bSolved;
-}
-
-void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	UI_Interact->ShowDescription(bIsShow);
-}

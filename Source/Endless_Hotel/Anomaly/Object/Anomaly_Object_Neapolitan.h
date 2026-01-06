@@ -53,6 +53,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class ULookAtComponent> LAC;
 
+	// 크로스헤어 오버 시 나타날 텍스트
+	FText DescriptionText;
+
 #pragma endregion
 
 };

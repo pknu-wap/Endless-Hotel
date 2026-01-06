@@ -18,6 +18,8 @@ AAnomaly_Object_Neapolitan::AAnomaly_Object_Neapolitan(const FObjectInitializer&
 	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
 	WC->SetupAttachment(Object);
 	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
+
+	DescriptionText = LOCTEXT("Key1", "상호작용");
 }
 
 void AAnomaly_Object_Neapolitan::BeginPlay()
@@ -26,7 +28,7 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 	bSolved = false;
 	if (!WC) return;
 	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
-	UI_Interact->SetDescription(LOCTEXT("Key1", "상호작용"));
+	UI_Interact->SetDescription(DescriptionText);
 	LAC->SettingWidgetComponent(WC);
 }
 
