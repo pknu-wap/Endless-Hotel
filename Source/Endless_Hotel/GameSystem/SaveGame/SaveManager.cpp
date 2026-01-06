@@ -2,45 +2,7 @@
 
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Kismet/GameplayStatics.h"
-
-#pragma region Compendium
-
-TArray<FCompendiumData> USaveManager::LoadCompendiumData()
-{
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Compendium"), 0));
-	TArray<FCompendiumData> SaveData;
-
-	if (!SaveManager)
-	{
-		return SaveData;
-	}
-
-	SaveData = SaveManager->CompendiumData;
-
-	return SaveData;
-}
-
-void USaveManager::SaveCompendiumData(const FCompendiumData& Data)
-{
-	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Compendium"), 0));
-
-	if (!SaveManager)
-	{
-		SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
-	}
-
-	SaveManager->CompendiumData.AddUnique(Data);
-
-	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Compendium"), 0);
-}
-
-void USaveManager::DeleteCompendiumData()
-{
-	UGameplayStatics::DeleteGameInSlot(TEXT("Save_Compendium"), 0);
-}
-
-#pragma endregion
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Setting
 
