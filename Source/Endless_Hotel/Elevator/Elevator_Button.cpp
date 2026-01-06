@@ -4,7 +4,10 @@
 #include "Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
+#include "Player/Controller/EHPlayerController.h"
 #include <Components/WidgetComponent.h>
+#include <GameFramework/Character.h>
+#include <Kismet/GameplayStatics.h>
 
 #define LOCTEXT_NAMESPACE "Elevator"
 
@@ -49,6 +52,8 @@ void AElevator_Button::BeginPlay()
 void AElevator_Button::Interacted_Implementation()
 {
 	if (OwnerElevator->bIsDoorMoving || OwnerElevator->bIsDoorOpened) return;
+	
+	MoveToButtonPlayer();
 	OwnerElevator->CallElevator();
 	FTimerHandle WaitHandle;
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]() mutable
@@ -62,6 +67,30 @@ void AElevator_Button::ShowInteractWidget_Implementation(bool bIsShow)
 	UI_Interact->ShowDescription(bIsShow);
 }
 
+void AElevator_Button::MoveToButtonPlayer()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	FVector3d FixedLocation = Player->GetActorLocation();
+
+
+	FixedLocation.X = PlayerLocationButton.X;
+	FixedLocation.Y = PlayerLocationButton.Y;
+	Player->SetActorLocation(FixedLocation);
+
+	if (AController* Controller = Player->GetController())
+	{
+		if (AEHPlayerController* EHPC = Cast<AEHPlayerController>(Controller))
+		{
+			EHPC->SetControlRotation(PlayerRotationButton);
+			EHPC->OnButtonPressStarted();
+			FTimerHandle ButtonAnim;
+			GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]() mutable
+				{
+					EHPC->OnButtonPressCompleted();
+				}), 2.0f, false);
+		}
+	}
+}
 #pragma endregion
 
 #undef LOCTEXT_NAMESPACE
