@@ -58,4 +58,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Restore
+
+protected:
+	void RestoreObjectTransform();
+
+protected:
+	FTransform OriginalTransform;
+
+	FTimerHandle RestoreHandle;
+
+	float CurrentTime = 0.f;
+
+#pragma endregion
+
 };
