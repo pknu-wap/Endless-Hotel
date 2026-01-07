@@ -2,11 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Curves/CurveFloat.h"
-#include "Components/TimelineComponent.h"
-#include "Anomaly_Hair.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Hair.generated.h>
+
+class UCurveFloat;
+class UMaterialParameterCollection;
+class UTimelineComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Hair : public AAnomaly_Base_EightExit
@@ -18,7 +21,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
@@ -39,19 +41,19 @@ public:
 	
 protected:
 	UPROPERTY()
-	FTimeline HairTimeline;
+	TObjectPtr<UTimelineComponent> HairTimeline;
 
 	UPROPERTY()
-	UStaticMeshComponent* HairMesh;
+	TObjectPtr<UStaticMeshComponent> HairMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
-	UMaterialParameterCollection* HairMPC;
+	TObjectPtr<UMaterialParameterCollection> HairMPC;
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
-	UCurveFloat* Curve_HairOpacity;
+	TObjectPtr<UCurveFloat> Curve_HairOpacity;
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
-	UCurveFloat* Curve_HairLocation;
+	TObjectPtr<UCurveFloat> Curve_HairLocation;
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
 	FName Param_Opacity = "Scalar";

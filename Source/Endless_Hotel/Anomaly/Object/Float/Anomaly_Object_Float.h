@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "Anomaly_Object_Float.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Float.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Float : public AAnomaly_Object_Neapolitan

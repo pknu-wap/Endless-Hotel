@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Ghost.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Ghost.generated.h>
 
 /**
  * 
