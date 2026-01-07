@@ -37,6 +37,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Object;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> WC;
 
 	UPROPERTY()

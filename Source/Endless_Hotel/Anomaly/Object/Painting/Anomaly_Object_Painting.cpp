@@ -135,13 +135,13 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 	FVector Location;
 	if (step == 2)
 	{
-		Location = (bIsRotated) ? DefaultLocation : InteractedLocation;
+		Location = (bIsRotated) ? InteractedLocation : DefaultLocation;
 	}
 	else
 	{
 		Location = InteractingLocation;
 	}
-	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, 180, 0);
+	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, RotateAngle, 0);
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, Location, Rotation,
 		true, true, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
