@@ -61,9 +61,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Interact
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-#pragma endregion
-
 };
