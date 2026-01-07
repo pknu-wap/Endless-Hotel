@@ -283,6 +283,7 @@ void AEHPlayerController::OnFaceCoverCompleted()
 void AEHPlayerController::OnButtonPressStarted()
 {
 	bIsButtonPressing = true;
+	bIsCameraFixed = true;
 	bCanMove = false;
 }
 

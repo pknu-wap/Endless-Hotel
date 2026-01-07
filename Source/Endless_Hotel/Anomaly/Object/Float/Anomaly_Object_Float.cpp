@@ -2,7 +2,9 @@
 
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Anomaly/Object/Float/Anomaly_Object_Float.h"
-
+#include "UI/World/Interact/UI_Interact.h"
+#include "Components/WidgetComponent.h"   
+#include "Component/LookAt/LookAtComponent.h"
 
 #pragma region Base
 
@@ -11,6 +13,7 @@ AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectIni
 {
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     RootComponent = Mesh;
+
 }
 
 void AAnomaly_Object_Float::BeginPlay()
@@ -101,7 +104,17 @@ void AAnomaly_Object_Float::RestoreToOrigin()
 
 void AAnomaly_Object_Float::Interacted_Implementation()
 {
+    bSolved = true;
+    RestoreToOrigin();
+}
 
+void AAnomaly_Object_Float::ShowInteractWidget_Implementation(bool bIsShow)
+{
+    if (!UI_Interact)
+    {
+        return;
+    }
+    UI_Interact->ShowDescription(bIsShow);
 }
 
 #pragma endregion
