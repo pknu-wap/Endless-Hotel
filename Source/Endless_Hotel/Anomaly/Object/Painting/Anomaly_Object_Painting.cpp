@@ -2,8 +2,6 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "UI/World/Interact/UI_Interact.h"
-#include "Component/LookAt/LookAtComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -113,11 +111,6 @@ void AAnomaly_Object_Painting::Interacted_Implementation()
 	bIsRotated = !bIsRotated;
 	InteractedMoveStep(0);
 	bSolved = !bSolved;
-}
-
-void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	UI_Interact->ShowDescription(bIsShow);
 }
 
 void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
