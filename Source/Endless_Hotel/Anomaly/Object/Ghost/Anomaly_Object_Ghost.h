@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraShakeBase.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly_Object_Ghost.generated.h"
+
+class UCameraShakeBase;
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Ghost : public AAnomaly_Object_Base
@@ -32,7 +33,6 @@ private:
     void StartStep();
     void MoveStep();
     void FinishSequence();
-    void FadeScreen(bool bFadeOut);
     void TurnOffLights();
     void TurnOnLights();
     void RevealWithLightDelay();
@@ -66,7 +66,9 @@ private:
     ACharacter* Player;
     APlayerController* PC;
 
+    UPROPERTY(EditAnywhere, Category = "Position")
     FVector SpawnLocation;
+
     int32 StepIndex;
 
 public:
