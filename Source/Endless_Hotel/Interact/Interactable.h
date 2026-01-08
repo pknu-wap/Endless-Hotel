@@ -2,17 +2,17 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "UObject/Interface.h"
-#include "InteractableObject.generated.h"
+#include <CoreMinimal.h>
+#include <UObject/Interface.h>
+#include <Interactable.generated.h>
 
 UINTERFACE(MinimalAPI)
-class UInteractableObject : public UInterface
+class UInteractable : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class ENDLESS_HOTEL_API IInteractableObject
+class ENDLESS_HOTEL_API IInteractable
 {
 	GENERATED_BODY()
 

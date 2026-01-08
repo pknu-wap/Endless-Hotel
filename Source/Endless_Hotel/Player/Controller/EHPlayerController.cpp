@@ -12,7 +12,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Interact/InteractableObject.h"
+#include "Interact/Interactable.h"
 
 AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -298,19 +298,19 @@ void AEHPlayerController::CheckForInteractables()
 	{
 		AActor* HitActor = HitResult.GetActor();
 
-		if (HitActor->GetClass()->ImplementsInterface(UInteractableObject::StaticClass()))
+		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 		{
 			bCanInteract = true;
 			CurrentInteractActor = HitActor;
 			EHPlayer->CanInteract.Broadcast(true);
-			IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, true);
+			IInteractable::Execute_ShowInteractWidget(CurrentInteractActor, true);
 			return;
 		}
 	}
 
 	if (CurrentInteractActor)
 	{
-		IInteractableObject::Execute_ShowInteractWidget(CurrentInteractActor, false);
+		IInteractable::Execute_ShowInteractWidget(CurrentInteractActor, false);
 	}
 
 	// 트레이스 실패 or 유효하지 않음
@@ -323,9 +323,9 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 {
 	if (!bCanInteract || !CurrentInteractActor) return;
 
-	if (CurrentInteractActor->GetClass()->ImplementsInterface(UInteractableObject::StaticClass()))
+	if (CurrentInteractActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 	{
-		IInteractableObject::Execute_Interacted(CurrentInteractActor);
+		IInteractable::Execute_Interacted(CurrentInteractActor);
 	}
 }
 

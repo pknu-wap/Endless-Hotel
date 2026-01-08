@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Compendium.generated.h"
+#include <Compendium.generated.h>
 
 USTRUCT(BlueprintType)
 struct FCompendium : public FTableRowBase
