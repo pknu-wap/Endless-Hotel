@@ -1,11 +1,11 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Elevator.h"
-#include "Character/Character/EHCharacter.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Component/EHCameraComponent.h"
 #include "Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -30,7 +30,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	// 2) Frame
 	Car = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car"));
-	Car->SetupAttachment(ElevatorSceneRoot);
+	Car->SetupAttachment(RootComponent);
 
 	Exterior_Structure = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Exterior_Structure"));
 	Exterior_Structure->SetupAttachment(Car);
@@ -61,7 +61,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	// 7) Sound
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->SetupAttachment(Car);
+	AC->SetupAttachment(RootComponent);
 
 	// 8) Trigger
 	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
@@ -72,24 +72,12 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// 9) Timeline
-	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
-
-	// 10) Mobility Settings
-	ElevatorSceneRoot->SetMobility(EComponentMobility::Movable);
-	Car->SetMobility(EComponentMobility::Movable);
-	LeftDoor->SetMobility(EComponentMobility::Movable);
-	RightDoor->SetMobility(EComponentMobility::Movable);
-	LeftGlass->SetMobility(EComponentMobility::Movable);
-	RightGlass->SetMobility(EComponentMobility::Movable);
-
-	// 11) Location Settings
+	// 10) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
 
-	// 12) Rule
-	Rule = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rule"));
-	Rule->SetupAttachment(Car);
+	// 11) Timeline
+	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
 }
 
 void AElevator::BeginPlay()
@@ -209,7 +197,7 @@ void AElevator::TryCloseDoorAfterDelay()
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AEHCharacter* Player = Cast<AEHCharacter>(OtherActor);
+	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
 	if (!Player) return;
 	if (bIsPlayerInside) return;
 	bIsPlayerInside = true;
@@ -242,7 +230,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	AEHCharacter* Player = Cast<AEHCharacter>(OtherActor);
+	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
 	if (!Player) return;
 	if (!bIsPlayerInside && bIsDoorOpened)
 	{

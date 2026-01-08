@@ -18,13 +18,9 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 	Mesh_LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_LeftEye"));
 	Mesh_LeftEye->SetupAttachment(RootComponent);
-	Mesh_LeftEye->SetRelativeLocation(FVector(2, -12, 23));
-	Mesh_LeftEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Mesh_RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_RightEye"));
 	Mesh_RightEye->SetupAttachment(RootComponent);
-	Mesh_RightEye->SetRelativeLocation(FVector(2, 3, 23));
-	Mesh_RightEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Niagara_Blood_Left = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Left"));
 	Niagara_Blood_Left->SetupAttachment(RootComponent);

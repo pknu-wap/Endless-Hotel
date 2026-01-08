@@ -15,7 +15,6 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 {
 	Pannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button_Mesh"));
 	Pannel->SetupAttachment(RootComponent);
-	Pannel->SetRelativeLocation(FVector3d(40.f, 47.f, -19.f));
 
 	Up_Button = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Up_Button"));
 	Up_Button->SetupAttachment(Pannel);
