@@ -3,6 +3,8 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/Slider/Custom/UI_Slider_Custom.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include "UI/Button/UI_Button_Base.h"
 #include <GameFramework/GameUserSettings.h>
 #include <Components/HorizontalBox.h>
 #include <Components/Button.h>

@@ -59,7 +59,6 @@ public:
 	bool bIsSolved = false;
 
 protected:
-
 	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
 

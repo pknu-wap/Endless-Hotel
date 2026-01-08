@@ -62,9 +62,13 @@ protected:
 #pragma endregion
 
 #pragma region Interact
+public:
+	virtual void ActivateInteraction() override;
 
 protected:
 	virtual void Interacted_Implementation() override;
+
+	void InteractRotate();
 
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);

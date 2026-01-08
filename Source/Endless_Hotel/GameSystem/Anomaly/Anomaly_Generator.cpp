@@ -34,7 +34,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 
 	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
-
+	
 	if (!TargetClass)
 	{
 		return;
@@ -46,6 +46,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 	for (auto* FoundActor : FoundActors)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		CurrentAnomaly->LinkedObjects.Add(FoundActor);
 	}
 }

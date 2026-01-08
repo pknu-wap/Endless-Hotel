@@ -34,6 +34,10 @@ public:
 public:
 	virtual void Interacted_Implementation() override;
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
+	virtual void ActivateInteraction() PURE_VIRTUAL(AAnomaly_Object_Neapolitan::ActivateInteraction, ;);
+
+protected:
+	virtual void StartInteractaction();
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -50,6 +54,8 @@ protected:
 
 	// 크로스헤어 오버 시 나타날 텍스트
 	FText DescriptionText;
+
+	TFunction<void()> InteractAction;
 
 #pragma endregion
 

@@ -53,6 +53,11 @@ void AAnomaly_Object_Neapolitan::ShowInteractWidget_Implementation(bool bIsShow)
 	UI_Interact->ShowDescription(bIsShow);
 }
 
+void AAnomaly_Object_Neapolitan::StartInteractaction()
+{
+	InteractAction();
+}
+
 #pragma endregion
 
 #pragma region Restore
