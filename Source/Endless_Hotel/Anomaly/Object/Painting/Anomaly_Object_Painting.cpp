@@ -210,3 +210,4 @@ void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
 {
 	UI_Interact->ShowDescription(bIsShow);
 }
+#pragma endregion
