@@ -12,6 +12,7 @@ class UCameraComponent;
 class UEnhancedInputComponent;
 class USpringArmComponent;
 class ACharacter;
+class USpotLightComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -78,6 +79,10 @@ protected:
 	TObjectPtr<class UInputAction> IA_FaceCover;
 	bool bIsFaceCoverTransitioning = false;
 
+	//Light
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> IA_Light;
+
 	//ESC
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_ESC;
@@ -89,6 +94,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	float LookSensitivity = 1.1f;
 
+
+
 	// Input Callbacks
 	void EscapeStarted(const struct FInputActionValue& InputValue);
 	void Move(const FInputActionValue& Value);
@@ -99,10 +106,15 @@ protected:
 	void OnCrouchCompleted();
 	void OnFaceCoverStarted();
 	void OnFaceCoverCompleted();
+	void TurnPlayerLight();
 	void OnInteract(const FInputActionValue& Value);
 
 	/** Tick 내 상호작용 탐색 */
 	void CheckForInteractables();
+
+public:
+	void OnButtonPressStarted();
+	void OnButtonPressCompleted();
 
 #pragma endregion
 
@@ -124,6 +136,9 @@ protected:
 
 	// Helper function to get camera
 	UCameraComponent* GetPlayerCamera() const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FlashLight", meta = (AllowPrivateAccess = "true"))
+	USpotLightComponent* FlashLight;
 #pragma endregion
 
 #pragma region State
@@ -135,9 +150,11 @@ public:
 	bool bCanCrouch = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
+	bool bIsButtonPressing = false;
 
 	bool GetIsRunning() const { return bIsRunning; }
 	bool GetIsCrouching() const { return bIsCrouching; }
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
+	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
 #pragma endregion
 };

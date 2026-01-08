@@ -22,14 +22,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Object
-
-public:
-	UPROPERTY(EditAnywhere, Category = "AnomalyObject")
-	TObjectPtr<UStaticMeshComponent> Object;
-
-#pragma endregion
-
 #pragma region Verdict
 
 public:
@@ -44,6 +36,9 @@ public:
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 
 protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Object;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> WC;
 

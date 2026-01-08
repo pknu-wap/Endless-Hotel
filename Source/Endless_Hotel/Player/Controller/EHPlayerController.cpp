@@ -4,15 +4,16 @@
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Camera/CameraComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Interact/Interactable.h"
+#include <EnhancedInputComponent.h>
+#include <EnhancedInputSubsystems.h>
+#include <Camera/CameraComponent.h>
+#include <GameFramework/Character.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <Components/CapsuleComponent.h>
+#include <Components/SpotLightComponent.h>
 
 AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -21,7 +22,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 
 	// Interact
 	bCanInteract = false;
-	TraceDistance = 100.f;
+	TraceDistance = 50.f;
 
 	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 }
@@ -32,6 +33,12 @@ void AEHPlayerController::BeginPlay()
 
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
+
+	FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+	if (FlashLight)
+	{
+		FlashLight->SetVisibility(false);
+	}
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -76,6 +83,8 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Started, this, &ThisClass::OnFaceCoverStarted);
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
 
+		// Light
+		EnhancedInputComponent->BindAction(IA_Light, ETriggerEvent::Started, this, &ThisClass::TurnPlayerLight);
 		//ESC
 		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Started, this, &ThisClass::EscapeStarted);
 	}
@@ -271,6 +280,19 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	}
 }
 
+void AEHPlayerController::OnButtonPressStarted()
+{
+	bIsButtonPressing = true;
+	bIsCameraFixed = true;
+	bCanMove = false;
+}
+
+void AEHPlayerController::OnButtonPressCompleted()
+{
+	bIsButtonPressing = false;
+	bCanMove = true;
+}
+
 void AEHPlayerController::CheckForInteractables()
 {
 	UCameraComponent* Camera = GetPlayerCamera();
@@ -342,4 +364,17 @@ UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 		return EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
 	return nullptr;
+}
+
+void AEHPlayerController::TurnPlayerLight() 
+{
+	if (!bCanMove) {
+		return;
+	}
+
+	if (!FlashLight)
+	{
+		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+	}
+	FlashLight->SetVisibility(!FlashLight->IsVisible());
 }

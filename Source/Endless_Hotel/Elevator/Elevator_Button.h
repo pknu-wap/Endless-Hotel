@@ -75,6 +75,16 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class ULookAtComponent> LAC;
 
+	UPROPERTY(EditInstanceOnly, Category = "Position")
+	FVector2D PlayerLocationButton;
+
+	UPROPERTY(EditInstanceOnly, Category = "Rotation")
+	FRotator PlayerRotationButton;
+
+	FVector finalloc;
+protected: 
+	void MoveToButtonPlayer();
+
 #pragma endregion
 
 };

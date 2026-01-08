@@ -8,7 +8,6 @@
 void UUI_PopUp_PaintingBlur::StartPaintingBlur()
 {
 	const float TargetStrength = 20.f;
-	float CurrentStrength = 0.f;
 
 	BackBlur->SetBlurStrength(TargetStrength);
 }

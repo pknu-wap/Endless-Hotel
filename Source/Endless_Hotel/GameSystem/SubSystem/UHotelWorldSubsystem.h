@@ -4,19 +4,17 @@
 
 #include <CoreMinimal.h>
 #include <Subsystems/WorldSubsystem.h>
-#include "UHotelWorldSubsystem.generated.h"
+#include <UHotelWorldSubsystem.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UUHotelWorldSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
-	
-public:
-
 
 protected:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
+protected:
 	UPROPERTY(EditAnywhere)
 	FVector PlayerStartLocation = FVector(-1360, 570, 710);
 };
