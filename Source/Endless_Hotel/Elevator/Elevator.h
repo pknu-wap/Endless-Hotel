@@ -1,9 +1,9 @@
 ﻿// Elevator.h
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
-#include "Elevator.generated.h"
+#include <CoreMinimal.h>
+#include <Elevator.generated.h>
 
 #pragma region ForwardDeclarations
 
@@ -13,8 +13,6 @@ class UBoxComponent;
 class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
-class ACharacter;
-class AEHCharacter;
 class AElevator_Button;
 
 #pragma endregion
@@ -142,8 +140,6 @@ private:
 
 	FTimerHandle DoorCloseTimerHandle;
 
-	TObjectPtr<ACharacter> CachedPlayer;
-
 	bool bIsPlayerInside;
 
 
@@ -191,15 +187,8 @@ protected:
 
 	FTimerHandle RotateHandle;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trigger")
-	TSubclassOf<ACharacter> PlayerBPClass;
-
 	UPROPERTY(EditAnywhere, Category = "Position")
 	FVector2D PlayerLocationInElevator;
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Position")
-	FVector PlayerLocationInRoom;
 
 protected:
 	void RotatePlayer();
@@ -222,14 +211,6 @@ private:
 
 private:
 	void NotifySubsystemElevatorChoice();
-
-#pragma endregion
-
-#pragma region Rule
-	
-protected:
-	UPROPERTY(EditAnywhere, Category = "Rule")
-	TObjectPtr<UStaticMeshComponent> Rule;
 
 #pragma endregion
 

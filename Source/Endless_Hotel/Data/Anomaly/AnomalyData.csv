@@ -16,3 +16,4 @@
 15,9,ShelfBook,/Game/EndlessHotel/Anomaly/Base/BP_ShelfBook.BP_ShelfBook_C,/Game/EndlessHotel/Anomaly/Object/ShelfBook/BP_ShelfBook.BP_ShelfBook_C
 16,98,ShelfDoll,/Game/EndlessHotel/Anomaly/Base/BP_ShelfDoll.BP_ShelfDoll_C,/Game/EndlessHotel/Anomaly/Object/ShelfDoll/BP_ShelfDoll.BP_ShelfDoll_C
 17,89,Clock,/Game/EndlessHotel/Anomaly/Base/BP_Clock.BP_Clock_C,/Game/EndlessHotel/Anomaly/Object/Clock/BP_Clock.BP_Clock_C
+18,90,MusicBox,/Game/EndlessHotel/Anomaly/Base/BP_MusicBox.BP_MusicBox_C,/Game/EndlessHotel/Anomaly/Object/MusicBox/MyAnomaly_Object_MusicBox.MyAnomaly_Object_MusicBox_C

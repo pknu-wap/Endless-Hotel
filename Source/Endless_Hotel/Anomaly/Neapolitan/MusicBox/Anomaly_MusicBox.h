@@ -4,13 +4,13 @@
 
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Painting.generated.h>
+#include <Anomaly_MusicBox.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Painting : public AAnomaly_Base_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_MusicBox : public AAnomaly_Base_Neapolitan
 {
 	GENERATED_BODY()
-
+	
 #pragma region Activity
 
 public:

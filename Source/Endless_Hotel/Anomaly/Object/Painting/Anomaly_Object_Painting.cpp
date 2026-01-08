@@ -2,8 +2,6 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "UI/World/Interact/UI_Interact.h"
-#include "Component/LookAt/LookAtComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -14,18 +12,15 @@
 AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+
 	Mesh_Painting = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Painting"));
 	SetRootComponent(Mesh_Painting);
 
 	Mesh_LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_LeftEye"));
 	Mesh_LeftEye->SetupAttachment(RootComponent);
-	Mesh_LeftEye->SetRelativeLocation(FVector(2, -12, 23));
-	Mesh_LeftEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Mesh_RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_RightEye"));
 	Mesh_RightEye->SetupAttachment(RootComponent);
-	Mesh_RightEye->SetRelativeLocation(FVector(2, 3, 23));
-	Mesh_RightEye->SetRelativeRotation(FRotator(0, 0, -90));
 
 	Niagara_Blood_Left = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Left"));
 	Niagara_Blood_Left->SetupAttachment(RootComponent);
@@ -100,6 +95,44 @@ void AAnomaly_Object_Painting::BlurPaint()
 	UUserWidget* UW = Widget_PaintingBlur->GetUserWidgetObject();
 	UUI_PopUp_PaintingBlur* BlurWidget = Cast<UUI_PopUp_PaintingBlur>(UW);
 	BlurWidget->StartPaintingBlur();
+}
+
+#pragma endregion
+
+#pragma region Interact
+
+void AAnomaly_Object_Painting::Interacted_Implementation()
+{
+	OriginRotation = GetActorRotation();
+	bIsRotated = !bIsRotated;
+	InteractedMoveStep(0);
+	bSolved = !bSolved;
+}
+
+void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
+{
+	// 0단계: 앞으로 나오기
+	// 1단계: 뒤집기
+	// 2단계: 다시 뒤로 돌아가기
+	if (step > 2) return;
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("InteractedMoveStep");
+	LatentInfo.Linkage = step + 1;
+	LatentInfo.UUID = 2000 + step;
+
+	FVector Location;
+	if (step == 2)
+	{
+		Location = (bIsRotated) ? InteractedLocation : DefaultLocation;
+	}
+	else
+	{
+		Location = InteractingLocation;
+	}
+	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, RotateAngle, 0);
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, Location, Rotation,
+		true, true, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
 
 #pragma endregion

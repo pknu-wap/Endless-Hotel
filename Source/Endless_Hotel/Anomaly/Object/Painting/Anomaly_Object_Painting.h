@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "Anomaly_Object_Painting.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Painting.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapolitan
@@ -58,6 +58,33 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
+
+#pragma endregion
+
+#pragma region Interact
+
+protected:
+	virtual void Interacted_Implementation() override;
+
+	UFUNCTION()
+	void InteractedMoveStep(int32 step);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector DefaultLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector InteractingLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	FVector InteractedLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	float RotateAngle = 180.f;
+
+	FRotator OriginRotation;
+
+	bool bIsRotated = false;
 
 #pragma endregion
 

@@ -5,7 +5,7 @@
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
-#include "AnomalyProgressSubSystem.generated.h"
+#include <AnomalyProgressSubSystem.generated.h>
 
 class AAnomaly_Generator;
 class AAnomaly_Base;
