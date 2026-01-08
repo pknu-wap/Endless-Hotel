@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "EHCharacter.generated.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Character.h>
+#include <EHCharacter.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AEHCharacter : public ACharacter

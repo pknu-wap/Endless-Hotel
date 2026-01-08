@@ -90,9 +90,9 @@ _`#심리적공포` `#퍼즐` `#초현실적` `#분위기있는` `#3D`_
   </tr>
     <tr>
     <td align="center"><a href="https://github.com/KaneBigNose" title="Code">이상혁</a></td>
-    <td align="center"><a href="https://github.com/Jinu219" title="Code">김경원</a></td>
-    <td align="center"><a href="https://github.com/hyeokbini" title="Code">심서은</a></td>
-    <td align="center"><a href="https://github.com/acastracity" title="Code">조성범</a></td>
+    <td align="center"><a href="https://github.com/kwkim526" title="Code">김경원</a></td>
+    <td align="center"><a href="https://github.com/ssiver6324" title="Code">심서은</a></td>
+    <td align="center"><a href="https://github.com/bumyee11" title="Code">조성범</a></td>
     <td align="center"><a href="" title="Code">권명진</a></td>
   </tr>
   <tr>
