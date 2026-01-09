@@ -54,8 +54,12 @@ protected:
 
 #pragma region Interact
 
+public:
+	virtual void SetInteraction() override;
+
 protected:
 	virtual void Interacted_Implementation() override;
+	void StopMusicBox();
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")

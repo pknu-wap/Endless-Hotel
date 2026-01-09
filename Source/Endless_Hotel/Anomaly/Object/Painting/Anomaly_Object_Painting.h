@@ -63,7 +63,7 @@ protected:
 
 #pragma region Interact
 public:
-	virtual void ActivateInteraction() override;
+	virtual void SetInteraction() override;
 
 protected:
 	virtual void Interacted_Implementation() override;

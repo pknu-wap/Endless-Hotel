@@ -106,7 +106,7 @@ void AAnomaly_Object_Painting::Interacted_Implementation()
 	StartInteractaction();
 }
 
-void AAnomaly_Object_Painting::ActivateInteraction()
+void AAnomaly_Object_Painting::SetInteraction()
 {
 	switch (AnomalyID)
 	{

@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -15,7 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Base_Neapolitan
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 

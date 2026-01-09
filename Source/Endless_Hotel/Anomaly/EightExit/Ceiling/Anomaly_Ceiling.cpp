@@ -5,11 +5,11 @@
 
 #pragma region Activity
 
-void AAnomaly_Ceiling::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Ceiling::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 11:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
