@@ -43,11 +43,16 @@ public:
 	void PlayMusicBox();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
-	FTimerHandle FailTimerHandle;
+	void StartRotate();
 
 	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
 	float LimitTime;
+
+	UPROPERTY(EditAnywhere, Category = "MusicBox|Rotate");
+	FRotator TickRotation;
+	
+	FTimerHandle RotateHandle;
+	FTimerHandle FailTimerHandle;
 
 #pragma endregion
 
