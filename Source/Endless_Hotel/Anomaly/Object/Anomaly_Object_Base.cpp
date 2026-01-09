@@ -25,7 +25,7 @@ void AAnomaly_Object_Base::KillPlayer()
 		[Sub]()
 		{
 			Sub->ApplyVerdict();
-		}), 10, false);
+		}), 5, false);
 }
 
 #pragma endregion
