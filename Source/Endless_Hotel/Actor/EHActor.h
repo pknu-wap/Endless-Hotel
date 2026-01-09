@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "EHActor.generated.h"
+#include <CoreMinimal.h>
+#include <GameFramework/Actor.h>
+#include <EHActor.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AEHActor : public AActor

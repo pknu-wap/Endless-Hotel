@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "EHGameMode_Base.generated.h"
+#include <CoreMinimal.h>
+#include <GameFramework/GameModeBase.h>
+#include <EHGameMode_Base.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AEHGameMode_Base : public AGameModeBase

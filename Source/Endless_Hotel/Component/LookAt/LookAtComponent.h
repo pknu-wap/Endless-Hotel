@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Component/EHComponent.h"
-#include "LookAtComponent.generated.h"
+#include <CoreMinimal.h>
+#include <LookAtComponent.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API ULookAtComponent : public UEHComponent

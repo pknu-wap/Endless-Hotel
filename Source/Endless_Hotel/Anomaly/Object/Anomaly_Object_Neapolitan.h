@@ -4,11 +4,11 @@
 
 #include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Interact/InteractableObject.h"
+#include "Interact/Interactable.h"
 #include "Anomaly_Object_Neapolitan.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base, public IInteractableObject
+class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base, public IInteractable
 {
 	GENERATED_BODY()
 	

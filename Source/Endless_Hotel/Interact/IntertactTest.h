@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Actor/EHActor.h"
-#include "Interact/InteractableObject.h"
-#include "IntertactTest.generated.h"
+#include "Interact/Interactable.h"
+#include <CoreMinimal.h>
+#include <IntertactTest.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AInteractTest : public AEHActor, public IInteractableObject
+class ENDLESS_HOTEL_API AInteractTest : public AEHActor, public IInteractable
 {
     GENERATED_BODY()
 

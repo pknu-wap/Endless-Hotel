@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameSystem/GameMode/EHGameMode_Base.h"
-#include "EHGameMode_InGame.generated.h"
+#include <CoreMinimal.h>
+#include <EHGameMode_InGame.generated.h>
 
 #pragma region Declare
 
