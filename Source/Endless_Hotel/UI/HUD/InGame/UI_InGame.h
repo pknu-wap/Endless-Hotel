@@ -35,6 +35,22 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UTexture2D> Crosshair_Interact;
 
+protected:
+	UFUNCTION()
+	void ShowCrosshair(bool bIsShow);
+
+protected:
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> WidgetAnim_ShowCrosshair;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> WidgetAnim_Interact;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> WidgetAnim_Normal;
+
+	bool bIsCrosshairInteractMode = false;
+
 #pragma endregion
 
 #pragma region Brightness
