@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "UI/World/Interact/UI_Interact.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -196,17 +197,11 @@ void AAnomaly_Object_Painting::FrameTilt()
 }
 #pragma endregion
 
-void AAnomaly_Object_Painting::Interacted_Implementation()
-{
-	bSolved = !bSolved;
-}
-
+#pragma region Interact
 void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
 {
 	UI_Interact->ShowDescription(bIsShow);
 }
-#pragma endregion
-#pragma region Interact
 
 void AAnomaly_Object_Painting::Interacted_Implementation()
 {

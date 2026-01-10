@@ -108,11 +108,8 @@ protected:
 #pragma region Interact
 	virtual void Interacted_Implementation() override;
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-#pragma region Interact
 
 protected:
-	virtual void Interacted_Implementation() override;
-
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);
 
