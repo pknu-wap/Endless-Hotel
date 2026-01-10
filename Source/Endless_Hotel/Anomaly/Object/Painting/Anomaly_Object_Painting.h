@@ -110,8 +110,6 @@ public:
 	virtual void SetInteraction() override;
 
 protected:
-	virtual void Interacted_Implementation() override;
-
 	void InteractRotate();
 
 	UFUNCTION()

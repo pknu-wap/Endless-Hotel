@@ -198,11 +198,6 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 #pragma region Interact
 
-void AAnomaly_Object_Painting::Interacted_Implementation()
-{
-	StartInteractaction();
-}
-
 void AAnomaly_Object_Painting::SetInteraction()
 {
 	switch (AnomalyID)
@@ -229,7 +224,6 @@ void AAnomaly_Object_Painting::InteractRotate()
 
 void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 {
-
 	// 0단계: 앞으로 나오기
 	// 1단계: 뒤집기
 	// 2단계: 다시 뒤로 돌아가기

@@ -43,9 +43,7 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 
 void AAnomaly_Object_Neapolitan::Interacted_Implementation()
 {
-	bSolved = !bSolved;
-
-	RestoreObjectTransform();
+	StartInteractaction();
 }
 
 void AAnomaly_Object_Neapolitan::ShowInteractWidget_Implementation(bool bIsShow)

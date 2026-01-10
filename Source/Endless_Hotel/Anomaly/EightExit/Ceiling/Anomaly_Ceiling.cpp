@@ -19,7 +19,7 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 		break;
 	}
 
-	StartAnomalyAction();
+	StartImmediate();
 }
 
 #pragma endregion
