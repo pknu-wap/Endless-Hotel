@@ -15,11 +15,11 @@ AAnomaly_Light::AAnomaly_Light(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Light::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Light::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 2:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)

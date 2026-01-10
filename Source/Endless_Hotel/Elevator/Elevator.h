@@ -90,7 +90,7 @@ protected:
 #pragma region Sound
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")

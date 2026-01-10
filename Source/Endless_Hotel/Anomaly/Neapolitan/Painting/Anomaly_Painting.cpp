@@ -5,16 +5,17 @@
 
 #pragma region Activity
 
-void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Painting::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 99:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
+				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ActiveTrigger();
 		break;
@@ -23,6 +24,7 @@ void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
+				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ActiveTrigger();
 		break;
@@ -31,8 +33,17 @@ void AAnomaly_Painting::ActivateAnomaly(uint8 Anomaly_ID)
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
+				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		StartImmediate();
+		break;
+
+	case 92:
+		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
+			{
+				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
+			});
+		ActiveTrigger();
 		break;
 	}
 }

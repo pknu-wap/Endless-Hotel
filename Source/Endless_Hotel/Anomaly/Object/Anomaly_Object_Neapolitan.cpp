@@ -16,7 +16,7 @@ AAnomaly_Object_Neapolitan::AAnomaly_Object_Neapolitan(const FObjectInitializer&
 	Object->SetupAttachment(RootComponent);
 
 	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
-	WC->SetupAttachment(Object);
+	WC->SetupAttachment(RootComponent);
 
 	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
 
@@ -43,14 +43,17 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 
 void AAnomaly_Object_Neapolitan::Interacted_Implementation()
 {
-	bSolved = !bSolved;
-
-	RestoreObjectTransform();
+	StartInteractaction();
 }
 
 void AAnomaly_Object_Neapolitan::ShowInteractWidget_Implementation(bool bIsShow)
 {
 	UI_Interact->ShowDescription(bIsShow);
+}
+
+void AAnomaly_Object_Neapolitan::StartInteractaction()
+{
+	InteractAction();
 }
 
 #pragma endregion

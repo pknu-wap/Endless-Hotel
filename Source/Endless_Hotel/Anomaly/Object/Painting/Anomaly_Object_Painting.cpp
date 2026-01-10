@@ -7,6 +7,8 @@
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/WidgetComponent.h>
 #include <Components/BoxComponent.h>
+#include <Components/StaticMeshComponent.h>
+#include <Components/SceneComponent.h>
 #pragma region Base
 
 AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer)
@@ -99,9 +101,120 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 #pragma endregion
 
+#pragma region FrameTilt
+
+void AAnomaly_Object_Painting::FrameTilt()
+{
+	UE_LOG(LogTemp, Warning, TEXT("[FrameTilt] Called"));
+
+	if (!GetWorld())
+	{
+		return;
+	}
+
+	GetWorld()->GetTimerManager().ClearTimer(FrameTiltDelayHandle);
+	GetWorld()->GetTimerManager().ClearTimer(FrameTiltInterpHandle);
+	FrameInitialRotMap.Empty();
+
+	TArray<AActor*> AllActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActors);
+
+	for (AActor* FrameActor : AllActors)
+	{
+		if (!FrameActor)
+		{
+			continue;
+		}
+		USceneComponent* TargetRoot = nullptr;
+		TArray<USceneComponent*> SceneComps;
+		FrameActor->GetComponents<USceneComponent>(SceneComps);
+
+		for (USceneComponent* SC : SceneComps)
+		{
+			if (SC && SC->ComponentHasTag(FName("FrameRoot")))
+			{
+				TargetRoot = SC;
+				break;
+			}
+		}
+
+		if (!TargetRoot)
+		{
+			TargetRoot = FrameActor->GetRootComponent();
+		}
+
+		if (!TargetRoot)
+		{
+			continue;
+		}
+
+		TargetRoot->SetMobility(EComponentMobility::Movable);
+
+		FrameInitialRotMap.Add(FrameActor, FrameActor->GetActorRotation());
+	}
+	UE_LOG(LogTemp, Warning, TEXT("[FrameTilt] Targets: %d"), FrameInitialRotMap.Num());
+	GetWorld()->GetTimerManager().SetTimer(FrameTiltDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			if (!GetWorld())
+			{
+				return;
+			}
+
+			FrameTiltStartTime = GetWorld()->GetTimeSeconds();
+			FrameTiltDuration = FMath::FRandRange(FrameTiltInterpMin, FrameTiltInterpMax);
+			FrameTiltTargetRoll = FMath::FRandRange(FrameTiltRollMin, FrameTiltRollMax);
+
+			GetWorld()->GetTimerManager().SetTimer(FrameTiltInterpHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+				{
+					if (!GetWorld())
+					{
+						return;
+					}
+
+					const float Now = GetWorld()->GetTimeSeconds();
+					const float Alpha = FMath::Clamp((Now - FrameTiltStartTime) / FMath::Max(FrameTiltDuration, 0.001f), 0.f, 1.f);
+					for (auto& Pair : FrameInitialRotMap)
+					{
+						AActor* TargetActor = Pair.Key.Get();
+						if (!TargetActor)
+						{
+							continue;
+						}
+
+						const FRotator InitialRot = Pair.Value;
+						const float NewRoll = FMath::Lerp(InitialRot.Roll, InitialRot.Roll + FrameTiltTargetRoll, Alpha);
+						FRotator NewRot = InitialRot;
+						NewRot.Roll = NewRoll;
+						TargetActor->SetActorRotation(NewRot);
+					}
+					if (Alpha >= 1.f)
+					{
+						GetWorld()->GetTimerManager().ClearTimer(FrameTiltInterpHandle);
+					}
+				}), 0.02f, true);
+		}), FrameTiltDelay, false);
+}
+#pragma endregion
+
 #pragma region Interact
 
-void AAnomaly_Object_Painting::Interacted_Implementation()
+void AAnomaly_Object_Painting::SetInteraction()
+{
+	switch (AnomalyID)
+	{
+	case 0:
+		break;
+
+	default:
+		InteractAction = ([this]()
+			{
+				AAnomaly_Object_Painting::InteractRotate();
+			});
+		break;
+	}
+}
+
+void AAnomaly_Object_Painting::InteractRotate()
 {
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;

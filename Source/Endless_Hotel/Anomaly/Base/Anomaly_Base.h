@@ -4,11 +4,14 @@
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
 #include <Anomaly_Base.generated.h>
 
 #pragma region Declare
 
 class AAnomaly_Object_Base;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnomalyDelegate, bool, bIsStart);
 
 #pragma endregion
 
@@ -44,6 +47,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
+	static FAnomalyDelegate AnomalyDelegate;
+
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
 
@@ -53,13 +58,9 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
-	bool bIsCorrectElevator = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	bool bIsSolved = false;
 
 protected:
-
 	UFUNCTION()
 	void SetVerdictMode(EAnomalyVerdictMode NewMode);
 
@@ -68,8 +69,8 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) PURE_VIRTUAL(AAnomaly_Base::ActivateAnomaly, ;);
-	virtual void DisableAnomaly(uint8 Anomaly_ID) {}
+	virtual void ActivateAnomaly() PURE_VIRTUAL(AAnomaly_Base::ActivateAnomaly, ;);
+	virtual void DisableAnomaly() {}
 
 #pragma endregion
 
@@ -100,6 +101,13 @@ protected:
 
 	// 초기
 	virtual void StartImmediate();
+
+#pragma endregion
+
+#pragma region Player
+
+protected:
+	virtual void KillPlayer();
 
 #pragma endregion
 

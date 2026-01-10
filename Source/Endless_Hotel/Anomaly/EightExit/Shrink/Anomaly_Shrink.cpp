@@ -34,9 +34,9 @@ void AAnomaly_Shrink::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Shrink::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Shrink::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
 	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

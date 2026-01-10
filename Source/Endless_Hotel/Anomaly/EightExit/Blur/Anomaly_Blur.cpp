@@ -18,9 +18,9 @@ AAnomaly_Blur::AAnomaly_Blur(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Blur::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Blur::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
 	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

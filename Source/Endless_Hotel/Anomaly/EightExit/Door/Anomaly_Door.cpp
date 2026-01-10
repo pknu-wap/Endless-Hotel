@@ -14,11 +14,11 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Door::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Door::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 		case 4:
 			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
