@@ -56,15 +56,14 @@ public:
 	void GetAnomalyEntries();
 
 	TSubclassOf<class AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
-	TSubclassOf<class AAnomaly_Object_Base> GetObjectByName(FString ObjectName);
-	TSubclassOf<class AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
 
-public:
 	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
+
 	void RemoveClearedAnomaly();
 
 public:
 	TSet<uint8> LoadedAnomalySet;
+
 	TArray<FAnomalyEntry> ActAnomaly;
 
 protected:

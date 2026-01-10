@@ -103,30 +103,6 @@ TSubclassOf<AAnomaly_Object_Base> UDataController::GetObjectByID(uint8 AnomalyID
 	return nullptr;
 }
 
-TSubclassOf<AAnomaly_Object_Base> UDataController::GetObjectByName(FString ObjectName)
-{
-	for (auto& Pair : DataTable_Anomaly->GetRowMap())
-	{
-		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
-		if (Row->Anomaly_En == ObjectName)
-		{
-			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
-			return LoadedClass;
-		}
-	}
-	return nullptr;
-}
-
-TSubclassOf<AAnomaly_Object_Base> UDataController::GetObjectByRowIndex(uint8 RowIndex)
-{
-	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(RowIndex), TEXT("")))
-	{
-		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
-		return LoadedClass;
-	}
-	return nullptr;
-}
-
 void UDataController::RemoveClearedAnomaly()
 {
 	ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
