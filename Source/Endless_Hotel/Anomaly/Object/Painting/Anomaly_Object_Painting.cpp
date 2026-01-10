@@ -196,16 +196,6 @@ void AAnomaly_Object_Painting::FrameTilt()
 }
 #pragma endregion
 
-void AAnomaly_Object_Painting::Interacted_Implementation()
-{
-	bSolved = !bSolved;
-}
-
-void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	UI_Interact->ShowDescription(bIsShow);
-}
-#pragma endregion
 #pragma region Interact
 
 void AAnomaly_Object_Painting::Interacted_Implementation()
