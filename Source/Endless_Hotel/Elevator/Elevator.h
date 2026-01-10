@@ -3,6 +3,7 @@
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
 #include <Elevator.generated.h>
 
 #pragma region ForwardDeclarations
@@ -14,6 +15,12 @@ class USceneComponent;
 class UTimelineComponent;
 class UCurveFloat;
 class AElevator_Button;
+
+#pragma endregion
+
+#pragma region Declare
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElevatorDelegate, bool, bIsStart);
 
 #pragma endregion
 
@@ -157,6 +164,9 @@ public:
 #pragma endregion
 
 #pragma region ElevatorMovement
+
+public:
+	static FElevatorDelegate ElevatorDelegate;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")

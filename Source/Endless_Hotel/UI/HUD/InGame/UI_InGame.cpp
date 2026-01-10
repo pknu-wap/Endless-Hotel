@@ -6,6 +6,7 @@
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
+#include "Elevator/Elevator.h"
 #include <Components/Image.h>
 #include <Components/CanvasPanelSlot.h>
 #include <Kismet/GameplayStatics.h>
@@ -23,6 +24,8 @@ void UUI_InGame::NativeOnInitialized()
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 
 	UUI_PopUp_Brightness::SettingBrightness.AddDynamic(this, &ThisClass::SetBrightness);
+
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
 void UUI_InGame::NativeConstruct()
@@ -45,19 +48,35 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	if (bCanInteract)
 	{
 		Brush.SetResourceObject(Crosshair_Interact);
-		Brush.TintColor = FSlateColor(FLinearColor(1, 1, 1, 0.6f));
-		CPSlot->SetSize(FVector2D(8, 8));
-		CPSlot->SetPosition(FVector2D(-4, -4));
+		if (!bIsCrosshairInteractMode)
+		{
+			PlayAnimation(WidgetAnim_Interact);
+			bIsCrosshairInteractMode = true;
+		}
 	}
 	else
 	{
 		Brush.SetResourceObject(Crosshair_Normal);
-		Brush.TintColor = FSlateColor(FLinearColor(1, 1, 1, 0.3f));
-		CPSlot->SetSize(FVector2D(18, 18));
-		CPSlot->SetPosition(FVector2D(-9, -9));
+		if (bIsCrosshairInteractMode)
+		{
+			PlayAnimation(WidgetAnim_Normal);
+			bIsCrosshairInteractMode = false;
+		}
 	}
 
 	Crosshair->SetBrush(Brush);
+}
+
+void UUI_InGame::ShowCrosshair(bool bIsShow)
+{
+	if (bIsShow)
+	{
+		PlayAnimation(WidgetAnim_ShowCrosshair);
+	}
+	else
+	{
+		Crosshair->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 #pragma endregion
