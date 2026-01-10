@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
-#include "EHComponent.generated.h"
+#include <CoreMinimal.h>
+#include <Components/ActorComponent.h>
+#include <EHComponent.generated.h>
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ENDLESS_HOTEL_API UEHComponent : public UActorComponent

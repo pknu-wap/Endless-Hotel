@@ -4,11 +4,11 @@
 
 #include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Interact/InteractableObject.h"
+#include "Interact/Interactable.h"
 #include "Anomaly_Object_Neapolitan.generated.h"
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base, public IInteractableObject
+class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base, public IInteractable
 {
 	GENERATED_BODY()
 	
@@ -19,14 +19,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-#pragma endregion
-
-#pragma region Object
-
-public:
-	UPROPERTY(EditAnywhere, Category = "AnomalyObject")
-	TObjectPtr<UStaticMeshComponent> Object;
 
 #pragma endregion
 
@@ -44,6 +36,9 @@ public:
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 
 protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Object;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> WC;
 

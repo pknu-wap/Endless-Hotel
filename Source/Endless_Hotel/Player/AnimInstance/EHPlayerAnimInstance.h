@@ -62,6 +62,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsFaceCoveringState = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+    bool bIsButtonPressingState = false;
     // Ä³½Ì
     UPROPERTY(BlueprintReadOnly, Category = "Anim")
     APawn* CachedPawnOwner;

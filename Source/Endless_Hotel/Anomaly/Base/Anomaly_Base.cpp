@@ -3,6 +3,7 @@
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
@@ -62,6 +63,8 @@ void AAnomaly_Base::ActiveTrigger()
 void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
+	if (!Player) return;
 	StartAnomalyAction();
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

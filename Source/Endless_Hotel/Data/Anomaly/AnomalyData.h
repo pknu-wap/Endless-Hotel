@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "AnomalyData.generated.h"
+#include <AnomalyData.generated.h>
 
 USTRUCT(BlueprintType)
 struct FAnomalyData : public FTableRowBase

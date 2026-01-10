@@ -4,7 +4,7 @@
 
 #include <CoreMinimal.h>
 #include "Actor/EHActor.h"
-#include "Interact/InteractableObject.h"
+#include "Interact/Interactable.h"
 #include "Elevator_Button.generated.h"
 
 #pragma region Declare
@@ -14,7 +14,7 @@ class AElevator;
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractableObject
+class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
 {
 	GENERATED_BODY()
 
@@ -74,6 +74,16 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class ULookAtComponent> LAC;
+
+	UPROPERTY(EditInstanceOnly, Category = "Position")
+	FVector2D PlayerLocationButton;
+
+	UPROPERTY(EditInstanceOnly, Category = "Rotation")
+	FRotator PlayerRotationButton;
+
+	FVector finalloc;
+protected: 
+	void MoveToButtonPlayer();
 
 #pragma endregion
 

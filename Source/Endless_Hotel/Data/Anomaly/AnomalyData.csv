@@ -18,3 +18,4 @@
 17,92,FrameTilt,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,
 18,24,GhostHand,/Game/EndlessHotel/Anomaly/Base/BP_GhostHand.BP_GhostHand_C,
 17,89,Clock,/Game/EndlessHotel/Anomaly/Base/BP_Clock.BP_Clock_C,/Game/EndlessHotel/Anomaly/Object/Clock/BP_Clock.BP_Clock_C
+18,90,MusicBox,/Game/EndlessHotel/Anomaly/Base/BP_MusicBox.BP_MusicBox_C,/Game/EndlessHotel/Anomaly/Object/MusicBox/MyAnomaly_Object_MusicBox.MyAnomaly_Object_MusicBox_C

@@ -2,15 +2,15 @@
 
 
 #include "Anomaly/Object/Ghost/Anomaly_Object_Ghost.h"
-#include "Kismet/GameplayStatics.h"
-#include "Camera/PlayerCameraManager.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/PlayerController.h"
-#include "Camera/CameraComponent.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "TimerManager.h"
-#include "Components/AudioComponent.h"
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
+#include <Kismet/GameplayStatics.h>
+#include <Camera/PlayerCameraManager.h>
+#include <GameFramework/Character.h>
+#include <GameFramework/PlayerController.h>
+#include <Camera/CameraComponent.h>
+#include <TimerManager.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -36,9 +36,6 @@ AAnomaly_Object_Ghost::AAnomaly_Object_Ghost(const FObjectInitializer& ObjectIni
 void AAnomaly_Object_Ghost::BeginPlay()
 {
     Super::BeginPlay();
-
-    // 게임 시작 시에는 절대 보이면 안 됨
-    SpawnLocation = FVector(-2890.0, 570.f, 600.f);
 
     SetActorLocation(SpawnLocation);
 

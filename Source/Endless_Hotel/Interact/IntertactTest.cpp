@@ -1,10 +1,10 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Interact/IntertactTest.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/WidgetComponent.h"          // 삽입해야 하는 헤더1
-#include "UI/World/Interact/UI_Interact.h" // 삽입해야 하는 헤더2
+#include "UI/World/Interact/UI_Interact.h"       // 삽입해야 하는 헤더2
 #include "Component/LookAt/LookAtComponent.h"    // 삽입해야 하는 헤더3
+#include <Components/StaticMeshComponent.h>
+#include <Components/WidgetComponent.h>          // 삽입해야 하는 헤더1
 
 // define으로 선언된 LOCTEXT_NAMESPACE 네임스페이스 지역내에서 에디터가 텍스트를 수집함
 #define LOCTEXT_NAMESPACE "TestNameSpace"

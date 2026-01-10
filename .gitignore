@@ -75,4 +75,5 @@ Plugins/**/Intermediate/*
 DerivedDataCache/*
 
 # Additional Directory
-Plugins/*
+Plugins/
+Plugins
