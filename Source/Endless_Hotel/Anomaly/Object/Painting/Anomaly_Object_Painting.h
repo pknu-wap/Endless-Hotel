@@ -17,6 +17,9 @@ public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	UPROPERTY(EditAnywhere, Category = "Painting")
+	TObjectPtr<class USceneComponent> Root;
+
 	UPROPERTY(EditAnyWhere, Category = "Painting")
 	TObjectPtr<class UStaticMeshComponent> Mesh_Painting;
 
@@ -61,6 +64,50 @@ protected:
 
 #pragma endregion
 
+#pragma region FrameTilt
+
+public:
+	void FrameTilt();
+
+protected:
+	UPROPERTY()
+	TMap<TWeakObjectPtr<AActor>, FRotator> FrameInitialRotMap;
+
+	UPROPERTY()
+	FTimerHandle FrameTiltDelayHandle;
+
+	UPROPERTY()
+	FTimerHandle FrameTiltInterpHandle;
+
+	UPROPERTY()
+	float FrameTiltStartTime = 0.f;
+
+	UPROPERTY()
+	float FrameTiltDuration = 0.5f;
+
+	UPROPERTY()
+	float FrameTiltTargetRoll = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "FrameTilt")
+	float FrameTiltDelay = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = "FrameTilt")
+	float FrameTiltInterpMin = 0.2f;
+
+	UPROPERTY(EditAnywhere, Category = "FrameTilt")
+	float FrameTiltInterpMax = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "FrameTilt")
+	float FrameTiltRollMin = -180.f;
+
+	UPROPERTY(EditAnywhere, Category = "FrameTilt")
+	float FrameTiltRollMax = 180.f;
+
+#pragma endregion
+
+#pragma region Interact
+	virtual void Interacted_Implementation() override;
+	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
 #pragma region Interact
 public:
 	virtual void SetInteraction() override;

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Timmy Doll - Reality Capture | #RCToyChallenge
+* source:	https://sketchfab.com/3d-models/timmy-doll-reality-capture-rctoychallenge-e74e61f660e84382956634b0e2a6d61c
+* author:	Sircher (https://sketchfab.com/Sircher)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Timmy Doll - Reality Capture | #RCToyChallenge" (https://sketchfab.com/3d-models/timmy-doll-reality-capture-rctoychallenge-e74e61f660e84382956634b0e2a6d61c) by Sircher (https://sketchfab.com/Sircher) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
