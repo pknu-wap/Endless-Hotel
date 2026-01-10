@@ -4,6 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Blur/UI_PopUp_Blur.h"
 #include "Sound/SoundController.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>
 
@@ -21,6 +22,8 @@ void UEHCameraComponent::BeginPlay()
 
 	SettingEyeEffect();
 	StartEyeEffect(true);
+
+	AAnomaly_Base::AnomalyDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
 }
 
 #pragma endregion

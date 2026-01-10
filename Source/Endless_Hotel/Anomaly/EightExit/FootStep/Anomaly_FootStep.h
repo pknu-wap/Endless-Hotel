@@ -6,9 +6,6 @@
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_FootStep.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_FootStep : public AAnomaly_Base_EightExit
 {
@@ -17,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_FootStep : public AAnomaly_Base_EightExit
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 

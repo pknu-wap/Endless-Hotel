@@ -5,6 +5,7 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "Data/Controller/DataController.h"
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -31,10 +32,10 @@ void AAnomaly_Generator::BeginPlay()
 
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
-	UClass* TargetClass = Sub->GetObjectByID(CurrentAnomaly->AnomalyID);
-
+	UClass* TargetClass = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+	
 	if (!TargetClass)
 	{
 		return;
@@ -46,6 +47,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 	for (auto* FoundActor : FoundActors)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		CurrentAnomaly->LinkedObjects.Add(FoundActor);
 	}
 }
@@ -60,11 +62,12 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	UE_LOG(LogTemp, Verbose, TEXT("[Gen %s] SpawnAnomalyAtIndex(%d)"), *GetName(), Index);
 
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
 	// Out of Range Check
-	if (!(Sub->ActAnomaly).IsValidIndex(Index))
+	if (!(DataC->ActAnomaly).IsValidIndex(Index))
 	{
-		if (Sub->ActAnomaly.Num() == 0)
+		if (DataC->ActAnomaly.Num() == 0)
 		{
 			return nullptr;
 		}
@@ -73,7 +76,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 		return SpawnAnomalyAtIndex(Index); // restart
 	}
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = Sub->ActAnomaly[Index].AnomalyClass;
+	TSubclassOf<AAnomaly_Base> AnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
 
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
@@ -90,14 +93,14 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 		return nullptr;
 	}
 
-	Spawned->AnomalyID = Sub->ActAnomaly[Index].AnomalyID;
+	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
 
 	CurrentAnomaly = Spawned;
 
 	AnomalyObjectLinker();
 
 	// Start
-	Spawned->ActivateAnomaly(Spawned->AnomalyID);
+	Spawned->ActivateAnomaly();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);

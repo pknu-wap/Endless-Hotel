@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 
 
 #pragma region Trigger

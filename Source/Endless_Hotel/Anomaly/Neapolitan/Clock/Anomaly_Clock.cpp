@@ -5,11 +5,11 @@
 
 #pragma region Activity
 
-void AAnomaly_Clock::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Clock::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 89:
 		AnomalyAction = ([](AAnomaly_Object_Base* Clock)

@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -22,7 +22,7 @@ protected:
 
 #pragma region Activity
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 #pragma endregion
 
 #pragma region GhostHand

@@ -106,12 +106,11 @@ protected:
 #pragma endregion
 
 #pragma region Interact
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-#pragma region Interact
+public:
+	virtual void SetInteraction() override;
 
 protected:
-	virtual void Interacted_Implementation() override;
+	void InteractRotate();
 
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);

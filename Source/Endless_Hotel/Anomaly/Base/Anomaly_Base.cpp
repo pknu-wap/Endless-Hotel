@@ -8,6 +8,8 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
 
+FAnomalyDelegate AAnomaly_Base::AnomalyDelegate;
+
 #pragma region Base
 
 AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
@@ -83,6 +85,15 @@ void AAnomaly_Base::StartDelay(float delay)
 void AAnomaly_Base::StartImmediate()
 {
 	StartAnomalyAction();
+}
+
+#pragma endregion
+
+#pragma region Player
+
+void AAnomaly_Base::KillPlayer()
+{
+	AnomalyDelegate.Broadcast(false);
 }
 
 #pragma endregion

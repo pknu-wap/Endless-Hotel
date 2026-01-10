@@ -7,11 +7,11 @@
 
 #pragma region Activity
 
-void AAnomaly_Plant::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Plant::ActivateAnomaly()
 {
-    Super::ActivateAnomaly(Anomaly_ID);
+    Super::ActivateAnomaly();
 
-    switch (Anomaly_ID)
+    switch (AnomalyID)
     {
     case 10:
         AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
