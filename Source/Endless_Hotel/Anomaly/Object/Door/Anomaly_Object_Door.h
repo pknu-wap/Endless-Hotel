@@ -36,6 +36,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Voice;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_DoorMove;
+
 #pragma endregion
 
 #pragma region Shake
@@ -85,4 +88,62 @@ protected:
 
 #pragma endregion
 
+#pragma region DoorClose
+
+public:
+	void StartDoorClose();
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UBoxComponent> TriggerBox_Door5;
+
+	UPROPERTY()
+	TObjectPtr<class UBoxComponent> TriggerBox_Door8;
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class AAnomaly_Object_Door> Door8Cached;
+
+protected:
+	bool bDoor16Initialized = false;
+
+protected:
+	void SetupDoor16Triggers();
+	void SetTriggerEnabled(class UBoxComponent* TriggerBox, bool bEnabled);
+	bool IsPlayerCharacter(AActor* OtherActor) const;
+
+	class AAnomaly_Object_Door* FindDoorByIndex(int32 Index) const;
+
+	UPROPERTY()
+	TWeakObjectPtr<class AAnomaly_Object_Door> Door8ObjectCached;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	TObjectPtr<class USoundWave> Sound_DoorOpen;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	TObjectPtr<class USoundWave> Sound_DoorClose;
+
+protected:
+	UFUNCTION()
+	void OnDoor16Trigger5Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnDoor16Trigger8Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+#pragma endregion
+
+#pragma region DoorRotation
+public:
+	void SetDoorRotationZ(float NewZ);
+
+	void PlayDoorRotationDeltaSquence(const TArray<float>& DeltaList, float StepInterval);
+
+protected:
+	FTimerHandle RotationStepHandle;
+	float RotationBaseZ = 0.f;
+	float RotationStepInterval = 0.12f;
+	int32 RotationStepIndex = 0;
+	TArray<float> RotationDeltaList;
+
+#pragma endregion
 };

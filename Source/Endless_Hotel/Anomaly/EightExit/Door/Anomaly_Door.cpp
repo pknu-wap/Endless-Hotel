@@ -2,7 +2,9 @@
 
 #include "Anomaly/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/Door/Anomaly_Object_Door.h"
-#include "Components/BoxComponent.h"
+#include <Components/BoxComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/Character.h>
 
 #pragma region Base
 
@@ -26,6 +28,13 @@ void AAnomaly_Door::ActivateAnomaly(uint8 Anomaly_ID)
 					Cast<AAnomaly_Object_Door>(AnomalyObject)->PlayShake_Handle();
 				});
 		break;
+
+		case 16:
+			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+				{
+					Cast<AAnomaly_Object_Door>(AnomalyObject)->StartDoorClose();
+				});
+			break;
 	}
 }
 
