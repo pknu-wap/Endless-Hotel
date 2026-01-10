@@ -2,6 +2,7 @@
 
 
 #include "Anomaly/Object/MusicBox/Anomaly_Object_MusicBox.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 
@@ -37,7 +38,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 			bWaitingInteract = false;
 			AC->Stop();
 			bSolved = false;
-			KillPlayer();
+			AAnomaly_Base::AnomalyDelegate.Broadcast(false);
 		}), LimitTime, false);
 }
 

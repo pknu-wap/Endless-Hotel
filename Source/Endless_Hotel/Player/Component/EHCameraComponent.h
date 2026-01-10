@@ -32,6 +32,7 @@ protected:
 #pragma region Eye Effect
 
 public:
+	UFUNCTION()
 	void StartEyeEffect(bool bIsOpen);
 
 protected:

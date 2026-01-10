@@ -17,11 +17,4 @@ public:
 	uint8 AnomalyID;
 
 #pragma endregion
-
-#pragma region Player
-
-protected:
-	virtual void KillPlayer();
-
-#pragma endregion
 };

@@ -4,11 +4,14 @@
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
 #include <Anomaly_Base.generated.h>
 
 #pragma region Declare
 
 class AAnomaly_Object_Base;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnomalyDelegate, bool, bIsStart);
 
 #pragma endregion
 
@@ -43,6 +46,8 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
+
+	static FAnomalyDelegate AnomalyDelegate;
 
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
@@ -96,6 +101,13 @@ protected:
 
 	// 초기
 	virtual void StartImmediate();
+
+#pragma endregion
+
+#pragma region Player
+
+protected:
+	virtual void KillPlayer();
 
 #pragma endregion
 
