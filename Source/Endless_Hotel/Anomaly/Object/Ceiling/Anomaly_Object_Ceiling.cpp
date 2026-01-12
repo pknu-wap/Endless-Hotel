@@ -3,6 +3,7 @@
 #include "Anomaly/Object/Ceiling/Anomaly_Object_Ceiling.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
+#include <Niagara/Public/NiagaraComponent.h>
 
 #pragma region Base
 
@@ -15,6 +16,10 @@ AAnomaly_Object_Ceiling::AAnomaly_Object_Ceiling(const FObjectInitializer& Objec
 
 	Mesh_Ceiling = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Ceiling"));
 	Mesh_Ceiling->SetupAttachment(RootComponent);
+
+	Niagara_Ceiling_Blood = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Ceiling_Blood"));
+	Niagara_Ceiling_Blood->SetupAttachment(RootComponent);
+	Niagara_Ceiling_Blood->SetAutoActivate(false);
 
 	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 }
@@ -43,6 +48,15 @@ void AAnomaly_Object_Ceiling::CeilingRotate(float Value)
 void AAnomaly_Object_Ceiling::PlayCeilingRotate()
 {
 	Timeline->PlayFromStart();
+}
+
+#pragma endregion
+
+#pragma region Ceiling Blood
+
+void AAnomaly_Object_Ceiling::CeilingBloodDripping()
+{
+	Niagara_Ceiling_Blood->SetActive(true);
 }
 
 #pragma endregion
