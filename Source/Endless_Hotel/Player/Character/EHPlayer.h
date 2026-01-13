@@ -2,14 +2,16 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Character/Character/EHCharacter.h"
-#include "Delegates/DelegateCombinations.h"
-#include "EHPlayer.generated.h"
+#include "Type/Player/Type_Death.h"
+#include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
+#include <EHPlayer.generated.h>
 
 #pragma region Declare
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, bCanInteract);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDieDelegate, const EDeathReason&, DeathReason);
 
 #pragma endregion
 
@@ -33,10 +35,25 @@ protected:
 
 #pragma endregion
 
-#pragma region Delegate
+#pragma region Interact
 
 public:
 	FCanInteract CanInteract;
+
+#pragma endregion
+
+#pragma region Death
+
+protected:
+	UFUNCTION()
+	void DiePlayer(const EDeathReason& DeathReason);
+
+public:
+	static FDieDelegate DieDelegate;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TMap<EDeathReason, TObjectPtr<class UAnimMontage>> DeathAnims;
 
 #pragma endregion
 
