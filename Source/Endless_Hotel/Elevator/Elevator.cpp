@@ -326,6 +326,7 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 			PC->bIsCameraFixed = !bEnable;
 			PC->bCanMove = bEnable;
 			PC->bCanCrouch = bEnable;
+			PC->SetInputMode(FInputModeGameOnly());
 		}
 	}
 }

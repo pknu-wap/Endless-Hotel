@@ -16,10 +16,18 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
 			});
+		StartDelay(2.0f);
+		break;
+
+	case 17:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->CeilingBloodDripping();
+			});
+		StartDelay(5.0f);
 		break;
 	}
-
-	StartImmediate();
+	
 }
 
 #pragma endregion

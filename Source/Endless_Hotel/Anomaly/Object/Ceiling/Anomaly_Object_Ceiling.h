@@ -45,4 +45,16 @@ protected:
 	void CeilingRotate(float Value);
 
 #pragma endregion
+
+#pragma region Ceiling Blood
+
+public:
+	void CeilingBloodDripping();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> Niagara_Ceiling_Blood;
+
+#pragma endregion
+
 };
