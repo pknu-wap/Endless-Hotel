@@ -7,6 +7,12 @@
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <UI_Controller.generated.h>
 
+#pragma region Declare
+
+class UUI_Base;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 {
