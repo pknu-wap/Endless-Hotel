@@ -4,6 +4,8 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Blur/UI_PopUp_Blur.h"
 #include "Sound/SoundController.h"
+#include "Elevator/Elevator.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>
 
@@ -20,6 +22,12 @@ void UEHCameraComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SettingEyeEffect();
+
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
+	AElevator::ElevatorDelegate.Broadcast(true);
+	
+	AAnomaly_Base::AnomalyDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
+	
 	StartEyeEffect(true);
 }
 

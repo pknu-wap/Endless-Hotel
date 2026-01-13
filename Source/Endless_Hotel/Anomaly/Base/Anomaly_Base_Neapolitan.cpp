@@ -18,7 +18,7 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
 }
 
-void AAnomaly_Base_Neapolitan::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Base_Neapolitan::ActivateAnomaly()
 {
     // Activites
     UE_LOG(LogTemp, Log, TEXT("[Neapolitan] Activated."));

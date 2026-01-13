@@ -22,21 +22,6 @@ enum class EAnomalyVerdictMode : uint8
 	Normal
 };
 
-USTRUCT(BlueprintType)
-struct FAnomalyEntry
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	uint8 AnomalyID;
-
-	UPROPERTY()
-	TSubclassOf<AAnomaly_Base> AnomalyClass;
-
-	UPROPERTY()
-	TSubclassOf<AAnomaly_Object_Base> ObjectClass;
-};
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 
 #pragma endregion
@@ -118,35 +103,12 @@ public:
 #pragma region Pool
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	TArray<FAnomalyEntry> OriginAnomaly;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
-	TArray<FAnomalyEntry> ActAnomaly;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
 	uint8 ActIndex = 0;
 
 public:
 	void InitializePool();
-
-#pragma endregion
-
-#pragma region AnomalyDataBase
-
-protected:
-	UPROPERTY()
-	TObjectPtr<class UDataTable> DataTable_Anomaly;
-
-private:
-	TSet<uint8> LoadedAnomalySet;
-
-public:
-	void GetAnomalyData();
-
-	TSubclassOf<AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
-	TSubclassOf<AAnomaly_Object_Base> GetObjectByName(FString ObjectName);
-	TSubclassOf<AAnomaly_Object_Base> GetObjectByRowIndex(uint8 RowIndex);
 
 #pragma endregion
 
@@ -160,6 +122,14 @@ public:
 	bool bIsClear = false;
 	bool bIsAlreadyClear = false;
 	FGameClearEvent GameClearEvent;
+
+#pragma endregion
+
+#pragma region KillPlayer
+
+public:
+	UFUNCTION()
+	void KillPlayer(bool bIsSignalActive);
 
 #pragma endregion
 

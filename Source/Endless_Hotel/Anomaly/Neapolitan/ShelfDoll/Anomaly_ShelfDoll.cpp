@@ -1,14 +1,14 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Neapolitan/ShelfDoll/Anomaly_ShelfDoll.h"
 #include "Anomaly/Object/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 
-void AAnomaly_ShelfDoll::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_ShelfDoll::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 98:
 			AnomalyAction = ([](AAnomaly_Object_Base* Object)

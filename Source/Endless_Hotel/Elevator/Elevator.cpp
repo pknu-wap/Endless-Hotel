@@ -2,7 +2,6 @@
 
 #include "Elevator.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Player/Component/EHCameraComponent.h"
 #include "Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Player/Character/EHPlayer.h"
@@ -18,6 +17,8 @@
 #include <Camera/CameraComponent.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
+
+FElevatorDelegate AElevator::ElevatorDelegate;
 
 #pragma region Base
 
@@ -282,9 +283,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	}
 	else
 	{
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		UEHCameraComponent* PlayerCC = Player->FindComponentByClass<UEHCameraComponent>();
-		PlayerCC->StartEyeEffect(false);
+		ElevatorDelegate.Broadcast(bIsStart);
 	}
 }
 

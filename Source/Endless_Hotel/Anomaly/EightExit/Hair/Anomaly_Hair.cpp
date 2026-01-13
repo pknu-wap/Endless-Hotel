@@ -38,9 +38,9 @@ void AAnomaly_Hair::BeginPlay()
 	HairTimeline->AddInterpFloat(Curve_HairOpacity, UpdateDelegate);
 }
 
-void AAnomaly_Hair::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Hair::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
 	ActiveTrigger();
 

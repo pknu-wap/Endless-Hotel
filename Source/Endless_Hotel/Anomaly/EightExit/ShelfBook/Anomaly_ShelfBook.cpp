@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/ShelfBook/Anomaly_ShelfBook.h"
@@ -6,11 +6,11 @@
 
 #pragma region Activitiy
 
-void AAnomaly_ShelfBook::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_ShelfBook::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 9:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomlayObject)

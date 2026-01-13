@@ -43,19 +43,28 @@ public:
 	void PlayMusicBox();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
-	FTimerHandle FailTimerHandle;
+	void StartRotate();
 
 	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
 	float LimitTime;
+
+	UPROPERTY(EditAnywhere, Category = "MusicBox|Rotate");
+	FRotator TickRotation;
+	
+	FTimerHandle RotateHandle;
+	FTimerHandle FailTimerHandle;
 
 #pragma endregion
 
 
 #pragma region Interact
 
+public:
+	virtual void SetInteraction() override;
+
 protected:
 	virtual void Interacted_Implementation() override;
+	void StopMusicBox();
 
 protected:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")

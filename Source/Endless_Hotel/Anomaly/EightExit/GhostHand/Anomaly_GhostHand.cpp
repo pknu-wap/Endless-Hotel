@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/GhostHand/Anomaly_GhostHand.h"
@@ -37,9 +37,9 @@ void AAnomaly_GhostHand::EndPlay(const EEndPlayReason::Type EndPlayReason)
 #pragma endregion
 
 #pragma region Activity
-void AAnomaly_GhostHand::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_GhostHand::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 	ExecuteGhostHand();
 }
 #pragma endregion

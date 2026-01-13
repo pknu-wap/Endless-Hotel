@@ -198,12 +198,24 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
-void AAnomaly_Object_Painting::ShowInteractWidget_Implementation(bool bIsShow)
+
+void AAnomaly_Object_Painting::SetInteraction()
 {
-	UI_Interact->ShowDescription(bIsShow);
+	switch (AnomalyID)
+	{
+	case 0:
+		break;
+
+	default:
+		InteractAction = ([this]()
+			{
+				AAnomaly_Object_Painting::InteractRotate();
+			});
+		break;
+	}
 }
 
-void AAnomaly_Object_Painting::Interacted_Implementation()
+void AAnomaly_Object_Painting::InteractRotate()
 {
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;

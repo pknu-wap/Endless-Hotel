@@ -24,7 +24,7 @@ public:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 

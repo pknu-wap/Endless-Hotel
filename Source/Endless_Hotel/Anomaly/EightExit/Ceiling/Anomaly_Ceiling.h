@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_Ceiling : public AAnomaly_Base_EightExit
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID) override;
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 

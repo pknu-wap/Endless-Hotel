@@ -1,13 +1,13 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Ghost/Anomaly_Ghost.h"
 #include "Anomaly/Object/Ghost/Anomaly_Object_Ghost.h"
 
-void AAnomaly_Ghost::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Ghost::ActivateAnomaly()
 {
-    Super::ActivateAnomaly(Anomaly_ID);
+    Super::ActivateAnomaly();
 
-    switch (Anomaly_ID)
+    switch (AnomalyID)
     {
     case 28:
         AnomalyAction = [](AAnomaly_Object_Base* Obj)

@@ -8,23 +8,27 @@
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
+#include "Data/Controller/DataController.h"
 
 #pragma region Base
 
 UAnomalyProgressSubSystem::UAnomalyProgressSubSystem()
 {
-	static ConstructorHelpers::FObjectFinder<UDataTable> AnomalyFinder(TEXT("/Game/EndlessHotel/Data/DT_AnomalyData.DT_AnomalyData"));
-	if (AnomalyFinder.Succeeded())
-	{
-		DataTable_Anomaly = AnomalyFinder.Object;
-	}
-
 	GameClearEvent.AddDynamic(this, &ThisClass::GameClear);
 }
 
 void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	AAnomaly_Base::AnomalyDelegate.AddDynamic(this, &ThisClass::KillPlayer);
+
+	UDataController* DataController = Collection.InitializeDependency<UDataController>();
+	if (DataController)
+	{
+		DataController->GetAnomalyEntries();
+	}
+
 	Floor = 9;
 	AnomalyCount = 0;
 	ActIndex = 0;
@@ -33,14 +37,15 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	if (bIsAlreadyClear)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
-		LoadedAnomalySet.Reset();
+		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+
+		DataC->LoadedAnomalySet.Reset();
 		for (uint8 ID : LoadedHistory)
 		{
-			LoadedAnomalySet.Add(ID);
+			DataC->LoadedAnomalySet.Add(ID);
 		}
 	}
 
-	GetAnomalyData();
 	InitializePool();
 }
 #pragma endregion
@@ -66,6 +71,7 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 
 void UAnomalyProgressSubSystem::ApplyVerdict()
 {
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
 	if (bPassed)
 	{
@@ -76,7 +82,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 		}
 		if (bIsAlreadyClear)
 		{
-			LoadedAnomalySet.Add(CurrentAnomalyID);
+			DataC->LoadedAnomalySet.Add(CurrentAnomalyID);
 			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
 		AnomalyCount++;
@@ -128,95 +134,31 @@ void UAnomalyProgressSubSystem::AddFloor()
 
 #pragma endregion
 
-#pragma region AnomalyDataBase
-
-void UAnomalyProgressSubSystem::GetAnomalyData()
-{
-	FAnomalyData* Data = nullptr;
-
-	for (auto RowData : DataTable_Anomaly->GetRowMap())
-	{
-		Data = (FAnomalyData*)RowData.Value;
-
-		if (!Data->AnomalyPath.IsEmpty())
-		{
-			UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
-			UClass* ObjectClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
-
-			if (LoadedClass)
-			{
-				OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, ObjectClass});
-			}
-		}
-	}
-}
-
-TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByID(uint8 AnomalyID)
-{
-	for (auto& Pair : DataTable_Anomaly->GetRowMap())
-	{
-		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
-		if (Row->AnomalyID == AnomalyID)
-		{
-			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
-			return LoadedClass;
-		}
-	}
-	return nullptr;
-}
-
-TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByName(FString ObjectName)
-{
-	for (auto& Pair : DataTable_Anomaly->GetRowMap())
-	{
-		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
-		if (Row->Anomaly_En == ObjectName)
-		{
-			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
-			return LoadedClass;
-		}
-	}
-	return nullptr;
-}
-
-TSubclassOf<AAnomaly_Object_Base> UAnomalyProgressSubSystem::GetObjectByRowIndex(uint8 RowIndex)
-{
-	if (const FAnomalyData* Data = DataTable_Anomaly->FindRow<FAnomalyData>(*FString::FromInt(RowIndex), TEXT("")))
-	{
-		UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
-		return LoadedClass;
-	}
-	return nullptr;
-}
-
-#pragma endregion
-
 #pragma region Pool & Reset
 
 void UAnomalyProgressSubSystem::InitializePool()
 {
 	// Copy from Original
-	ActAnomaly = OriginAnomaly;
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	
+	DataC->ActAnomaly = DataC->GetOriginAnomaly();
 
 	ActIndex = 0;
 
-	if (bIsAlreadyClear && LoadedAnomalySet.Num() > 0)
+	if (bIsAlreadyClear && DataC->LoadedAnomalySet.Num() > 0)
 	{
-		ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
-			{
-				return LoadedAnomalySet.Contains(Entry.AnomalyID);
-			});
+		DataC->RemoveClearedAnomaly();
 	}
 
 	// Shuffle
-	if (ActAnomaly.Num() > 1)
+	if (DataC->ActAnomaly.Num() > 1)
 	{
-		for (uint8 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		for (uint8 CurrentIndex = DataC->ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
 		{
 			const uint8 RandomIndex = FMath::RandRange(0, CurrentIndex);
 			if (CurrentIndex != RandomIndex)
 			{
-				ActAnomaly.Swap(CurrentIndex, RandomIndex);
+				DataC->ActAnomaly.Swap(CurrentIndex, RandomIndex);
 			}
 		}
 	}
@@ -239,6 +181,22 @@ void UAnomalyProgressSubSystem::GameClear()
 	Floor = 9;
 
 	USaveManager::SaveGameClearData();
+}
+
+#pragma endregion
+
+#pragma region KillPlayer
+
+void UAnomalyProgressSubSystem::KillPlayer(bool bIsSignalActive)
+{
+	VerdictMode = EAnomalyVerdictMode::SolvedOnly;
+	FTimerHandle DieTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, FTimerDelegate::CreateWeakLambda(
+		this,
+		[this]()
+		{
+			ApplyVerdict();
+		}), 5, false);
 }
 
 #pragma endregion

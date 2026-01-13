@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Neapolitan/Float/Anomaly_Float.h"
@@ -6,11 +6,11 @@
 
 #pragma region Activity
 
-void AAnomaly_Float::ActivateAnomaly(uint8 Anomaly_ID)
+void AAnomaly_Float::ActivateAnomaly()
 {
-	Super::ActivateAnomaly(Anomaly_ID);
+	Super::ActivateAnomaly();
 
-	switch (Anomaly_ID)
+	switch (AnomalyID)
 	{
 	case 88:
 		AnomalyAction = ([](AAnomaly_Object_Base* Float)

@@ -29,7 +29,7 @@ protected:
 #pragma region Activities
 
 protected:
-	virtual void ActivateAnomaly(uint8 Anomaly_ID = 255) override;
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 };
