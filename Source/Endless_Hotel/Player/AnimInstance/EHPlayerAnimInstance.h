@@ -64,6 +64,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsButtonPressingState = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+    bool bIsPlayerDead = false;
     // Ä³½Ì
     UPROPERTY(BlueprintReadOnly, Category = "Anim")
     APawn* CachedPawnOwner;
