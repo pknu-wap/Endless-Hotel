@@ -88,62 +88,63 @@ protected:
 
 #pragma endregion
 
-#pragma region DoorClose
-
+#pragma region Activity
 public:
-	void StartDoorClose();
+	void ActivateDoorAnomaly();
+#pragma endregion
+
+#pragma region Open
+public:
+	void PlayOpen_Door();
 
 protected:
-	UPROPERTY()
-	TObjectPtr<class UBoxComponent> TriggerBox_Door5;
-
-	UPROPERTY()
-	TObjectPtr<class UBoxComponent> TriggerBox_Door8;
-
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class AAnomaly_Object_Door> Door8Cached;
-
-protected:
-	bool bDoor16Initialized = false;
-
-protected:
-	void SetupDoor16Triggers();
-	void SetTriggerEnabled(class UBoxComponent* TriggerBox, bool bEnabled);
-	bool IsPlayerCharacter(AActor* OtherActor) const;
-
-	class AAnomaly_Object_Door* FindDoorByIndex(int32 Index) const;
-
-	UPROPERTY()
-	TWeakObjectPtr<class AAnomaly_Object_Door> Door8ObjectCached;
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<class UBoxComponent> TriggerBox_Open;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorOpen;
 
+	UFUNCTION()
+	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	bool bOpenTriggered = false;
+#pragma endregion
+
+#pragma region Close
+public:
+	void PlayClose_Door();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<class UBoxComponent> TriggerBox_Close;
+
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorClose;
 
-protected:
 	UFUNCTION()
-	void OnDoor16Trigger5Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnDoor16Trigger8Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	bool bCloseTriggered = false;
 #pragma endregion
 
-#pragma region DoorRotation
-public:
-	void SetDoorRotationZ(float NewZ);
-
-	void PlayDoorRotationDeltaSquence(const TArray<float>& DeltaList, float StepInterval);
+#pragma region Rotate
 
 protected:
-	FTimerHandle RotationStepHandle;
-	float RotationBaseZ = 0.f;
-	float RotationStepInterval = 0.12f;
-	int32 RotationStepIndex = 0;
-	TArray<float> RotationDeltaList;
+	void StartRotateOpen();
+	void StartRotateClose();
+	void UpdateRotate();
 
+protected:
+	FTimerHandle RotateHandle;
+
+	float CurrentYaw = 0.f; 
+	float TargetYaw = 0.f;
+	float OriginYaw = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
+	float OpenYawDelta = -45.f;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
+	float RotateSpeed = 8.f;
 #pragma endregion
 };

@@ -7,7 +7,6 @@
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
-#include <Components/CapsuleComponent.h>
 
 #pragma region Base
 
@@ -29,21 +28,17 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	AC_Voice = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Voice"));
 	AC_Voice->SetupAttachment(RootComponent);
-
+	
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);
+	AC_DoorMove->bAutoActivate = false;
 
-	TriggerBox_Door5 = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Door5"));
-	TriggerBox_Door5->SetupAttachment(RootComponent);
-	TriggerBox_Door5->SetGenerateOverlapEvents(true);
-	TriggerBox_Door5->SetCollisionProfileName(TEXT("Trigger"));
-	TriggerBox_Door5->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox_Open = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Open"));
+	TriggerBox_Open->SetupAttachment(RootComponent);
 
-	TriggerBox_Door8 = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Door8"));
-	TriggerBox_Door8->SetupAttachment(RootComponent);
-	TriggerBox_Door8->SetGenerateOverlapEvents(true);
-	TriggerBox_Door8->SetCollisionProfileName(TEXT("Trigger"));
-	TriggerBox_Door8->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox_Close = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Close"));
+	TriggerBox_Close->SetupAttachment(RootComponent);
+
 }
 
 void AAnomaly_Object_Door::BeginPlay()
@@ -60,6 +55,27 @@ void AAnomaly_Object_Door::BeginPlay()
 	FOnTimelineFloat Update_Handle;
 	Update_Handle.BindUFunction(this, FName("ShakeHandle"));
 	Timeline_Handle->AddInterpFloat(Curve_Handle, Update_Handle);
+
+	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox_Open->SetGenerateOverlapEvents(false);
+
+	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox_Close->SetGenerateOverlapEvents(false);
+
+	if (DoorIndex == 8)
+	{
+		OriginYaw = Mesh_Door->GetRelativeRotation().Yaw;
+		CurrentYaw = OriginYaw;
+
+		TriggerBox_Open->SetCollisionResponseToAllChannels(ECR_Ignore);
+		TriggerBox_Open->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+		TriggerBox_Close->SetCollisionResponseToAllChannels(ECR_Ignore);
+		TriggerBox_Close->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+		TriggerBox_Open->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnTriggerBox_OpenBeginOverlap);
+		TriggerBox_Close->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnTriggerBox_CloseBeginOverlap);
+	}
 }
 
 #pragma endregion
@@ -138,196 +154,119 @@ void AAnomaly_Object_Door::PlayShake_Door()
 
 #pragma endregion
 
-#pragma region DoorClose
-
-AAnomaly_Object_Door* AAnomaly_Object_Door::FindDoorByIndex(int32 Index) const
+#pragma region Activity
+void AAnomaly_Object_Door::ActivateDoorAnomaly()
 {
-	if (!GetWorld())
+	bOpenTriggered = false;
+	bCloseTriggered = false;
+
+	if (TriggerBox_Open)
 	{
-		return nullptr;
+		TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		TriggerBox_Open->SetGenerateOverlapEvents(true);
 	}
 
-	TArray<AActor*> AllActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Door::StaticClass(), AllActors);
-
-	for (AActor* Actor : AllActors)
+	if (TriggerBox_Close)
 	{
-		AAnomaly_Object_Door* Door = Cast<AAnomaly_Object_Door>(Actor);
-		if (Door && Door->DoorIndex == Index)
-		{
-			return Door;
-		}
-	}
-	return nullptr;
-}
-
-bool AAnomaly_Object_Door::IsPlayerCharacter(AActor* OtherActor) const
-{
-	return (OtherActor && UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-}
-
-void AAnomaly_Object_Door::StartDoorClose()
-{
-	if (DoorIndex != 5)
-	{
-		return;
-	}
-
-	if (bDoor16Initialized)
-	{
-		return;
-	}
-	bDoor16Initialized = true;
-
-	SetupDoor16Triggers();
-}
-
-void AAnomaly_Object_Door::SetupDoor16Triggers()
-{
-	AAnomaly_Object_Door* Door8 = FindDoorByIndex(8);
-	if (!Door8)
-	{
-		return;
-	}
-	Door8Cached = Door8;
-	Door8ObjectCached = Door8;
-
-	const FVector BoxExtent = FVector(70.f, 130.f, 170.f);
-	const float ForwardOffset = 300.f;
-
-	TriggerBox_Door5->SetBoxExtent(BoxExtent);
-	TriggerBox_Door8->SetBoxExtent(BoxExtent);
-
-	const FVector Loc5 = GetActorLocation() + GetActorForwardVector() * ForwardOffset;
-	const FVector Loc8 = Door8->GetActorLocation() + Door8->GetActorForwardVector() * ForwardOffset;
-
-	TriggerBox_Door5->SetWorldLocation(Loc5);
-	TriggerBox_Door8->SetWorldLocation(Loc8);
-
-	TriggerBox_Door5->OnComponentBeginOverlap.RemoveAll(this);
-	TriggerBox_Door8->OnComponentBeginOverlap.RemoveAll(this);
-
-	TriggerBox_Door5->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnDoor16Trigger5Overlap);
-	TriggerBox_Door8->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnDoor16Trigger8Overlap);
-
-	SetTriggerEnabled(TriggerBox_Door5, true);
-	SetTriggerEnabled(TriggerBox_Door8, false);
-}
-
-void AAnomaly_Object_Door::SetTriggerEnabled(UBoxComponent* TriggerBox, bool bEnabled)
-{
-	if (!TriggerBox)
-	{
-		return;
-	}
-	TriggerBox->SetCollisionEnabled(bEnabled ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	TriggerBox->SetGenerateOverlapEvents(bEnabled);
-	TriggerBox->SetHiddenInGame(!bEnabled);
-
-	if (bEnabled)
-	{
-		TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
-		TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		TriggerBox_Close->SetGenerateOverlapEvents(false);
 	}
 }
 
-void AAnomaly_Object_Door::OnDoor16Trigger5Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (!IsPlayerCharacter(OtherActor))
+#pragma region Open
+void AAnomaly_Object_Door::OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{ 
+	if (bOpenTriggered) 
 	{
 		return;
 	}
-	AAnomaly_Object_Door* Door8 = Door8ObjectCached.Get();
-	if (!Door8)
-	{
-		return;
-	}
-	SetTriggerEnabled(TriggerBox_Door5, false);
-	SetTriggerEnabled(TriggerBox_Door8, true);
-	Door8->SetDoorRotationZ(-135.f);
 
-	if (AC_DoorMove && Sound_DoorOpen && !AC_DoorMove->IsPlaying())
+	if (OtherActor == GetWorld()->GetFirstPlayerController()->GetPawn())
 	{
-		AC_DoorMove->Sound = Sound_DoorOpen;
+		bOpenTriggered = true;
+		StartRotateOpen();
+		PlayOpen_Door();
+	}
+}
+
+void AAnomaly_Object_Door::StartRotateOpen()
+{
+	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
+
+	CurrentYaw = Mesh_Door->GetRelativeRotation().Yaw;
+	TargetYaw = OriginYaw + OpenYawDelta;
+
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
+}
+
+
+void AAnomaly_Object_Door::PlayOpen_Door()
+{
+	if(!AC_DoorMove->IsPlaying())
+	{
+		AC_DoorMove->SetSound(Sound_DoorOpen);
 		AC_DoorMove->Play();
+
+		TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		TriggerBox_Close->SetGenerateOverlapEvents(true);
+
+		TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		TriggerBox_Open->SetGenerateOverlapEvents(false);
 	}
 }
-
-void AAnomaly_Object_Door::OnDoor16Trigger8Overlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (!IsPlayerCharacter(OtherActor))
-	{
-		return;
-	}
-	AAnomaly_Object_Door* Door8 = Door8ObjectCached.Get();
-	if (!Door8)
-	{
-		return;
-	}
-	if (AC_DoorMove && Sound_DoorClose && !AC_DoorMove->IsPlaying())
-	{
-		AC_DoorMove->Sound = Sound_DoorClose;
-		AC_DoorMove->Play();
-	}
-	SetTriggerEnabled(TriggerBox_Door8, false);
-	
-	const TArray<float> DeltaList = { -45.f, -10.f, 55.f };
-	Door8->PlayDoorRotationDeltaSquence(DeltaList, 0.12f);
-}
-
 #pragma endregion
 
-#pragma region DoorRotation
-
-void AAnomaly_Object_Door::SetDoorRotationZ(float NewZ)
+#pragma region Close
+void AAnomaly_Object_Door::OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!Mesh_Door)
+	if (bCloseTriggered)
 	{
 		return;
 	}
-	const FRotator Current = Mesh_Door->GetRelativeRotation();
-	Mesh_Door->SetRelativeRotation(FRotator(Current.Pitch, Current.Yaw, NewZ));
+	if (OtherActor == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		bCloseTriggered = true;
+		StartRotateClose();
+		PlayClose_Door();
+	}
 }
 
-void AAnomaly_Object_Door::PlayDoorRotationDeltaSquence(const TArray<float>& DeltaList, float StepInterval)
+void AAnomaly_Object_Door::StartRotateClose()
 {
-	if (!Mesh_Door)
+	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
+
+	CurrentYaw = Mesh_Door->GetRelativeRotation().Yaw;
+	TargetYaw = OriginYaw;
+
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
+}
+
+void AAnomaly_Object_Door::PlayClose_Door()
+{
+	if (!AC_DoorMove->IsPlaying())
 	{
-		return;
+		AC_DoorMove->SetSound(Sound_DoorClose);
+		AC_DoorMove->Play();
+
+		TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		TriggerBox_Close->SetGenerateOverlapEvents(false);
 	}
-	if (!GetWorld())
+}
+#pragma endregion
+
+#pragma region Rotate
+void AAnomaly_Object_Door::UpdateRotate()
+{
+	const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, GetWorld()->GetDeltaSeconds(), RotateSpeed);
+	CurrentYaw = NewYaw;
+
+	FRotator Rot = Mesh_Door->GetRelativeRotation();
+	Rot.Yaw = CurrentYaw;
+	Mesh_Door->SetRelativeRotation(Rot);
+
+	if (FMath::IsNearlyEqual(CurrentYaw, TargetYaw, 0.1f))
 	{
-		return;
+		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 	}
-	if (DeltaList.Num() <= 0)
-	{
-		return;
-	}
-	GetWorld()->GetTimerManager().ClearTimer(RotationStepHandle);
-
-	const FRotator Current = Mesh_Door->GetRelativeRotation();
-	RotationBaseZ = Current.Roll;
-
-	RotationDeltaList = DeltaList;
-	RotationStepInterval = StepInterval;
-	RotationStepIndex = 0;
-
-	SetDoorRotationZ(RotationBaseZ + RotationDeltaList[RotationStepIndex]);
-
-	GetWorld()->GetTimerManager().SetTimer(RotationStepHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			if (!GetWorld())
-			{
-				return;
-			}
-			RotationStepIndex++;
-			if (RotationStepIndex >= RotationDeltaList.Num())
-			{
-				GetWorld()->GetTimerManager().ClearTimer(RotationStepHandle);
-				RotationStepIndex = 0;
-				return;
-			}
-			SetDoorRotationZ(RotationBaseZ + RotationDeltaList[RotationStepIndex]);
-		}), RotationStepInterval, true);
 }
 #pragma endregion

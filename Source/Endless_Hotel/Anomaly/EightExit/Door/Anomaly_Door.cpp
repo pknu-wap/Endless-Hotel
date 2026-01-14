@@ -32,8 +32,9 @@ void AAnomaly_Door::ActivateAnomaly()
 		case 16:
 			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 				{
-					Cast<AAnomaly_Object_Door>(AnomalyObject)->StartDoorClose();
+					Cast<AAnomaly_Object_Door>(AnomalyObject)->ActivateDoorAnomaly();
 				});
+			ActiveTrigger();
 			break;
 	}
 	StartAnomalyAction();
