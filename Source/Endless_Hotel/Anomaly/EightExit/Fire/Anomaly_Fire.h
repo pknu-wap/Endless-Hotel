@@ -11,6 +11,16 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void BeginPlay() override;
+
+protected:
+	TObjectPtr<class AEHPlayer> EHPlayer;
+
+#pragma endregion
+
 #pragma region Activity
 
 public:
@@ -43,6 +53,17 @@ protected:
 	float FireSpawnDuration;
 
 	uint8 CurrentSpawnIndex = 0;
+
+#pragma endregion
+
+#pragma region Smoke
+
+protected:
+	UFUNCTION()
+	void SmokeTimer(bool bIsCrouch);
+
+protected:
+	FTimerHandle SmokeDieHandle;
 
 #pragma endregion
 

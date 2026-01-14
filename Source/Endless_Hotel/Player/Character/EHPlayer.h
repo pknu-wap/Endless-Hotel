@@ -12,6 +12,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, bCanInteract);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDieDelegate, const EDeathReason&, DeathReason);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrouchDelegate, bool, bIsCrouch);
 
 #pragma endregion
 
@@ -39,6 +40,13 @@ protected:
 
 public:
 	FCanInteract CanInteract;
+
+#pragma endregion
+
+#pragma region Crouch
+
+public:
+	FCrouchDelegate CrouchDelegate;
 
 #pragma endregion
 
