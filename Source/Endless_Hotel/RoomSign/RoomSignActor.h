@@ -67,4 +67,17 @@ private:
 
 #pragma endregion
 
+#pragma region Drop
+
+public:
+	void DropSign();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Drop|Sound")
+	TObjectPtr<USoundBase> DropSound;
+
+	bool bDropped = false;
+
+#pragma endregion
+
 };
