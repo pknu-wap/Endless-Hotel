@@ -23,7 +23,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 
 	// Interact
 	bCanInteract = false;
-	TraceDistance = 50.f;
+	TraceDistance = 100.f;
 
 	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 
