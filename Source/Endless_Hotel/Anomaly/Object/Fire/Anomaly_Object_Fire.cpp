@@ -24,6 +24,7 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 
 	DeathTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathTrigger"));
 	DeathTrigger->SetupAttachment(NiagaraComponent);
+	DeathTrigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDeathRange);
 }
 
 #pragma endregion
@@ -42,6 +43,8 @@ void AAnomaly_Object_Fire::StartFire(UNiagaraSystem* Effect)
 	}
 
 	AudioComponent->Play();
+
+	DeathTrigger->SetWorldLocation(NiagaraComponent->GetComponentLocation());
 }
 
 #pragma endregion

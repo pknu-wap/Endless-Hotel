@@ -49,7 +49,7 @@ protected:
 	void DiePlayer(const EDeathReason& DeathReason);
 
 public:
-	static FDieDelegate DieDelegate;
+	FDieDelegate DieDelegate;
 
 protected:
 	UPROPERTY(EditAnywhere)

@@ -4,8 +4,6 @@
 #include "Player/Component/EHCameraComponent.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
-FDieDelegate AEHPlayer::DieDelegate;
-
 #pragma region Base
 
 AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
