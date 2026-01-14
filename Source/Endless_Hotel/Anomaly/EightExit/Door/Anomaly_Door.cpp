@@ -36,6 +36,7 @@ void AAnomaly_Door::ActivateAnomaly()
 				});
 			break;
 	}
+	StartAnomalyAction();
 }
 
 void AAnomaly_Door::StartAnomalyAction()
