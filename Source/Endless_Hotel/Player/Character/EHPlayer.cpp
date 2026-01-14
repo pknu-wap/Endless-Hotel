@@ -26,14 +26,18 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 	const float AnimLength = DeathAnim->GetPlayLength();
 
+	FTimerHandle EyeHandle;
+	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			Component_Camera->StartEyeEffect(false);
+		}), AnimLength, false);
+
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			auto* SubSystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 			SubSystem->ApplyVerdict();
-
-			Component_Camera->StartEyeEffect(false);
-		}), AnimLength, false);
+		}), AnimLength + 5, false);
 }
 
 #pragma endregion
