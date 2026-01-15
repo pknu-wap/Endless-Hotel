@@ -2,26 +2,22 @@
 
 #include "Anomaly/Object/Float/Anomaly_Object_Float.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "UI/World/Interact/UI_Interact.h"
 #include "Components/WidgetComponent.h"   
 #include "Component/LookAt/LookAtComponent.h"
 
 #pragma region Base
 
-AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectInitializer)
-    :Super(ObjectInitializer)
-{
-    Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-    RootComponent = Mesh;
+#define LOCTEXT_NAMESPACE "Float"
 
+AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    bIsFloating = false;
 }
 
 void AAnomaly_Object_Float::BeginPlay()
 {
-    AActor::BeginPlay();
-
-	OriginLocation = GetActorLocation();
-	OriginRotation = GetActorRotation();
+    Super::BeginPlay();
 }
 
 #pragma endregion
@@ -32,9 +28,9 @@ void AAnomaly_Object_Float::StartFloating()
 {
     bIsFloating = true;
 
-    Mesh->SetSimulatePhysics(false);
-    Mesh->SetEnableGravity(false);
-    Mesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    Object->SetSimulatePhysics(false);
+    Object->SetEnableGravity(false);
+    Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
     FloatVelocity = FVector(
         FMath::RandRange(-10.f, 10.f),
@@ -78,43 +74,27 @@ void AAnomaly_Object_Float::StopFloating()
     GetWorldTimerManager().ClearTimer(FloatTickTimer);
     GetWorldTimerManager().ClearTimer(StopFloatTimer);
 
-    Mesh->SetSimulatePhysics(true);
-    Mesh->SetEnableGravity(true);
+    Object->SetSimulatePhysics(true);
+    Object->SetEnableGravity(true);
 }
 
 #pragma endregion
 
 #pragma region Restore
 
-void AAnomaly_Object_Float::RestoreToOrigin()
-{
-    StopFloating();
-
-    Mesh->SetSimulatePhysics(false);
-
-    SetActorLocation(OriginLocation);
-    SetActorRotation(OriginRotation);
-
-    Mesh->SetSimulatePhysics(true);
-}
-
 #pragma endregion
 
 #pragma region Interact
 
-void AAnomaly_Object_Float::Interacted_Implementation()
+void AAnomaly_Object_Float::SetInteraction()
 {
-    bSolved = true;
-    RestoreToOrigin();
-}
+    InteractAction = [this]()
+        {
+            if (bIsFloating) return;
 
-void AAnomaly_Object_Float::ShowInteractWidget_Implementation(bool bIsShow)
-{
-    if (!UI_Interact)
-    {
-        return;
-    }
-    UI_Interact->ShowDescription(bIsShow);
+            RestoreObjectTransform();
+            Object->SetSimulatePhysics(false);
+        };
 }
 
 #pragma endregion
