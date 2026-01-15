@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
+#include "UI/World/Interact/UI_Interact.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -105,94 +106,19 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[FrameTilt] Called"));
-
-	if (!GetWorld())
+	CurrentTilt = Mesh_Painting->GetRelativeRotation().Pitch;
+	TargetTilt = FMath::FRandRange(-180.f, 180.f);
+	GetWorld()->GetTimerManager().SetTimer(FrameTiltHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
-		return;
-	}
-
-	GetWorld()->GetTimerManager().ClearTimer(FrameTiltDelayHandle);
-	GetWorld()->GetTimerManager().ClearTimer(FrameTiltInterpHandle);
-	FrameInitialRotMap.Empty();
-
-	TArray<AActor*> AllActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), AllActors);
-
-	for (AActor* FrameActor : AllActors)
-	{
-		if (!FrameActor)
+		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 90.f);
+			
+		const FRotator NewRot(CurrentTilt, 0.f, 0.f);
+		Mesh_Painting->SetRelativeRotation(NewRot);
+		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
-			continue;
+			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
 		}
-		USceneComponent* TargetRoot = nullptr;
-		TArray<USceneComponent*> SceneComps;
-		FrameActor->GetComponents<USceneComponent>(SceneComps);
-
-		for (USceneComponent* SC : SceneComps)
-		{
-			if (SC && SC->ComponentHasTag(FName("FrameRoot")))
-			{
-				TargetRoot = SC;
-				break;
-			}
-		}
-
-		if (!TargetRoot)
-		{
-			TargetRoot = FrameActor->GetRootComponent();
-		}
-
-		if (!TargetRoot)
-		{
-			continue;
-		}
-
-		TargetRoot->SetMobility(EComponentMobility::Movable);
-
-		FrameInitialRotMap.Add(FrameActor, FrameActor->GetActorRotation());
-	}
-	UE_LOG(LogTemp, Warning, TEXT("[FrameTilt] Targets: %d"), FrameInitialRotMap.Num());
-	GetWorld()->GetTimerManager().SetTimer(FrameTiltDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			if (!GetWorld())
-			{
-				return;
-			}
-
-			FrameTiltStartTime = GetWorld()->GetTimeSeconds();
-			FrameTiltDuration = FMath::FRandRange(FrameTiltInterpMin, FrameTiltInterpMax);
-			FrameTiltTargetRoll = FMath::FRandRange(FrameTiltRollMin, FrameTiltRollMax);
-
-			GetWorld()->GetTimerManager().SetTimer(FrameTiltInterpHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-				{
-					if (!GetWorld())
-					{
-						return;
-					}
-
-					const float Now = GetWorld()->GetTimeSeconds();
-					const float Alpha = FMath::Clamp((Now - FrameTiltStartTime) / FMath::Max(FrameTiltDuration, 0.001f), 0.f, 1.f);
-					for (auto& Pair : FrameInitialRotMap)
-					{
-						AActor* TargetActor = Pair.Key.Get();
-						if (!TargetActor)
-						{
-							continue;
-						}
-
-						const FRotator InitialRot = Pair.Value;
-						const float NewRoll = FMath::Lerp(InitialRot.Roll, InitialRot.Roll + FrameTiltTargetRoll, Alpha);
-						FRotator NewRot = InitialRot;
-						NewRot.Roll = NewRoll;
-						TargetActor->SetActorRotation(NewRot);
-					}
-					if (Alpha >= 1.f)
-					{
-						GetWorld()->GetTimerManager().ClearTimer(FrameTiltInterpHandle);
-					}
-				}), 0.02f, true);
-		}), FrameTiltDelay, false);
+	}), 0.02f, true);
 }
 #pragma endregion
 

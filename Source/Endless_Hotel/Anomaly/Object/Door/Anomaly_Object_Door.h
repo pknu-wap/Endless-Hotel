@@ -36,6 +36,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Voice;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_DoorMove;
+
 #pragma endregion
 
 #pragma region Shake
@@ -85,4 +88,63 @@ protected:
 
 #pragma endregion
 
+#pragma region Activity
+public:
+	void ActivateDoorAnomaly();
+#pragma endregion
+
+#pragma region Open
+public:
+	void PlayOpen_Door();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<class UBoxComponent> TriggerBox_Open;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	TObjectPtr<class USoundWave> Sound_DoorOpen;
+
+	UFUNCTION()
+	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	bool bOpenTriggered = false;
+#pragma endregion
+
+#pragma region Close
+public:
+	void PlayClose_Door();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<class UBoxComponent> TriggerBox_Close;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	TObjectPtr<class USoundWave> Sound_DoorClose;
+
+	UFUNCTION()
+	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	bool bCloseTriggered = false;
+#pragma endregion
+
+#pragma region Rotate
+
+protected:
+	void StartRotateOpen();
+	void StartRotateClose();
+	void UpdateRotate();
+
+protected:
+	FTimerHandle RotateHandle;
+
+	float CurrentYaw = 0.f; 
+	float TargetYaw = 0.f;
+	float OriginYaw = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
+	float OpenYawDelta = -45.f;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
+	float RotateSpeed = 8.f;
+#pragma endregion
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Component/EHComponent.h"
+#include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
 #include <EHCameraComponent.generated.h>
 
@@ -31,9 +32,11 @@ protected:
 
 #pragma region Eye Effect
 
-protected:
+public:
 	UFUNCTION()
 	void StartEyeEffect(bool bIsOpen);
+
+protected:
 	void SettingEyeEffect();
 
 	UFUNCTION()
