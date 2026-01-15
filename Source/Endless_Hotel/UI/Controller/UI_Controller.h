@@ -28,7 +28,7 @@ public:
 #pragma region Open & Close
 
 public:
-	UUI_Base* OpenWidget(TSubclassOf<class UUI_Base> WidgetClass);
+	class UUI_Base* OpenWidget(TSubclassOf<class UUI_Base> WidgetClass);
 	void CloseWidget();
 	void ClearAllWidget();
 
@@ -39,8 +39,8 @@ protected:
 	void AdjustZOrder(bool bUp);
 
 public:
-	UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
-	UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
+	class UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
+	class UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
 
 protected:
 	UPROPERTY()
