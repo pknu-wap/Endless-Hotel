@@ -20,5 +20,5 @@ Row,AnomalyID,Anomaly_En,AnomalyPath,ObjectPath
 19,89,Clock,/Game/EndlessHotel/Anomaly/Base/BP_Clock.BP_Clock_C,/Game/EndlessHotel/Anomaly/Object/Clock/BP_Clock.BP_Clock_C
 20,90,MusicBox,/Game/EndlessHotel/Anomaly/Base/BP_MusicBox.BP_MusicBox_C,/Game/EndlessHotel/Anomaly/Object/MusicBox/MyAnomaly_Object_MusicBox.MyAnomaly_Object_MusicBox_C
 21,14,Fire,/Game/EndlessHotel/Anomaly/Base/BP_Fire.BP_Fire_C,/Game/EndlessHotel/Anomaly/Object/Fire/BP_Candle.BP_Candle_C
-21,16,Door_Close,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C,/Game/EndlessHotel/Anomaly/Object/Door/BP_Door.BP_Door_C
-22,17,Blood_Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
+22,16,Door_Close,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C,/Game/EndlessHotel/Anomaly/Object/Door/BP_Door.BP_Door_C
+23,17,Blood_Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C

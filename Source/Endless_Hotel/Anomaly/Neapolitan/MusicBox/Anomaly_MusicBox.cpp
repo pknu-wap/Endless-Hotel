@@ -10,9 +10,9 @@ void AAnomaly_MusicBox::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 90:
+	case EAnomalyName::MusicBox_Ringing:
 		AnomalyAction = ([](AAnomaly_Object_Base* MusicBox)
 			{
 				Cast<AAnomaly_Object_MusicBox>(MusicBox)->PlayMusicBox();

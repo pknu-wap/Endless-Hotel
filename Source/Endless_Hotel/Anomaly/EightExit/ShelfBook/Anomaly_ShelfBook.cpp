@@ -10,9 +10,9 @@ void AAnomaly_ShelfBook::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 9:
+	case EAnomalyName::Shelf_Book:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomlayObject)
 			{
 				if (auto* ShelfBook = Cast<AAnomaly_Object_ShelfBook>(AnomlayObject))

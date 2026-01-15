@@ -52,6 +52,15 @@ void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma endregion
 
+#pragma region Activity
+
+void AAnomaly_Base::ActivateAnomaly()
+{
+	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
+}
+
+#pragma endregion
+
 #pragma region StartType
 
 void AAnomaly_Base::ActiveTrigger()

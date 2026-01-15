@@ -19,16 +19,16 @@ void AAnomaly_Light::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 2:
+	case EAnomalyName::Light_Destroy:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
 			});
 		break;
 
-	case 3:
+	case EAnomalyName::Light_Blue:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();

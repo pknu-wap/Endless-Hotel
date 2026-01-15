@@ -20,16 +20,16 @@ void AAnomaly_Door::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-		case 4:
+	case EAnomalyName::Door_Shake:
 			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 				{
 					Cast<AAnomaly_Object_Door>(AnomalyObject)->PlayShake_Handle();
 				});
 		break;
 
-		case 16:
+	case EAnomalyName::Door_Close:
 			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 				{
 					Cast<AAnomaly_Object_Door>(AnomalyObject)->ActivateDoorAnomaly();

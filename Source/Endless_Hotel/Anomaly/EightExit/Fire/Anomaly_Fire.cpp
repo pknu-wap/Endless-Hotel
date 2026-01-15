@@ -24,9 +24,9 @@ void AAnomaly_Fire::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 14:
+	case EAnomalyName::Fire:
 		AnomalyAction = ([this](AAnomaly_Object_Base* Candle)
 			{
 				Cast<AAnomaly_Object_Candle>(Candle)->FallCandle();
