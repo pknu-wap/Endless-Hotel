@@ -14,10 +14,6 @@
 AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-
-	Mesh_Painting = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Painting"));
-	SetRootComponent(Mesh_Painting);
-
 	Mesh_LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_LeftEye"));
 	Mesh_LeftEye->SetupAttachment(RootComponent);
 

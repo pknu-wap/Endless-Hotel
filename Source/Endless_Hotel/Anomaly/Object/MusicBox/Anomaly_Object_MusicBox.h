@@ -18,9 +18,6 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "BoxBody")
-	TObjectPtr<class UStaticMeshComponent> Mesh_BoxBody;
-
-	UPROPERTY(EditAnywhere, Category = "BoxBody")
 	TObjectPtr<class UStaticMeshComponent> Mesh_BoxRotator;
 
 #pragma endregion

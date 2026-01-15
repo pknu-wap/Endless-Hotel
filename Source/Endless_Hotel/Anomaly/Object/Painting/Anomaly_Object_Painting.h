@@ -20,9 +20,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Painting")
 	TObjectPtr<class USceneComponent> Root;
 
-	UPROPERTY(EditAnyWhere, Category = "Painting")
-	TObjectPtr<class UStaticMeshComponent> Mesh_Painting;
-
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
