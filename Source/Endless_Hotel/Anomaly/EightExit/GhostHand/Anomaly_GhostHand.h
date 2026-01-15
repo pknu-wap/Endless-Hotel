@@ -55,7 +55,7 @@ protected:
 	bool bLockRun = true;
 
 	UPROPERTY(EditAnywhere, Category = "GhostHand|RunLock")
-	float LockedWalkSpeed = 300.f;
+	float LockedWalkSpeed = 100.f;
 
 	UPROPERTY(EditAnywhere, Category = "GhostHand|RunLock")
 	float ReapplyInterval = 0.05f;

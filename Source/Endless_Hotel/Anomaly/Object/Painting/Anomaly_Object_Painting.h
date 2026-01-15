@@ -67,38 +67,9 @@ public:
 	void FrameTilt();
 
 protected:
-	UPROPERTY()
-	TMap<TWeakObjectPtr<AActor>, FRotator> FrameInitialRotMap;
-
-	UPROPERTY()
-	FTimerHandle FrameTiltDelayHandle;
-
-	UPROPERTY()
-	FTimerHandle FrameTiltInterpHandle;
-
-	UPROPERTY()
-	float FrameTiltStartTime = 0.f;
-
-	UPROPERTY()
-	float FrameTiltDuration = 0.5f;
-
-	UPROPERTY()
-	float FrameTiltTargetRoll = 0.f;
-
-	UPROPERTY(EditAnywhere, Category = "FrameTilt")
-	float FrameTiltDelay = 10.f;
-
-	UPROPERTY(EditAnywhere, Category = "FrameTilt")
-	float FrameTiltInterpMin = 0.2f;
-
-	UPROPERTY(EditAnywhere, Category = "FrameTilt")
-	float FrameTiltInterpMax = 1.0f;
-
-	UPROPERTY(EditAnywhere, Category = "FrameTilt")
-	float FrameTiltRollMin = -180.f;
-
-	UPROPERTY(EditAnywhere, Category = "FrameTilt")
-	float FrameTiltRollMax = 180.f;
+	FTimerHandle FrameTiltHandle;
+	float CurrentTilt = 0.f;
+	float TargetTilt = 0.f;
 
 #pragma endregion
 

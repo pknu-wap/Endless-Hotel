@@ -185,6 +185,7 @@ void AEHPlayerController::OnCrouchStarted()
 	bIsCrouching = true;
 
 	EHPlayer->Crouch();
+	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
 	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
@@ -204,6 +205,7 @@ void AEHPlayerController::OnCrouchCompleted()
 	bIsCrouching = false;
 
 	EHPlayer->UnCrouch();
+	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
 	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
