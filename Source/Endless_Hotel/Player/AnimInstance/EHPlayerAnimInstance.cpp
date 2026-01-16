@@ -47,6 +47,7 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
             bIsCrouchingState = EHPC->GetIsCrouching();
             bIsFaceCoveringState = EHPC->GetIsFaceCovering();
             bIsButtonPressingState = EHPC->GetIsButtonPressingCovering();
+            bIsPlayerDead = EHPC->GetIsPlayerDead();
         }
     }
     const float InterpedSpeed = FMath::FInterpTo(ActualSpeed, TargetSpeed, DeltaSeconds, InterpSpeedValue);

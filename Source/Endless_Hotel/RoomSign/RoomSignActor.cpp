@@ -1,9 +1,11 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "RoomSign/RoomSignActor.h"
-#include "Components/StaticMeshComponent.h"
-#include "Materials/MaterialInstanceDynamic.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include <Components/StaticMeshComponent.h>
+#include <Materials/MaterialInstanceDynamic.h>
+#include <Components/AudioComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -28,3 +30,28 @@ void ARoomSignActor::BeginPlay()
 	Offset.G = GValue;
 	DynamicMaterial->SetVectorParameterValue(FName("OffsetUV"), Offset);
 }
+
+#pragma endregion
+
+#pragma region Drop
+
+void ARoomSignActor::DropSign()
+{
+	if (bDropped || !SignMesh) return;
+
+	bDropped = true;
+
+	SignMesh->SetSimulatePhysics(true);
+	SignMesh->SetEnableGravity(true);
+
+	if (DropSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			DropSound,
+			GetActorLocation()
+		);
+	}
+}
+
+#pragma endregion

@@ -157,4 +157,13 @@ public:
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
 	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
 #pragma endregion
+
+#pragma region Death
+	UFUNCTION()
+	void OnAnomalyVerdict(bool bIsAlive);
+
+	void PlayDeathSequence();
+
+	bool bIsPlayerDead = false;
+	bool GetIsPlayerDead() const { return bIsPlayerDead; }
 };
