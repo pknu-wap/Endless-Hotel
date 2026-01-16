@@ -102,14 +102,14 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	CurrentTilt = Mesh_Painting->GetRelativeRotation().Pitch;
+	CurrentTilt = RootComponent->GetRelativeRotation().Pitch;
 	TargetTilt = FMath::FRandRange(-180.f, 180.f);
 	GetWorld()->GetTimerManager().SetTimer(FrameTiltHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
 		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 90.f);
 			
 		const FRotator NewRot(CurrentTilt, 0.f, 0.f);
-		Mesh_Painting->SetRelativeRotation(NewRot);
+		RootComponent->SetRelativeRotation(NewRot);
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);

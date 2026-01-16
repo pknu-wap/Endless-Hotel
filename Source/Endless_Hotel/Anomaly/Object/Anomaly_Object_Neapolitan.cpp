@@ -28,22 +28,3 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 #pragma endregion
 
 #undef LOCTEXT_NAMESPACE
-
-#pragma region Interact
-
-void AAnomaly_Object_Neapolitan::Interacted_Implementation()
-{
-	StartInteractaction();
-}
-
-void AAnomaly_Object_Neapolitan::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	UI_Interact->ShowDescription(bIsShow);
-}
-
-void AAnomaly_Object_Neapolitan::StartInteractaction()
-{
-	InteractAction();
-}
-
-#pragma endregion

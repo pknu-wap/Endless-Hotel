@@ -28,15 +28,4 @@ public:
 	bool bSolved = false;
 
 #pragma endregion
-
-#pragma region Interact
-
-public:
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-
-protected:
-	virtual void StartInteractaction();
-
-#pragma endregion
 };

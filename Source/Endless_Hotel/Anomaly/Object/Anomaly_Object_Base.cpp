@@ -29,6 +29,8 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 
 #pragma endregion
 
+#undef LOCTEXT_NAMESPACE
+
 #pragma region Interact
 
 void AAnomaly_Object_Base::Interacted_Implementation()
@@ -38,11 +40,8 @@ void AAnomaly_Object_Base::Interacted_Implementation()
 
 void AAnomaly_Object_Base::ShowInteractWidget_Implementation(bool bIsShow)
 {
+	if (!UI_Interact) return;
 	UI_Interact->ShowDescription(bIsShow);
-}
-
-void AAnomaly_Object_Base::SetInteraction()
-{
 }
 
 void AAnomaly_Object_Base::StartInteractaction()
@@ -51,8 +50,6 @@ void AAnomaly_Object_Base::StartInteractaction()
 }
 
 #pragma endregion
-
-#undef LOCTEXT_NAMESPACE
 
 #pragma region Restore
 
