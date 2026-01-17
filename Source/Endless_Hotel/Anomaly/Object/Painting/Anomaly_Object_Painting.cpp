@@ -2,7 +2,6 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "UI/World/Interact/UI_Interact.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -107,12 +106,16 @@ void AAnomaly_Object_Painting::BlurPaint()
 void AAnomaly_Object_Painting::FrameTilt()
 {
 	CurrentTilt = Mesh_Painting->GetRelativeRotation().Pitch;
-	TargetTilt = FMath::FRandRange(-180.f, 180.f);
+	TargetTilt = FMath::FRandRange(10.f, 180.f);
+	if (FMath::RandBool())
+	{
+		TargetTilt *= -1.f;
+	}
 	GetWorld()->GetTimerManager().SetTimer(FrameTiltHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
-		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 90.f);
+		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 1.f);
 			
-		const FRotator NewRot(CurrentTilt, 0.f, 0.f);
+		const FRotator NewRot(0.f, 0.f, CurrentTilt);
 		Mesh_Painting->SetRelativeRotation(NewRot);
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{

@@ -43,7 +43,7 @@ void AAnomaly_Painting::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
 			});
-		StartDelay(2.0f);
+		StartDelay(10.0f);
 		break;
 	}
 }
