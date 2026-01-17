@@ -16,7 +16,7 @@ Row,AnomalyID,Anomaly_En,AnomalyPath,ObjectPath
 15,9,ShelfBook,/Game/EndlessHotel/Anomaly/Base/BP_ShelfBook.BP_ShelfBook_C,/Game/EndlessHotel/Anomaly/Object/ShelfBook/BP_ShelfBook.BP_ShelfBook_C
 16,98,ShelfDoll,/Game/EndlessHotel/Anomaly/Base/BP_ShelfDoll.BP_ShelfDoll_C,/Game/EndlessHotel/Anomaly/Object/ShelfDoll/BP_ShelfDoll.BP_ShelfDoll_C
 17,92,FrameTilt,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
-18,24,GhostHand,/Game/EndlessHotel/Anomaly/Base/BP_GhostHand.BP_GhostHand_C,
+18,24,GhostHand,/Game/EndlessHotel/Anomaly/Base/BP_GhostHand.BP_GhostHand_C,/Game/EndlessHotel/Anomaly/Object/GhostHand/BP_Object_GhostHand.BP_Object_GhostHand_C
 19,89,Clock,/Game/EndlessHotel/Anomaly/Base/BP_Clock.BP_Clock_C,/Game/EndlessHotel/Anomaly/Object/Clock/BP_Clock.BP_Clock_C
 20,90,MusicBox,/Game/EndlessHotel/Anomaly/Base/BP_MusicBox.BP_MusicBox_C,/Game/EndlessHotel/Anomaly/Object/MusicBox/MyAnomaly_Object_MusicBox.MyAnomaly_Object_MusicBox_C
 21,16,Door_Close,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C,/Game/EndlessHotel/Anomaly/Object/Door/BP_Door.BP_Door_C

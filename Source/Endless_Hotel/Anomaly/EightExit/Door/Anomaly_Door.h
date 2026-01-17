@@ -2,9 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
 #include "Anomaly_Door.generated.h"
+
+class UBoxComponent;
+class AAnomaly_Object_Door;
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Base_EightExit
@@ -38,4 +41,23 @@ protected:
 
 #pragma endregion
 
+#pragma region Door
+protected:
+	void SetupDoorTrigger();
+
+	UFUNCTION()
+	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<UBoxComponent> TriggerBox_Open;
+
+	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
+	TObjectPtr<UBoxComponent> TriggerBox_Close;
+
+	UPROPERTY()
+	TObjectPtr<AAnomaly_Object_Door> TriggerTargetDoor;
 };

@@ -2,9 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_Door.generated.h"
+#include <CoreMinimal.h>
+#include <Components/BoxComponent.h>
+#include <Anomaly_Object_Door.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_Base
@@ -88,41 +89,27 @@ protected:
 
 #pragma endregion
 
-#pragma region Activity
-public:
-	void ActivateDoorAnomaly();
-#pragma endregion
-
 #pragma region Open
 public:
+	void OpenDoor();
 	void PlayOpen_Door();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
-	TObjectPtr<class UBoxComponent> TriggerBox_Open;
-
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorOpen;
 
-	UFUNCTION()
-	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
 	bool bOpenTriggered = false;
 #pragma endregion
 
 #pragma region Close
 public:
+	void CloseDoor();
 	void PlayClose_Door();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Trigger")
-	TObjectPtr<class UBoxComponent> TriggerBox_Close;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorClose;
-
-	UFUNCTION()
-	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	bool bCloseTriggered = false;
 #pragma endregion
