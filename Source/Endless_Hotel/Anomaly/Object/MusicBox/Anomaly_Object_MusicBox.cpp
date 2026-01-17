@@ -11,13 +11,10 @@
 AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Mesh_BoxBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxBody"));
-	SetRootComponent(Mesh_BoxBody);
 	Mesh_BoxRotator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxRotator"));
 	Mesh_BoxRotator->SetupAttachment(RootComponent);
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
-	Object->SetupAttachment(RootComponent);
 }
 
 #pragma endregion

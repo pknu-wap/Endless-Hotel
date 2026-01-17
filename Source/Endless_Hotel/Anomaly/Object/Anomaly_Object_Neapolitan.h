@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Interact/Interactable.h"
-#include "Anomaly_Object_Neapolitan.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Neapolitan.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base, public IInteractable
+class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
 	
@@ -28,49 +28,4 @@ public:
 	bool bSolved = false;
 
 #pragma endregion
-
-#pragma region Interact
-
-public:
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-	virtual void SetInteraction() PURE_VIRTUAL(AAnomaly_Object_Neapolitan::SetInteraction, ;);
-
-protected:
-	virtual void StartInteractaction();
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Object;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> WC;
-
-	UPROPERTY()
-	TObjectPtr<class UUI_Interact> UI_Interact;
-
-	UPROPERTY()
-	TObjectPtr<class ULookAtComponent> LAC;
-
-	// 크로스헤어 오버 시 나타날 텍스트
-	FText DescriptionText;
-
-	TFunction<void()> InteractAction;
-
-#pragma endregion
-
-#pragma region Restore
-
-protected:
-	void RestoreObjectTransform();
-
-protected:
-	FTransform OriginalTransform;
-
-	FTimerHandle RestoreHandle;
-
-	float CurrentTime = 0.f;
-
-#pragma endregion
-
 };

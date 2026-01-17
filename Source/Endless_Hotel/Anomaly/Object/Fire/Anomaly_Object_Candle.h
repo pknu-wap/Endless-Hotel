@@ -18,14 +18,6 @@ public:
 
 #pragma endregion
 
-#pragma region Object
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Object;
-
-#pragma endregion
-
 #pragma region Fall
 
 public:
