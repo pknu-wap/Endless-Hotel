@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/Button/UI_Button_Base.h"
-#include "Type/UI/Type_UI.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_Button_Setting.generated.h>
 
@@ -23,7 +23,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere)
-	FButtonInfo ButtonInfo;
+	FSettingButtonInfo ButtonInfo;
 
 #pragma endregion
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "Type/UI/Type_UI.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
@@ -11,7 +11,7 @@
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage, FButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage, FSettingButtonInfo, Value);
 
 #pragma endregion
 
@@ -49,7 +49,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	void Click_Language(FButtonInfo Value);
+	void Click_Language(FSettingButtonInfo Value);
 
 	UFUNCTION()
 	void Click_Apply();
