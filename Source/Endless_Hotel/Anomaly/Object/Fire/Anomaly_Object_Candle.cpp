@@ -7,8 +7,6 @@
 AAnomaly_Object_Candle::AAnomaly_Object_Candle(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
-	SetRootComponent(Object);
 	Object->SetSimulatePhysics(false);
 }
 
