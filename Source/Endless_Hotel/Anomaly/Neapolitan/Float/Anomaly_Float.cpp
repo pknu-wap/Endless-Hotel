@@ -16,6 +16,7 @@ void AAnomaly_Float::ActivateAnomaly()
 		AnomalyAction = ([](AAnomaly_Object_Base* Float)
 			{
 				Cast<AAnomaly_Object_Float>(Float)->StartFloating();
+				Cast<AAnomaly_Object_Float>(Float)->SetInteraction();
 			});
 		StartDelay(10);
 		break;

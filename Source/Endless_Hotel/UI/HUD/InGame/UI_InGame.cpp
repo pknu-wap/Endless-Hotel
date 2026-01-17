@@ -57,6 +57,7 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	else
 	{
 		Brush.SetResourceObject(Crosshair_Normal);
+		Crosshair->SetRenderOpacity(0.3f);
 		if (bIsCrosshairInteractMode)
 		{
 			PlayAnimation(WidgetAnim_Normal);

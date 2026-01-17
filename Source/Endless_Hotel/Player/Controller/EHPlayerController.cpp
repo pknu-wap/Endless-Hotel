@@ -6,6 +6,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Interact/Interactable.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 #include <Camera/CameraComponent.h>
@@ -22,9 +23,13 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 
 	// Interact
 	bCanInteract = false;
-	TraceDistance = 50.f;
+	TraceDistance = 100.f;
 
 	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
+
+	bCanMove = true;
+	bIsCameraFixed = false;
+	bIsPlayerDead = false;
 }
 
 void AEHPlayerController::BeginPlay()
@@ -46,6 +51,11 @@ void AEHPlayerController::BeginPlay()
 	}
 
 	SetLookSensitivity(USaveManager::LoadSettingData().Value_Sensitivity);
+
+	AAnomaly_Base::AnomalyDelegate.AddDynamic(
+		this,
+		&AEHPlayerController::OnAnomalyVerdict
+	);
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
@@ -185,6 +195,7 @@ void AEHPlayerController::OnCrouchStarted()
 	bIsCrouching = true;
 
 	EHPlayer->Crouch();
+	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
 	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
@@ -204,6 +215,7 @@ void AEHPlayerController::OnCrouchCompleted()
 	bIsCrouching = false;
 
 	EHPlayer->UnCrouch();
+	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
 	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
@@ -377,4 +389,30 @@ void AEHPlayerController::TurnPlayerLight()
 		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
 	}
 	FlashLight->SetVisibility(!FlashLight->IsVisible());
+}
+
+#pragma region Death
+
+void AEHPlayerController::OnAnomalyVerdict(bool bIsAlive)
+{
+	if (bIsAlive)
+		return;
+
+	PlayDeathSequence();
+}
+
+void AEHPlayerController::PlayDeathSequence()
+{
+	if (!EHPlayer) return;
+
+	bIsPlayerDead = true;
+	bIsCameraFixed = true;
+	bCanMove = false;
+
+	if (!PlayerCameraComponent)
+	{
+		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
+	}
+
+	PlayerCameraComponent->SetRelativeRotation(FRotator(-5.f, 0.f, 0.f));
 }

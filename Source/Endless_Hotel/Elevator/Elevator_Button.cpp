@@ -37,7 +37,7 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 void AElevator_Button::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if (!WC) return;
 	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
 	UI_Interact->SetDescription(LOCTEXT("Key1", "버튼 누르기"));
 
