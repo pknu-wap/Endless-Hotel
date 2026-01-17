@@ -2,16 +2,7 @@
 
 #include "Anomaly/EightExit/Light/Anomaly_Light.h"
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
-#include "Components/BoxComponent.h"
-
-#pragma region Base
-
-AAnomaly_Light::AAnomaly_Light(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
-
-#pragma endregion
+#include <Components/BoxComponent.h>
 
 #pragma region Activity
 

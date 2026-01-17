@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Cry/Anomaly_Cry.h"
-#include "Components/AudioComponent.h"
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -20,11 +20,16 @@ void AAnomaly_Cry::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	FTimerHandle SoundHandle;
-	GetWorld()->GetTimerManager().SetTimer(SoundHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			PlayCrySound();
-		}), 20, false);
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Cry:
+		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+			{
+				PlayCrySound();
+			});
+		StartDelay(20);
+		break;
+	}
 }
 
 #pragma endregion
