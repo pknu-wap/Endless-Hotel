@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/Button/UI_Button_Base.h"
+#include "Type/UI/Type_UI_Title.h"
 #include <CoreMinimal.h>
 #include <UI_Button_Main.generated.h>
 
@@ -18,35 +19,22 @@ protected:
 
 #pragma endregion
 
-#pragma region Button
+#pragma region Type
 
-public:
-	void ResetButton();
+protected:
+	UPROPERTY(EditAnywhere, Category = "Type")
+	ETitleButtonType ButtonType;
+
+#pragma endregion
+
+#pragma region Hover
 
 protected:
 	UFUNCTION()
-	void OnButtonHover();
+	void Hover_Button();
 
-protected:
-	void SetButtonSize(const float& ButtonSize);
-	void SetButtonTexture(class UTexture2D* ButtonTexture);
-	void SetFontSize(const uint8& FontSize);
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Button_Normal;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Button_Hover;
-
-protected:
-	const float FontAdjustValue = 72.0f / 96.0f;
-
-	const float ButtonSize_Normal = 32;
-	const float ButtonSize_Hover = 48;
-
-	const uint8 FontSize_Normal = 48;
-	const uint8 FontSize_Hover = 64;
+	UFUNCTION()
+	void Unhover_Button();
 
 #pragma endregion
 

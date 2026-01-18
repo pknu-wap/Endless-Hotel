@@ -9,9 +9,9 @@ void AAnomaly_Clock::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 89:
+	case EAnomalyName::Clock_Ringing:
 		AnomalyAction = ([](AAnomaly_Object_Base* Clock)
 			{
 				Cast<AAnomaly_Object_Clock>(Clock)->RingingClock();

@@ -2,26 +2,26 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Cong.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Cong.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Base
+#pragma region Activity
 
 public:
-	AAnomaly_Cong(const FObjectInitializer& ObjectInitializer);
+	virtual void ActivateAnomaly() override;
 
 #pragma endregion
 
 #pragma region Cong
 
 protected:
-	virtual void StartAnomalyAction() override;
+	void StartCongCong();
 
 protected:
 	FTimerDelegate CongDelegate;

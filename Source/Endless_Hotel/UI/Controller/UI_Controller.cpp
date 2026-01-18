@@ -10,10 +10,10 @@
 
 UUI_Controller::UUI_Controller()
 {
-	static ConstructorHelpers::FClassFinder<UUI_Base> MainMenuFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/MainMenu/WBP_MainMenu.WBP_MainMenu_C"));
-	if (MainMenuFinder.Succeeded())
+	static ConstructorHelpers::FClassFinder<UUI_Base> TitleFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/MainMenu/WBP_Title.WBP_Title_C"));
+	if (TitleFinder.Succeeded())
 	{
-		UI_MainMenu = MainMenuFinder.Class;
+		UI_Title = TitleFinder.Class;
 	}
 
 	static ConstructorHelpers::FClassFinder<UUI_Base> InGameFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/InGame/WBP_InGame.WBP_InGame_C"));
@@ -141,7 +141,7 @@ void UUI_Controller::OpenMapBaseWidget()
 	switch (UEHGameInstance::CurrentMap)
 	{
 	case EMapType::MainMenu:
-		OpenWidget(UI_MainMenu);
+		OpenWidget(UI_Title);
 		break;
 
 	case EMapType::Hotel:

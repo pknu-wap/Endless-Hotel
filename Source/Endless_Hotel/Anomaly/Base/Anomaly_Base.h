@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Actor/EHActor.h"
+#include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
 #include <Anomaly_Base.generated.h>
@@ -47,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	uint8 AnomalyID = -1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
+	EAnomalyName AnomalyName;
+
 	static FAnomalyDelegate AnomalyDelegate;
 
 protected:
@@ -69,7 +73,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly() PURE_VIRTUAL(AAnomaly_Base::ActivateAnomaly, ;);
+	virtual void ActivateAnomaly();
 	virtual void DisableAnomaly() {}
 
 #pragma endregion

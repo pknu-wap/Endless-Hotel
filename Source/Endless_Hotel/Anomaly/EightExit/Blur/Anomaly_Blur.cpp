@@ -22,11 +22,16 @@ void AAnomaly_Blur::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			ShowBlurWiget();
-		}), 15, false);
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Blur:
+		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+			{
+				ShowBlurWiget();
+			});
+		StartDelay(15);
+		break;
+	}
 }
 
 #pragma endregion

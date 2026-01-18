@@ -10,9 +10,9 @@ void AAnomaly_Float::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 88:
+	case EAnomalyName::Float:
 		AnomalyAction = ([](AAnomaly_Object_Base* Float)
 			{
 				Cast<AAnomaly_Object_Float>(Float)->StartFloating();

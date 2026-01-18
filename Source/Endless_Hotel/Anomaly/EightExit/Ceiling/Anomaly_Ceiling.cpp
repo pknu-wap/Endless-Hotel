@@ -9,9 +9,9 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 11:
+	case EAnomalyName::Ceil_Rotate:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
@@ -19,7 +19,7 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 		StartDelay(2.0f);
 		break;
 
-	case 17:
+	case EAnomalyName::Ceil_Blood:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->CeilingBloodDripping();

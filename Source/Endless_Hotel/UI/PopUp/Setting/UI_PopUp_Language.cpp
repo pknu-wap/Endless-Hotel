@@ -44,7 +44,7 @@ void UUI_PopUp_Language::LoadSettingData()
 
 #pragma region Button
 
-void UUI_PopUp_Language::Click_Language(FButtonInfo Value)
+void UUI_PopUp_Language::Click_Language(FSettingButtonInfo Value)
 {
 	SettingData.Value_Language = Value.Value_String;
 	SettingData.Index_Language = Value.ButtonIndex;

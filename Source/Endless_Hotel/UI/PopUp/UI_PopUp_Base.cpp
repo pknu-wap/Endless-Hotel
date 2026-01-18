@@ -54,7 +54,7 @@ void UUI_PopUp_Base::Input_ESC()
 
 void UUI_PopUp_Base::HighlightButton(UPanelWidget* ButtonGroup, const uint8& TargetIndex)
 {
-	for (auto* SearchTarget : ButtonGroup->GetAllChildren())
+	/*for (auto* SearchTarget : ButtonGroup->GetAllChildren())
 	{
 		auto* Target = Cast<UUI_Button_Base>(SearchTarget);
 
@@ -65,7 +65,7 @@ void UUI_PopUp_Base::HighlightButton(UPanelWidget* ButtonGroup, const uint8& Tar
 		}
 
 		Target->UnhighlightButton();
-	}
+	}*/
 }
 
 #pragma endregion
