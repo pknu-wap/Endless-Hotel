@@ -43,11 +43,6 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::Click_Reset);
 	Button_Language->OnClicked.AddDynamic(this, &ThisClass::Click_Language);
 	Button_Brightness->OnClicked.AddDynamic(this, &ThisClass::Click_Brightness);
-
-	SettingButtonOwner(Buttons_Grapic);
-	SettingButtonOwner(Buttons_Resolution);
-	SettingButtonOwner(Buttons_Frame);
-	SettingButtonOwner(Buttons_Screen);
 }
 
 void UUI_PopUp_Setting::NativeConstruct()
@@ -76,22 +71,9 @@ void UUI_PopUp_Setting::LoadSettingData()
 
 #pragma endregion
 
-#pragma region Setting
-
-void UUI_PopUp_Setting::SettingButtonOwner(UHorizontalBox* ButtonBox)
-{
-	for (auto* Button : ButtonBox->GetAllChildren())
-	{
-		auto* Target = Cast<UUI_Button_Base>(Button);
-		Target->SetButtonOwner(this);
-	}
-}
-
-#pragma endregion
-
 #pragma region Button
 
-void UUI_PopUp_Setting::Click_Grapic(FButtonInfo Value)
+void UUI_PopUp_Setting::Click_Grapic(FSettingButtonInfo Value)
 {
 	SettingData.Value_Grapic = Value.Value_Int;
 	SettingData.Index_Grapic = Value.ButtonIndex;
@@ -99,7 +81,7 @@ void UUI_PopUp_Setting::Click_Grapic(FButtonInfo Value)
 	HighlightButton(Buttons_Grapic, Value.ButtonIndex);
 }
 
-void UUI_PopUp_Setting::Click_Resolution(FButtonInfo Value)
+void UUI_PopUp_Setting::Click_Resolution(FSettingButtonInfo Value)
 {
 	SettingData.Value_Resolution = Value.Value_IntPoint;
 	SettingData.Index_Resolution = Value.ButtonIndex;
@@ -107,7 +89,7 @@ void UUI_PopUp_Setting::Click_Resolution(FButtonInfo Value)
 	HighlightButton(Buttons_Resolution, Value.ButtonIndex);
 }
 
-void UUI_PopUp_Setting::Click_Frame(FButtonInfo Value)
+void UUI_PopUp_Setting::Click_Frame(FSettingButtonInfo Value)
 {
 	SettingData.Value_Frame = Value.Value_Float;
 	SettingData.Index_Frame = Value.ButtonIndex;
@@ -115,7 +97,7 @@ void UUI_PopUp_Setting::Click_Frame(FButtonInfo Value)
 	HighlightButton(Buttons_Frame, Value.ButtonIndex);
 }
 
-void UUI_PopUp_Setting::Click_Screen(FButtonInfo Value)
+void UUI_PopUp_Setting::Click_Screen(FSettingButtonInfo Value)
 {
 	SettingData.Value_Screen = Value.Value_WindowMode;
 	SettingData.Index_Screen = Value.ButtonIndex;

@@ -1,11 +1,11 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Shrink/Anomaly_Shrink.h"
-#include "Kismet/GameplayStatics.h"
-#include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Components/TimelineComponent.h"
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/Character.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/TimelineComponent.h>
 
 #pragma region Base
 
@@ -38,11 +38,16 @@ void AAnomaly_Shrink::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			Timeline_Shrink->PlayFromStart();
-		}), 5, false);
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Shrink:
+		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+			{
+				Timeline_Shrink->PlayFromStart();
+			});
+		StartDelay(5);
+		break;
+	}
 }
 
 #pragma endregion

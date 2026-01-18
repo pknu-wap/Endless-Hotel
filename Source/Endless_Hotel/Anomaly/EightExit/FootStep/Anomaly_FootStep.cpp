@@ -11,8 +11,8 @@ void AAnomaly_FootStep::ActivateAnomaly()
 {
     Super::ActivateAnomaly();
 
-    switch (AnomalyID) {
-    case 15:
+    switch (AnomalyName) {
+    case EAnomalyName::FootStep:
         FootStep();
         break;
     }

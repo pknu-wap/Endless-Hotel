@@ -6,41 +6,37 @@
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
-#pragma region Base
-
-AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
-#pragma endregion
-
 #pragma region Activity
 
 void AAnomaly_Door::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-		case 4:
-			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-				{
-					Cast<AAnomaly_Object_Door>(AnomalyObject)->PlayShake_Handle();
-				});
+	case EAnomalyName::Door_Shake:
+		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
+			{
+				DoorShake();
+			});
+		ActiveTrigger();
 		break;
 
-		case 16:
-			AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-				{
-					Cast<AAnomaly_Object_Door>(AnomalyObject)->ActivateDoorAnomaly();
-				});
-			ActiveTrigger();
-			break;
+	case EAnomalyName::Door_Close:
+		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+			{
+				Cast<AAnomaly_Object_Door>(AnomalyObject)->ActivateDoorAnomaly();
+			});
+		ActiveTrigger();
+		break;
 	}
-	StartAnomalyAction();
 }
 
-void AAnomaly_Door::StartAnomalyAction()
+#pragma endregion
+
+#pragma region Shake
+
+void AAnomaly_Door::DoorShake()
 {
 	FTimerHandle DoorHandle;
 	GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this, DoorHandle]() mutable

@@ -2,16 +2,7 @@
 
 #include "Anomaly/EightExit/Light/Anomaly_Light.h"
 #include "Anomaly/Object/Light/Anomaly_Object_Light.h"
-#include "Components/BoxComponent.h"
-
-#pragma region Base
-
-AAnomaly_Light::AAnomaly_Light(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
-
-#pragma endregion
+#include <Components/BoxComponent.h>
 
 #pragma region Activity
 
@@ -19,16 +10,16 @@ void AAnomaly_Light::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 2:
+	case EAnomalyName::Light_Destroy:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
 			});
 		break;
 
-	case 3:
+	case EAnomalyName::Light_Blue:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();

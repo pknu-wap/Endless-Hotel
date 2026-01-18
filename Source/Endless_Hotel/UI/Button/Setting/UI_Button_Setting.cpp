@@ -20,7 +20,7 @@ void UUI_Button_Setting::SynchronizeProperties()
 
 void UUI_Button_Setting::ButtonClick()
 {
-	auto* BtnOwner = Cast<UUI_PopUp_Setting>(ButtonOwner);
+	auto* BtnOwner = Cast<UUI_PopUp_Setting>(Owner);
 
 	switch (ButtonInfo.Category)
 	{
