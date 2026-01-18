@@ -28,12 +28,5 @@ protected:
 
 #pragma endregion
 
-#pragma region Activities
-
-protected:
-    virtual void ActivateAnomaly() override;
-
-#pragma endregion
-
 };
 

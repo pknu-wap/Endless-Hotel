@@ -18,12 +18,6 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
 }
 
-void AAnomaly_Base_Neapolitan::ActivateAnomaly()
-{
-    // Activites
-    UE_LOG(LogTemp, Log, TEXT("[Neapolitan] Activated."));
-}
-
 void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
 {
     //상호작용 기반 해결여부
