@@ -19,13 +19,3 @@ void AAnomaly_Base_EightExit::BeginPlay()
 }
 
 #pragma endregion
-
-#pragma region Activities
-
-// Anomaly_Base_EightExit.cpp
-void AAnomaly_Base_EightExit::ActivateAnomaly()
-{
-    // Activites
-    UE_LOG(LogTemp, Log, TEXT("[EightExit] AnomalyID: %d Activated."), AnomalyID);
-}
-#pragma endregion
