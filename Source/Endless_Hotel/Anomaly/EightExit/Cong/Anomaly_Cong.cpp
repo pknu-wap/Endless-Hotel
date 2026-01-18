@@ -2,20 +2,31 @@
 
 #include "Anomaly/EightExit/Cong/Anomaly_Cong.h"
 #include "Anomaly/Object/HandPrint/Anomaly_Object_HandPrint.h"
-#include "Components/BoxComponent.h"
+#include <Components/BoxComponent.h>
 
-#pragma region Base
+#pragma region Activity
 
-AAnomaly_Cong::AAnomaly_Cong(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+void AAnomaly_Cong::ActivateAnomaly()
 {
+	Super::ActivateAnomaly();
+
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Cong:
+		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+			{
+				StartCongCong();
+			});
+		ActiveTrigger();
+		break;
+	}
 }
 
 #pragma endregion
 
 #pragma region Cong
 
-void AAnomaly_Cong::StartAnomalyAction()
+void AAnomaly_Cong::StartCongCong()
 {
 	CongDelegate = FTimerDelegate::CreateWeakLambda(this, [this]()
 		{

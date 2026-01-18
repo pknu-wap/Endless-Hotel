@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "Type/UI/Type_UI.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
@@ -11,11 +11,11 @@
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		 FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	 FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		 FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		 FButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingSensitivity, float,		  Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		 FSettingButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	 FSettingButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		 FSettingButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		 FSettingButtonInfo, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingSensitivity, float,				 Value);
 
 #pragma endregion
 
@@ -45,9 +45,6 @@ protected:
 #pragma region Setting
 
 protected:
-	void SettingButtonOwner(class UHorizontalBox* ButtonBox);
-
-protected:
 	UPROPERTY()
 	TObjectPtr<class UGameUserSettings> SettingHandle;
 
@@ -68,16 +65,16 @@ public:
 
 protected:
 	UFUNCTION()
-	void Click_Grapic(FButtonInfo Value);
+	void Click_Grapic(FSettingButtonInfo Value);
 
 	UFUNCTION()
-	void Click_Resolution(FButtonInfo Value);
+	void Click_Resolution(FSettingButtonInfo Value);
 
 	UFUNCTION()
-	void Click_Frame(FButtonInfo Value);
+	void Click_Frame(FSettingButtonInfo Value);
 
 	UFUNCTION()
-	void Click_Screen(FButtonInfo Value);
+	void Click_Screen(FSettingButtonInfo Value);
 
 	UFUNCTION()
 	void Slide_Sound(float Value);

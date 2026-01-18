@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI.h"
+#include "Type/UI/Type_UI_Widget.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <UI_Controller.generated.h>
@@ -60,7 +60,7 @@ public:
 
 protected:
 	UPROPERTY()
-	TSubclassOf<class UUI_Base> UI_MainMenu;
+	TSubclassOf<class UUI_Base> UI_Title;
 
 	UPROPERTY()
 	TSubclassOf<class UUI_Base> UI_InGame;

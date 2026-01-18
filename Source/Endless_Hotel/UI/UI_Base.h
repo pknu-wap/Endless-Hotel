@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI.h"
+#include "Type/UI/Type_UI_Widget.h"
 #include <CoreMinimal.h>
 #include <Blueprint/UserWidget.h>
 #include <UI_Base.generated.h>

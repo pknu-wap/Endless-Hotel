@@ -8,9 +8,9 @@ void AAnomaly_ShelfDoll::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 98:
+	case EAnomalyName::Shelf_Doll:
 			AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
 				AAnomaly_Object_ShelfDoll* ShelfDollObj = Cast<AAnomaly_Object_ShelfDoll>(Object);

@@ -1,9 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Main/UI_Button_Main.h"
-#include "UI/HUD/MainMenu/UI_MainMenu.h"
-#include <Components/TextBlock.h>
-#include <Components/VerticalBoxSlot.h>
+#include "UI/HUD/Title/UI_HUD_Title.h"
 
 #pragma region Base
 
@@ -12,50 +10,24 @@ void UUI_Button_Main::SynchronizeProperties()
 	Super::SynchronizeProperties();
 
 	OnHovered.Clear();
-	OnHovered.AddDynamic(this, &ThisClass::OnButtonHover);
+	OnHovered.AddDynamic(this, &ThisClass::Hover_Button);
+
+	OnUnhovered.Clear();
+	OnUnhovered.AddDynamic(this, &ThisClass::Unhover_Button);
 }
 
 #pragma endregion
 
-#pragma region Button
+#pragma region Hover
 
-void UUI_Button_Main::ResetButton()
+void UUI_Button_Main::Hover_Button()
 {
-	SetButtonSize(ButtonSize_Normal);
-	SetButtonTexture(Texture_Button_Normal);
-	SetFontSize(FontSize_Normal);
+	Cast<UUI_HUD_Title>(Owner)->PlayButtonAnim_Hover(ButtonType);
 }
 
-void UUI_Button_Main::OnButtonHover()
+void UUI_Button_Main::Unhover_Button()
 {
-	SetButtonSize(ButtonSize_Hover);
-	SetButtonTexture(Texture_Button_Hover);
-	SetFontSize(FontSize_Hover);
-
-	Cast<UUI_MainMenu>(ButtonOwner)->ResetOtherButton(ButtonIndex);
-}
-
-void UUI_Button_Main::SetButtonSize(const float& ButtonSize)
-{
-	UVerticalBoxSlot* VBoxSlot = Cast<UVerticalBoxSlot>(Slot);
-	FSlateChildSize TargetSize;
-	TargetSize.Value = ButtonSize;
-	VBoxSlot->SetSize(TargetSize);
-}
-
-void UUI_Button_Main::SetButtonTexture(UTexture2D* ButtonTexture)
-{
-	FSlateBrush Brush;
-	Brush.SetResourceObject(ButtonTexture);
-	WidgetStyle.SetNormal(Brush);
-}
-
-void UUI_Button_Main::SetFontSize(const uint8& FontSize)
-{
-	UTextBlock* TextBlock = Cast<UTextBlock>(GetChildAt(0));
-	FSlateFontInfo FontInfo = TextBlock->Font;
-	FontInfo.Size = FontSize * FontAdjustValue;
-	TextBlock->SetFont(FontInfo);
+	Cast<UUI_HUD_Title>(Owner)->PlayButtonAnim_Unhover(ButtonType);
 }
 
 #pragma endregion

@@ -9,9 +9,9 @@ void AAnomaly_Painting::ActivateAnomaly()
 {
 	Super::ActivateAnomaly();
 
-	switch (AnomalyID)
+	switch (AnomalyName)
 	{
-	case 99:
+	case EAnomalyName::Painting_Eye:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
@@ -20,7 +20,7 @@ void AAnomaly_Painting::ActivateAnomaly()
 		ActiveTrigger();
 		break;
 
-	case 96:
+	case EAnomalyName::Painting_Blood:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
@@ -29,7 +29,7 @@ void AAnomaly_Painting::ActivateAnomaly()
 		ActiveTrigger();
 		break;
 
-	case 95:
+	case EAnomalyName::Painting_Blur:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
@@ -38,7 +38,7 @@ void AAnomaly_Painting::ActivateAnomaly()
 		StartImmediate();
 		break;
 
-	case 92:
+	case EAnomalyName::Painting_Tilt:
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();

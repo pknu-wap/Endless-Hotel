@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Door.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Door.generated.h>
 
 class UBoxComponent;
 class AAnomaly_Object_Door;
@@ -14,13 +14,6 @@ class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Door(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 #pragma region Activity
 
 public:
@@ -28,10 +21,10 @@ public:
 
 #pragma endregion
 
-#pragma region Door
+#pragma region Shake
 
 protected:
-	virtual void StartAnomalyAction() override;
+	void DoorShake();
 
 protected:
 	uint8 CurrentIndex = 1;

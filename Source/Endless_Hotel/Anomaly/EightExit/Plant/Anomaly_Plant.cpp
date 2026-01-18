@@ -11,9 +11,9 @@ void AAnomaly_Plant::ActivateAnomaly()
 {
     Super::ActivateAnomaly();
 
-    switch (AnomalyID)
+    switch (AnomalyName)
     {
-    case 10:
+    case EAnomalyName::Plant_Change:
         AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
         {
             if (auto* Plant = Cast<AAnomaly_Object_Plant>(AnomalyObject))
