@@ -2,15 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_ShelfDoll.generated.h"
+#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_ShelfDoll.generated.h>
 
 class UStaticMeshComponent;
 class AActor;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 	
@@ -45,4 +45,21 @@ protected:
 public:
 	void ActivatePlant_Hide();
 #pragma endregion
+
+#pragma region Interact
+public:
+	virtual void SetInteraction() override;
+
+protected:
+	void InteractFire();
+
+	UFUNCTION()
+	void InteractedMoveStep(int32 step);
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
+
+#pragma endregion
+
 };

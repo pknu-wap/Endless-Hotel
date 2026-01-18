@@ -2,8 +2,9 @@
 
 
 #include "Anomaly/Object/ShelfDoll/Anomaly_Object_ShelfDoll.h"
-#include "Components/StaticMeshComponent.h"
-#include "GameFramework/Actor.h"
+#include <Niagara/Public/NiagaraComponent.h>
+#include <Components/StaticMeshComponent.h>
+#include <GameFramework/Actor.h>
 
 #pragma region Base
 
@@ -15,6 +16,12 @@ AAnomaly_Object_ShelfDoll::AAnomaly_Object_ShelfDoll(const FObjectInitializer& O
 
 	SM_Doll->SetVisibility(false);
 	SM_Doll->SetHiddenInGame(true);
+
+	Niagara_Fire = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Fire"));
+	Niagara_Fire->SetupAttachment(SM_Doll);
+	Niagara_Fire->SetAutoActivate(false);
+
+	bSolved = false;
 }
 
 #pragma endregion
@@ -59,3 +66,30 @@ void AAnomaly_Object_ShelfDoll::ActivatePlant_Hide()
 }
 
 #pragma endregion
+
+#pragma region Interact
+
+void AAnomaly_Object_ShelfDoll::SetInteraction()
+{
+	switch (AnomalyID)
+	{
+	case 0:
+		break;
+
+	default:
+		InteractAction = ([this]()
+			{
+				AAnomaly_Object_ShelfDoll::InteractFire();
+			});
+		break;
+	}
+}
+
+void AAnomaly_Object_ShelfDoll::InteractFire()
+{
+	FTimerHandle InteractHandle;
+	GetWorld()->GetTimerManager().SetTimer(InteractHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			Niagara_Fire->SetActive(true, true);
+		}), 1.f, false);
+}
