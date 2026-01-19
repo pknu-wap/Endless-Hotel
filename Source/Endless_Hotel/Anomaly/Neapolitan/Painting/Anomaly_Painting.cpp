@@ -42,8 +42,9 @@ void AAnomaly_Painting::ActivateAnomaly()
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
+				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
-		StartDelay(2.0f);
+		StartDelay(10.0f);
 		break;
 	}
 }
