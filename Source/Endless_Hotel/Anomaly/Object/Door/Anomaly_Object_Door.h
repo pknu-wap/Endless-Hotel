@@ -11,7 +11,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 public:
@@ -124,7 +124,7 @@ protected:
 protected:
 	FTimerHandle RotateHandle;
 
-	float CurrentYaw = 0.f; 
+	float CurrentYaw = 0.f;
 	float TargetYaw = 0.f;
 	float OriginYaw = 0.f;
 

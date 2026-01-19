@@ -37,9 +37,9 @@ void AAnomaly_Door::ActivateAnomaly()
 		break;
 
 	case EAnomalyName::Door_Close:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
+		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
 			{
-				Cast<AAnomaly_Object_Door>(AnomalyObject)->ActivateDoorAnomaly();
+				SetupDoorTrigger();
 			});
 		ActiveTrigger();
 		break;
@@ -99,10 +99,8 @@ void AAnomaly_Door::SetupDoorTrigger()
 	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerBox_Open->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	TriggerBox_Close->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox_Close->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 	TriggerBox_Open->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_OpenBeginOverlap);
 	TriggerBox_Close->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_CloseBeginOverlap);
@@ -123,3 +121,4 @@ void AAnomaly_Door::OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* Overlapp
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+#pragma endregion

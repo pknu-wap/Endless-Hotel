@@ -14,6 +14,11 @@ class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Base_EightExit
 {
 	GENERATED_BODY()
 
+#pragma region Base
+public:
+	AAnomaly_Door(const FObjectInitializer& ObjectInitializer);
+#pragma endregion
+
 #pragma region Activity
 
 public:
@@ -34,10 +39,14 @@ protected:
 
 #pragma endregion
 
-#pragma region Door
+#pragma region Trigger
+
 protected:
 	void SetupDoorTrigger();
+#pragma endregion
 
+#pragma region Door
+	
 	UFUNCTION()
 	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
