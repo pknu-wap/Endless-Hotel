@@ -87,6 +87,12 @@ void AAnomaly_Object_ShelfDoll::SetInteraction()
 
 void AAnomaly_Object_ShelfDoll::InteractFire()
 {
+	InteractedMoveStep(0);
+	bSolved = !bSolved;
+}
+
+void AAnomaly_Object_ShelfDoll::InteractedMoveStep(int32 step)
+{
 	FTimerHandle InteractHandle;
 	GetWorld()->GetTimerManager().SetTimer(InteractHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
