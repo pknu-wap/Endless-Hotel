@@ -31,11 +31,10 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
 
-	return EBTNodeResult::Succeeded;
-	return EBTNodeResult::Succeeded;
-
 	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
 	Player->DieDelegate.Broadcast(EDeathReason::Attack);
+
+	return EBTNodeResult::Succeeded;
 }
 
 #pragma endregion
