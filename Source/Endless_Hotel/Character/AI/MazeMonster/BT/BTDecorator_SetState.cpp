@@ -29,6 +29,7 @@ void UBTDecorator_SetState::OnNodeActivation(FBehaviorTreeSearchData& SearchData
 	if (UMazeMonsterAnimInstance* Anim = GetMonsterAnim(SearchData))
 	{
 		Anim->bIsMoving = bEntryIsMoving;
+		Anim->bIsAttacking = bEntryIsAttacking;
 	}
 }
 
@@ -37,5 +38,6 @@ void UBTDecorator_SetState::OnNodeDeactivation(FBehaviorTreeSearchData& SearchDa
 	if (UMazeMonsterAnimInstance* Anim = GetMonsterAnim(SearchData))
 	{
 		Anim->bIsMoving = bOutIsMoving;
+		Anim->bIsAttacking = bOutIsAttacking;
 	}
 }

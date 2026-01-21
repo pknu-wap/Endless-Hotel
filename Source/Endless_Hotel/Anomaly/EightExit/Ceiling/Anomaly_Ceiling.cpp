@@ -16,7 +16,7 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
 			});
-		StartDelay(2.0f);
+		StartDelay(10.0f);
 		break;
 
 	case EAnomalyName::Ceil_Blood:
@@ -24,7 +24,7 @@ void AAnomaly_Ceiling::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->CeilingBloodDripping();
 			});
-		StartDelay(5.0f);
+		StartDelay(10.0f);
 		break;
 	}
 	
