@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_GhostHand::ActivateAnomaly()
+void AAnomaly_GhostHand::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 	
 	switch (AnomalyID)
 	{
@@ -17,7 +17,7 @@ void AAnomaly_GhostHand::ActivateAnomaly()
 				{
 					Cast<AAnomaly_Object_GhostHand>(AnomalyObject)->AttachGhostHand();
 				});
-			StartImmediate();
+			ScheduleAnomaly(0.01f);
 			break;
 	}
 }

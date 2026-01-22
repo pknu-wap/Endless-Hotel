@@ -69,7 +69,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly();
+	virtual void SetAnomalyActivate();
 	virtual void DisableAnomaly() {}
 
 #pragma endregion
@@ -96,11 +96,8 @@ protected:
 	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// 타이머
-	virtual void StartDelay(float delay);
-
-	// 초기
-	virtual void StartImmediate();
+	// 타이머 & 즉발
+	virtual void ScheduleAnomaly(float delay);
 
 #pragma endregion
 

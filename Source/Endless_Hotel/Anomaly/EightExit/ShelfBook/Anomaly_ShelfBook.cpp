@@ -6,9 +6,9 @@
 
 #pragma region Activitiy
 
-void AAnomaly_ShelfBook::ActivateAnomaly()
+void AAnomaly_ShelfBook::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{

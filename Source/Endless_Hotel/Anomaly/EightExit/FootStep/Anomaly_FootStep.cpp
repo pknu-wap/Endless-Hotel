@@ -7,9 +7,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 
-void AAnomaly_FootStep::ActivateAnomaly()
+void AAnomaly_FootStep::SetAnomalyActivate()
 {
-    Super::ActivateAnomaly();
+    Super::SetAnomalyActivate();
 
     switch (AnomalyName) {
     case EAnomalyName::FootStep:

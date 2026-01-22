@@ -16,9 +16,9 @@ AAnomaly_Cry::AAnomaly_Cry(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Cry::ActivateAnomaly()
+void AAnomaly_Cry::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -27,7 +27,7 @@ void AAnomaly_Cry::ActivateAnomaly()
 			{
 				PlayCrySound();
 			});
-		StartDelay(20);
+		ScheduleAnomaly(20);
 		break;
 	}
 }

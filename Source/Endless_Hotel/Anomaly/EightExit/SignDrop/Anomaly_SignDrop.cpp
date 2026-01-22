@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/SignDrop/Anomaly_SignDrop.h"
@@ -22,9 +22,9 @@ void AAnomaly_SignDrop::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_SignDrop::ActivateAnomaly()
+void AAnomaly_SignDrop::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyID)
 	{

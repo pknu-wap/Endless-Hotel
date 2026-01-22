@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_MusicBox::ActivateAnomaly()
+void AAnomaly_MusicBox::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -18,7 +18,7 @@ void AAnomaly_MusicBox::ActivateAnomaly()
 				Cast<AAnomaly_Object_MusicBox>(MusicBox)->PlayMusicBox();
 				Cast<AAnomaly_Object_MusicBox>(MusicBox)->SetInteraction();
 			});
-		StartImmediate();
+		ScheduleAnomaly(0.01f);
 		break;
 	}
 }

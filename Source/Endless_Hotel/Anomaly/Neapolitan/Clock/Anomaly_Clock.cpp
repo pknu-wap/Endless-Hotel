@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Clock::ActivateAnomaly()
+void AAnomaly_Clock::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -16,7 +16,7 @@ void AAnomaly_Clock::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Clock>(Clock)->RingingClock();
 			});
-		StartDelay(20);
+		ScheduleAnomaly(20);
 		break;
 	}
 }

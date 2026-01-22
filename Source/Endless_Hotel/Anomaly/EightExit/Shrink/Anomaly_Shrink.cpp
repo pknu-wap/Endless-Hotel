@@ -34,9 +34,9 @@ void AAnomaly_Shrink::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Shrink::ActivateAnomaly()
+void AAnomaly_Shrink::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -45,7 +45,7 @@ void AAnomaly_Shrink::ActivateAnomaly()
 			{
 				Timeline_Shrink->PlayFromStart();
 			});
-		StartDelay(5);
+		ScheduleAnomaly(5);
 		break;
 	}
 }

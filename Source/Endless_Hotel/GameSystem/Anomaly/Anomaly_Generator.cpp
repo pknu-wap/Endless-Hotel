@@ -19,8 +19,9 @@ void AAnomaly_Generator::BeginPlay()
 	int32 IsNormal = FMath::RandRange(1, 10);
 	if (IsNormal > 8 || Sub->Floor == 9)
 	{
-		SpawnNormal();
-		return;
+		//정상 이상현상 스폰 방지 -> 그래도 통과 여부 확인을 쉽게 하기 위해서 스폰 위치는 다름
+		/*SpawnNormal();
+		return;*/
 	}
 	SpawnAnomalyAtIndex(Sub->ActIndex);
 	Sub->ActIndex++;
@@ -100,7 +101,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	AnomalyObjectLinker();
 
 	// Start
-	Spawned->ActivateAnomaly();
+	Spawned->SetAnomalyActivate();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);

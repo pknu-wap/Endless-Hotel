@@ -52,7 +52,7 @@ void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma region Activity
 
-void AAnomaly_Base::ActivateAnomaly()
+void AAnomaly_Base::SetAnomalyActivate()
 {
 	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
 }
@@ -78,20 +78,16 @@ void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::StartDelay(float delay)
+void AAnomaly_Base::ScheduleAnomaly(float delay)
 {
+	float realDelay = FMath::Clamp(0.01f, delay, 100);
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
 		this,
 		[this]()
 		{
 			StartAnomalyAction();
-		}), delay, false);
-}
-
-void AAnomaly_Base::StartImmediate()
-{
-	StartAnomalyAction();
+		}), realDelay, false);
 }
 
 #pragma endregion
