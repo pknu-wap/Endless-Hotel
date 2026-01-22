@@ -12,8 +12,6 @@
 
 class AAnomaly_Object_Base;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnomalyDelegate, bool, bIsStart);
-
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
@@ -50,8 +48,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyName AnomalyName;
-
-	static FAnomalyDelegate AnomalyDelegate;
 
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
@@ -105,13 +101,6 @@ protected:
 
 	// 초기
 	virtual void StartImmediate();
-
-#pragma endregion
-
-#pragma region Player
-
-protected:
-	virtual void KillPlayer();
 
 #pragma endregion
 
