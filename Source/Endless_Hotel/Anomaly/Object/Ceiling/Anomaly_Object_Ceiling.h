@@ -21,9 +21,6 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh_Default;
-
-	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Ceiling;
 
 	UPROPERTY()

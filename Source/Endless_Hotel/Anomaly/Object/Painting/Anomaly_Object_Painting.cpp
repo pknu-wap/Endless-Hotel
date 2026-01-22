@@ -2,7 +2,6 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/PopUp/PaintingBlur/UI_PopUp_PaintingBlur.h"
-#include "UI/World/Interact/UI_Interact.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -98,14 +97,18 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	CurrentTilt = RootComponent->GetRelativeRotation().Pitch;
-	TargetTilt = FMath::FRandRange(-180.f, 180.f);
+	CurrentTilt = Root->GetRelativeRotation().Pitch;
+	TargetTilt = FMath::FRandRange(10.f, 180.f);
+	if (FMath::RandBool())
+	{
+		TargetTilt *= -1.f;
+	}
 	GetWorld()->GetTimerManager().SetTimer(FrameTiltHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
-		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 90.f);
+		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 1.f);
 			
-		const FRotator NewRot(CurrentTilt, 0.f, 0.f);
-		RootComponent->SetRelativeRotation(NewRot);
+		const FRotator NewRot(0.f, 0.f, CurrentTilt);
+		Root->SetRelativeRotation(NewRot);
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);

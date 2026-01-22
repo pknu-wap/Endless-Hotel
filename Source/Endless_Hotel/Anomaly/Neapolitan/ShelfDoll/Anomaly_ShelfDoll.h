@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
-#include "Anomaly_ShelfDoll.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_ShelfDoll.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_ShelfDoll : public AAnomaly_Base_Neapolitan

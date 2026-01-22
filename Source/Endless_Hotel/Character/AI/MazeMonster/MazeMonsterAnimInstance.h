@@ -14,4 +14,7 @@ class ENDLESS_HOTEL_API UMazeMonsterAnimInstance : public UBaseAIAnimInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bIsMoving;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bIsAttacking;
 };
