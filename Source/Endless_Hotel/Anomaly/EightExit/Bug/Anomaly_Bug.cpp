@@ -27,7 +27,7 @@ void AAnomaly_Bug::ActivateAnomaly()
 
 void AAnomaly_Bug::SpawnBugs()
 {
-	for (FVector Target : BugLocations)
+	for (const FVector& Target : BugLocations)
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, NS_Bug, Target);
 	}
