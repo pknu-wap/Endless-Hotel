@@ -78,7 +78,7 @@ void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::ScheduleAnomaly(float delay = 0.01f)
+void AAnomaly_Base::ScheduleAnomaly(float delay)
 {
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
