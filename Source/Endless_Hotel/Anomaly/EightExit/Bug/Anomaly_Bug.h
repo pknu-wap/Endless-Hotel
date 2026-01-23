@@ -16,6 +16,9 @@ class ENDLESS_HOTEL_API AAnomaly_Bug : public AAnomaly_Base_EightExit
 public:
 	virtual void ActivateAnomaly() override;
 
+protected:
+	virtual void StartAnomalyAction() override;
+
 #pragma endregion
 
 #pragma region Bug
@@ -25,10 +28,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Bug")
-	TObjectPtr<class UNiagaraSystem> NS_Bug;
+	TArray<FVector> BugLocations;
 
 	UPROPERTY(EditAnywhere, Category = "Bug")
-	TArray<FVector> BugLocations;
+	TSubclassOf<class AAnomaly_Object_Bug> BugClass;
 
 #pragma endregion
 

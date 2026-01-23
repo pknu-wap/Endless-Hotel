@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Bug/Anomaly_Bug.h"
-#include <NiagaraFunctionLibrary.h>
+#include "Anomaly/Object/Bug/Anomaly_Object_Bug.h"
 
 #pragma region Activity
 
@@ -12,13 +12,14 @@ void AAnomaly_Bug::ActivateAnomaly()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Bug:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
-			{
-				SpawnBugs();
-			});
 		ActiveTrigger();
 		break;
 	}
+}
+
+void AAnomaly_Bug::StartAnomalyAction()
+{
+	SpawnBugs();
 }
 
 #pragma endregion
@@ -29,7 +30,8 @@ void AAnomaly_Bug::SpawnBugs()
 {
 	for (const FVector& Target : BugLocations)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, NS_Bug, Target);
+		auto* SpawnedBug = GetWorld()->SpawnActor<AAnomaly_Object_Bug>(BugClass, Target, FRotator::ZeroRotator);
+		SpawnedBug->ActiveBug();
 	}
 }
 
