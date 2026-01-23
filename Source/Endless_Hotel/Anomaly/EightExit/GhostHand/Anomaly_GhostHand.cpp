@@ -17,7 +17,7 @@ void AAnomaly_GhostHand::SetAnomalyActivate()
 				{
 					Cast<AAnomaly_Object_GhostHand>(AnomalyObject)->AttachGhostHand();
 				});
-			ScheduleAnomaly(0.01f);
+			ScheduleAnomaly();
 			break;
 	}
 }
