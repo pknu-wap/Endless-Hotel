@@ -3,21 +3,8 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
-#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <UI_PopUp_Setting.generated.h>
-
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingGrapic,		 FSettingButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingResolution,	 FSettingButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingFrame,		 FSettingButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingScreen,		 FSettingButtonInfo, Value);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingSensitivity, float,				 Value);
-
-#pragma endregion
 
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
@@ -28,17 +15,6 @@ class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
-
-#pragma endregion
-
-#pragma region Data
-
-protected:
-	void LoadSettingData();
-
-protected:
-	FSettingSaveData SettingData;
 
 #pragma endregion
 
@@ -46,108 +22,33 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class UGameUserSettings> SettingHandle;
+	TWeakObjectPtr<class UGameUserSettings> SettingHandle;
 
 #pragma endregion
 
-#pragma region Delegate
+#pragma region Category
 
 public:
-	static FSettingGrapic SettingGrapic;
-	static FSettingResolution SettingResolution;
-	static FSettingFrame SettingFrame;
-	static FSettingScreen SettingScreen;
-	static FSettingSensitivity SettingSensitivity;
+	void SetCurrentCategoryText(FText Value);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_CurrentCategory;
 
 #pragma endregion
 
-#pragma region Button
-
-protected:
-	UFUNCTION()
-	void Click_Grapic(FSettingButtonInfo Value);
-
-	UFUNCTION()
-	void Click_Resolution(FSettingButtonInfo Value);
-
-	UFUNCTION()
-	void Click_Frame(FSettingButtonInfo Value);
-
-	UFUNCTION()
-	void Click_Screen(FSettingButtonInfo Value);
-
-	UFUNCTION()
-	void Slide_Sound(float Value);
-
-	UFUNCTION()
-	void Slide_Sensitivity(float Value);
+#pragma region Control
 
 protected:
 	UFUNCTION()
 	void Click_Apply();
 
 protected:
-	UFUNCTION()
-	void Click_Reset();
-
-	UFUNCTION()
-	void Click_Language();
-
-	UFUNCTION()
-	void Click_Brightness();
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UHorizontalBox> Buttons_Grapic;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UHorizontalBox> Buttons_Resolution;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UHorizontalBox> Buttons_Frame;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UHorizontalBox> Buttons_Screen;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Slider_Custom> Slider_Sound;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USoundClass> SoundMaster;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Slider_Custom> Slider_Sensitivity;
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Cancel;
-
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
-protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Reset;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Language;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Brightness;
-
-#pragma endregion
-
-#pragma region Widget
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Reset;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Language;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Brightness;
+	TObjectPtr<class UButton> Button_Cancel;
 
 #pragma endregion
 

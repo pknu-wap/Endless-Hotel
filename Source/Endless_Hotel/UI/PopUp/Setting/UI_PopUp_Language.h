@@ -11,7 +11,7 @@
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage, FSettingButtonInfo, Value);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSettingLanguage, FSettingButtonInfo, Value);
 
 #pragma endregion
 
@@ -31,7 +31,7 @@ protected:
 #pragma region Delegate
 
 public:
-	static FSettingLanguage SettingLanguage;
+	//static FSettingLanguage SettingLanguage;
 
 #pragma endregion
 
@@ -48,8 +48,8 @@ protected:
 #pragma region Button
 
 protected:
-	UFUNCTION()
-	void Click_Language(FSettingButtonInfo Value);
+	//UFUNCTION()
+	//void Click_Language(FSettingButtonInfo Value);
 
 	UFUNCTION()
 	void Click_Apply();

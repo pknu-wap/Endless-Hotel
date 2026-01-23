@@ -2,7 +2,7 @@
 
 #include "UI/Button/Setting/UI_Button_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/PopUp/Setting/UI_PopUp_Language.h"
+#include "UI/Controller/UI_Controller.h"
 
 #pragma region Base
 
@@ -11,39 +11,21 @@ void UUI_Button_Setting::SynchronizeProperties()
 	Super::SynchronizeProperties();
 
 	OnClicked.Clear();
-	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
+	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
 }
 
 #pragma endregion
 
 #pragma region Click
 
-void UUI_Button_Setting::ButtonClick()
+void UUI_Button_Setting::Click_Button()
 {
-	auto* BtnOwner = Cast<UUI_PopUp_Setting>(Owner);
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->CloseWidget();
+	UICon->OpenWidget(SettingInfo.Class);
 
-	switch (ButtonInfo.Category)
-	{
-	case ESettingButtonType::Grapic:
-		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Resolution:
-		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Frame:
-		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Screen:
-		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Language:
-		UUI_PopUp_Language::SettingLanguage.Broadcast(ButtonInfo);
-		break;
-	}
+	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
+	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
 }
 
 #pragma endregion

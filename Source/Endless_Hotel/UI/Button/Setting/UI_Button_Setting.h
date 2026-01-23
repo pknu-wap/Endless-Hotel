@@ -22,8 +22,8 @@ protected:
 #pragma region Setting
 
 public:
-	UPROPERTY(EditAnywhere)
-	FSettingButtonInfo ButtonInfo;
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	FSettingCategory SettingInfo;
 
 #pragma endregion
 
@@ -31,7 +31,7 @@ public:
 
 protected:
 	UFUNCTION()
-	void ButtonClick();
+	void Click_Button();
 
 #pragma endregion
 

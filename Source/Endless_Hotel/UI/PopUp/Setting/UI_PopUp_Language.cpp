@@ -8,7 +8,7 @@
 
 #pragma region Base
 
-FSettingLanguage UUI_PopUp_Language::SettingLanguage;
+//FSettingLanguage UUI_PopUp_Language::SettingLanguage;
 
 void UUI_PopUp_Language::NativeOnInitialized()
 {
@@ -16,7 +16,7 @@ void UUI_PopUp_Language::NativeOnInitialized()
 
 	Buttons_Language->SetAlwaysShowScrollbar(true);
 
-	SettingLanguage.AddDynamic(this, &ThisClass::Click_Language);
+	//SettingLanguage.AddDynamic(this, &ThisClass::Click_Language);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 }
 
@@ -44,15 +44,15 @@ void UUI_PopUp_Language::LoadSettingData()
 
 #pragma region Button
 
-void UUI_PopUp_Language::Click_Language(FSettingButtonInfo Value)
-{
-	SettingData.Value_Language = Value.Value_String;
-	SettingData.Index_Language = Value.ButtonIndex;
-
-	HighlightButton(Buttons_Language, SettingData.Index_Language);
-
-	Text_Current->SetText(FText::FromString(Value.Value_String));
-}
+//void UUI_PopUp_Language::Click_Language(FSettingButtonInfo Value)
+//{
+//	SettingData.Value_Language = Value.Value_String;
+//	SettingData.Index_Language = Value.ButtonIndex;
+//
+//	HighlightButton(Buttons_Language, SettingData.Index_Language);
+//
+//	Text_Current->SetText(FText::FromString(Value.Value_String));
+//}
 
 void UUI_PopUp_Language::Click_Apply()
 {

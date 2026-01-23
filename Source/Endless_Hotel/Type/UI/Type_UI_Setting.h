@@ -6,38 +6,28 @@
 #include <Type_UI_Setting.generated.h>
 
 UENUM(BlueprintType)
-enum class ESettingButtonType : uint8
+enum class ESettingCategory : uint8
 {
-	Grapic		UMETA(DisplayName = "Grapic"),
-	Resolution	UMETA(DisplayName = "Resolution"),
-	Frame		UMETA(DisplayName = "Frame"),
 	Screen		UMETA(DisplayName = "Screen"),
-	Language	UMETA(DisplayName = "Language")
+	Grapic		UMETA(DisplayName = "Grapic"),
+	Sound		UMETA(DisplayName = "Sound"),
+	Control		UMETA(DisplayName = "Control"),
+	Gameplay	UMETA(DisplayName = "Gameplay"),
+	System		UMETA(DisplayName = "System")
 };
 
 USTRUCT(BlueprintType)
-struct FSettingButtonInfo
+struct FSettingCategory
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	int32 ButtonIndex;
+public:
+	UPROPERTY(EditAnyWhere)
+	ESettingCategory Enum;
 
-	UPROPERTY(EditAnywhere)
-	ESettingButtonType Category;
+	UPROPERTY(EditAnyWhere)
+	FText Name;
 
-	UPROPERTY(EditAnywhere)
-	int32 Value_Int;
-
-	UPROPERTY(EditAnywhere)
-	FString Value_String;
-
-	UPROPERTY(EditAnywhere)
-	FIntPoint Value_IntPoint;
-
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EWindowMode::Type> Value_WindowMode;
-
-	UPROPERTY(EditAnywhere)
-	float Value_Float;
+	UPROPERTY(EditAnyWhere)
+	TSubclassOf<class UUI_Base> Class;
 };

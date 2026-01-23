@@ -25,7 +25,7 @@ private:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class UUI_Base> Owner;
+	TWeakObjectPtr<class UUI_Base> Owner;
 
 #pragma endregion
 
