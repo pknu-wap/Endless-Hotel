@@ -63,7 +63,7 @@ protected:
 	void SmokeTimer(bool bIsCrouch);
 
 protected:
-	FTimerHandle SmokeDieHandle;
+	FTimerHandle SmokeHandle;
 
 #pragma endregion
 
