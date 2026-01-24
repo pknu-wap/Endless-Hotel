@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -25,7 +25,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")

@@ -20,9 +20,9 @@ void AAnomaly_Fire::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Fire::ActivateAnomaly()
+void AAnomaly_Fire::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{

@@ -58,12 +58,6 @@ void AElevator_Button::Interacted_Implementation()
 		{
 			OwnerElevator->CallElevator();
 		}), 1.0f, false);
-
-	FTimerHandle WaitHandle;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]() mutable
-		{
-			OwnerElevator->TryCloseDoorAfterDelay();
-		}), 5.0f, false);
 }
 
 void AElevator_Button::ShowInteractWidget_Implementation(bool bIsShow)

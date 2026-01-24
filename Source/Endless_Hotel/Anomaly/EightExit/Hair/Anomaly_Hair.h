@@ -23,7 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 
 #pragma region Trigger
@@ -63,7 +63,7 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
-	float StartDelay = 0.5f;
+	float ScheduleAnomaly = 0.5f;
 };
 
 #pragma endregion

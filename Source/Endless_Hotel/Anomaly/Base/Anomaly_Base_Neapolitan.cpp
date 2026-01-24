@@ -7,6 +7,8 @@
 
 // Anomaly_Base_Neapolitan.cpp
 
+#pragma region Base
+
 AAnomaly_Base_Neapolitan::AAnomaly_Base_Neapolitan(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
@@ -17,6 +19,10 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 	Super::BeginPlay();
 	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
 }
+
+#pragma endregion
+
+#pragma region Anomaly
 
 void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
 {
@@ -35,3 +41,4 @@ void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
     bIsSolved = bAllSolved;
     Sub->SetIsAnomalySolved(bIsSolved);
 }
+#pragma endregion

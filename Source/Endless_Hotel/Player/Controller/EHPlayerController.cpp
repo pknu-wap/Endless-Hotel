@@ -52,10 +52,6 @@ void AEHPlayerController::BeginPlay()
 
 	SetLookSensitivity(USaveManager::LoadSettingData().Value_Sensitivity);
 
-	AAnomaly_Base::AnomalyDelegate.AddDynamic(
-		this,
-		&AEHPlayerController::OnAnomalyVerdict
-	);
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)

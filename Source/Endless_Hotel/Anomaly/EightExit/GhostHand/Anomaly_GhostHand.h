@@ -13,6 +13,6 @@ class ENDLESS_HOTEL_API AAnomaly_GhostHand : public AAnomaly_Base_EightExit
 
 #pragma region Acitvity
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 #pragma endregion
 };
