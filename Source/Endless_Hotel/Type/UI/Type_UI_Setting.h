@@ -34,3 +34,19 @@ public:
 	UPROPERTY(EditAnyWhere)
 	float Angle;
 };
+
+UENUM(BlueprintType)
+enum class EOptionValue : uint8
+{
+	None	UMETA(DisplayName = "None"),
+	On		UMETA(DisplayName = "On"),
+	Off		UMETA(DisplayName = "Off"),
+	Low		UMETA(DisplayName = "Low"),
+	Medium	UMETA(DisplayName = "Medium"),
+	High	UMETA(DisplayName = "High"),
+	Epic	UMETA(DisplayName = "Epic"),
+	HD		UMETA(DisplayName = "HD"),
+	FHD		UMETA(DisplayName = "FHD"),
+	QHD		UMETA(DisplayName = "QHD"),
+	UHD		UMETA(DisplayName = "UHD")
+};
