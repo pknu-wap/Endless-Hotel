@@ -32,5 +32,6 @@ enum class EAnomalyName : uint8
 	Door_Close			= 16	UMETA(DisplayName = "Door_Close"),
 	Ceil_Blood			= 17	UMETA(DisplayName = "Ceil_Blood"),
 	Float				= 88	UMETA(DisplayName = "Float"),
-	Bug					= 13	UMETA(DisplayName = "Bug")
+	Bug					= 13	UMETA(DisplayName = "Bug"),
+	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color")
 };
