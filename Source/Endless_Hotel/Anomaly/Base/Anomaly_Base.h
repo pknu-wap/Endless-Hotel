@@ -12,8 +12,6 @@
 
 class AAnomaly_Object_Base;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAnomalyDelegate, bool, bIsStart);
-
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
@@ -51,8 +49,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyName AnomalyName;
 
-	static FAnomalyDelegate AnomalyDelegate;
-
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
 
@@ -73,7 +69,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly();
+	virtual void SetAnomalyActivate();
 	virtual void DisableAnomaly() {}
 
 #pragma endregion
@@ -100,18 +96,8 @@ protected:
 	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// 타이머
-	virtual void StartDelay(float delay);
-
-	// 초기
-	virtual void StartImmediate();
-
-#pragma endregion
-
-#pragma region Player
-
-protected:
-	virtual void KillPlayer();
+	// 타이머 & 즉발
+	virtual void ScheduleAnomaly(float delay = 0.01f);
 
 #pragma endregion
 

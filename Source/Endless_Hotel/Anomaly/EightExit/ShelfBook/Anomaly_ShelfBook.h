@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_ShelfBook : public AAnomaly_Base_EightExit
 #pragma region Activitiy
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 #pragma endregion
 };

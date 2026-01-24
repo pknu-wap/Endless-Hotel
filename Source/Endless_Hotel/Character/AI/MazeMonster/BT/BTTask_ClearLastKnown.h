@@ -6,9 +6,6 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTask_ClearLastKnown.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API UBTTask_ClearLastKnown : public UBTTaskNode
 {

@@ -19,6 +19,7 @@ enum class EAnomalyName : uint8
 	Shelf_Book			= 9		UMETA(DisplayName = "Shelf_Book"),
 	Plant_Change		= 10	UMETA(DisplayName = "Plant_Change"),
 	Ceil_Rotate			= 11	UMETA(DisplayName = "Ceil_Rotate"),
+	Bug					= 13	UMETA(DisplayName = "Bug"),
 	Fire				= 14	UMETA(DisplayName = "Fire"),
 	FootStep			= 15	UMETA(DisplayName = "FootStep"),
 	Door_Close			= 16	UMETA(DisplayName = "Door_Close"),

@@ -21,8 +21,6 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	AAnomaly_Base::AnomalyDelegate.AddDynamic(this, &ThisClass::KillPlayer);
-
 	UDataController* DataController = Collection.InitializeDependency<UDataController>();
 	if (DataController)
 	{

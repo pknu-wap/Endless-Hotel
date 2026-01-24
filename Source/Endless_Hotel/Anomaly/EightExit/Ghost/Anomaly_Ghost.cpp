@@ -3,9 +3,9 @@
 #include "Anomaly/EightExit/Ghost/Anomaly_Ghost.h"
 #include "Anomaly/Object/Ghost/Anomaly_Object_Ghost.h"
 
-void AAnomaly_Ghost::ActivateAnomaly()
+void AAnomaly_Ghost::SetAnomalyActivate()
 {
-    Super::ActivateAnomaly();
+    Super::SetAnomalyActivate();
 
     switch (AnomalyID)
     {

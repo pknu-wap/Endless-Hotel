@@ -24,7 +24,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Activity")
@@ -63,7 +63,7 @@ protected:
 	void SmokeTimer(bool bIsCrouch);
 
 protected:
-	FTimerHandle SmokeDieHandle;
+	FTimerHandle SmokeHandle;
 
 #pragma endregion
 

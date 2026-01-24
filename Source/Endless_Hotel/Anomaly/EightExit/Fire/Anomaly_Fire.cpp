@@ -20,9 +20,9 @@ void AAnomaly_Fire::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Fire::ActivateAnomaly()
+void AAnomaly_Fire::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -31,14 +31,12 @@ void AAnomaly_Fire::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Candle>(Candle)->FallCandle();
 
-				FTimerHandle FireHandle;
 				GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 					{
 						SpawnFires();
 					}), FireDuration, false);
 
-				FTimerHandle SmokeHandle;
-				GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+				GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 					{
 						SmokeTimer(false);
 					}), FireDuration, false);
@@ -76,11 +74,11 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
 	if (bIsCrouch)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(SmokeDieHandle);
+		GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
 		return;
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(SmokeDieHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
 		}), 5, false);
