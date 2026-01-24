@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Bug::ActivateAnomaly()
+void AAnomaly_Bug::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
