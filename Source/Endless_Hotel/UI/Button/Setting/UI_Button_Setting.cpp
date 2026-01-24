@@ -20,12 +20,13 @@ void UUI_Button_Setting::SynchronizeProperties()
 
 void UUI_Button_Setting::Click_Button()
 {
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	/*auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->CloseWidget();
-	UICon->OpenWidget(SettingInfo.Class);
+	UICon->OpenWidget(SettingInfo.Class);*/
 
 	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
 	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
+	SettingWidget->RotateGear(SettingInfo.Angle);
 }
 
 #pragma endregion

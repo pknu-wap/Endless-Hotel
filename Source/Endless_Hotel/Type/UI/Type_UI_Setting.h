@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(EditAnyWhere)
 	TSubclassOf<class UUI_Base> Class;
+
+	UPROPERTY(EditAnyWhere)
+	float Angle;
 };

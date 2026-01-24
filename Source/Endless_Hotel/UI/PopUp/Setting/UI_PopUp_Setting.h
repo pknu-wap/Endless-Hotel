@@ -37,6 +37,23 @@ protected:
 
 #pragma endregion
 
+#pragma region Gear
+
+public:
+	void RotateGear(float TargetAngle);
+
+protected:
+	const float GetShortestAddAngle(float Cur, float Tar);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UUserWidget> UI_Gear;
+
+	FTimerHandle AngleHandle;
+	float CurrentAngle = 0;
+
+#pragma endregion
+
 #pragma region Control
 
 protected:
