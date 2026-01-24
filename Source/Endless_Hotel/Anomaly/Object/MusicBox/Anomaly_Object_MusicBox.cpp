@@ -3,8 +3,10 @@
 
 #include "Anomaly/Object/MusicBox/Anomaly_Object_MusicBox.h"
 #include "Anomaly/Base/Anomaly_Base.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -35,7 +37,9 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 			bWaitingInteract = false;
 			AC->Stop();
 			bSolved = false;
-			AAnomaly_Base::AnomalyDelegate.Broadcast(false);
+			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			if (!Player) return;
+			Player->DieDelegate.Broadcast(EDeathReason::Music);
 		}), LimitTime, false);
 }
 

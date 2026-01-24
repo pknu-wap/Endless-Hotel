@@ -24,7 +24,7 @@ void ANormal::BeginPlay()
 #pragma region Activities
 
 // Anomaly_Base_EightExit.cpp
-void ANormal::ActivateAnomaly()
+void ANormal::SetAnomalyActivate()
 {
     // Activites
 	AnomalyID = 0;

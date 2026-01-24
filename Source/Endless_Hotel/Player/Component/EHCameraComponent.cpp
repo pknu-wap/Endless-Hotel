@@ -26,8 +26,6 @@ void UEHCameraComponent::BeginPlay()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
 	AElevator::ElevatorDelegate.Broadcast(true);
 	
-	AAnomaly_Base::AnomalyDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	
 	StartEyeEffect(true);
 }
 

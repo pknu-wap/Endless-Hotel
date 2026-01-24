@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Float::ActivateAnomaly()
+void AAnomaly_Float::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -18,7 +18,7 @@ void AAnomaly_Float::ActivateAnomaly()
 				Cast<AAnomaly_Object_Float>(Float)->StartFloating();
 				Cast<AAnomaly_Object_Float>(Float)->SetInteraction();
 			});
-		StartDelay(10);
+		ScheduleAnomaly(10);
 		break;
 	}
 }

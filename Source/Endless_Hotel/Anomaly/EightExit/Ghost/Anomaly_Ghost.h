@@ -15,7 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Ghost : public AAnomaly_Base_EightExit
 	GENERATED_BODY()
 
 public:
-	virtual void ActivateAnomaly() override;	
+	virtual void SetAnomalyActivate() override;	
 };
 
 

@@ -38,9 +38,9 @@ void AAnomaly_Hair::BeginPlay()
 	HairTimeline->AddInterpFloat(Curve_HairOpacity, UpdateDelegate);
 }
 
-void AAnomaly_Hair::ActivateAnomaly()
+void AAnomaly_Hair::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	ActiveTrigger();
 
@@ -92,7 +92,7 @@ void AAnomaly_Hair::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, A
 	GetWorld()->GetTimerManager().SetTimer(HairTimer, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			HairTimeline->PlayFromStart();
-		}), StartDelay, false);
+		}), ScheduleAnomaly, false);
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }

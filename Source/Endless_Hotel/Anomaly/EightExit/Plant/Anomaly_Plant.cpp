@@ -7,9 +7,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Plant::ActivateAnomaly()
+void AAnomaly_Plant::SetAnomalyActivate()
 {
-    Super::ActivateAnomaly();
+    Super::SetAnomalyActivate();
 
     switch (AnomalyName)
     {
