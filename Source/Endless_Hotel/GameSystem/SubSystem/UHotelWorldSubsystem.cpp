@@ -2,6 +2,7 @@
 
 #include "GameSystem/SubSystem/UHotelWorldSubsystem.h"
 #include "AnomalyProgressSubSystem.h"
+#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
@@ -12,5 +13,14 @@ void UUHotelWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(&InWorld, 0))
 	{
 		if (!Progress->bPassed) Player->SetActorLocation(PlayerStartLocation);
+		else
+		{
+			AActor* FoundActor = UGameplayStatics::GetActorOfClass(&InWorld, AAnomaly_Base_Neapolitan::StaticClass());
+			if (AAnomaly_Base_Neapolitan* AnomalyActor = Cast<AAnomaly_Base_Neapolitan>(FoundActor))
+			{
+				FVector TargetPos = AnomalyActor->GetAnomalyStartPos();
+				Player->SetActorLocation(TargetPos);
+			}
+		}
 	}
 }
