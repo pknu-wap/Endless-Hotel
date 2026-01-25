@@ -8,8 +8,6 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
 
-FAnomalyDelegate AAnomaly_Base::AnomalyDelegate;
-
 #pragma region Base
 
 AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
@@ -54,7 +52,7 @@ void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma region Activity
 
-void AAnomaly_Base::ActivateAnomaly()
+void AAnomaly_Base::SetAnomalyActivate()
 {
 	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
 }
@@ -80,7 +78,7 @@ void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::StartDelay(float delay)
+void AAnomaly_Base::ScheduleAnomaly(float delay)
 {
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
@@ -89,20 +87,6 @@ void AAnomaly_Base::StartDelay(float delay)
 		{
 			StartAnomalyAction();
 		}), delay, false);
-}
-
-void AAnomaly_Base::StartImmediate()
-{
-	StartAnomalyAction();
-}
-
-#pragma endregion
-
-#pragma region Player
-
-void AAnomaly_Base::KillPlayer()
-{
-	AnomalyDelegate.Broadcast(false);
 }
 
 #pragma endregion

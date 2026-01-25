@@ -27,4 +27,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bOutIsMoving = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bEntryIsAttacking = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	bool bOutIsAttacking = false;
 };

@@ -4,9 +4,9 @@
 #include "Anomaly/Neapolitan/ShelfDoll/Anomaly_ShelfDoll.h"
 #include "Anomaly/Object/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 
-void AAnomaly_ShelfDoll::ActivateAnomaly()
+void AAnomaly_ShelfDoll::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{

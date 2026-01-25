@@ -8,5 +8,7 @@ UENUM(BlueprintType)
 enum class EDeathReason : uint8
 {
 	Burn	UMETA(DisplayName = "Burn"),
-	Smoke	UMETA(DisplayName = "Smoke")
+	Smoke	UMETA(DisplayName = "Smoke"),
+	Attack	UMETA(DisplayName = "Attack"),
+	Music   UMETA(DisplayName = "MusicBox")
 };

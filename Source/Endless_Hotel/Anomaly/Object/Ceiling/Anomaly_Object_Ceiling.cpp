@@ -10,10 +10,6 @@
 AAnomaly_Object_Ceiling::AAnomaly_Object_Ceiling(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Mesh_Default = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Default"));
-	SetRootComponent(Mesh_Default);
-	Mesh_Default->SetRelativeRotation(FRotator(0, 0, 90));
-
 	Mesh_Ceiling = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Ceiling"));
 	Mesh_Ceiling->SetupAttachment(RootComponent);
 

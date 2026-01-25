@@ -15,7 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Base_Neapolitan
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 #pragma endregion
 

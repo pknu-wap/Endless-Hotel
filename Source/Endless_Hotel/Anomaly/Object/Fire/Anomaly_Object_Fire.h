@@ -33,9 +33,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> NiagaraComponent;
 
-	UPROPERTY()
-	TObjectPtr<class UNiagaraSystem> NS_FireEffect;
-
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AudioComponent;

@@ -125,7 +125,7 @@ void AElevator::BeginPlay()
 	{
 		if (!bIsNormalElevator)
 		{
-			SetPlayerInputEnabled(false);
+			//SetPlayerInputEnabled(false);
 			ElevatorLight->SetIntensity(LightOnIntensity);
 			ElevatorMove(StartPos, MapPos, true);
 		}
@@ -173,7 +173,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 	if (bIsOpening)
 	{
 		bIsDoorOpened = true;
-		SetPlayerInputEnabled(false);
+		//SetPlayerInputEnabled(false);
 		DoorTimeline->PlayFromStart();
 	}
 	else
@@ -257,7 +257,7 @@ void AElevator::CallElevator()
 
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
-	SetPlayerInputEnabled(false);
+	//SetPlayerInputEnabled(false);
 	AC->Sound = Sound_ElevatorMove;
 	AC->Play();
 	SetActorLocation(Start);
@@ -295,7 +295,7 @@ void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	SetPlayerInputEnabled(false);
+	//SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
 	FTimerHandle MoveHandle;
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
