@@ -57,6 +57,7 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
         );
 
         TargetActor->AttachToComponent(this->GetRootComponent(), AttachRules);
+        TargetActor->SetActorRelativeLocation(FVector(0.f, 0.f, 10.f));
     }
 }
 
