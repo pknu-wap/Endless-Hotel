@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_Disappear : public AAnomaly_Base_EightExit
 #pragma region Activity
 
 public:
-	virtual void ActivateAnomaly() override;
+	virtual void SetAnomalyActivate() override;
 
 #pragma endregion
 	

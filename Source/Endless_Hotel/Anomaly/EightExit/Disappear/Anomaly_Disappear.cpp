@@ -7,9 +7,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Disappear::ActivateAnomaly()
+void AAnomaly_Disappear::SetAnomalyActivate()
 {
-	Super::ActivateAnomaly();
+	Super::SetAnomalyActivate();
 
 	switch (AnomalyName)
 	{
@@ -18,7 +18,7 @@ void AAnomaly_Disappear::ActivateAnomaly()
 			{
 				Cast<AAnomaly_Object_Disappear>(Object)->StartDisappear();
 			});
-		StartImmediate();
+		ScheduleAnomaly();
 		break;
 	}
 }
