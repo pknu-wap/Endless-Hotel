@@ -90,6 +90,6 @@ protected:
 
 #pragma region Book Off
 public:
-	void BookOff();
+	void StartBookOff();
 #pragma endregion
 };
