@@ -9,21 +9,17 @@
 
 void AAnomaly_Plant::SetAnomalyActivate()
 {
-    Super::SetAnomalyActivate();
+	Super::SetAnomalyActivate();
 
-    switch (AnomalyName)
-    {
-    case EAnomalyName::Plant_Change:
-        AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-        {
-            if (auto* Plant = Cast<AAnomaly_Object_Plant>(AnomalyObject))
-            {
-                Plant->ChangeToAfterState();
-            }
-        });
-        break;
-    }
-    StartAnomalyAction();
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Plant_Change:
+		AnomalyAction = ([](AAnomaly_Object_Base* Object)S
+			{
+				Cast<AAnomaly_Object_Plant>(Object)->StartChange();
+			});
+		ScheduleAnomaly();
+		break;
+	}
 }
-
 #pragma endregion
