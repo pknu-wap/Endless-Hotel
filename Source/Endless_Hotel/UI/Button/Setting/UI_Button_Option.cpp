@@ -2,6 +2,9 @@
 
 #include "UI/Button/Setting/UI_Button_Option.h"
 #include <GameFramework/GameUserSettings.h>
+#include <GameFramework/Character.h>
+#include <Camera/CameraComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Declare
 
@@ -40,8 +43,25 @@ void UUI_Button_Option::Click_Button()
 {
 	switch (OptionInfo.Category)
 	{
-	case EOptionCategory::Resolution:
-		SetOption_Resolution();
+	// Screen Category
+	case EOptionCategory::Window:
+		SetOption_Window();
+		break;
+
+	case EOptionCategory::Aspect:
+		SetOption_Aspect();
+		break;
+
+	case EOptionCategory::Frame:
+		SetOption_Frame();
+		break;
+
+	case EOptionCategory::VSync:
+		SetOption_VSync();
+		break;
+
+	case EOptionCategory::HDR:
+		SetOption_HDR();
 		break;
 	}
 
@@ -74,24 +94,95 @@ void UUI_Button_Option::Highlight(FOptionInfo TargetInfo)
 
 #pragma region Screen
 
-void UUI_Button_Option::SetOption_Resolution()
+void UUI_Button_Option::SetOption_Window()
 {
 	switch (OptionInfo.Value)
 	{
-	case EOptionValue::HD:
-		SettingHandle->SetScreenResolution(FIntPoint(1280, 720));
+	case EOptionValue::Windowed:
+		SettingHandle->SetFullscreenMode(EWindowMode::Windowed);
 		break;
 
-	case EOptionValue::FHD:
-		SettingHandle->SetScreenResolution(FIntPoint(1920, 1080));
+	case EOptionValue::FullScreen:
+		SettingHandle->SetFullscreenMode(EWindowMode::Fullscreen);
 		break;
 
-	case EOptionValue::QHD:
-		SettingHandle->SetScreenResolution(FIntPoint(2560, 1440));
+	case EOptionValue::WindowedFullScreen:
+		SettingHandle->SetFullscreenMode(EWindowMode::WindowedFullscreen);
+		break;
+	}
+}
+
+void UUI_Button_Option::SetOption_Aspect()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	auto* CC = Player->FindComponentByClass<UCameraComponent>();
+
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::W16H9:
+		CC->SetAspectRatio(16.0f / 9.0f);
 		break;
 
-	case EOptionValue::UHD:
-		SettingHandle->SetScreenResolution(FIntPoint(3840, 2160));
+	case EOptionValue::W21H9:
+		CC->SetAspectRatio(21.0f / 9.0f);
+		break;
+
+	case EOptionValue::W4H3:
+		CC->SetAspectRatio(4.0f / 3.0f);
+		break;
+
+	case EOptionValue::W16H10:
+		CC->SetAspectRatio(16.0f / 10.0f);
+		break;
+	}
+}
+
+void UUI_Button_Option::SetOption_Frame()
+{
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::Low:
+		GEngine->SetMaxFPS(60);
+		break;
+
+	case EOptionValue::Medium:
+		GEngine->SetMaxFPS(120);
+		break;
+
+	case EOptionValue::High:
+		GEngine->SetMaxFPS(144);
+		break;
+
+	case EOptionValue::Epic:
+		GEngine->SetMaxFPS(240);
+		break;
+	}
+}
+
+void UUI_Button_Option::SetOption_VSync()
+{
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::On:
+		SettingHandle->SetVSyncEnabled(true);
+		break;
+
+	case EOptionValue::Off:
+		SettingHandle->SetVSyncEnabled(false);
+		break;
+	}
+}
+
+void UUI_Button_Option::SetOption_HDR()
+{
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::On:
+		SettingHandle->EnableHDRDisplayOutput(true);
+		break;
+
+	case EOptionValue::Off:
+		SettingHandle->EnableHDRDisplayOutput(false);
 		break;
 	}
 }

@@ -71,7 +71,11 @@ protected:
 #pragma region Screen
 
 protected:
-	void SetOption_Resolution();
+	void SetOption_Window();
+	void SetOption_Aspect();
+	void SetOption_Frame();
+	void SetOption_VSync();
+	void SetOption_HDR();
 
 #pragma endregion
 

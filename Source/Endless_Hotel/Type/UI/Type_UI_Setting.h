@@ -51,7 +51,11 @@ enum class EOptionValue : uint8
 	UHD					UMETA(DisplayName = "UHD"),
 	Windowed			UMETA(DisplayName = "Windowed"),
 	FullScreen			UMETA(DisplayName = "FullScreen"),
-	WindowedFullScreen	UMETA(DisplayName = "WindowedFullScreen")
+	WindowedFullScreen	UMETA(DisplayName = "WindowedFullScreen"),
+	W16H9				UMETA(DisplayName = "16:9"),
+	W21H9				UMETA(DisplayName = "21:9"),
+	W4H3				UMETA(DisplayName = "4:3"),
+	W16H10				UMETA(DisplayName = "16:10")
 };
 
 UENUM(BlueprintType)
