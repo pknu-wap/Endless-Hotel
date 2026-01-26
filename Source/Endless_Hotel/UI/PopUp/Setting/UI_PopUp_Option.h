@@ -11,33 +11,10 @@ class ENDLESS_HOTEL_API UUI_PopUp_Option : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void NativeOnInitialized() override;
-
-#pragma endregion
-
 #pragma region Input
 
 public:
 	virtual void Input_ESC() override {}
-
-#pragma endregion
-
-#pragma region Font
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	FSlateFontInfo ComboBoxFont;
-
-#pragma endregion
-
-#pragma region Enum
-
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<UEnum> EnumObj;
 
 #pragma endregion
 

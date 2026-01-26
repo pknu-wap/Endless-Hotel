@@ -1,10 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Setting/UI_PopUp_Option_Screen.h"
+#include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "Type/UI/Type_UI_Setting.h"
-#include <Components/ComboBoxKey.h>
 #include <Components/TextBlock.h>
-#include <Components/Border.h>
 
 #pragma region Base
 
@@ -13,27 +12,17 @@ void UUI_PopUp_Option_Screen::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	Combo_Resolution->ClearOptions();
-	Combo_Resolution->AddOption(EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::HD)));
-	Combo_Resolution->AddOption(EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::FHD)));
-	Combo_Resolution->AddOption(EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::QHD)));
-	Combo_Resolution->AddOption(EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::UHD)));
+	Combo_Resolution->AddEnumOption<EOptionValue>(EOptionValue::HD);
+	Combo_Resolution->AddEnumOption<EOptionValue>(EOptionValue::FHD);
+	Combo_Resolution->AddEnumOption<EOptionValue>(EOptionValue::QHD);
+	Combo_Resolution->AddEnumOption<EOptionValue>(EOptionValue::UHD);
 }
 
 void UUI_PopUp_Option_Screen::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	Combo_Resolution->OnGenerateItemWidget.Clear();
-	Combo_Resolution->OnGenerateItemWidget.BindUFunction(this, TEXT("GenerateResolutionItem"));
-
-	Combo_Resolution->OnGenerateContentWidget.Clear();
-	Combo_Resolution->OnGenerateContentWidget.BindUFunction(this, TEXT("GenerateResolutionItem"));
-
-	Combo_Resolution->OnOpening.Clear();
-	Combo_Resolution->OnOpening.AddDynamic(this, &ThisClass::OpenCombo_Res);
-
-	Combo_Resolution->OnSelectionChanged.Clear();
-	Combo_Resolution->OnSelectionChanged.AddDynamic(this, &ThisClass::CloseCombo_Res);
+	Combo_Resolution->BindGenerateEvent(this, TEXT("GenerateResolutionItem"));
 
 	RestoreOptions();
 }
@@ -45,6 +34,7 @@ void UUI_PopUp_Option_Screen::NativeConstruct()
 void UUI_PopUp_Option_Screen::RestoreOptions()
 {
 	// 임시로 값 하드코딩 함, 추후에 설정 값 복원 기능 추가 시 변경 예정
+	UEnum* EnumObj = StaticEnum<EOptionValue>();
 	Combo_Resolution->SetSelectedOption(EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::FHD)));
 }
 
@@ -54,8 +44,9 @@ void UUI_PopUp_Option_Screen::RestoreOptions()
 
 UWidget* UUI_PopUp_Option_Screen::GenerateResolutionItem(FName InKey)
 {
-	const int32 Index = EnumObj->GetIndexByName(InKey);
-	const EOptionValue EnumValue = static_cast<EOptionValue>(EnumObj->GetValueByIndex(Index));
+	UEnum* EnumObj = StaticEnum<EOptionValue>();
+	const int32& Index = EnumObj->GetIndexByName(InKey);
+	const EOptionValue& EnumValue = static_cast<EOptionValue>(EnumObj->GetValueByIndex(Index));
 
 	UTextBlock* TextBlock = NewObject<UTextBlock>(this);
 	FText ContentText = FText::FromString(TEXT("Error"));
@@ -80,28 +71,10 @@ UWidget* UUI_PopUp_Option_Screen::GenerateResolutionItem(FName InKey)
 	}
 
 	TextBlock->SetText(ContentText);
-	TextBlock->SetFont(ComboBoxFont);
+	TextBlock->SetFont(Combo_Resolution->GetFont());
 	TextBlock->SetColorAndOpacity(Combo_Resolution->GetForegroundColor());
 
 	return TextBlock;
-}
-
-void UUI_PopUp_Option_Screen::OpenCombo_Res()
-{
-	FSlateBrush& Brush = Border_Combo_Res->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = BorderOutlineColor_Focus;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Border_Combo_Res->SetBrush(Brush);
-}
-
-void UUI_PopUp_Option_Screen::CloseCombo_Res(FName NameValue, ESelectInfo::Type EnumValue)
-{
-	FSlateBrush& Brush = Border_Combo_Res->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = BorderOutlineColor_Normal;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Border_Combo_Res->SetBrush(Brush);
 }
 
 #pragma endregion

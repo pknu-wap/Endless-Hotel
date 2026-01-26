@@ -6,7 +6,7 @@
 #include <CoreMinimal.h>
 #include <UI_PopUp_Option_Screen.generated.h>
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Option_Screen : public UUI_PopUp_Option
 {
 	GENERATED_BODY()
@@ -32,24 +32,9 @@ protected:
 	UFUNCTION()
 	UWidget* GenerateResolutionItem(FName InKey);
 
-	UFUNCTION()
-	void OpenCombo_Res();
-
-	UFUNCTION()
-	void CloseCombo_Res(FName NameValue, ESelectInfo::Type EnumValue);
-
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBorder> Border_Combo_Res;
-
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	FLinearColor BorderOutlineColor_Normal;
-
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	FLinearColor BorderOutlineColor_Focus;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UComboBoxKey> Combo_Resolution;
+	TObjectPtr<class UUI_ComboBox_Setting> Combo_Resolution;
 
 #pragma endregion
 
