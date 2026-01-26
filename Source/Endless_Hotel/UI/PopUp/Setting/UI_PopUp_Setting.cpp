@@ -11,8 +11,6 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	SettingHandle = UGameUserSettings::GetGameUserSettings();
-
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 }
@@ -79,7 +77,7 @@ const float UUI_PopUp_Setting::GetShortestAddAngle(float Cur, float Tar)
 
 void UUI_PopUp_Setting::Click_Apply()
 {
-	SettingHandle->ApplySettings(false);
+	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 
 	Input_ESC();
 }

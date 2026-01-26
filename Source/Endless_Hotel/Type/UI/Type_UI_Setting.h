@@ -38,15 +38,42 @@ public:
 UENUM(BlueprintType)
 enum class EOptionValue : uint8
 {
-	None	UMETA(DisplayName = "None"),
-	On		UMETA(DisplayName = "On"),
-	Off		UMETA(DisplayName = "Off"),
-	Low		UMETA(DisplayName = "Low"),
-	Medium	UMETA(DisplayName = "Medium"),
-	High	UMETA(DisplayName = "High"),
-	Epic	UMETA(DisplayName = "Epic"),
-	HD		UMETA(DisplayName = "HD"),
-	FHD		UMETA(DisplayName = "FHD"),
-	QHD		UMETA(DisplayName = "QHD"),
-	UHD		UMETA(DisplayName = "UHD")
+	None				UMETA(DisplayName = "None"),
+	On					UMETA(DisplayName = "On"),
+	Off					UMETA(DisplayName = "Off"),
+	Low					UMETA(DisplayName = "Low"),
+	Medium				UMETA(DisplayName = "Medium"),
+	High				UMETA(DisplayName = "High"),
+	Epic				UMETA(DisplayName = "Epic"),
+	HD					UMETA(DisplayName = "HD"),
+	FHD					UMETA(DisplayName = "FHD"),
+	QHD					UMETA(DisplayName = "QHD"),
+	UHD					UMETA(DisplayName = "UHD"),
+	Windowed			UMETA(DisplayName = "Windowed"),
+	FullScreen			UMETA(DisplayName = "FullScreen"),
+	WindowedFullScreen	UMETA(DisplayName = "WindowedFullScreen")
+};
+
+UENUM(BlueprintType)
+enum class EOptionCategory : uint8
+{
+	Resolution	UMETA(DisplayName = "Resolution"),
+	Window		UMETA(DisplayName = "Window"),
+	Aspect		UMETA(DisplayName = "Aspect"),
+	Frame		UMETA(DisplayName = "Frame"),
+	VSync		UMETA(DisplayName = "VSync"),
+	HDR			UMETA(DisplayName = "HDR")
+};
+
+USTRUCT(BlueprintType)
+struct FOptionInfo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere)
+	EOptionCategory Category;
+
+	UPROPERTY(EditAnywhere)
+	EOptionValue Value;
 };

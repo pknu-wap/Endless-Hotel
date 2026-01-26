@@ -22,7 +22,7 @@ protected:
 #pragma region Restore
 
 protected:
-	void RestoreOptions();
+	virtual void RestoreOptions() override;
 
 #pragma endregion
 

@@ -18,14 +18,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Setting
-
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class UGameUserSettings> SettingHandle;
-
-#pragma endregion
-
 #pragma region Category
 
 public:

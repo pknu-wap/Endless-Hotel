@@ -18,4 +18,11 @@ public:
 
 #pragma endregion
 
+#pragma region Restore
+
+protected:
+	virtual void RestoreOptions() PURE_VIRTUAL(ThisClass::RestoreOptions, );
+
+#pragma endregion
+
 };

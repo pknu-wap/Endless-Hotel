@@ -21,21 +21,3 @@ void UUI_Button_Base::SetWidgetOwner()
 }
 
 #pragma endregion
-
-#pragma region Hightlight
-
-void UUI_Button_Base::HighlightButton()
-{
-	/*FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Highlight);
-	WidgetStyle.SetNormal(Brush);*/
-}
-
-void UUI_Button_Base::UnhighlightButton()
-{
-	/*FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Normal);
-	WidgetStyle.SetNormal(Brush);*/
-}
-
-#pragma endregion
