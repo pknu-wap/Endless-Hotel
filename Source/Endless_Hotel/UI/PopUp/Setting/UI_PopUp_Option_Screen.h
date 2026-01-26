@@ -32,7 +32,22 @@ protected:
 	UFUNCTION()
 	UWidget* GenerateResolutionItem(FName InKey);
 
+	UFUNCTION()
+	void OpenCombo_Res();
+
+	UFUNCTION()
+	void CloseCombo_Res(FName NameValue, ESelectInfo::Type EnumValue);
+
 protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBorder> Border_Combo_Res;
+
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	FLinearColor BorderOutlineColor_Normal;
+
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	FLinearColor BorderOutlineColor_Focus;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UComboBoxKey> Combo_Resolution;
 

@@ -4,6 +4,7 @@
 #include "Type/UI/Type_UI_Setting.h"
 #include <Components/ComboBoxKey.h>
 #include <Components/TextBlock.h>
+#include <Components/Border.h>
 
 #pragma region Base
 
@@ -27,6 +28,12 @@ void UUI_PopUp_Option_Screen::NativeConstruct()
 
 	Combo_Resolution->OnGenerateContentWidget.Clear();
 	Combo_Resolution->OnGenerateContentWidget.BindUFunction(this, TEXT("GenerateResolutionItem"));
+
+	Combo_Resolution->OnOpening.Clear();
+	Combo_Resolution->OnOpening.AddDynamic(this, &ThisClass::OpenCombo_Res);
+
+	Combo_Resolution->OnSelectionChanged.Clear();
+	Combo_Resolution->OnSelectionChanged.AddDynamic(this, &ThisClass::CloseCombo_Res);
 
 	RestoreOptions();
 }
@@ -77,6 +84,24 @@ UWidget* UUI_PopUp_Option_Screen::GenerateResolutionItem(FName InKey)
 	TextBlock->SetColorAndOpacity(Combo_Resolution->GetForegroundColor());
 
 	return TextBlock;
+}
+
+void UUI_PopUp_Option_Screen::OpenCombo_Res()
+{
+	FSlateBrush& Brush = Border_Combo_Res->Background;
+	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
+	Brush.OutlineSettings.Color = BorderOutlineColor_Focus;
+	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
+	Border_Combo_Res->SetBrush(Brush);
+}
+
+void UUI_PopUp_Option_Screen::CloseCombo_Res(FName NameValue, ESelectInfo::Type EnumValue)
+{
+	FSlateBrush& Brush = Border_Combo_Res->Background;
+	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
+	Brush.OutlineSettings.Color = BorderOutlineColor_Normal;
+	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
+	Border_Combo_Res->SetBrush(Brush);
 }
 
 #pragma endregion
