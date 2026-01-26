@@ -14,7 +14,7 @@ void AAnomaly_Plant::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Plant_Change:
-		AnomalyAction = ([](AAnomaly_Object_Base* Object)S
+		AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
 				Cast<AAnomaly_Object_Plant>(Object)->StartChange();
 			});
