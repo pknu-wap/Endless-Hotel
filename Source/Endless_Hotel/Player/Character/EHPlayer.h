@@ -26,6 +26,8 @@ class ENDLESS_HOTEL_API AEHPlayer : public AEHCharacter
 public:
 	AEHPlayer(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
 #pragma endregion
 
 #pragma region Component
@@ -34,6 +36,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEHCameraComponent> Component_Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
+	TObjectPtr<class USkeletalMeshComponent> Third_Mesh;
 #pragma endregion
 
 #pragma region Interact
@@ -55,6 +59,7 @@ public:
 protected:
 	UFUNCTION()
 	void DiePlayer(const EDeathReason& DeathReason);
+	void FreezeAnimation();
 
 public:
 	FDieDelegate DieDelegate;
