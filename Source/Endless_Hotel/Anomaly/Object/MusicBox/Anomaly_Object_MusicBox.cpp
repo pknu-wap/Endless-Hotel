@@ -4,6 +4,8 @@
 #include "Anomaly/Object/MusicBox/Anomaly_Object_MusicBox.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Player/Character/EHPlayer.h"
+#include "Component/AnomalyInteract/AnomalyInteractComponent.h"
+#include "Component/AnomalyInteract/MusicBox/StopMusicBox_Interact.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
@@ -17,6 +19,14 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 	Mesh_BoxRotator->SetupAttachment(RootComponent);
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
+
+	AIC = CreateDefaultSubobject<UStopMusicBox_Interact>(TEXT("AIC"));
+}
+
+void AAnomaly_Object_MusicBox::BeginPlay()
+{
+	Super::BeginPlay();
+	AIC->SetAnomalyInteract();
 }
 
 #pragma endregion
