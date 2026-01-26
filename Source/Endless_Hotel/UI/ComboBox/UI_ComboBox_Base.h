@@ -11,17 +11,7 @@ class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UComboBoxKey
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void SynchronizeProperties() override;
-
-#pragma endregion
-
 #pragma region Font
-
-public:
-	const FSlateFontInfo& GetFont() const { return Font_ComboBox; }
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Setting|Font")
@@ -44,13 +34,17 @@ public:
 #pragma region Generate
 
 public:
-	void BindGenerateEvent(UObject* Outer, FName FuncName);
+	void BindEvents();
+
+protected:
+	UFUNCTION()
+	UWidget* GenerateItem(FName InKey);
 
 #pragma endregion
 
 #pragma region Active
 
-protected:
+public:
 	UFUNCTION()
 	virtual void ActiveComboBox() PURE_VIRTUAL(ThisClass::ActiveComboBox, );
 

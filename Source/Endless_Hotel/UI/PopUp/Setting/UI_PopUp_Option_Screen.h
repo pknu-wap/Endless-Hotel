@@ -29,10 +29,6 @@ protected:
 #pragma region Resolution
 
 protected:
-	UFUNCTION()
-	UWidget* GenerateResolutionItem(FName InKey);
-
-protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_ComboBox_Setting> Combo_Resolution;
 

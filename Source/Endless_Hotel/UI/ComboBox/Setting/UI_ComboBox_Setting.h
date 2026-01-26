@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/ComboBox/UI_ComboBox_Base.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_ComboBox_Setting.generated.h>
 
@@ -10,10 +11,10 @@ UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_ComboBox_Setting : public UUI_ComboBox_Base
 {
 	GENERATED_BODY()
-	
+
 #pragma region Active
 
-protected:
+public:
 	virtual void ActiveComboBox() override;
 	virtual void DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue) override;
 
@@ -23,6 +24,21 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Setting|Active")
 	FLinearColor OutlineColor_Focus;
+
+#pragma endregion
+
+#pragma region Option
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting|Option")
+	EOptionCategory OptionCategory;
+
+#pragma endregion
+
+#pragma region Screen
+
+protected:
+	void SetOption_Resolution(FName OptionValue);
 
 #pragma endregion
 
