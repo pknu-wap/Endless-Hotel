@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_PopUp_Setting.generated.h>
 
@@ -29,13 +30,39 @@ protected:
 
 #pragma endregion
 
+#pragma region Option
+
+public:
+	void ShowCategoryOption(ESettingCategory Target);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_Screen;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_Grapic;
+
+	/*UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_Sound;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_Control;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_Gameplay;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_System;*/
+
+#pragma endregion
+
 #pragma region Gear
 
 public:
 	void RotateGear(float TargetAngle);
 
 protected:
-	const float GetShortestAddAngle(float Cur, float Tar);
+	const float GetShortestAddAngle(int32 Cur, int32 Tar);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

@@ -29,9 +29,6 @@ public:
 	FText Name;
 
 	UPROPERTY(EditAnyWhere)
-	TSubclassOf<class UUI_Base> Class;
-
-	UPROPERTY(EditAnyWhere)
 	float Angle;
 };
 
@@ -45,6 +42,7 @@ enum class EOptionValue : uint8
 	Medium				UMETA(DisplayName = "Medium"),
 	High				UMETA(DisplayName = "High"),
 	Epic				UMETA(DisplayName = "Epic"),
+	Custom				UMETA(DisplayName = "Custom"),
 	HD					UMETA(DisplayName = "1280 X 720 (HD)"),
 	FHD					UMETA(DisplayName = "1920 X 1080 (FHD)"),
 	QHD					UMETA(DisplayName = "2560 X 1440 (QHD)"),
@@ -61,12 +59,21 @@ enum class EOptionValue : uint8
 UENUM(BlueprintType)
 enum class EOptionCategory : uint8
 {
-	Resolution	UMETA(DisplayName = "Resolution"),
-	Window		UMETA(DisplayName = "Window"),
-	Aspect		UMETA(DisplayName = "Aspect"),
-	Frame		UMETA(DisplayName = "Frame"),
-	VSync		UMETA(DisplayName = "VSync"),
-	HDR			UMETA(DisplayName = "HDR")
+	// Screen
+	Resolution		UMETA(DisplayName = "Resolution"),
+	Window			UMETA(DisplayName = "Window"),
+	Aspect			UMETA(DisplayName = "Aspect"),
+	Frame			UMETA(DisplayName = "Frame"),
+	VSync			UMETA(DisplayName = "VSync"),
+	HDR				UMETA(DisplayName = "HDR"),
+
+	// Grapic
+	Grapic			UMETA(DisplayName = "Grapic"),
+	AntiAliasing	UMETA(DisplayName = "AntiAliasing"),
+	Shadow			UMETA(DisplayName = "Shadow"),
+	Texture			UMETA(DisplayName = "Texture"),
+	PostProcessing	UMETA(DisplayName = "PostProcessing"),
+	Shading			UMETA(DisplayName = "Shading")
 };
 
 USTRUCT(BlueprintType)

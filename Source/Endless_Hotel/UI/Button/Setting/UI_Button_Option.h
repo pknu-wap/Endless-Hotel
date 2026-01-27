@@ -10,7 +10,7 @@
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightEvent, FOptionInfo, TargetInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightOption, FOptionInfo, TargetInfo);
 
 #pragma endregion
 
@@ -58,7 +58,7 @@ protected:
 	void Highlight(FOptionInfo TargetInfo);
 
 protected:
-	static FHighlightEvent HighlightEvent;
+	static FHighlightOption HighlightOption;
 
 	UPROPERTY(EditAnywhere, Category = "Highlight")
 	FLinearColor Color_Highlight;
