@@ -52,6 +52,17 @@ void ARoomSignActor::DropSign()
 			GetActorLocation()
 		);
 	}
+
+	FTimerHandle PhysicTimer;
+	GetWorld()->GetTimerManager().SetTimer(
+		PhysicTimer,
+		FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				SignMesh->SetSimulatePhysics(false);
+			}),
+		1.0f,
+		false
+	);
 }
 
 #pragma endregion

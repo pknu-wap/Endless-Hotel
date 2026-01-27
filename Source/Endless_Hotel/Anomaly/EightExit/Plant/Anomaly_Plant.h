@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_Plant.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Plant.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Plant : public AAnomaly_Base_EightExit
