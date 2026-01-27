@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API UUI_Button_Base : public UButton
 #pragma region Base
 
 protected:
-	virtual void SynchronizeProperties() override;
+	virtual TSharedRef<SWidget> RebuildWidget() override;
 
 #pragma endregion
 

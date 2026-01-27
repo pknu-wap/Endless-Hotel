@@ -42,4 +42,11 @@ protected:
 
 #pragma endregion
 
+#pragma region Grapic
+
+protected:
+	void SetOption_Grapic(FName OptionValue);
+
+#pragma endregion
+
 };

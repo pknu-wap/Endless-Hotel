@@ -79,4 +79,15 @@ protected:
 
 #pragma endregion
 
+#pragma region Grapic
+
+protected:
+	void SetOption_AntiAliasing();
+	void SetOption_Shadow();
+	void SetOption_Texture();
+	void SetOption_PostProcessing();
+	void SetOption_Shading();
+
+#pragma endregion
+
 };

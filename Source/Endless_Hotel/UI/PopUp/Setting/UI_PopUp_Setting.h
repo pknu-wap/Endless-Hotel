@@ -34,6 +34,7 @@ protected:
 
 public:
 	void ShowCategoryOption(ESettingCategory Target);
+	void SetHideBoxVisibility(ESlateVisibility Option);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -53,6 +54,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Base> UI_System;*/
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBorder> Border_HideBox;
 
 #pragma endregion
 

@@ -4,11 +4,11 @@
 
 #pragma region Base
 
-void UUI_Button_Base::SynchronizeProperties()
+TSharedRef<SWidget> UUI_Button_Base::RebuildWidget()
 {
-	Super::SynchronizeProperties();
-
 	SetWidgetOwner();
+
+	return Super::RebuildWidget();
 }
 
 #pragma endregion

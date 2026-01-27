@@ -61,6 +61,27 @@ void UUI_Button_Option::Click_Button()
 	case EOptionCategory::HDR:
 		SetOption_HDR();
 		break;
+
+	// Grapic Category
+	case EOptionCategory::AntiAliasing:
+		SetOption_AntiAliasing();
+		break;
+
+	case EOptionCategory::Shadow:
+		SetOption_Shadow();
+		break;
+
+	case EOptionCategory::Texture:
+		SetOption_Texture();
+		break;
+
+	case EOptionCategory::PostProcessing:
+		SetOption_PostProcessing();
+		break;
+
+	case EOptionCategory::Shading:
+		SetOption_Shading();
+		break;
 	}
 
 	HighlightOption.Broadcast(OptionInfo);
@@ -183,6 +204,35 @@ void UUI_Button_Option::SetOption_HDR()
 		SettingHandle->EnableHDRDisplayOutput(false);
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region Grapic
+
+void UUI_Button_Option::SetOption_AntiAliasing()
+{
+	SettingHandle->SetAntiAliasingQuality(static_cast<int32>(OptionInfo.Value));
+}
+
+void UUI_Button_Option::SetOption_Shadow()
+{
+	SettingHandle->SetShadowQuality(static_cast<int32>(OptionInfo.Value));
+}
+
+void UUI_Button_Option::SetOption_Texture()
+{
+	SettingHandle->SetTextureQuality(static_cast<int32>(OptionInfo.Value));
+}
+
+void UUI_Button_Option::SetOption_PostProcessing()
+{
+	SettingHandle->SetPostProcessingQuality(static_cast<int32>(OptionInfo.Value));
+}
+
+void UUI_Button_Option::SetOption_Shading()
+{
+	SettingHandle->SetShadingQuality(static_cast<int32>(OptionInfo.Value));
 }
 
 #pragma endregion

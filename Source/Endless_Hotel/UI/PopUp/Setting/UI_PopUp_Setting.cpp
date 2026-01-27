@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include <Components/Button.h>
+#include <Components/Border.h>
 #include <Components/TextBlock.h>
 #include <GameFramework/GameUserSettings.h>
 
@@ -45,6 +46,7 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 
 	case ESettingCategory::Grapic:
 		UI_Grapic->SetVisibility(ESlateVisibility::Visible);
+		Border_HideBox->SetVisibility(ESlateVisibility::Visible); // 나중에 복원 기능 추가 후 변경 예정
 		break;
 
 	/*case ESettingCategory::Sound:
@@ -63,6 +65,11 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		UI_System->SetVisibility(ESlateVisibility::Visible);
 		break;*/
 	}
+}
+
+void UUI_PopUp_Setting::SetHideBoxVisibility(ESlateVisibility Option)
+{
+	Border_HideBox->SetVisibility(Option);
 }
 
 #pragma endregion

@@ -35,14 +35,13 @@ public:
 UENUM(BlueprintType)
 enum class EOptionValue : uint8
 {
-	None				UMETA(DisplayName = "None"),
-	On					UMETA(DisplayName = "On"),
-	Off					UMETA(DisplayName = "Off"),
 	Low					UMETA(DisplayName = "Low"),
 	Medium				UMETA(DisplayName = "Medium"),
 	High				UMETA(DisplayName = "High"),
 	Epic				UMETA(DisplayName = "Epic"),
 	Custom				UMETA(DisplayName = "Custom"),
+	On					UMETA(DisplayName = "On"),
+	Off					UMETA(DisplayName = "Off"),
 	HD					UMETA(DisplayName = "1280 X 720 (HD)"),
 	FHD					UMETA(DisplayName = "1920 X 1080 (FHD)"),
 	QHD					UMETA(DisplayName = "2560 X 1440 (QHD)"),
