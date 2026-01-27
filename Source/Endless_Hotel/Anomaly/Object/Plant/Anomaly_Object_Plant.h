@@ -16,26 +16,23 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Plant : public AAnomaly_Object_Base
 public:
 	AAnomaly_Object_Plant(const FObjectInitializer& ObjectInitializer);
 	
-protected:
-	UPROPERTY()
-	TObjectPtr<class USceneComponent> Root;
+#pragma endregion
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> PlantMesh;
+#pragma region Change
+
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_Plant;
+
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_AfterPlant;
+
+public:
+	void StartChange();
 
 #pragma endregion
 
-#pragma region
-
+#pragma region Plant Off
 public:
-	void ChangeToAfterState();
-
-protected:
-	UPROPERTY(VisibleAnywhere)
-	bool bIsAfterState = false;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMesh> Mesh_After;
-
+		void StartPlantOff();
 #pragma endregion
 };

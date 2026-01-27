@@ -9,22 +9,29 @@
 AAnomaly_Object_Plant::AAnomaly_Object_Plant(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
-	PlantMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlantMesh"));
-	PlantMesh->SetupAttachment(RootComponent);
-}
+	SM_Plant = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Plant"));
+	SM_Plant->SetupAttachment(RootComponent);
 
-void AAnomaly_Object_Plant::ChangeToAfterState()
-{
-	if (bIsAfterState) return;
-	bIsAfterState = true;
-
-	if (PlantMesh && Mesh_After)
-	{
-		PlantMesh->SetStaticMesh(Mesh_After);
-	}
+	SM_AfterPlant = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_AfterPlant"));
+	SM_AfterPlant->SetupAttachment(RootComponent);
+	SM_AfterPlant->SetVisibility(false);
 }
 
 #pragma endregion
+
+#pragma region Change
+
+void AAnomaly_Object_Plant::StartChange()
+{
+	SM_Plant->SetVisibility(false);
+	SM_AfterPlant->SetVisibility(true);
+}
+
+#pragma endregion
+
+#pragma region Plant Off
+void AAnomaly_Object_Plant::StartPlantOff()
+{
+	SetActorHiddenInGame(true);
+}
 

@@ -13,9 +13,7 @@ AAnomaly_Object_ShelfDoll::AAnomaly_Object_ShelfDoll(const FObjectInitializer& O
 {
 	SM_Doll = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Doll"));
 	SM_Doll->SetupAttachment(RootComponent);
-
 	SM_Doll->SetVisibility(false);
-	SM_Doll->SetHiddenInGame(true);
 
 	Niagara_Fire = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Fire"));
 	Niagara_Fire->SetupAttachment(SM_Doll);
@@ -30,39 +28,8 @@ AAnomaly_Object_ShelfDoll::AAnomaly_Object_ShelfDoll(const FObjectInitializer& O
 
 void AAnomaly_Object_ShelfDoll::ActivateDoll_Show()
 {
-	if (!SM_Doll)
-	{
-		return;
-	}
-
 	SM_Doll->SetVisibility(true);
 	SM_Doll->SetHiddenInGame(false);
-}
-
-#pragma endregion
-
-#pragma region ShelfBook
-
-void AAnomaly_Object_ShelfDoll::ActivateShelfBook_Hide()
-{
-	if (!BP_ShelfBookActor)
-	{
-		return;
-	}
-	BP_ShelfBookActor->SetActorHiddenInGame(true);
-}
-
-#pragma endregion
-
-#pragma region Plant
-
-void AAnomaly_Object_ShelfDoll::ActivatePlant_Hide()
-{
-	if (!BP_PlantBeforeActor)
-	{
-		return;
-	}
-	BP_PlantBeforeActor->SetActorHiddenInGame(true);
 }
 
 #pragma endregion
