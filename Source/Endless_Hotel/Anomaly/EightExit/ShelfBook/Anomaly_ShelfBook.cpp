@@ -4,7 +4,7 @@
 #include "Anomaly/EightExit/ShelfBook/Anomaly_ShelfBook.h"
 #include "Anomaly/Object/ShelfBook/Anomaly_Object_ShelfBook.h"
 
-#pragma region Activitiy
+#pragma region Activity
 
 void AAnomaly_ShelfBook::SetAnomalyActivate()
 {
@@ -13,15 +13,11 @@ void AAnomaly_ShelfBook::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Shelf_Book:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomlayObject)
+		AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
-				if (auto* ShelfBook = Cast<AAnomaly_Object_ShelfBook>(AnomlayObject))
-				{
-					ShelfBook->ActiveTrigger();
-				}
 			});
+		ActiveTrigger();
 		break;
 	}
-	StartAnomalyAction();
 }
 #pragma endregion

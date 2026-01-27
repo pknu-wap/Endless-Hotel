@@ -2,11 +2,11 @@
 
 
 #include "Anomaly/Object/ShelfBook/Anomaly_Object_ShelfBook.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/BoxComponent.h"
-#include "Components/SceneComponent.h"
-#include "Components/AudioComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include <Components/StaticMeshComponent.h>
+#include <Components/BoxComponent.h>
+#include <Components/SceneComponent.h>
+#include <Components/AudioComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -207,4 +207,11 @@ void AAnomaly_Object_ShelfBook::PlayRandomDropSound(UStaticMeshComponent* BookMe
 	BookAC->Play();
 }
 
+#pragma endregion
+
+#pragma region Book Off
+void AAnomaly_Object_ShelfBook::StartBookOff()
+{
+	SetActorHiddenInGame(true);
+}
 #pragma endregion

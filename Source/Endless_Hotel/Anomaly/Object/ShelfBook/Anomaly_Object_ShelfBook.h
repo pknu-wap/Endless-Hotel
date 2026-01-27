@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_ShelfBook.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_ShelfBook.generated.h>
 
 class UBoxComponent;
 class UStaticMeshComponent;
@@ -86,5 +86,10 @@ protected:
 
 	void PlayRandomDropSound(UStaticMeshComponent* BookMesh, const FVector& WorldLocation, float DropImpulse);
 
+#pragma endregion
+
+#pragma region Book Off
+public:
+	void StartBookOff();
 #pragma endregion
 };
