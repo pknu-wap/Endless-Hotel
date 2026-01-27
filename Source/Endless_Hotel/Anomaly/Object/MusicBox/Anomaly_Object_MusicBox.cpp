@@ -26,7 +26,7 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 void AAnomaly_Object_MusicBox::BeginPlay()
 {
 	Super::BeginPlay();
-	AIC->SetAnomalyInteract();
+	CurrentInteractionUpdate();
 }
 
 #pragma endregion
@@ -71,35 +71,6 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma region Interact
 
-void AAnomaly_Object_MusicBox::Interacted_Implementation()
-{
-	StartInteractaction();
-}
 
-void AAnomaly_Object_MusicBox::StopMusicBox()
-{
-	if (!bWaitingInteract) return;
-	AC->Stop();
-	bWaitingInteract = false;
-	bSolved = true;
-
-	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
-}
-
-void AAnomaly_Object_MusicBox::SetInteraction()
-{
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	case 90:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_MusicBox::StopMusicBox();
-			});
-		break;
-	}
-}
 
 #pragma endregion

@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -48,7 +48,7 @@ public:
 
 #pragma region Interact
 public:
-	virtual void SetInteraction() override;
+	//virtual void SetInteraction() override;
 
 protected:
 	void InteractFire();

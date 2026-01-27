@@ -22,7 +22,7 @@ void AAnomaly_ShelfDoll::SetAnomalyActivate()
 				ShelfDollObj->ActivateDoll_Show();
 				ShelfDollObj->ActivateShelfBook_Hide();
 				ShelfDollObj->ActivatePlant_Hide();
-				Cast<AAnomaly_Object_ShelfDoll>(Object)->SetInteraction();
+				//Cast<AAnomaly_Object_ShelfDoll>(Object)->SetInteraction();
 			});
 			break;
 

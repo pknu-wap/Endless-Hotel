@@ -7,7 +7,7 @@
 #include <CoreMinimal.h>
 #include <AnomalyInteractComponent.generated.h>
 
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), EditInlineNew)
 class ENDLESS_HOTEL_API UAnomalyInteractComponent : public UEHComponent, public IInteractable
 {
 	GENERATED_BODY()
@@ -25,10 +25,14 @@ public:
 #pragma region Interact
 
 public:
-	bool bIsAbnormal;
+	virtual void SetAnomalyInteract();
 
 public:
-	virtual void SetAnomalyInteract();
+	bool bIsAbnormal;
+
+protected:
+	UPROPERTY(EditAnywhere)
+	FText AnomalyDescription;
 
 #pragma endregion
 

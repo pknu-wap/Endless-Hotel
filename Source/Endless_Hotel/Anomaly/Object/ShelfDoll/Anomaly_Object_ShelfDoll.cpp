@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Object/ShelfDoll/Anomaly_Object_ShelfDoll.h"
@@ -69,21 +69,21 @@ void AAnomaly_Object_ShelfDoll::ActivatePlant_Hide()
 
 #pragma region Interact
 
-void AAnomaly_Object_ShelfDoll::SetInteraction()
-{
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	default:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_ShelfDoll::InteractFire();
-			});
-		break;
-	}
-}
+//void AAnomaly_Object_ShelfDoll::SetInteraction()
+//{
+//	switch (AnomalyID)
+//	{
+//	case 0:
+//		break;
+//
+//	default:
+//		InteractAction = ([this]()
+//			{
+//				AAnomaly_Object_ShelfDoll::InteractFire();
+//			});
+//		break;
+//	}
+//}
 
 void AAnomaly_Object_ShelfDoll::InteractFire()
 {

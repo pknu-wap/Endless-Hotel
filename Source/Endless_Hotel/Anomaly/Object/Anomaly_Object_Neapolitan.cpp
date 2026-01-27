@@ -19,7 +19,6 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 	bSolved = false;
 	if (!WC) return;
 	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
-	UI_Interact->SetDescription(DescriptionText);
 	LAC->SettingWidgetComponent(WC);
 
 	OriginalTransform = GetActorTransform();

@@ -119,21 +119,21 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 #pragma region Interact
 
-void AAnomaly_Object_Painting::SetInteraction()
-{
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	default:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_Painting::InteractRotate();
-			});
-		break;
-	}
-}
+//void AAnomaly_Object_Painting::SetInteraction()
+//{
+//	switch (AnomalyID)
+//	{
+//	case 0:
+//		break;
+//
+//	default:
+//		InteractAction = ([this]()
+//			{
+//				AAnomaly_Object_Painting::InteractRotate();
+//			});
+//		break;
+//	}
+//}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {

@@ -1,7 +1,6 @@
 ﻿#include "Component/AnomalyInteract/AnomalyInteractComponent.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-
-#define LOCTEXT_NAMESPACE "Anomaly_Interaction"
+#include "UI/World/Interact/UI_Interact.h"
 
 void UAnomalyInteractComponent::BeginPlay()
 {
@@ -12,6 +11,6 @@ void UAnomalyInteractComponent::BeginPlay()
 
 void UAnomalyInteractComponent::SetAnomalyInteract()
 {
+	UUI_Interact* AnomalyUI_Interaction = OwnerObject->UI_Interact;
+	AnomalyUI_Interaction->SetDescription(AnomalyDescription);
 }
-
-#undef LOCTEXT_NAMESPACE

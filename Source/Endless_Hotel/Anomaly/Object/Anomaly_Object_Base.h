@@ -16,6 +16,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor, public IInteract
 
 public:
 	AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer);
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 #pragma endregion
 
@@ -40,16 +41,17 @@ protected:
 public:
 	virtual void Interacted_Implementation() override;
 	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-	virtual void SetInteraction() {};
-
-protected:
-	virtual void StartInteractaction();
+	void CurrentInteractionUpdate(uint8 InteractionNumber = 0);
 
 public:
-	FText DescriptionText;
+	UPROPERTY(EditAnywhere)
+	uint8 CurrentInteractIndex = 0;
 
 	UPROPERTY()
 	TObjectPtr<class UUI_Interact> UI_Interact;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction")
+	TArray<TObjectPtr<class UAnomalyInteractComponent>> InteractComponents;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -57,8 +59,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class ULookAtComponent> LAC;
-
-	TFunction<void()> InteractAction;
 
 #pragma endregion
 
