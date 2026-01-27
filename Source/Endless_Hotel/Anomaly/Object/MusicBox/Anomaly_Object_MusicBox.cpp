@@ -20,7 +20,7 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
 
-	AIC = CreateDefaultSubobject<UStopMusicBox_Interact>(TEXT("AIC"));
+	MusicRotate = CreateDefaultSubobject<UStopMusicBox_Interact>(TEXT("MusciRotate"));
 }
 
 void AAnomaly_Object_MusicBox::BeginPlay()
@@ -69,8 +69,16 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma endregion
 
-#pragma region Interact
+#pragma region InteractActions
 
+void AAnomaly_Object_MusicBox::StopMusicBox()
+{
+	if (!bWaitingInteract) return;
+	AC->Stop();
+	bWaitingInteract = false;
+	bSolved = true;
 
+	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
+}
 
 #pragma endregion

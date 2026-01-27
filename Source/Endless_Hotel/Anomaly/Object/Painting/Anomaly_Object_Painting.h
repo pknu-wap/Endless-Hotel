@@ -16,10 +16,11 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapol
 public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Painting")
 	TObjectPtr<class USceneComponent> Root;
 
+protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
@@ -74,16 +75,15 @@ protected:
 #pragma endregion
 
 #pragma region Interact
-public:
-	/*virtual void SetInteraction() override;*/
 
-protected:
+public:
 	void InteractRotate();
 
+protected:
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	FVector DefaultLocation;
 
@@ -99,6 +99,9 @@ protected:
 	FRotator OriginRotation;
 
 	bool bIsRotated = false;
+
+	UPROPERTY()
+	TObjectPtr<class UAnomalyInteractComponent> RotatePainting;
 
 #pragma endregion
 

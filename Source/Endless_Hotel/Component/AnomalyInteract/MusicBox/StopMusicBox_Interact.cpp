@@ -14,18 +14,7 @@ void UStopMusicBox_Interact::SetAnomalyInteract()
 
 void UStopMusicBox_Interact::Interacted_Implementation()
 {
-	StopMusicBox();
-}
-
-void UStopMusicBox_Interact::StopMusicBox()
-{
-	AAnomaly_Object_MusicBox* MusicBox = Cast<AAnomaly_Object_MusicBox>(OwnerObject);
-	if (!MusicBox->bWaitingInteract) return;
-	MusicBox->AC->Stop();
-	MusicBox->bWaitingInteract = false;
-	MusicBox->bSolved = true;
-
-	GetWorld()->GetTimerManager().ClearTimer(MusicBox->FailTimerHandle);
+	Cast<AAnomaly_Object_MusicBox>(OwnerObject)->StopMusicBox();
 }
 
 #undef LOCTEXT_NAMESPACE

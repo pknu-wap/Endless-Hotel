@@ -59,13 +59,16 @@ public:
 
 
 #pragma region Interact
+	
+public:
+	void StopMusicBox();
 
 public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")
 	bool bWaitingInteract = false;
 
 	UPROPERTY()
-	TObjectPtr<class UAnomalyInteractComponent> AIC;
+	TObjectPtr<class UAnomalyInteractComponent> MusicRotate;
 
 #pragma endregion
 
