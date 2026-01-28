@@ -34,9 +34,9 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 	UI_Screen->SetVisibility(ESlateVisibility::Hidden);
 	UI_Grapic->SetVisibility(ESlateVisibility::Hidden);
 	UI_Sound->SetVisibility(ESlateVisibility::Hidden);
-	/*UI_Control->SetVisibility(ESlateVisibility::Hidden);
-	UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
-	UI_System->SetVisibility(ESlateVisibility::Hidden);*/
+	UI_Control->SetVisibility(ESlateVisibility::Hidden);
+	//UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
+	//UI_System->SetVisibility(ESlateVisibility::Hidden);
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
 
@@ -55,11 +55,11 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		UI_Sound->SetVisibility(ESlateVisibility::Visible);
 		break;
 
-	/*case ESettingCategory::Control:
+	case ESettingCategory::Control:
 		UI_Control->SetVisibility(ESlateVisibility::Visible);
 		break;
 
-	case ESettingCategory::Gameplay:
+	/*case ESettingCategory::Gameplay:
 		UI_Gameplay->SetVisibility(ESlateVisibility::Visible);
 		break;
 

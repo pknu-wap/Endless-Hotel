@@ -46,10 +46,10 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Base> UI_Sound;
 
-	/*UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Base> UI_Control;
 
-	UPROPERTY(meta = (BindWidget))
+	/*UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Base> UI_Gameplay;
 
 	UPROPERTY(meta = (BindWidget))

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/Slider/UI_Slider_Base.h"
+#include "Type/UI/Type_UI_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_Slider_Setting.generated.h>
 
@@ -11,10 +12,22 @@ class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Category
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting|Category")
+	ESettingCategory SettingCategory;
+
+#pragma endregion
+
 #pragma region Slider
 
 protected:
 	virtual void Slide_Slider(float Value) override;
+
+#pragma endregion
+
+#pragma region Sound
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Setting|Sound")

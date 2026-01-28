@@ -79,7 +79,10 @@ enum class EOptionCategory : uint8
 	BGM				UMETA(DisplayName = "BGM"),
 	SFX				UMETA(DisplayName = "SFX"),
 	Voice			UMETA(DisplayName = "Voice"),
-	Interface		UMETA(DisplayName = "Interface")
+	Interface		UMETA(DisplayName = "Interface"),
+
+	// Control
+	Sensitivity		UMETA(DisplayName = "Sensitivity")
 };
 
 USTRUCT(BlueprintType)

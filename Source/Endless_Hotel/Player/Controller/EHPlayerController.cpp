@@ -49,9 +49,6 @@ void AEHPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
-
-	SetLookSensitivity(USaveManager::LoadSettingData().Value_Sensitivity);
-
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
