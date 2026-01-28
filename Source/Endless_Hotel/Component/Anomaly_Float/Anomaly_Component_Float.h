@@ -40,7 +40,7 @@ private:
     void FloatTick();
 
     UPROPERTY()
-    UPrimitiveComponent* TargetMesh;
+    TObjectPtr<class UPrimitiveComponent> TargetMesh;
 
     FTimerHandle FloatTickTimer;
     FTimerHandle StopFloatTimer;
