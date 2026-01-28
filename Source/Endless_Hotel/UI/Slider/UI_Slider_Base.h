@@ -22,7 +22,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	void Slide_Slider(float Value);
+	virtual void Slide_Slider(float Value);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

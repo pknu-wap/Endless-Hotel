@@ -11,4 +11,15 @@ class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Slider
+
+protected:
+	virtual void Slide_Slider(float Value) override;
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting|Sound")
+	TObjectPtr<class USoundClass> SC_Target;
+
+#pragma endregion
+
 };
