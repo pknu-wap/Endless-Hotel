@@ -3,12 +3,37 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include <Components/Slider.h>
+#include <Blueprint/UserWidget.h>
 #include <UI_Slider_Base.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_Slider_Base : public USlider
+class ENDLESS_HOTEL_API UUI_Slider_Base : public UUserWidget
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
+#pragma region Slider
+
+protected:
+	UFUNCTION()
+	void Slide_Slider(float Value);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class USlider> Slider_Default;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UProgressBar> ProgressBar_Left;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Value;
+
+#pragma endregion
+
 };

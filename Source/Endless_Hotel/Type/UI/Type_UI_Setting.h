@@ -72,7 +72,14 @@ enum class EOptionCategory : uint8
 	Shadow			UMETA(DisplayName = "Shadow"),
 	Texture			UMETA(DisplayName = "Texture"),
 	PostProcessing	UMETA(DisplayName = "PostProcessing"),
-	Shading			UMETA(DisplayName = "Shading")
+	Shading			UMETA(DisplayName = "Shading"),
+
+	// Sound
+	Master			UMETA(DisplayName = "Master"),
+	BGM				UMETA(DisplayName = "BGM"),
+	SFX				UMETA(DisplayName = "SFX"),
+	Voice			UMETA(DisplayName = "Voice"),
+	Interface		UMETA(DisplayName = "Interface")
 };
 
 USTRUCT(BlueprintType)

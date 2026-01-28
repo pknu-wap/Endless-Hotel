@@ -33,10 +33,12 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 {
 	UI_Screen->SetVisibility(ESlateVisibility::Hidden);
 	UI_Grapic->SetVisibility(ESlateVisibility::Hidden);
-	/*UI_Sound->SetVisibility(ESlateVisibility::Hidden);
-	UI_Control->SetVisibility(ESlateVisibility::Hidden);
+	UI_Sound->SetVisibility(ESlateVisibility::Hidden);
+	/*UI_Control->SetVisibility(ESlateVisibility::Hidden);
 	UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
 	UI_System->SetVisibility(ESlateVisibility::Hidden);*/
+
+	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
 
 	switch (Target)
 	{
@@ -49,11 +51,11 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		Border_HideBox->SetVisibility(ESlateVisibility::Visible); // 나중에 복원 기능 추가 후 변경 예정
 		break;
 
-	/*case ESettingCategory::Sound:
+	case ESettingCategory::Sound:
 		UI_Sound->SetVisibility(ESlateVisibility::Visible);
 		break;
 
-	case ESettingCategory::Control:
+	/*case ESettingCategory::Control:
 		UI_Control->SetVisibility(ESlateVisibility::Visible);
 		break;
 
