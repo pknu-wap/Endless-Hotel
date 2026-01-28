@@ -17,6 +17,9 @@ public:
 	AAnomaly_Object_MusicBox(const FObjectInitializer& ObjectInitializer);
 
 protected:
+	virtual void BeginPlay() override;
+
+protected:
 	UPROPERTY(EditAnywhere, Category = "BoxBody")
 	TObjectPtr<class UStaticMeshComponent> Mesh_BoxRotator;
 
@@ -24,7 +27,7 @@ protected:
 
 #pragma region Sound
 
-protected:
+public:
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC;
 
@@ -42,6 +45,7 @@ public:
 protected:
 	void StartRotate();
 
+public:
 	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
 	float LimitTime;
 
@@ -55,17 +59,16 @@ protected:
 
 
 #pragma region Interact
-
+	
 public:
-	virtual void SetInteraction() override;
-
-protected:
-	virtual void Interacted_Implementation() override;
 	void StopMusicBox();
 
-protected:
+public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")
 	bool bWaitingInteract = false;
+
+	UPROPERTY()
+	TObjectPtr<class UAnomalyInteractComponent> MusicRotate;
 
 #pragma endregion
 

@@ -16,7 +16,7 @@ void AAnomaly_Float::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* Float)
 			{
 				Cast<AAnomaly_Object_Float>(Float)->StartFloating();
-				Cast<AAnomaly_Object_Float>(Float)->SetInteraction();
+				/*Cast<AAnomaly_Object_Float>(Float)->SetInteraction();*/
 			});
 		ScheduleAnomaly(10);
 		break;
