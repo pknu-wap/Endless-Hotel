@@ -16,7 +16,7 @@ AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectIni
 
 	Timeline_TikTok = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_TikTok"));
 
-	//DescriptionText = LOCTEXT("Key1", "알람 끄기");
+	DescriptionText = LOCTEXT("Key1", "알람 끄기");
 
 	AC_TikTok = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_TikTok"));
 	AC_TikTok->SetupAttachment(Object);

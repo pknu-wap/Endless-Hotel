@@ -26,7 +26,7 @@ protected:
 #pragma region Interact
 
 public:
-	/*virtual void SetInteraction() override;*/
+	virtual void SetInteraction() override;
 
 #pragma endregion
 

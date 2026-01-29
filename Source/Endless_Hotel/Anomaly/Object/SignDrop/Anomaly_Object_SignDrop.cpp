@@ -17,7 +17,7 @@ void AAnomaly_Object_SignDrop::BeginPlay()
 {
 	Super::BeginPlay();
 
-    //SetInteraction();
+    SetInteraction();
 	RoomSigns.Empty();
 
 	TArray<AActor*> FoundActors;
@@ -95,25 +95,25 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 #pragma region Interact
 
-//void AAnomaly_Object_SignDrop::SetInteraction()
-//{
-//    InteractAction = [this]()
-//        {
-//            if (bSolved) return;
-//            bSolved = true;
-//
-//            TArray<AActor*> AttachedActors;
-//            GetAttachedActors(AttachedActors);
-//            for (AActor* Attached : AttachedActors)
-//            {
-//                if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Attached->GetRootComponent()))
-//                {
-//                    RootPrim->SetSimulatePhysics(false);
-//                }
-//            }
-//
-//            RestoreObjectTransform();
-//        };
-//}
+void AAnomaly_Object_SignDrop::SetInteraction()
+{
+    InteractAction = [this]()
+        {
+            if (bSolved) return;
+            bSolved = true;
+
+            TArray<AActor*> AttachedActors;
+            GetAttachedActors(AttachedActors);
+            for (AActor* Attached : AttachedActors)
+            {
+                if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Attached->GetRootComponent()))
+                {
+                    RootPrim->SetSimulatePhysics(false);
+                }
+            }
+
+            RestoreObjectTransform();
+        };
+}
 
 #pragma endregion

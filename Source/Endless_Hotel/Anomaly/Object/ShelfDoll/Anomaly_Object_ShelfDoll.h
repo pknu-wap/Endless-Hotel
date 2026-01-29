@@ -13,7 +13,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 public:
 	AAnomaly_Object_ShelfDoll(const FObjectInitializer& ObjectInitializer);
@@ -30,7 +30,7 @@ public:
 
 #pragma region Interact
 public:
-	//virtual void SetInteraction() override;
+	virtual void SetInteraction() override;
 
 protected:
 	void InteractFire();
