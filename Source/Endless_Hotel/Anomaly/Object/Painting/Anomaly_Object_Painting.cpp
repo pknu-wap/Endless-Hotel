@@ -33,7 +33,7 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
 	Widget_PaintingBlur->SetupAttachment(RootComponent);
 
-	RotatePainting = CreateDefaultSubobject<UPaintingRotate_Interact>(TEXT("RotatePainting"));
+	/*RotatePainting = CreateDefaultSubobject<UPaintingRotate_Interact>(TEXT("RotatePainting"));*/
 
 	bSolved = false;
 }
@@ -123,6 +123,22 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
+
+void AAnomaly_Object_Painting::SetInteraction()
+{
+	switch (AnomalyID)
+	{
+	case 0:
+		break;
+
+	default:
+		InteractAction = ([this]()
+			{
+				AAnomaly_Object_Painting::InteractRotate();
+			});
+		break;
+	}
+}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {
