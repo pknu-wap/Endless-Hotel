@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API UUI_Button_Base : public UButton
 #pragma region Base
 
 protected:
-	virtual void SynchronizeProperties() override;
+	virtual TSharedRef<SWidget> RebuildWidget() override;
 
 #pragma endregion
 
@@ -25,22 +25,7 @@ private:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class UUI_Base> Owner;
-
-#pragma endregion
-
-#pragma region Highlight
-
-public:
-	void HighlightButton();
-	void UnhighlightButton();
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Normal;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Texture_Highlight;
+	TWeakObjectPtr<class UUI_Base> Owner;
 
 #pragma endregion
 

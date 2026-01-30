@@ -2,7 +2,6 @@
 
 #include "UI/HUD/InGame/UI_InGame.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Setting/UI_PopUp_Brightness.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
@@ -22,8 +21,6 @@ void UUI_InGame::NativeOnInitialized()
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
-
-	UUI_PopUp_Brightness::SettingBrightness.AddDynamic(this, &ThisClass::SetBrightness);
 
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }

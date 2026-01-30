@@ -4,11 +4,11 @@
 
 #pragma region Base
 
-void UUI_Button_Base::SynchronizeProperties()
+TSharedRef<SWidget> UUI_Button_Base::RebuildWidget()
 {
-	Super::SynchronizeProperties();
-
 	SetWidgetOwner();
+
+	return Super::RebuildWidget();
 }
 
 #pragma endregion
@@ -18,24 +18,6 @@ void UUI_Button_Base::SynchronizeProperties()
 void UUI_Button_Base::SetWidgetOwner()
 {
 	Owner = GetTypedOuter<UUI_Base>();
-}
-
-#pragma endregion
-
-#pragma region Hightlight
-
-void UUI_Button_Base::HighlightButton()
-{
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Highlight);
-	WidgetStyle.SetNormal(Brush);
-}
-
-void UUI_Button_Base::UnhighlightButton()
-{
-	FSlateBrush Brush;
-	Brush.SetResourceObject(Texture_Normal);
-	WidgetStyle.SetNormal(Brush);
 }
 
 #pragma endregion
