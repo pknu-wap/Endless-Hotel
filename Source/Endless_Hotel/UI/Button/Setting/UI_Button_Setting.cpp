@@ -2,48 +2,62 @@
 
 #include "UI/Button/Setting/UI_Button_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/PopUp/Setting/UI_PopUp_Language.h"
+#include "UI/Controller/UI_Controller.h"
+
+#pragma region Declare
+
+FHighlightSetting UUI_Button_Setting::HighlightSetting;
+
+#pragma endregion
 
 #pragma region Base
 
-void UUI_Button_Setting::SynchronizeProperties()
+TSharedRef<SWidget> UUI_Button_Setting::RebuildWidget()
 {
-	Super::SynchronizeProperties();
+	HighlightSetting.AddDynamic(this, &ThisClass::Highlight);
 
 	OnClicked.Clear();
-	OnClicked.AddDynamic(this, &ThisClass::ButtonClick);
+	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
+
+	return Super::RebuildWidget();
+}
+
+void UUI_Button_Setting::ReleaseSlateResources(bool bReleaseChildren)
+{
+	Super::ReleaseSlateResources(bReleaseChildren);
+
+	HighlightSetting.Clear();
 }
 
 #pragma endregion
 
 #pragma region Click
 
-void UUI_Button_Setting::ButtonClick()
+void UUI_Button_Setting::Click_Button()
 {
-	auto* BtnOwner = Cast<UUI_PopUp_Setting>(Owner);
+	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
+	SettingWidget->ShowCategoryOption(SettingInfo.Enum);
+	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
+	SettingWidget->RotateGear(SettingInfo.Angle);
 
-	switch (ButtonInfo.Category)
+	HighlightSetting.Broadcast(SettingInfo);
+}
+
+#pragma endregion
+
+#pragma region Highlight
+
+void UUI_Button_Setting::Highlight(FSettingCategory TargetInfo)
+{
+	FButtonStyle ButtonStyle = GetStyle();
+	ButtonStyle.Normal.TintColor = Color_Default;
+
+	if (SettingInfo.Enum == TargetInfo.Enum)
 	{
-	case ESettingButtonType::Grapic:
-		UUI_PopUp_Setting::SettingGrapic.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Resolution:
-		UUI_PopUp_Setting::SettingResolution.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Frame:
-		UUI_PopUp_Setting::SettingFrame.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Screen:
-		UUI_PopUp_Setting::SettingScreen.Broadcast(ButtonInfo);
-		break;
-
-	case ESettingButtonType::Language:
-		UUI_PopUp_Language::SettingLanguage.Broadcast(ButtonInfo);
-		break;
+		ButtonStyle.Normal.TintColor = Color_Highlight;
 	}
+
+	SetStyle(ButtonStyle);
 }
 
 #pragma endregion

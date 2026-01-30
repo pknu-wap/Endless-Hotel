@@ -1,25 +1,10 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/Controller/UI_Controller.h"
-#include "UI/Slider/Custom/UI_Slider_Custom.h"
-#include "UI/Button/UI_Button_Base.h"
-#include "GameSystem/SaveGame/SaveManager.h"
-#include <GameFramework/GameUserSettings.h>
-#include <Components/HorizontalBox.h>
 #include <Components/Button.h>
-#include <Components/Slider.h>
-#include <Sound/SoundClass.h>
-
-#pragma region Delegate
-
-FSettingGrapic UUI_PopUp_Setting::SettingGrapic;
-FSettingResolution UUI_PopUp_Setting::SettingResolution;
-FSettingFrame UUI_PopUp_Setting::SettingFrame;
-FSettingScreen UUI_PopUp_Setting::SettingScreen;
-FSettingSensitivity UUI_PopUp_Setting::SettingSensitivity;
-
-#pragma endregion
+#include <Components/Border.h>
+#include <Components/TextBlock.h>
+#include <GameFramework/GameUserSettings.h>
 
 #pragma region Base
 
@@ -27,128 +12,124 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	SettingHandle = UGameUserSettings::GetGameUserSettings();
-
-	SettingGrapic.AddDynamic(this, &ThisClass::Click_Grapic);
-	SettingResolution.AddDynamic(this, &ThisClass::Click_Resolution);
-	SettingFrame.AddDynamic(this, &ThisClass::Click_Frame);
-	SettingScreen.AddDynamic(this, &ThisClass::Click_Screen);
-
-	Slider_Sound->Slider_Main->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sound);
-	Slider_Sensitivity->Slider_Main->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Sensitivity);
-
-	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
-
-	Button_Reset->OnClicked.AddDynamic(this, &ThisClass::Click_Reset);
-	Button_Language->OnClicked.AddDynamic(this, &ThisClass::Click_Language);
-	Button_Brightness->OnClicked.AddDynamic(this, &ThisClass::Click_Brightness);
-}
-
-void UUI_PopUp_Setting::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	LoadSettingData();
+	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 }
 
 #pragma endregion
 
-#pragma region Data
+#pragma region Category
 
-void UUI_PopUp_Setting::LoadSettingData()
+void UUI_PopUp_Setting::SetCurrentCategoryText(FText Value)
 {
-	SettingData = USaveManager::LoadSettingData();
-
-	HighlightButton(Buttons_Grapic, SettingData.Index_Grapic);
-	HighlightButton(Buttons_Resolution, SettingData.Index_Resolution);
-	HighlightButton(Buttons_Frame, SettingData.Index_Frame);
-	HighlightButton(Buttons_Screen, SettingData.Index_Screen);
-
-	Slider_Sound->Slider_Main->SetValue(SettingData.Value_Sound);
-	Slider_Sensitivity->Slider_Main->SetValue(SettingData.Value_Sensitivity);
+	Text_CurrentCategory->SetText(Value);
 }
 
 #pragma endregion
 
-#pragma region Button
+#pragma region Option
 
-void UUI_PopUp_Setting::Click_Grapic(FSettingButtonInfo Value)
+void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 {
-	SettingData.Value_Grapic = Value.Value_Int;
-	SettingData.Index_Grapic = Value.ButtonIndex;
+	UI_Screen->SetVisibility(ESlateVisibility::Hidden);
+	UI_Grapic->SetVisibility(ESlateVisibility::Hidden);
+	UI_Sound->SetVisibility(ESlateVisibility::Hidden);
+	UI_Control->SetVisibility(ESlateVisibility::Hidden);
+	//UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
+	//UI_System->SetVisibility(ESlateVisibility::Hidden);
 
-	HighlightButton(Buttons_Grapic, Value.ButtonIndex);
+	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
+
+	switch (Target)
+	{
+	case ESettingCategory::Screen:
+		UI_Screen->SetVisibility(ESlateVisibility::Visible);
+		break;
+
+	case ESettingCategory::Grapic:
+		UI_Grapic->SetVisibility(ESlateVisibility::Visible);
+		Border_HideBox->SetVisibility(ESlateVisibility::Visible); // 나중에 복원 기능 추가 후 변경 예정
+		break;
+
+	case ESettingCategory::Sound:
+		UI_Sound->SetVisibility(ESlateVisibility::Visible);
+		break;
+
+	case ESettingCategory::Control:
+		UI_Control->SetVisibility(ESlateVisibility::Visible);
+		break;
+
+	/*case ESettingCategory::Gameplay:
+		UI_Gameplay->SetVisibility(ESlateVisibility::Visible);
+		break;
+
+	case ESettingCategory::System:
+		UI_System->SetVisibility(ESlateVisibility::Visible);
+		break;*/
+	}
 }
 
-void UUI_PopUp_Setting::Click_Resolution(FSettingButtonInfo Value)
+void UUI_PopUp_Setting::SetHideBoxVisibility(ESlateVisibility Option)
 {
-	SettingData.Value_Resolution = Value.Value_IntPoint;
-	SettingData.Index_Resolution = Value.ButtonIndex;
-
-	HighlightButton(Buttons_Resolution, Value.ButtonIndex);
+	Border_HideBox->SetVisibility(Option);
 }
 
-void UUI_PopUp_Setting::Click_Frame(FSettingButtonInfo Value)
-{
-	SettingData.Value_Frame = Value.Value_Float;
-	SettingData.Index_Frame = Value.ButtonIndex;
+#pragma endregion
 
-	HighlightButton(Buttons_Frame, Value.ButtonIndex);
+#pragma region Gear
+
+void UUI_PopUp_Setting::RotateGear(float TargetAngle)
+{
+	const float AddAngle = GetShortestAddAngle(CurrentAngle, TargetAngle);
+	const float FinalAngle = CurrentAngle + AddAngle;
+
+	const float DeltaSeconds = GetWorld()->GetDeltaSeconds();
+	const float RotateSpeed = 90.f;
+
+	GetWorld()->GetTimerManager().SetTimer(AngleHandle, FTimerDelegate::CreateWeakLambda(this, [this, FinalAngle, DeltaSeconds, RotateSpeed]()
+		{
+			FWidgetTransform TargetTrans;
+			CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, DeltaSeconds, RotateSpeed);
+			TargetTrans.Angle = CurrentAngle;
+
+			UI_Gear->SetRenderTransform(TargetTrans);
+
+			if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
+			{
+				CurrentAngle = FinalAngle;
+				TargetTrans.Angle = CurrentAngle;
+				UI_Gear->SetRenderTransform(TargetTrans);
+
+				GetWorld()->GetTimerManager().ClearTimer(AngleHandle);
+			}
+		}), DeltaSeconds, true);
 }
 
-void UUI_PopUp_Setting::Click_Screen(FSettingButtonInfo Value)
+const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
 {
-	SettingData.Value_Screen = Value.Value_WindowMode;
-	SettingData.Index_Screen = Value.ButtonIndex;
+	const float AngularSpacing = (Tar - Cur) % 360;
 
-	HighlightButton(Buttons_Screen, Value.ButtonIndex);
+	if (AngularSpacing > 180)
+	{
+		return AngularSpacing - 360;
+	}
+	else if (AngularSpacing < -180)
+	{
+		return AngularSpacing + 360;
+	}
+
+	return AngularSpacing;
 }
 
-void UUI_PopUp_Setting::Slide_Sound(float Value)
-{
-	SettingData.Value_Sound = Value;
-}
+#pragma endregion
 
-void UUI_PopUp_Setting::Slide_Sensitivity(float Value)
-{
-	SettingData.Value_Sensitivity = Value;
-}
+#pragma region Control
 
 void UUI_PopUp_Setting::Click_Apply()
 {
-	SettingHandle->SetOverallScalabilityLevel(SettingData.Value_Grapic);
-	SettingHandle->SetScreenResolution(SettingData.Value_Resolution);
-	SettingHandle->SetFrameRateLimit(SettingData.Value_Frame);
-	SettingHandle->SetFullscreenMode(static_cast<EWindowMode::Type>(SettingData.Value_Screen));
-
-	SoundMaster->Properties.Volume = SettingData.Value_Sound;
-	SettingSensitivity.Broadcast(SettingData.Value_Sensitivity);
-
-	SettingHandle->ApplySettings(false);
-	SettingHandle->SaveSettings();
-
-	USaveManager::SaveSettingData(SettingData);
+	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
 
 	Input_ESC();
-}
-
-void UUI_PopUp_Setting::Click_Reset()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Reset);
-}
-
-void UUI_PopUp_Setting::Click_Language()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Language);
-}
-
-void UUI_PopUp_Setting::Click_Brightness()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Brightness);
 }
 
 #pragma endregion

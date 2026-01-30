@@ -23,6 +23,8 @@ public class Endless_Hotel : ModuleRules
             "LevelSequence",
             "NavigationSystem",
             "UMG",
+            "Slate",
+            "SlateCore",
             "Niagara",
             "AdvancedWidgets",
             "Chaos",            

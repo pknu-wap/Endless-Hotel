@@ -88,13 +88,12 @@ protected:
 	TObjectPtr<class UInputAction> IA_ESC;
 
 	// Look Sensitivity
-	UFUNCTION()
+public:
 	void SetLookSensitivity(float Value) { LookSensitivity = 0.2f + Value * 1.8f; }
 	
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	float LookSensitivity = 1.1f;
-
-
 
 	// Input Callbacks
 	void EscapeStarted(const struct FInputActionValue& InputValue);
