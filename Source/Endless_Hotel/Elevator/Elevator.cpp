@@ -15,7 +15,6 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
 #include <Camera/CameraComponent.h>
-#include <Components/WidgetComponent.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -71,8 +70,8 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
 
-	Sticker = CreateDefaultSubobject<UWidgetComponent>(TEXT("Elevator_Sticker"));
-	Sticker->SetupAttachment(Car);
+	StickerPannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Elevator_Sticker"));
+	StickerPannel->SetupAttachment(Entrance);
 }
 
 void AElevator::BeginPlay()

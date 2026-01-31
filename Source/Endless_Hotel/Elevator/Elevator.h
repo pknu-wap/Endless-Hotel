@@ -228,7 +228,7 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
-	TObjectPtr<class UWidgetComponent> Sticker;
+	TObjectPtr<class UStaticMeshComponent> StickerPannel;
 
 #pragma endregion
 
