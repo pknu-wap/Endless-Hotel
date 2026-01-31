@@ -15,6 +15,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
 #include <Camera/CameraComponent.h>
+#include <Components/WidgetComponent.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -25,18 +26,15 @@ FElevatorDelegate AElevator::ElevatorDelegate;
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	// 1) Root
 	ElevatorSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
 	SetRootComponent(ElevatorSceneRoot);
 
-	// 2) Frame
 	Car = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car"));
 	Car->SetupAttachment(RootComponent);
 
 	Exterior_Structure = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Exterior_Structure"));
 	Exterior_Structure->SetupAttachment(Car);
 
-	// 3) Door / Glass
 	LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
 	LeftDoor->SetupAttachment(Car);
 
@@ -49,22 +47,17 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	LeftGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftGlass"));
 	LeftGlass->SetupAttachment(LeftDoor);
 
-	// 4) Entrance
 	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
 	Entrance->SetupAttachment(ElevatorSceneRoot);
 
-	// 5) Button
 	ElevatorButton = CreateDefaultSubobject<AElevator_Button>(TEXT("ElevatorButton"));
 
-	// 6) Light
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
 	ElevatorLight->SetupAttachment(Car);
 
-	// 7) Sound
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
 
-	// 8) Trigger
 	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
 	InsideTrigger->SetupAttachment(Car);
 	InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 120.0f));
@@ -73,12 +66,13 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// 10) Location Settings
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
 
-	// 11) Timeline
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+
+	Sticker = CreateDefaultSubobject<UWidgetComponent>(TEXT("Elevator_Sticker"));
+	Sticker->SetupAttachment(Car);
 }
 
 void AElevator::BeginPlay()

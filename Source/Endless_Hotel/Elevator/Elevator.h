@@ -32,7 +32,7 @@ class ENDLESS_HOTEL_API AElevator : public AEHActor
 #pragma region Base
 
 public:
-	AElevator(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	AElevator(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
@@ -223,5 +223,14 @@ private:
 	void NotifySubsystemElevatorChoice();
 
 #pragma endregion
+
+#pragma region UI
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TObjectPtr<class UWidgetComponent> Sticker;
+
+#pragma endregion
+
 
 };
