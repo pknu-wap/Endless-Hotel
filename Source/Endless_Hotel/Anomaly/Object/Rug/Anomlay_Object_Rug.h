@@ -16,10 +16,6 @@ class ENDLESS_HOTEL_API AAnomlay_Object_Rug : public AAnomaly_Object_Base
 public:
 	AAnomlay_Object_Rug(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh_Rug;
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMaterialInterface> ChangedMaterial;
 
