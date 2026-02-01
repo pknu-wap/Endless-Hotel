@@ -20,7 +20,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AEHPlayer : public AEHCharacter
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 public:
@@ -36,8 +36,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEHCameraComponent> Component_Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<class USpringArmComponent> SpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<class UCameraComponent> Camera;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> Third_Mesh;
+
 #pragma endregion
 
 #pragma region Interact
