@@ -86,15 +86,15 @@ void AAnomaly_Object_Float::StopFloating()
 
 #pragma region Interact
 
-void AAnomaly_Object_Float::SetInteraction()
-{
-    InteractAction = [this]()
-        {
-            if (bIsFloating) return;
-
-            RestoreObjectTransform();
-            Object->SetSimulatePhysics(false);
-        };
-}
+//void AAnomaly_Object_Float::SetInteraction()
+//{
+//    InteractAction = [this]()
+//        {
+//            if (bIsFloating) return;
+//
+//            RestoreObjectTransform();
+//            Object->SetSimulatePhysics(false);
+//        };
+//}
 
 #pragma endregion

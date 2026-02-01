@@ -4,6 +4,8 @@
 #include "Anomaly/Object/MusicBox/Anomaly_Object_MusicBox.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "Player/Character/EHPlayer.h"
+#include "Component/AnomalyInteract/AnomalyInteractComponent.h"
+#include "Component/AnomalyInteract/MusicBox/StopMusicBox_Interact.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
@@ -17,6 +19,14 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 	Mesh_BoxRotator->SetupAttachment(RootComponent);
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
+
+	MusicRotate = CreateDefaultSubobject<UStopMusicBox_Interact>(TEXT("MusciRotate"));
+}
+
+void AAnomaly_Object_MusicBox::BeginPlay()
+{
+	Super::BeginPlay();
+	CurrentInteractionUpdate();
 }
 
 #pragma endregion
@@ -59,12 +69,7 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma endregion
 
-#pragma region Interact
-
-void AAnomaly_Object_MusicBox::Interacted_Implementation()
-{
-	StartInteractaction();
-}
+#pragma region InteractActions
 
 void AAnomaly_Object_MusicBox::StopMusicBox()
 {
@@ -74,22 +79,6 @@ void AAnomaly_Object_MusicBox::StopMusicBox()
 	bSolved = true;
 
 	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
-}
-
-void AAnomaly_Object_MusicBox::SetInteraction()
-{
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	case 90:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_MusicBox::StopMusicBox();
-			});
-		break;
-	}
 }
 
 #pragma endregion

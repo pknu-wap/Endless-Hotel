@@ -15,7 +15,6 @@ void AAnomaly_Painting::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ActiveTrigger();
 		break;
@@ -24,7 +23,6 @@ void AAnomaly_Painting::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ActiveTrigger();
 		break;
@@ -33,7 +31,6 @@ void AAnomaly_Painting::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ScheduleAnomaly(0.01f);
 		break;
@@ -42,7 +39,6 @@ void AAnomaly_Painting::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
 			{
 				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
 		ScheduleAnomaly(10.0f);
 		break;
