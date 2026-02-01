@@ -75,16 +75,14 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class ULookAtComponent> LAC;
 
-	UPROPERTY(EditInstanceOnly, Category = "Position")
-	FVector2D PlayerLocationButton;
-
-	UPROPERTY(EditInstanceOnly, Category = "Rotation")
-	FRotator PlayerRotationButton;
-
-	FVector finalloc;
 protected: 
 	void MoveToButtonPlayer();
 
+	UFUNCTION()
+	void OnMoveCompleted();
+
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	float PlayerToElevatorDistance = 50.0f;
 #pragma endregion
 
 };
