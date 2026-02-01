@@ -16,6 +16,7 @@ void AAnomaly_MusicBox::SetAnomalyActivate()
 		AnomalyAction = ([](AAnomaly_Object_Base* MusicBox)
 			{
 				Cast<AAnomaly_Object_MusicBox>(MusicBox)->PlayMusicBox();
+				Cast<AAnomaly_Object_MusicBox>(MusicBox)->SetInteraction();
 			});
 		ScheduleAnomaly();
 		break;

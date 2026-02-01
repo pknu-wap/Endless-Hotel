@@ -6,10 +6,10 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Component/AnomalyInteract/AnomalyInteractComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/WidgetComponent.h>
 
+#define LOCTEXT_NAMESPACE "Anomaly_Object_Base"
 
 #pragma region Base
 
@@ -23,22 +23,19 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 	WC->SetupAttachment(RootComponent);
 
 	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
-}
 
-void AAnomaly_Object_Base::OnConstruction(const FTransform& Transform)
-{
-	Super::OnConstruction(Transform);
-	InteractComponents.Empty();
-	GetComponents<UAnomalyInteractComponent>(InteractComponents);
+	DescriptionText = LOCTEXT("Key1", "상호작용");
 }
 
 #pragma endregion
+
+#undef LOCTEXT_NAMESPACE
 
 #pragma region Interact
 
 void AAnomaly_Object_Base::Interacted_Implementation()
 {
-	InteractComponents[CurrentInteractIndex]->Interacted_Implementation();
+	StartInteractaction();
 }
 
 void AAnomaly_Object_Base::ShowInteractWidget_Implementation(bool bIsShow)
@@ -47,10 +44,9 @@ void AAnomaly_Object_Base::ShowInteractWidget_Implementation(bool bIsShow)
 	UI_Interact->ShowDescription(bIsShow);
 }
 
-void AAnomaly_Object_Base::CurrentInteractionUpdate(uint8 InteractionNumber)
+void AAnomaly_Object_Base::StartInteractaction()
 {
-	CurrentInteractIndex = InteractionNumber;
-	InteractComponents[CurrentInteractIndex]->SetAnomalyInteract();
+	InteractAction();
 }
 
 #pragma endregion

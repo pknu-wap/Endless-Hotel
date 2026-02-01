@@ -36,21 +36,21 @@ void AAnomaly_Object_ShelfDoll::ActivateDoll_Show()
 
 #pragma region Interact
 
-//void AAnomaly_Object_ShelfDoll::SetInteraction()
-//{
-//	switch (AnomalyID)
-//	{
-//	case 0:
-//		break;
-//
-//	default:
-//		InteractAction = ([this]()
-//			{
-//				AAnomaly_Object_ShelfDoll::InteractFire();
-//			});
-//		break;
-//	}
-//}
+void AAnomaly_Object_ShelfDoll::SetInteraction()
+{
+	switch (AnomalyID)
+	{
+	case 0:
+		break;
+
+	default:
+		InteractAction = ([this]()
+			{
+				AAnomaly_Object_ShelfDoll::InteractFire();
+			});
+		break;
+	}
+}
 
 void AAnomaly_Object_ShelfDoll::InteractFire()
 {

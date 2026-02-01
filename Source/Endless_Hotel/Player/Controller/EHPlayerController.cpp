@@ -25,7 +25,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	bCanInteract = false;
 	TraceDistance = 100.f;
 
-	UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
+	//UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 
 	bCanMove = true;
 	bIsCameraFixed = false;
@@ -49,9 +49,6 @@ void AEHPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
-
-	SetLookSensitivity(USaveManager::LoadSettingData().Value_Sensitivity);
-
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
