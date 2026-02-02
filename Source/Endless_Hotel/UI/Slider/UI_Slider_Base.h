@@ -18,7 +18,21 @@ protected:
 
 #pragma endregion
 
+#pragma region Owner
+
+private:
+	void SetWidgetOwner();
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_Base> Owner;
+
+#pragma endregion
+
 #pragma region Slider
+
+public:
+	class USlider* GetSlider() { return Slider_Default; }
 
 protected:
 	UFUNCTION()

@@ -236,3 +236,21 @@ void UUI_Button_Option::SetOption_Shading()
 }
 
 #pragma endregion
+
+#pragma region Gameplay
+
+void UUI_Button_Option::SetOption_AnomalyOverlap()
+{
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::On:
+		// 여기에 중복 제거 코드 (담당: 경원 김)
+		break;
+
+	case EOptionValue::Off:
+		// 여기에 중복 가능 코드 (담당: 경원 김)
+		break;
+	}
+}
+
+#pragma endregion

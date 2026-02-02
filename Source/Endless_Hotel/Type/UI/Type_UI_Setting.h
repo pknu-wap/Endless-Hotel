@@ -82,7 +82,11 @@ enum class EOptionCategory : uint8
 	Interface		UMETA(DisplayName = "Interface"),
 
 	// Control
-	Sensitivity		UMETA(DisplayName = "Sensitivity")
+	Sensitivity		UMETA(DisplayName = "Sensitivity"),
+
+	// Gameplay
+	Overlap			UMETA(DisplayName = "Overlap"),
+	Brightness		UMETA(DisplayName = "Brightness")
 };
 
 USTRUCT(BlueprintType)

@@ -25,13 +25,6 @@ void UUI_InGame::NativeOnInitialized()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
-void UUI_InGame::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	SetBrightness();
-}
-
 #pragma endregion
 
 #pragma region Crosshair
@@ -81,11 +74,11 @@ void UUI_InGame::ShowCrosshair(bool bIsShow)
 
 #pragma region Brightness
 
-void UUI_InGame::SetBrightness()
+void UUI_InGame::SetBrightness(float Value)
 {
-	FLinearColor ColorValue = Image_Brightness->GetColorAndOpacity();
-	ColorValue.A = (1 - USaveManager::LoadSettingData().Value_Brightness) * 0.6f;
-	Image_Brightness->SetColorAndOpacity(ColorValue);
+	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
+	Color.A = (1 - Value) * 0.8f;
+	Image_Brightness->SetColorAndOpacity(Color);
 }
 
 #pragma endregion

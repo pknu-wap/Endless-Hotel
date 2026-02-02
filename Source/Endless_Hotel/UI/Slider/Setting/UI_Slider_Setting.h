@@ -16,7 +16,7 @@ class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Setting|Category")
-	ESettingCategory SettingCategory;
+	EOptionCategory OptionCategory;
 
 #pragma endregion
 

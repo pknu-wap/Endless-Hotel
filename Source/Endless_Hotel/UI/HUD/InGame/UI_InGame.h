@@ -15,7 +15,6 @@ class ENDLESS_HOTEL_API UUI_InGame : public UUI_HUD_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
 
 #pragma endregion
 
@@ -55,9 +54,8 @@ protected:
 
 #pragma region Brightness
 
-protected:
-	UFUNCTION()
-	void SetBrightness();
+public:
+	void SetBrightness(float Value);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

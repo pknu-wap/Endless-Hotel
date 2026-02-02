@@ -11,7 +11,18 @@ void UUI_Slider_Base::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
+	SetWidgetOwner();
+
 	Slider_Default->OnValueChanged.AddDynamic(this, &ThisClass::Slide_Slider);
+}
+
+#pragma endregion
+
+#pragma region Owner
+
+void UUI_Slider_Base::SetWidgetOwner()
+{
+	Owner = GetTypedOuter<UUI_Base>();
 }
 
 #pragma endregion

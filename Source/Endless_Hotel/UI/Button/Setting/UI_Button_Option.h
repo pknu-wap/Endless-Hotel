@@ -90,4 +90,11 @@ protected:
 
 #pragma endregion
 
+#pragma region Gameplay
+
+protected:
+	void SetOption_AnomalyOverlap();
+
+#pragma endregion
+
 };
