@@ -42,6 +42,7 @@ public:
 protected:
 	void StartRotate();
 
+protected:
 	UPROPERTY(EditAnywhere, Category = "MusicBox|Fail");
 	float LimitTime;
 
@@ -55,7 +56,7 @@ protected:
 
 
 #pragma region Interact
-
+	
 public:
 	virtual void SetInteraction() override;
 
@@ -63,7 +64,7 @@ protected:
 	virtual void Interacted_Implementation() override;
 	void StopMusicBox();
 
-protected:
+public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")
 	bool bWaitingInteract = false;
 

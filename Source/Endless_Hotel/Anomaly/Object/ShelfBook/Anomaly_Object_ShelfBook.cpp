@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Object/ShelfBook/Anomaly_Object_ShelfBook.h"
@@ -23,7 +23,7 @@ AAnomaly_Object_ShelfBook::AAnomaly_Object_ShelfBook(const FObjectInitializer& O
 	TriggerBox->InitBoxExtent(FVector(100.f, 100.f, 100.f));
 	TriggerBox->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_ShelfBook::OnBooksFallRange);
-	
+
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(Root);
 	AC->bAutoActivate = false;
@@ -52,7 +52,7 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 
 		const FString ACName = FString::Printf(TEXT("AC_Book_%s"), *BookMesh->GetName());
 		UAudioComponent* BookAC = NewObject<UAudioComponent>(this, *ACName);
-		
+
 		if (BookAC)
 		{
 			BookAC->bAutoActivate = false;

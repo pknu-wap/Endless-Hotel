@@ -26,3 +26,4 @@
 25,13,Bug,/Game/EndlessHotel/Anomaly/Base/BP_Bug.BP_Bug_C,/Game/EndlessHotel/Anomaly/Object/Bug/BP_Bug.BP_Bug_C
 26,21,SignDrop,/Game/EndlessHotel/Anomaly/Base/BP_SignDrop.BP_SignDrop_C,/Game/EndlessHotel/Anomaly/Object/SignDrop/BP_Object_SignDrop.BP_Object_SignDrop_C
 27,88,Float,/Game/EndlessHotel/Anomaly/Base/BP_Float.BP_Float_C,/Game/EndlessHotel/Anomaly/Object/Float/BP_Object_Float.BP_Object_Float_C
+28,23,RugColor,/Game/EndlessHotel/Anomaly/Base/BP_Rug.BP_Rug_C,/Game/EndlessHotel/Anomaly/Object/Rug/BP_Object_Rug.BP_Object_Rug_C

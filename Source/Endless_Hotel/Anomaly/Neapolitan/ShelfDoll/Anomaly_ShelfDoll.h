@@ -16,5 +16,5 @@ class ENDLESS_HOTEL_API AAnomaly_ShelfDoll : public AAnomaly_Base_Neapolitan
 public:
 	virtual void SetAnomalyActivate() override;
 #pragma endregion
-	
+
 };

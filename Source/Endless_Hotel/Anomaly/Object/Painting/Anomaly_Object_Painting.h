@@ -20,6 +20,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Painting")
 	TObjectPtr<class USceneComponent> Root;
 
+protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
@@ -74,12 +75,14 @@ protected:
 #pragma endregion
 
 #pragma region Interact
+
 public:
 	virtual void SetInteraction() override;
 
 protected:
 	void InteractRotate();
 
+protected:
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);
 

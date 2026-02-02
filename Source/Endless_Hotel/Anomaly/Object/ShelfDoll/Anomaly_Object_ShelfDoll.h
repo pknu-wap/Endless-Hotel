@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -13,7 +13,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 public:
 	AAnomaly_Object_ShelfDoll(const FObjectInitializer& ObjectInitializer);

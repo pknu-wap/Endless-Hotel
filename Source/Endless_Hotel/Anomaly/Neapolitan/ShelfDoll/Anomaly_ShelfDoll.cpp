@@ -15,29 +15,29 @@ void AAnomaly_ShelfDoll::SetAnomalyActivate()
 	{
 	case EAnomalyName::Shelf_Doll:
 		AnomalyAction = ([](AAnomaly_Object_Base* Object)
-		{
-			if (auto* Doll = Cast<AAnomaly_Object_ShelfDoll>(Object))
 			{
-				Doll->ActivateDoll_Show();
-				Doll->SetInteraction();
-			}
+				if (auto* Doll = Cast<AAnomaly_Object_ShelfDoll>(Object))
+				{
+					Doll->ActivateDoll_Show();
+					Doll->SetInteraction();
+				}
 
-			TArray<AActor*> Books;
-			UGameplayStatics::GetAllActorsOfClass(Object->GetWorld(), AAnomaly_Object_ShelfBook::StaticClass(), Books);
-			for (AActor* A : Books)
-			{
-				if (auto* Book = Cast<AAnomaly_Object_ShelfBook>(Object))
-					Book->StartBookOff();
-			}
-			
-			TArray<AActor*> Plants;
-			UGameplayStatics::GetAllActorsOfClass(Object->GetWorld(), AAnomaly_Object_Plant::StaticClass(), Plants);
-			for (AActor* A : Plants)
-			{
-				if (auto* Plant = Cast<AAnomaly_Object_Plant>(Object))
-					Plant->StartPlantOff();
-			}
-		});
+				TArray<AActor*> Books;
+				UGameplayStatics::GetAllActorsOfClass(Object->GetWorld(), AAnomaly_Object_ShelfBook::StaticClass(), Books);
+				for (AActor* A : Books)
+				{
+					if (auto* Book = Cast<AAnomaly_Object_ShelfBook>(Object))
+						Book->StartBookOff();
+				}
+
+				TArray<AActor*> Plants;
+				UGameplayStatics::GetAllActorsOfClass(Object->GetWorld(), AAnomaly_Object_Plant::StaticClass(), Plants);
+				for (AActor* A : Plants)
+				{
+					if (auto* Plant = Cast<AAnomaly_Object_Plant>(Object))
+						Plant->StartPlantOff();
+				}
+			});
 		ScheduleAnomaly();
 		break;
 	}

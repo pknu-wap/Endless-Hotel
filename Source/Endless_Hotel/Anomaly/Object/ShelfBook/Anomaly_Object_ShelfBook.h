@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -56,14 +56,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_BookDrop;
 
-	bool bIsFallen=false;
+	bool bIsFallen = false;
 
 #pragma endregion
 
 #pragma region DropSound
 
 protected:
-	UPROPERTY(EditAnywhere, Category="Sound")
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TArray<TObjectPtr<USoundWave>> Sounds_BookDropRandom;
 
 	UPROPERTY()
