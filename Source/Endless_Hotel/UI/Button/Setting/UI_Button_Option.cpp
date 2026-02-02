@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Setting/UI_Button_Option.h"
+#include "Player/Character/EHPlayer.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
@@ -133,25 +134,25 @@ void UUI_Button_Option::SetOption_Window()
 
 void UUI_Button_Option::SetOption_Aspect()
 {
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	auto* CC = Player->FindComponentByClass<UCameraComponent>();
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	//auto* CC = Player->Camera;
 
 	switch (OptionInfo.Value)
 	{
 	case EOptionValue::W16H9:
-		CC->SetAspectRatio(16.0f / 9.0f);
+		//CC->SetAspectRatio(16.0f / 9.0f);
 		break;
 
 	case EOptionValue::W21H9:
-		CC->SetAspectRatio(21.0f / 9.0f);
+		//CC->SetAspectRatio(21.0f / 9.0f);
 		break;
 
 	case EOptionValue::W4H3:
-		CC->SetAspectRatio(4.0f / 3.0f);
+		//CC->SetAspectRatio(4.0f / 3.0f);
 		break;
 
 	case EOptionValue::W16H10:
-		CC->SetAspectRatio(16.0f / 10.0f);
+		//CC->SetAspectRatio(16.0f / 10.0f);
 		break;
 	}
 }
