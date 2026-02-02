@@ -1,7 +1,12 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
+#include "UI/Button/Setting/UI_Button_Option.h"
+#include "UI/Slider/Setting/UI_Slider_Setting.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include <Blueprint/WidgetTree.h>
 
 #pragma region Base
 
@@ -25,10 +30,132 @@ void UUI_PopUp_Option::NativeOnInitialized()
 void UUI_PopUp_Option::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	if (ComboBox_Default)
 	{
 		ComboBox_Default->BindEvents();
+	}
+}
+
+#pragma endregion
+
+#pragma region Highlight
+
+void UUI_PopUp_Option::HighlightOptions()
+{
+	FSaveData_Setting Data = USaveManager::LoadSettingData();
+	UEnum* EnumObj = StaticEnum<EOptionValue>();
+
+	TArray<UWidget*> Widgets;
+	WidgetTree->GetAllWidgets(OUT Widgets);
+
+	for (auto* Child : Widgets)
+	{
+		if (auto* Target = Cast<UUI_ComboBox_Setting>(Child))
+		{
+			EOptionValue Value;
+
+			switch (Target->OptionCategory)
+			{
+			case EOptionCategory::Resolution:
+				Value = Data.Resolution;
+				break;
+
+			case EOptionCategory::Grapic:
+				Value = Data.Grapic;
+				break;
+
+			case EOptionCategory::Language:
+				Value = Data.Language;
+				break;
+			}
+
+			Target->SetSelectedOption(EnumObj->GetNameByValue(static_cast<int64>(Value)));
+		}
+
+		if (auto* Target = Cast<UUI_Button_Option>(Child))
+		{
+			FOptionInfo OptionInfo = Target->OptionInfo;
+
+			switch (OptionInfo.Category)
+			{
+			case EOptionCategory::Window:
+				OptionInfo.Value = Data.Window;
+				break;
+
+			case EOptionCategory::Aspect:
+				OptionInfo.Value = Data.Aspect;
+				break;
+
+			case EOptionCategory::Frame:
+				OptionInfo.Value = Data.Frame;
+				break;
+
+			case EOptionCategory::VSync:
+				OptionInfo.Value = Data.VSync;
+				break;
+
+			case EOptionCategory::HDR:
+				OptionInfo.Value = Data.HDR;
+				break;
+
+			case EOptionCategory::AntiAliasing:
+				OptionInfo.Value = Data.AntiAliasing;
+				break;
+
+			case EOptionCategory::Shadow:
+				OptionInfo.Value = Data.Shadow;
+				break;
+
+			case EOptionCategory::Texture:
+				OptionInfo.Value = Data.Texture;
+				break;
+
+			case EOptionCategory::PostProcessing:
+				OptionInfo.Value = Data.PostProcessing;
+				break;
+
+			case EOptionCategory::Shading:
+				OptionInfo.Value = Data.Shading;
+				break;
+
+			case EOptionCategory::Overlap:
+				OptionInfo.Value = Data.Overlap;
+				break;
+			}
+
+			Target->HighlightOption.Broadcast(OptionInfo);
+		}
+
+		if (auto* Target = Cast<UUI_Slider_Setting>(Child))
+		{
+			float Value = 0;
+
+			switch (Target->OptionCategory)
+			{
+			case EOptionCategory::Master:
+				Value = Data.Master;
+				break;
+
+			case EOptionCategory::BGM:
+				Value = Data.BGM;
+				break;
+
+			case EOptionCategory::SFX:
+				Value = Data.SFX;
+				break;
+
+			case EOptionCategory::Voice:
+				Value = Data.Voice;
+				break;
+
+			case EOptionCategory::Interface:
+				Value = Data.Interface;
+				break;
+			}
+
+			Target->Slide_Slider(Value);
+		}
 	}
 }
 

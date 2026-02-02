@@ -2,6 +2,8 @@
 
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
+#include "UI/Button/Setting/UI_Button_Option.h"
+#include "Type/Save/Type_Save.h"
 #include <GameFramework/GameUserSettings.h>
 #include <Components/Border.h>
 #include <Internationalization/Internationalization.h>
@@ -53,8 +55,13 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 {
 	UGameUserSettings* SettingHandle = UGameUserSettings::GetGameUserSettings();
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
+	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
-	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
+	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
+	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	Data.Resolution = Value;
+
+	switch (Value)
 	{
 	case EOptionValue::HD:
 		SettingHandle->SetScreenResolution(FIntPoint(1280, 720));
@@ -83,18 +90,27 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 	UGameUserSettings* SettingHandle = UGameUserSettings::GetGameUserSettings();
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
 	int64 Index = EnumObj->GetIndexByName(OptionValue);
+	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
-	auto* Owner = GetTypedOuter<UUI_PopUp_Setting>();
+	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
+	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	Data.Grapic = Value;
 
-	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
+	switch (Value)
 	{
 	case EOptionValue::Custom:
-		Owner->SetHideBoxVisibility(ESlateVisibility::Visible);
-		SettingHandle->SetOverallScalabilityLevel(Index);
+		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Hidden);
 		break;
 
 	default:
-		Owner->SetHideBoxVisibility(ESlateVisibility::Hidden);
+		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
+		SettingHandle->SetOverallScalabilityLevel(Index);
+
+		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::AntiAliasing, Value));
+		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Shadow, Value));
+		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Texture, Value));
+		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::PostProcessing, Value));
+		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Shading, Value));
 		break;
 	}
 }
@@ -106,8 +122,13 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 {
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
+	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
-	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
+	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
+	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	Data.Language = Value;
+
+	switch (Value)
 	{
 	case EOptionValue::English:
 		FInternationalization::Get().SetCurrentCulture(TEXT("en-US"));

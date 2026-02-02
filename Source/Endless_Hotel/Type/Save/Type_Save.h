@@ -2,52 +2,87 @@
 
 #pragma once
 
+#include "Type/UI/Type_UI_Setting.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
 USTRUCT(BlueprintType)
-struct FSettingSaveData
+struct FSaveData_Setting
 {
 	GENERATED_BODY()
 
 public:
+	// Screen
 	UPROPERTY(SaveGame)
-	int32 Value_Grapic;
+	EOptionValue Resolution = EOptionValue::FHD;
 
 	UPROPERTY(SaveGame)
-	FIntPoint Value_Resolution;
+	EOptionValue Window = EOptionValue::FullScreen;
 
 	UPROPERTY(SaveGame)
-	uint8 Value_Screen;
+	EOptionValue Aspect = EOptionValue::W16H9;
 
 	UPROPERTY(SaveGame)
-	float Value_Frame;
+	EOptionValue Frame = EOptionValue::High;
 
 	UPROPERTY(SaveGame)
-	float Value_Sound = 0.5f;
+	EOptionValue VSync = EOptionValue::On;
 
 	UPROPERTY(SaveGame)
-	float Value_Sensitivity = 0.5f;
-
-	UPROPERTY(SaveGame)
-	float Value_Brightness = 1;
-
-	UPROPERTY(SaveGame)
-	FString Value_Language;
+	EOptionValue HDR = EOptionValue::On;
 
 public:
+	// Grapic
 	UPROPERTY(SaveGame)
-	int32 Index_Grapic;
+	EOptionValue Grapic = EOptionValue::Epic;
 
 	UPROPERTY(SaveGame)
-	int32 Index_Resolution;
+	EOptionValue AntiAliasing = EOptionValue::Epic;
 
 	UPROPERTY(SaveGame)
-	int32 Index_Screen;
+	EOptionValue Shadow = EOptionValue::Epic;
 
 	UPROPERTY(SaveGame)
-	int32 Index_Frame;
+	EOptionValue Texture = EOptionValue::Epic;
 
 	UPROPERTY(SaveGame)
-	int32 Index_Language;
+	EOptionValue PostProcessing = EOptionValue::Epic;
+
+	UPROPERTY(SaveGame)
+	EOptionValue Shading = EOptionValue::Epic;
+
+public:
+	// Sound
+	UPROPERTY(SaveGame)
+	float Master = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float BGM = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float SFX = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float Voice = 0.5f;
+
+	UPROPERTY(SaveGame)
+	float Interface = 0.5f;
+
+public:
+	// Control
+	UPROPERTY(SaveGame)
+	float Sensitivity = 0.5f;
+
+public:
+	// Gameplay
+	UPROPERTY(SaveGame)
+	EOptionValue Overlap = EOptionValue::Off;
+
+	UPROPERTY(SaveGame)
+	float Brightness = 0.5f;
+
+public:
+	// System
+	UPROPERTY(SaveGame)
+	EOptionValue Language = EOptionValue::English;
 };

@@ -103,6 +103,12 @@ struct FOptionInfo
 	GENERATED_BODY()
 
 public:
+	FOptionInfo() {}
+
+	FOptionInfo(EOptionCategory Cat, EOptionValue Val)
+		:Category(Cat), Value(Val) {}
+
+public:
 	UPROPERTY(EditAnywhere)
 	EOptionCategory Category;
 

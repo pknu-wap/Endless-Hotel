@@ -15,12 +15,12 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 #pragma region Setting
 
 public:
-	static FSettingSaveData LoadSettingData();
-	static void SaveSettingData(const FSettingSaveData& Data);
+	static FSaveData_Setting LoadSettingData();
+	static void SaveSettingData(const FSaveData_Setting& Data);
 
 protected:
 	UPROPERTY(SaveGame)
-	FSettingSaveData SettingData;
+	FSaveData_Setting Data_Setting;
 
 #pragma endregion
 

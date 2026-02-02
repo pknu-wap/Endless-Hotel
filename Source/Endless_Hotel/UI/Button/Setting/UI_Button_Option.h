@@ -37,7 +37,7 @@ protected:
 
 #pragma region Option
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Setting|Option")
 	FOptionInfo OptionInfo;
 
@@ -57,9 +57,10 @@ protected:
 	UFUNCTION()
 	void Highlight(FOptionInfo TargetInfo);
 
-protected:
+public:
 	static FHighlightOption HighlightOption;
 
+protected:
 	UPROPERTY(EditAnywhere, Category = "Highlight")
 	FLinearColor Color_Highlight;
 

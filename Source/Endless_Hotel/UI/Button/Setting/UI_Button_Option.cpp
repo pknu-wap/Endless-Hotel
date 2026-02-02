@@ -2,7 +2,9 @@
 
 #include "UI/Button/Setting/UI_Button_Option.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "Player/Character/EHPlayer.h"
+#include "Type/Save/Type_Save.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
@@ -21,8 +23,6 @@ TSharedRef<SWidget> UUI_Button_Option::RebuildWidget()
 	SettingHandle = UGameUserSettings::GetGameUserSettings();
 
 	HighlightOption.AddDynamic(this, &ThisClass::Highlight);
-
-	OnClicked.Clear();
 	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
 
 	return Super::RebuildWidget();
@@ -33,6 +33,7 @@ void UUI_Button_Option::ReleaseSlateResources(bool bReleaseChildren)
 	Super::ReleaseSlateResources(bReleaseChildren);
 
 	HighlightOption.Clear();
+	OnClicked.Clear();
 }
 
 #pragma endregion
@@ -41,53 +42,67 @@ void UUI_Button_Option::ReleaseSlateResources(bool bReleaseChildren)
 
 void UUI_Button_Option::Click_Button()
 {
+	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
+	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+
 	switch (OptionInfo.Category)
 	{
 	// Screen Category
 	case EOptionCategory::Window:
 		SetOption_Window();
+		Data.Window = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::Aspect:
 		SetOption_Aspect();
+		Data.Aspect = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::Frame:
 		SetOption_Frame();
+		Data.Frame = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::VSync:
 		SetOption_VSync();
+		Data.VSync = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::HDR:
 		SetOption_HDR();
+		Data.HDR = OptionInfo.Value;
 		break;
 
 	// Grapic Category
 	case EOptionCategory::AntiAliasing:
 		SetOption_AntiAliasing();
+		Data.AntiAliasing = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::Shadow:
 		SetOption_Shadow();
+		Data.Shadow = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::Texture:
 		SetOption_Texture();
+		Data.Texture = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::PostProcessing:
 		SetOption_PostProcessing();
+		Data.PostProcessing = OptionInfo.Value;
 		break;
 
 	case EOptionCategory::Shading:
 		SetOption_Shading();
+		Data.Shading = OptionInfo.Value;
 		break;
 
 	// Gameplay Category
 	case EOptionCategory::Overlap:
 		SetOption_AnomalyOverlap();
+		Data.Overlap = OptionInfo.Value;
 		break;
 
 	// System Category

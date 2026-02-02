@@ -29,7 +29,7 @@ protected:
 
 #pragma region Option
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Setting|Option")
 	EOptionCategory OptionCategory;
 

@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
 	
 #pragma region Category
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Setting|Category")
 	EOptionCategory OptionCategory;
 
@@ -22,7 +22,7 @@ protected:
 
 #pragma region Slider
 
-protected:
+public:
 	virtual void Slide_Slider(float Value) override;
 
 #pragma endregion

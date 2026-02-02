@@ -1,6 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
+#include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
@@ -14,6 +16,22 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+}
+
+void UUI_PopUp_Setting::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	Data_Setting = USaveManager::LoadSettingData();
+
+	UI_Screen->HighlightOptions();
+	UI_Grapic->HighlightOptions();
+	UI_Sound->HighlightOptions();
+	UI_Control->HighlightOptions();
+	UI_Gameplay->HighlightOptions();
+	UI_System->HighlightOptions();
+
+	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
 }
 
 #pragma endregion
@@ -39,7 +57,7 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 	UI_System->SetVisibility(ESlateVisibility::Hidden);
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
-
+	
 	switch (Target)
 	{
 	case ESettingCategory::Screen:
@@ -47,9 +65,14 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		break;
 
 	case ESettingCategory::Grapic:
+	{
 		UI_Grapic->SetVisibility(ESlateVisibility::Visible);
-		Border_HideBox->SetVisibility(ESlateVisibility::Visible); // 나중에 복원 기능 추가 후 변경 예정
+		if (Data_Setting.Grapic != EOptionValue::Custom)
+		{
+			Border_HideBox->SetVisibility(ESlateVisibility::Visible);
+		}
 		break;
+	}
 
 	case ESettingCategory::Sound:
 		UI_Sound->SetVisibility(ESlateVisibility::Visible);
@@ -127,7 +150,11 @@ const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
 
 void UUI_PopUp_Setting::Click_Apply()
 {
-	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
+	auto* SettingHandle = UGameUserSettings::GetGameUserSettings();
+	SettingHandle->SaveSettings();
+	SettingHandle->ApplySettings(false);
+
+	USaveManager::SaveSettingData(Data_Setting);
 
 	Input_ESC();
 }

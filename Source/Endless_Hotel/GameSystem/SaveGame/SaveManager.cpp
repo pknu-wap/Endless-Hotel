@@ -6,25 +6,25 @@
 
 #pragma region Setting
 
-FSettingSaveData USaveManager::LoadSettingData()
+FSaveData_Setting USaveManager::LoadSettingData()
 {
 	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Setting"), 0));
-	FSettingSaveData SaveData;
+	FSaveData_Setting SaveData;
 
 	if (!SaveManager)
 	{
 		return SaveData;
 	}
 
-	SaveData = SaveManager->SettingData;
+	SaveData = SaveManager->Data_Setting;
 
 	return SaveData;
 }
 
-void USaveManager::SaveSettingData(const FSettingSaveData& Data)
+void USaveManager::SaveSettingData(const FSaveData_Setting& Data)
 {
 	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
-	SaveManager->SettingData = Data;
+	SaveManager->Data_Setting = Data;
 
 	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Setting"), 0);
 }
