@@ -52,8 +52,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Base> UI_Gameplay;
 
-	//UPROPERTY(meta = (BindWidget))
-	//TObjectPtr<class UUI_Base> UI_System;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_Base> UI_System;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBorder> Border_HideBox;

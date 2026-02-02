@@ -49,4 +49,11 @@ protected:
 
 #pragma endregion
 
+#pragma region System
+
+protected:
+	void SetOption_Language(FName OptionValue);
+
+#pragma endregion
+
 };

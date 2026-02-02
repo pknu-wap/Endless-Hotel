@@ -4,6 +4,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include <GameFramework/GameUserSettings.h>
 #include <Components/Border.h>
+#include <Internationalization/Internationalization.h>
 
 #pragma region Active
 
@@ -37,6 +38,10 @@ void UUI_ComboBox_Setting::DeactiveComboBox(FName NameValue, ESelectInfo::Type E
 	case EOptionCategory::Grapic:
 		SetOption_Grapic(NameValue);
 		break;
+
+	case EOptionCategory::Language:
+		SetOption_Language(NameValue);
+		break;
 	}
 }
 
@@ -49,21 +54,23 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 	UGameUserSettings* SettingHandle = UGameUserSettings::GetGameUserSettings();
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
 
-	if (EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::HD)) == OptionValue)
+	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
 	{
+	case EOptionValue::HD:
 		SettingHandle->SetScreenResolution(FIntPoint(1280, 720));
-	}
-	else if (EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::FHD)) == OptionValue)
-	{
+		break;
+
+	case EOptionValue::FHD:
 		SettingHandle->SetScreenResolution(FIntPoint(1920, 1080));
-	}
-	else if (EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::QHD)) == OptionValue)
-	{
+		break;
+
+	case EOptionValue::QHD:
 		SettingHandle->SetScreenResolution(FIntPoint(2560, 1440));
-	}
-	else if (EnumObj->GetNameByValue(static_cast<int64>(EOptionValue::UHD)) == OptionValue)
-	{
+		break;
+
+	case EOptionValue::UHD:
 		SettingHandle->SetScreenResolution(FIntPoint(3840, 2160));
+		break;
 	}
 }
 
@@ -79,14 +86,36 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 
 	auto* Owner = GetTypedOuter<UUI_PopUp_Setting>();
 
-	if (static_cast<EOptionValue>(EnumObj->GetValueByIndex(Index)) == EOptionValue::Custom)
+	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
 	{
-		Owner->SetHideBoxVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
+	case EOptionValue::Custom:
 		Owner->SetHideBoxVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
+		break;
+
+	default:
+		Owner->SetHideBoxVisibility(ESlateVisibility::Hidden);
+		break;
+	}
+}
+
+#pragma endregion
+
+#pragma region System
+
+void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
+{
+	UEnum* EnumObj = StaticEnum<EOptionValue>();
+
+	switch (static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue)))
+	{
+	case EOptionValue::English:
+		FInternationalization::Get().SetCurrentCulture(TEXT("en-US"));
+		break;
+
+	case EOptionValue::Korean:
+		FInternationalization::Get().SetCurrentCulture(TEXT("ko-KR"));
+		break;
 	}
 }
 

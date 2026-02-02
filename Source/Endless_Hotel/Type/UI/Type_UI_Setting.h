@@ -40,6 +40,7 @@ enum class EOptionValue : uint8
 	High				UMETA(DisplayName = "High"),
 	Epic				UMETA(DisplayName = "Epic"),
 	Custom				UMETA(DisplayName = "Custom"),
+	None				UMETA(DisplayName = "None"),
 	On					UMETA(DisplayName = "On"),
 	Off					UMETA(DisplayName = "Off"),
 	HD					UMETA(DisplayName = "1280 X 720 (HD)"),
@@ -52,7 +53,9 @@ enum class EOptionValue : uint8
 	W16H9				UMETA(DisplayName = "16:9"),
 	W21H9				UMETA(DisplayName = "21:9"),
 	W4H3				UMETA(DisplayName = "4:3"),
-	W16H10				UMETA(DisplayName = "16:10")
+	W16H10				UMETA(DisplayName = "16:10"),
+	English				UMETA(DisplayName = "English"),
+	Korean				UMETA(DisplayName = "한국어")
 };
 
 UENUM(BlueprintType)
@@ -86,7 +89,12 @@ enum class EOptionCategory : uint8
 
 	// Gameplay
 	Overlap			UMETA(DisplayName = "Overlap"),
-	Brightness		UMETA(DisplayName = "Brightness")
+	Brightness		UMETA(DisplayName = "Brightness"),
+
+	// System
+	Reset_Note		UMETA(DisplayName = "Reset Note"),
+	Reset_Setting	UMETA(DisplayName = "Reset Setting"),
+	Language		UMETA(DisplayName = "Language")
 };
 
 USTRUCT(BlueprintType)

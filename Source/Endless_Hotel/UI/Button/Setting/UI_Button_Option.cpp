@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Setting/UI_Button_Option.h"
+#include "UI/Controller/UI_Controller.h"
 #include "Player/Character/EHPlayer.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
@@ -82,6 +83,20 @@ void UUI_Button_Option::Click_Button()
 
 	case EOptionCategory::Shading:
 		SetOption_Shading();
+		break;
+
+	// Gameplay Category
+	case EOptionCategory::Overlap:
+		SetOption_AnomalyOverlap();
+		break;
+
+	// System Category
+	case EOptionCategory::Reset_Note:
+		PopUpOption_ResetNote();
+		break;
+
+	case EOptionCategory::Reset_Setting:
+		PopUpOption_ResetSetting();
 		break;
 	}
 
@@ -252,6 +267,22 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 		// 여기에 중복 가능 코드 (담당: 경원 김)
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region System
+
+void UUI_Button_Option::PopUpOption_ResetNote()
+{
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_ResetNote);
+}
+
+void UUI_Button_Option::PopUpOption_ResetSetting()
+{
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_ResetSetting);
 }
 
 #pragma endregion
