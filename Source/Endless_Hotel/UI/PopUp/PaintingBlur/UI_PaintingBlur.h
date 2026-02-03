@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "UI/PopUp/UI_PopUp_Base.h"
 #include <CoreMinimal.h>
-#include <UI_PopUp_PaintingBlur.generated.h>
+#include <Blueprint/UserWidget.h>
+#include <UI_PaintingBlur.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API UUI_PopUp_PaintingBlur : public UUI_PopUp_Base
+class ENDLESS_HOTEL_API UUI_PaintingBlur : public UUserWidget
 {
 	GENERATED_BODY()
 
