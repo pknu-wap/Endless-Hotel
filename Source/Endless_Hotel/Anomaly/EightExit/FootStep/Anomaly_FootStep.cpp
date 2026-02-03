@@ -13,7 +13,11 @@ void AAnomaly_FootStep::SetAnomalyActivate()
 
     switch (AnomalyName) {
     case EAnomalyName::FootStep:
-        FootStep();
+        AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+            {
+                FootStep();
+            });
+        ScheduleAnomaly(10);
         break;
     }
 }
