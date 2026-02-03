@@ -12,6 +12,13 @@ class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
 #pragma region Category
 
 public:
@@ -32,6 +39,20 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Setting|Sound")
 	TObjectPtr<class USoundClass> SC_Target;
+
+#pragma endregion
+
+#pragma region CheckBox
+
+public:
+	UFUNCTION()
+	void Click_CheckBox(bool bIsCheck);
+
+	void ShowOffImage(bool bIsCheck);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_Off;
 
 #pragma endregion
 

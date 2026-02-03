@@ -39,4 +39,12 @@ protected:
 
 #pragma endregion
 
+#pragma region CheckBox
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_CheckBox_Setting> CheckBox_Off;
+
+#pragma endregion
+
 };

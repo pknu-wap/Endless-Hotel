@@ -49,8 +49,8 @@ void UUI_HUD_Title::Click_Setting()
 
 void UUI_HUD_Title::Click_Quit()
 {
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->QuitGame();
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_QuitCheck);
 }
 
 #pragma endregion

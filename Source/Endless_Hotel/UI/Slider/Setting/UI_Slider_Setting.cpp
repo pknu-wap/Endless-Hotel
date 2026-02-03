@@ -3,12 +3,24 @@
 #include "UI/Slider/Setting/UI_Slider_Setting.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/CheckBox/Setting/UI_CheckBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Sound/SoundClass.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/Image.h>
+
+#pragma region Base
+
+void UUI_Slider_Setting::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	CheckBox_Off->OnCheckStateChanged.AddDynamic(this, &ThisClass::Click_CheckBox);
+}
+
+#pragma endregion
 
 #pragma region Slider
 
@@ -23,22 +35,27 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 	{
 	case EOptionCategory::Master:
 		Data.Master = Value;
+		SC_Target->Properties.Volume = Value * Data.EnableMaster;
 		break;
 
 	case EOptionCategory::BGM:
 		Data.BGM = Value;
+		SC_Target->Properties.Volume = Value * Data.EnableBGM;
 		break;
 
 	case EOptionCategory::SFX:
 		Data.SFX = Value;
+		SC_Target->Properties.Volume = Value * Data.EnableSFX;
 		break;
 
 	case EOptionCategory::Voice:
 		Data.Voice = Value;
+		SC_Target->Properties.Volume = Value * Data.EnableVoice;
 		break;
 
 	case EOptionCategory::Interface:
 		Data.Interface = Value;
+		SC_Target->Properties.Volume = Value * Data.EnableInterface;
 		break;
 
 	case EOptionCategory::Sensitivity:
@@ -71,10 +88,69 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 		break;
 	}
 	}
+}
 
-	if (SC_Target)
+#pragma endregion
+
+#pragma region CheckBox
+
+void UUI_Slider_Setting::Click_CheckBox(bool bIsCheck)
+{
+	ShowOffImage(bIsCheck);
+
+	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
+	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+
+	switch (OptionCategory)
 	{
-		SC_Target->Properties.Volume = Value;
+	case EOptionCategory::Master:
+	{
+		if (bIsCheck) Data.EnableMaster = 1;
+		else Data.EnableMaster = 0;
+		break;
+	}
+
+	case EOptionCategory::BGM:
+	{
+		if (bIsCheck) Data.EnableBGM = 1;
+		else Data.EnableBGM = 0;
+		break;
+	}
+
+	case EOptionCategory::SFX:
+	{
+		if (bIsCheck) Data.EnableSFX = 1;
+		else Data.EnableSFX = 0;
+		break;
+	}
+
+	case EOptionCategory::Voice:
+	{
+		if (bIsCheck) Data.EnableVoice = 1;
+		else Data.EnableVoice = 0;
+		break;
+	}
+
+	case EOptionCategory::Interface:
+	{
+		if (bIsCheck) Data.EnableInterface = 1;
+		else Data.EnableInterface = 0;
+		break;
+	}
+	}
+}
+
+void UUI_Slider_Setting::ShowOffImage(bool bIsCheck)
+{
+	if (bIsCheck)
+	{
+		Image_Off->SetVisibility(ESlateVisibility::Hidden);
+		CheckBox_Off->SetCheckedState(ECheckBoxState::Checked);
+	}
+	else
+	{
+		Image_Off->SetVisibility(ESlateVisibility::Visible);
+		CheckBox_Off->SetCheckedState(ECheckBoxState::Unchecked);
 	}
 }
 

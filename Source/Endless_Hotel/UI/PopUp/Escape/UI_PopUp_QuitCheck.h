@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_No;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_ESC;
+
 #pragma endregion
 
 };

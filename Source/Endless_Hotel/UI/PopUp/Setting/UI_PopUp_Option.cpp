@@ -129,40 +129,45 @@ void UUI_PopUp_Option::HighlightOptions()
 
 		if (auto* Target = Cast<UUI_Slider_Setting>(Child))
 		{
-			float Value = 0;
+			float TargetValue = 0;
 
 			switch (Target->OptionCategory)
 			{
 			case EOptionCategory::Master:
-				Value = Data.Master;
+				TargetValue = Data.Master;
+				Target->ShowOffImage(static_cast<bool>(Data.EnableMaster));
 				break;
 
 			case EOptionCategory::BGM:
-				Value = Data.BGM;
+				TargetValue = Data.BGM;
+				Target->ShowOffImage(static_cast<bool>(Data.EnableBGM));
 				break;
 
 			case EOptionCategory::SFX:
-				Value = Data.SFX;
+				TargetValue = Data.SFX;
+				Target->ShowOffImage(static_cast<bool>(Data.EnableSFX));
 				break;
 
 			case EOptionCategory::Voice:
-				Value = Data.Voice;
+				TargetValue = Data.Voice;
+				Target->ShowOffImage(static_cast<bool>(Data.EnableVoice));
 				break;
 
 			case EOptionCategory::Interface:
-				Value = Data.Interface;
+				TargetValue = Data.Interface;
+				Target->ShowOffImage(static_cast<bool>(Data.EnableInterface));
 				break;
 
 			case EOptionCategory::Sensitivity:
-				Value = Data.Sensitivity;
+				TargetValue = Data.Sensitivity;
 				break;
 
 			case EOptionCategory::Brightness:
-				Value = Data.Brightness;
+				TargetValue = Data.Brightness;
 				break;
 			}
 
-			Target->Slide_Slider(Value);
+			Target->Slide_Slider(TargetValue);
 		}
 	}
 }

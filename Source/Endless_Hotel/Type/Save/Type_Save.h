@@ -68,6 +68,21 @@ public:
 	UPROPERTY(SaveGame)
 	float Interface = 0.5f;
 
+	UPROPERTY(SaveGame)
+	uint8 EnableMaster = 1;
+
+	UPROPERTY(SaveGame)
+	uint8 EnableBGM = 1;
+
+	UPROPERTY(SaveGame)
+	uint8 EnableSFX = 1;
+
+	UPROPERTY(SaveGame)
+	uint8 EnableVoice = 1;
+
+	UPROPERTY(SaveGame)
+	uint8 EnableInterface = 1;
+
 public:
 	// Control
 	UPROPERTY(SaveGame)

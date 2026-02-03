@@ -12,6 +12,7 @@ void UUI_PopUp_QuitCheck::NativeOnInitialized()
 
 	Button_Yes->OnClicked.AddDynamic(this, &ThisClass::Click_Yes);
 	Button_No->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+	Button_ESC->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 }
 
 #pragma endregion
