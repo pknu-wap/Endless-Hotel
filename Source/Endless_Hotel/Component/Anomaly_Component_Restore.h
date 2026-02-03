@@ -24,6 +24,7 @@ protected:
 #pragma region Restore
 
 public:
+
     void SaveOriginalTransform();
 
     void StartRestoring(float Duration = 2.5f);
@@ -32,6 +33,7 @@ private:
     void RestoreTick();
 
     FTransform OriginalTransform;
+    FTransform StartTransform;
     FTimerHandle RestoreHandle;
 
     float RestoreDuration = 2.5f;
