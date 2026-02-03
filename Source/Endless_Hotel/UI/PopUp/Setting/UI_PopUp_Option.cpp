@@ -152,6 +152,14 @@ void UUI_PopUp_Option::HighlightOptions()
 			case EOptionCategory::Interface:
 				Value = Data.Interface;
 				break;
+
+			case EOptionCategory::Sensitivity:
+				Value = Data.Sensitivity;
+				break;
+
+			case EOptionCategory::Brightness:
+				Value = Data.Brightness;
+				break;
 			}
 
 			Target->Slide_Slider(Value);
