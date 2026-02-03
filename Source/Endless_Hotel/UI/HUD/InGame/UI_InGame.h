@@ -26,13 +26,7 @@ protected:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Crosshair;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Crosshair_Normal;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Crosshair_Interact;
+	TObjectPtr<class UImage> Image_Crosshair_Center;
 
 protected:
 	UFUNCTION()

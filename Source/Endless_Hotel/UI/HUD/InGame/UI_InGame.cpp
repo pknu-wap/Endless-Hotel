@@ -7,7 +7,6 @@
 #include "Player/Character/EHPlayer.h"
 #include "Elevator/Elevator.h"
 #include <Components/Image.h>
-#include <Components/CanvasPanelSlot.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -31,13 +30,8 @@ void UUI_InGame::NativeOnInitialized()
 
 void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 {
-	UCanvasPanelSlot* CPSlot = Cast<UCanvasPanelSlot>(Crosshair->Slot);
-
-	FSlateBrush Brush;
-
 	if (bCanInteract)
 	{
-		Brush.SetResourceObject(Crosshair_Interact);
 		if (!bIsCrosshairInteractMode)
 		{
 			PlayAnimation(WidgetAnim_Interact);
@@ -46,16 +40,12 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	}
 	else
 	{
-		Brush.SetResourceObject(Crosshair_Normal);
-		Crosshair->SetRenderOpacity(0.3f);
 		if (bIsCrosshairInteractMode)
 		{
 			PlayAnimation(WidgetAnim_Normal);
 			bIsCrosshairInteractMode = false;
 		}
 	}
-
-	Crosshair->SetBrush(Brush);
 }
 
 void UUI_InGame::ShowCrosshair(bool bIsShow)
@@ -66,7 +56,7 @@ void UUI_InGame::ShowCrosshair(bool bIsShow)
 	}
 	else
 	{
-		Crosshair->SetVisibility(ESlateVisibility::Hidden);
+		Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
