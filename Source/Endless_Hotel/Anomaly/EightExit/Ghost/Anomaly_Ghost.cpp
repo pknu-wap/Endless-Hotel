@@ -7,14 +7,14 @@ void AAnomaly_Ghost::SetAnomalyActivate()
 {
     Super::SetAnomalyActivate();
 
-    switch (AnomalyID)
+    switch (AnomalyName)
     {
-    case 28:
-        AnomalyAction = [](AAnomaly_Object_Base* Obj)
+    case EAnomalyName::Ghost:
+        AnomalyAction = ([this](AAnomaly_Object_Base* Obj)
             {
-                Cast<AAnomaly_Object_Ghost>(Obj)->bTriggerEnabled = true;
-            };
+                   Cast<AAnomaly_Object_Ghost>(Obj)->bTriggerEnabled = true;
+            });
+        ScheduleAnomaly();
         break;
     }
-    StartAnomalyAction();
 }

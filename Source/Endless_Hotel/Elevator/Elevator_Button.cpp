@@ -8,6 +8,7 @@
 #include <Components/WidgetComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetSystemLibrary.h>
 
 #define LOCTEXT_NAMESPACE "Elevator"
 
@@ -67,27 +68,55 @@ void AElevator_Button::ShowInteractWidget_Implementation(bool bIsShow)
 
 void AElevator_Button::MoveToButtonPlayer()
 {
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	FVector3d FixedLocation = Player->GetActorLocation();
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (!Player) return;
 
+    FVector ButtonForward = GetActorForwardVector();
 
-	FixedLocation.X = PlayerLocationButton.X;
-	FixedLocation.Y = PlayerLocationButton.Y;
-	Player->SetActorLocation(FixedLocation);
+    FVector TargetLocation = GetActorLocation() + (ButtonForward * PlayerToElevatorDistance);
 
-	if (AController* Controller = Player->GetController())
-	{
-		if (AEHPlayerController* EHPC = Cast<AEHPlayerController>(Controller))
-		{
-			EHPC->SetControlRotation(PlayerRotationButton);
-			EHPC->OnButtonPressStarted();
-			FTimerHandle ButtonAnim;
-			GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]() mutable
-				{
-					EHPC->OnButtonPressCompleted();
-				}), 2.0f, false);
-		}
-	}
+    TargetLocation.Z = Player->GetActorLocation().Z;
+
+    FRotator TargetRotation = (-ButtonForward).Rotation();
+    TargetRotation.Pitch = 0.0f;
+    TargetRotation.Roll = 0.0f;
+
+    UKismetSystemLibrary::MoveComponentTo(
+        Player->GetRootComponent(),
+        TargetLocation,
+        TargetRotation,
+        true,
+        true,
+        0.5f,
+        false,
+        EMoveComponentAction::Move,
+        FLatentActionInfo(0, FMath::Rand(), TEXT("OnMoveCompleted"), this)
+    );
+
+    Player->GetController()->SetIgnoreMoveInput(true);
+}
+
+void AElevator_Button::OnMoveCompleted()
+{
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (!Player) return;
+
+    if (AController* Controller = Player->GetController())
+    {
+        Controller->SetControlRotation(Player->GetActorRotation());
+
+        if (AEHPlayerController* EHPC = Cast<AEHPlayerController>(Controller))
+        {
+            EHPC->OnButtonPressStarted();
+
+            FTimerHandle ButtonAnim;
+            GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]()
+                {
+                    EHPC->OnButtonPressCompleted();
+                    EHPC->GetPawn()->GetController()->SetIgnoreMoveInput(false);
+                }), 2.0f, false);
+        }
+    }
 }
 #pragma endregion
 
