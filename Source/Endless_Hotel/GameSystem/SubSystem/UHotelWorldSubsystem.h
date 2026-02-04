@@ -16,5 +16,5 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	FVector PlayerStartLocation = FVector(-1360, 570, 710);
+	FVector PlayerStartLocation = FVector(-1200, 900, 680);
 };

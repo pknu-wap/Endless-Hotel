@@ -71,6 +71,8 @@ protected:
 public:
 	FDieDelegate DieDelegate;
 
+	bool bIsDead = false;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TMap<EDeathReason, TObjectPtr<class UAnimMontage>> DeathAnims;
