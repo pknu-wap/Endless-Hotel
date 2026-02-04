@@ -24,7 +24,7 @@ void UEHCameraComponent::BeginPlay()
 	SettingEyeEffect();
 
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	AElevator::ElevatorDelegate.Broadcast(true);	
+	StartEyeEffect(true);
 }
 
 #pragma endregion
