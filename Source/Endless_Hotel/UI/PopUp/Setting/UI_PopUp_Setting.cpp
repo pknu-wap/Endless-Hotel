@@ -34,6 +34,16 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
 }
 
+void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (bRotateGear)
+	{
+		RotateGear(InDeltaTime);
+	}
+}
+
 #pragma endregion
 
 #pragma region Category
@@ -101,31 +111,32 @@ void UUI_PopUp_Setting::SetHideBoxVisibility(ESlateVisibility Option)
 
 #pragma region Gear
 
-void UUI_PopUp_Setting::RotateGear(float TargetAngle)
+void UUI_PopUp_Setting::StartRotateGear(float Target)
+{
+	TargetAngle = Target;
+	bRotateGear = true;
+}
+
+void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 {
 	const float AddAngle = GetShortestAddAngle(CurrentAngle, TargetAngle);
 	const float FinalAngle = CurrentAngle + AddAngle;
-
-	const float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 	const float RotateSpeed = 90.f;
 
-	GetWorld()->GetTimerManager().SetTimer(AngleHandle, FTimerDelegate::CreateWeakLambda(this, [this, FinalAngle, DeltaSeconds, RotateSpeed]()
-		{
-			FWidgetTransform TargetTrans;
-			CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, DeltaSeconds, RotateSpeed);
-			TargetTrans.Angle = CurrentAngle;
+	FWidgetTransform TargetTrans;
+	CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, InDeltaTime, RotateSpeed);
+	TargetTrans.Angle = CurrentAngle;
 
-			UI_Gear->SetRenderTransform(TargetTrans);
+	UI_Gear->SetRenderTransform(TargetTrans);
 
-			if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
-			{
-				CurrentAngle = FinalAngle;
-				TargetTrans.Angle = CurrentAngle;
-				UI_Gear->SetRenderTransform(TargetTrans);
+	if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
+	{
+		CurrentAngle = FinalAngle;
+		TargetTrans.Angle = CurrentAngle;
+		UI_Gear->SetRenderTransform(TargetTrans);
 
-				GetWorld()->GetTimerManager().ClearTimer(AngleHandle);
-			}
-		}), DeltaSeconds, true);
+		bRotateGear = false;
+	}
 }
 
 const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)

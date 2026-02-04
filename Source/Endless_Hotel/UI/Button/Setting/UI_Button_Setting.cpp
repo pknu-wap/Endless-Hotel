@@ -38,7 +38,7 @@ void UUI_Button_Setting::Click_Button()
 	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
 	SettingWidget->ShowCategoryOption(SettingInfo.Enum);
 	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
-	SettingWidget->RotateGear(SettingInfo.Angle);
+	SettingWidget->StartRotateGear(SettingInfo.Angle);
 
 	HighlightSetting.Broadcast(SettingInfo);
 }
