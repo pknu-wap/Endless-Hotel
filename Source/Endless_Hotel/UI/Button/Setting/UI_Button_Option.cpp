@@ -165,24 +165,24 @@ void UUI_Button_Option::SetOption_Window()
 void UUI_Button_Option::SetOption_Aspect()
 {
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	//auto* CC = Player->Camera;
+	auto* CC = Player->GetCamera();
 
 	switch (OptionInfo.Value)
 	{
 	case EOptionValue::W16H9:
-		//CC->SetAspectRatio(16.0f / 9.0f);
+		CC->SetAspectRatio(16.0f / 9.0f);
 		break;
 
 	case EOptionValue::W21H9:
-		//CC->SetAspectRatio(21.0f / 9.0f);
+		CC->SetAspectRatio(21.0f / 9.0f);
 		break;
 
 	case EOptionValue::W4H3:
-		//CC->SetAspectRatio(4.0f / 3.0f);
+		CC->SetAspectRatio(4.0f / 3.0f);
 		break;
 
 	case EOptionValue::W16H10:
-		//CC->SetAspectRatio(16.0f / 10.0f);
+		CC->SetAspectRatio(16.0f / 10.0f);
 		break;
 	}
 }
