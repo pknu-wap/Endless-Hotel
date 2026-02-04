@@ -18,10 +18,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* KeyMesh1;
+	TObjectPtr <class UStaticMeshComponent> KeyMesh1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* KeyMesh2;
+	TObjectPtr <class UStaticMeshComponent> KeyMesh2;
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category = "Anomaly Data")
