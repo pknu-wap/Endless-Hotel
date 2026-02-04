@@ -15,6 +15,7 @@ void AAnomaly_ShelfBook::SetAnomalyActivate()
 	case EAnomalyName::Shelf_Book:
 		AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
+				Cast<AAnomaly_Object_ShelfBook>(Object)->FallSound();
 			});
 		ActiveTrigger();
 		break;
