@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "UI/UI_Base.h"
-#include "UI_PopUp_Base.generated.h"
+#include <CoreMinimal.h>
+#include <UI_PopUp_Base.generated.h>
 
 UCLASS(Abstract, Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Base : public UUI_Base
@@ -25,17 +25,10 @@ protected:
 
 protected:
 	UFUNCTION()
-	virtual void Input_Enter() PURE_VIRTUAL(UUI_PopUp_Base::Input_Enter, );
+	virtual void Input_Enter() PURE_VIRTUAL(ThisClass::Input_Enter, );
 
 	UFUNCTION()
 	virtual void Input_ESC();
-
-#pragma endregion
-
-#pragma region Highlight
-
-public:
-	virtual void HighlightButton(UPanelWidget* ButtonGroup, const uint8& TargetIndex);
 
 #pragma endregion
 

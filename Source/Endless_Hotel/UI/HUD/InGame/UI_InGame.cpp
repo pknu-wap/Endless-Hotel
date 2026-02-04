@@ -7,7 +7,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Elevator/Elevator.h"
 #include <Components/Image.h>
-#include <Components/CanvasPanelSlot.h>
+#include <Components/BackgroundBlur.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -25,26 +25,14 @@ void UUI_InGame::NativeOnInitialized()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
-void UUI_InGame::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-	SetBrightness();
-}
-
 #pragma endregion
 
 #pragma region Crosshair
 
 void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 {
-	UCanvasPanelSlot* CPSlot = Cast<UCanvasPanelSlot>(Crosshair->Slot);
-
-	FSlateBrush Brush;
-
 	if (bCanInteract)
 	{
-		Brush.SetResourceObject(Crosshair_Interact);
 		if (!bIsCrosshairInteractMode)
 		{
 			PlayAnimation(WidgetAnim_Interact);
@@ -53,16 +41,12 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	}
 	else
 	{
-		Brush.SetResourceObject(Crosshair_Normal);
-		Crosshair->SetRenderOpacity(0.3f);
 		if (bIsCrosshairInteractMode)
 		{
 			PlayAnimation(WidgetAnim_Normal);
 			bIsCrosshairInteractMode = false;
 		}
 	}
-
-	Crosshair->SetBrush(Brush);
 }
 
 void UUI_InGame::ShowCrosshair(bool bIsShow)
@@ -73,7 +57,7 @@ void UUI_InGame::ShowCrosshair(bool bIsShow)
 	}
 	else
 	{
-		Crosshair->SetVisibility(ESlateVisibility::Hidden);
+		Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -81,11 +65,68 @@ void UUI_InGame::ShowCrosshair(bool bIsShow)
 
 #pragma region Brightness
 
-void UUI_InGame::SetBrightness()
+void UUI_InGame::SetBrightness(float Value)
 {
-	FLinearColor ColorValue = Image_Brightness->GetColorAndOpacity();
-	ColorValue.A = (1 - USaveManager::LoadSettingData().Value_Brightness) * 0.6f;
-	Image_Brightness->SetColorAndOpacity(ColorValue);
+	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
+	Color.A = (1 - Value) * 0.8f;
+	Image_Brightness->SetColorAndOpacity(Color);
+}
+
+#pragma endregion
+
+#pragma region Blur
+
+void UUI_InGame::AnomalyBlur()
+{
+	const float TargetStrength = 20;
+	float CurrentStrength = 0;
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
+		{
+			CurrentStrength += 0.1f;
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (CurrentStrength >= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+		}), 0.01f, true);
+}
+
+void UUI_InGame::EyeEffectBlur(bool bIsStart)
+{
+	float TargetStrength = 0;
+	float CurrentStrength = 20;
+
+	if (!bIsStart)
+	{
+		TargetStrength = 20;
+		CurrentStrength = 0;
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart, TargetStrength, CurrentStrength]() mutable
+		{
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (bIsStart)
+			{
+				CurrentStrength -= 0.05f;
+
+				if (CurrentStrength <= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
+			}
+			else
+			{
+				CurrentStrength += 0.05f;
+
+				if (CurrentStrength >= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
+			}
+		}), 0.01f, true);
 }
 
 #pragma endregion

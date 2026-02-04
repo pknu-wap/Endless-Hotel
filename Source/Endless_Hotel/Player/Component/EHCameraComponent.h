@@ -50,9 +50,6 @@ protected:
 	TObjectPtr<class UTimelineComponent> Timeline_EyeEffect;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
-	TSubclassOf<class UUI_Base> UI_Blur;
-
-	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> Curve_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")

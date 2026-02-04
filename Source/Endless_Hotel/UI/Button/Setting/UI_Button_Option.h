@@ -37,7 +37,7 @@ protected:
 
 #pragma region Option
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Setting|Option")
 	FOptionInfo OptionInfo;
 
@@ -57,9 +57,10 @@ protected:
 	UFUNCTION()
 	void Highlight(FOptionInfo TargetInfo);
 
-protected:
+public:
 	static FHighlightOption HighlightOption;
 
+protected:
 	UPROPERTY(EditAnywhere, Category = "Highlight")
 	FLinearColor Color_Highlight;
 
@@ -87,6 +88,28 @@ protected:
 	void SetOption_Texture();
 	void SetOption_PostProcessing();
 	void SetOption_Shading();
+
+#pragma endregion
+
+#pragma region Gameplay
+
+protected:
+	void SetOption_AnomalyOverlap();
+
+#pragma endregion
+
+#pragma region System
+
+protected:
+	void PopUpOption_ResetNote();
+	void PopUpOption_ResetSetting();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting|System")
+	TSubclassOf<class UUI_Base> UI_ResetNote;
+
+	UPROPERTY(EditAnywhere, Category = "Setting|System")
+	TSubclassOf<class UUI_Base> UI_ResetSetting;
 
 #pragma endregion
 

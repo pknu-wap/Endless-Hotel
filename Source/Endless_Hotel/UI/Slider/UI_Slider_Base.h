@@ -20,7 +20,10 @@ protected:
 
 #pragma region Slider
 
-protected:
+public:
+	class USlider* GetSlider() { return Slider_Default; }
+
+public:
 	UFUNCTION()
 	virtual void Slide_Slider(float Value);
 
@@ -33,6 +36,14 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Value;
+
+#pragma endregion
+
+#pragma region CheckBox
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_CheckBox_Setting> CheckBox_Off;
 
 #pragma endregion
 
