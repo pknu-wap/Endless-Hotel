@@ -32,6 +32,9 @@ protected:
 
 #pragma region Component
 
+public:
+	class UCameraComponent* GetCamera() { return Camera; }
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UEHCameraComponent> Component_Camera;
@@ -70,6 +73,8 @@ protected:
 
 public:
 	FDieDelegate DieDelegate;
+
+	bool bIsDead = false;
 
 protected:
 	UPROPERTY(EditAnywhere)

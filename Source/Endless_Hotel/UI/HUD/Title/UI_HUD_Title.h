@@ -92,8 +92,15 @@ protected:
 #pragma region Setting
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Setting")
+	UPROPERTY(EditAnywhere, Category = "Title|Setting")
 	TSubclassOf<class UUI_Base> UI_Setting;
+
+#pragma endregion
+
+#pragma region Quit
+
+	UPROPERTY(EditAnywhere, Category = "Title|Quit")
+	TSubclassOf<class UUI_Base> UI_QuitCheck;
 
 #pragma endregion
 

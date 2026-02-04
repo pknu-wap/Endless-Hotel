@@ -38,4 +38,11 @@ protected:
 
 #pragma endregion
 
+#pragma region Highlight
+
+public:
+	void HighlightOptions();
+
+#pragma endregion
+
 };

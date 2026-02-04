@@ -15,7 +15,6 @@ class ENDLESS_HOTEL_API UUI_InGame : public UUI_HUD_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
 
 #pragma endregion
 
@@ -27,13 +26,7 @@ protected:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Crosshair;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Crosshair_Normal;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTexture2D> Crosshair_Interact;
+	TObjectPtr<class UImage> Image_Crosshair_Center;
 
 protected:
 	UFUNCTION()
@@ -55,13 +48,27 @@ protected:
 
 #pragma region Brightness
 
-protected:
-	UFUNCTION()
-	void SetBrightness();
+public:
+	void SetBrightness(float Value);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Brightness;
+
+#pragma endregion
+
+#pragma region Blur
+
+public:
+	void AnomalyBlur();
+	void EyeEffectBlur(bool bIsStart);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBackgroundBlur> BackBlur;
+
+	FTimerHandle BlurHandle;
+	const float EyeEffectValue = 40.f;
 
 #pragma endregion
 

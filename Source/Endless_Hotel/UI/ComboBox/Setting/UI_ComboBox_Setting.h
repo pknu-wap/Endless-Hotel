@@ -29,7 +29,7 @@ protected:
 
 #pragma region Option
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Setting|Option")
 	EOptionCategory OptionCategory;
 
@@ -46,6 +46,13 @@ protected:
 
 protected:
 	void SetOption_Grapic(FName OptionValue);
+
+#pragma endregion
+
+#pragma region System
+
+protected:
+	void SetOption_Language(FName OptionValue);
 
 #pragma endregion
 
