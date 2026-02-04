@@ -7,6 +7,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Elevator/Elevator.h"
 #include <Components/Image.h>
+#include <Components/BackgroundBlur.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -69,6 +70,63 @@ void UUI_InGame::SetBrightness(float Value)
 	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
 	Color.A = (1 - Value) * 0.8f;
 	Image_Brightness->SetColorAndOpacity(Color);
+}
+
+#pragma endregion
+
+#pragma region Blur
+
+void UUI_InGame::AnomalyBlur()
+{
+	const float TargetStrength = 20;
+	float CurrentStrength = 0;
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
+		{
+			CurrentStrength += 0.1f;
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (CurrentStrength >= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+		}), 0.01f, true);
+}
+
+void UUI_InGame::EyeEffectBlur(bool bIsStart)
+{
+	float TargetStrength = 0;
+	float CurrentStrength = 20;
+
+	if (!bIsStart)
+	{
+		TargetStrength = 20;
+		CurrentStrength = 0;
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart, TargetStrength, CurrentStrength]() mutable
+		{
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (bIsStart)
+			{
+				CurrentStrength -= 0.05f;
+
+				if (CurrentStrength <= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
+			}
+			else
+			{
+				CurrentStrength += 0.05f;
+
+				if (CurrentStrength >= TargetStrength)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+				}
+			}
+		}), 0.01f, true);
 }
 
 #pragma endregion

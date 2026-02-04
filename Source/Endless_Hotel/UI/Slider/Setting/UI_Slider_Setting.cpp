@@ -7,6 +7,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Sound/SoundController.h"
 #include <Sound/SoundClass.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/Image.h>
@@ -31,31 +32,33 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
 	FSaveData_Setting& Data = UI_Setting->Data_Setting;
 
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Master:
 		Data.Master = Value;
-		SC_Target->Properties.Volume = Value * Data.EnableMaster;
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableMaster);
 		break;
 
 	case EOptionCategory::BGM:
 		Data.BGM = Value;
-		SC_Target->Properties.Volume = Value * Data.EnableBGM;
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableBGM);
 		break;
 
 	case EOptionCategory::SFX:
 		Data.SFX = Value;
-		SC_Target->Properties.Volume = Value * Data.EnableSFX;
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableSFX);
 		break;
 
 	case EOptionCategory::Voice:
 		Data.Voice = Value;
-		SC_Target->Properties.Volume = Value * Data.EnableVoice;
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableVoice);
 		break;
 
 	case EOptionCategory::Interface:
 		Data.Interface = Value;
-		SC_Target->Properties.Volume = Value * Data.EnableInterface;
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableInterface);
 		break;
 
 	case EOptionCategory::Sensitivity:
@@ -101,40 +104,82 @@ void UUI_Slider_Setting::Click_CheckBox(bool bIsCheck)
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
 	FSaveData_Setting& Data = UI_Setting->Data_Setting;
 
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Master:
 	{
-		if (bIsCheck) Data.EnableMaster = 1;
-		else Data.EnableMaster = 0;
+		if (bIsCheck)
+		{
+			Data.EnableMaster = 1;
+			SoundCon->SetSoundClassValue(ESoundClassType::Master, Data.Master);
+		}
+		else
+		{
+			Data.EnableMaster = 0;
+			SoundCon->SetSoundClassValue(ESoundClassType::Master, 0);
+		}
 		break;
 	}
 
 	case EOptionCategory::BGM:
 	{
-		if (bIsCheck) Data.EnableBGM = 1;
-		else Data.EnableBGM = 0;
+		if (bIsCheck)
+		{
+			Data.EnableBGM = 1;
+			SoundCon->SetSoundClassValue(ESoundClassType::BGM, Data.BGM);
+		}
+		else
+		{
+			Data.EnableBGM = 0;
+			SoundCon->SetSoundClassValue(ESoundClassType::BGM, 0);
+		}
 		break;
 	}
 
 	case EOptionCategory::SFX:
 	{
-		if (bIsCheck) Data.EnableSFX = 1;
-		else Data.EnableSFX = 0;
+		if (bIsCheck)
+		{
+			Data.EnableSFX = 1;
+			SoundCon->SetSoundClassValue(ESoundClassType::SFX, Data.SFX);
+		}
+		else
+		{
+			Data.EnableSFX = 0;
+			SoundCon->SetSoundClassValue(ESoundClassType::SFX, 0);
+		}
 		break;
 	}
 
 	case EOptionCategory::Voice:
 	{
-		if (bIsCheck) Data.EnableVoice = 1;
-		else Data.EnableVoice = 0;
+		if (bIsCheck)
+		{
+			Data.EnableVoice = 1;
+			SoundCon->SetSoundClassValue(ESoundClassType::Voice, Data.Voice);
+		}
+		else
+		{
+			Data.EnableVoice = 0;
+			SoundCon->SetSoundClassValue(ESoundClassType::Voice, 0);
+		}
 		break;
 	}
 
 	case EOptionCategory::Interface:
 	{
-		if (bIsCheck) Data.EnableInterface = 1;
-		else Data.EnableInterface = 0;
+		if (bIsCheck)
+		{
+			Data.EnableInterface = 1;
+			SoundCon->SetSoundClassValue(ESoundClassType::UI, Data.Interface);
+		}
+		else
+		{
+			Data.EnableInterface = 0;
+			SoundCon->SetSoundClassValue(ESoundClassType::UI, 0);
+		}
 		break;
 	}
 	}

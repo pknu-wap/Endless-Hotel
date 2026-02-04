@@ -2,7 +2,7 @@
 
 #include "Player/Component/EHCameraComponent.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Blur/UI_PopUp_Blur.h"
+#include "UI/HUD/InGame/UI_InGame.h"
 #include "Sound/SoundController.h"
 #include "Elevator/Elevator.h"
 #include "Anomaly/Base/Anomaly_Base.h"
@@ -34,19 +34,19 @@ void UEHCameraComponent::BeginPlay()
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
 	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_Base* BlurWidget = UICon->OpenWidget(UI_Blur);
+	UUI_InGame* UI_InGame = Cast<UUI_InGame>(UICon->GetCurrentBaseWidget());
 
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
 
 	if (bIsOpen)
 	{
-		Cast<UUI_PopUp_Blur>(BlurWidget)->EyeEffectBlur(true);
+		UI_InGame->EyeEffectBlur(true);
 		Timeline_EyeEffect->SetFloatCurve(Curve_EyeOpen, FName("Eye"));
 	}
 	else
 	{
-		Cast<UUI_PopUp_Blur>(BlurWidget)->EyeEffectBlur(false);
+		UI_InGame->EyeEffectBlur(false);
 		Timeline_EyeEffect->SetFloatCurve(Curve_EyeClose, FName("Eye"));
 	}
 

@@ -57,6 +57,21 @@ protected:
 
 #pragma endregion
 
+#pragma region Blur
+
+public:
+	void AnomalyBlur();
+	void EyeEffectBlur(bool bIsStart);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBackgroundBlur> BackBlur;
+
+	FTimerHandle BlurHandle;
+	const float EyeEffectValue = 40.f;
+
+#pragma endregion
+
 #pragma region Demo
 
 protected:

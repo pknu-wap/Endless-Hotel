@@ -34,14 +34,6 @@ public:
 
 #pragma endregion
 
-#pragma region Sound
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|Sound")
-	TObjectPtr<class USoundClass> SC_Target;
-
-#pragma endregion
-
 #pragma region CheckBox
 
 public:
