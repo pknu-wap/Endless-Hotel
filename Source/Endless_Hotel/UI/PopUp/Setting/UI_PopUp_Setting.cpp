@@ -1,6 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
+#include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
@@ -14,6 +16,32 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+}
+
+void UUI_PopUp_Setting::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	Data_Setting = USaveManager::LoadSettingData();
+
+	UI_Screen->HighlightOptions();
+	UI_Grapic->HighlightOptions();
+	UI_Sound->HighlightOptions();
+	UI_Control->HighlightOptions();
+	UI_Gameplay->HighlightOptions();
+	UI_System->HighlightOptions();
+
+	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (bRotateGear)
+	{
+		RotateGear(InDeltaTime);
+	}
 }
 
 #pragma endregion
@@ -35,11 +63,11 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 	UI_Grapic->SetVisibility(ESlateVisibility::Hidden);
 	UI_Sound->SetVisibility(ESlateVisibility::Hidden);
 	UI_Control->SetVisibility(ESlateVisibility::Hidden);
-	//UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
-	//UI_System->SetVisibility(ESlateVisibility::Hidden);
+	UI_Gameplay->SetVisibility(ESlateVisibility::Hidden);
+	UI_System->SetVisibility(ESlateVisibility::Hidden);
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
-
+	
 	switch (Target)
 	{
 	case ESettingCategory::Screen:
@@ -47,9 +75,14 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		break;
 
 	case ESettingCategory::Grapic:
+	{
 		UI_Grapic->SetVisibility(ESlateVisibility::Visible);
-		Border_HideBox->SetVisibility(ESlateVisibility::Visible); // 나중에 복원 기능 추가 후 변경 예정
+		if (Data_Setting.Grapic != EOptionValue::Custom)
+		{
+			Border_HideBox->SetVisibility(ESlateVisibility::Visible);
+		}
 		break;
+	}
 
 	case ESettingCategory::Sound:
 		UI_Sound->SetVisibility(ESlateVisibility::Visible);
@@ -59,13 +92,13 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		UI_Control->SetVisibility(ESlateVisibility::Visible);
 		break;
 
-	/*case ESettingCategory::Gameplay:
+	case ESettingCategory::Gameplay:
 		UI_Gameplay->SetVisibility(ESlateVisibility::Visible);
 		break;
 
 	case ESettingCategory::System:
 		UI_System->SetVisibility(ESlateVisibility::Visible);
-		break;*/
+		break;
 	}
 }
 
@@ -78,31 +111,32 @@ void UUI_PopUp_Setting::SetHideBoxVisibility(ESlateVisibility Option)
 
 #pragma region Gear
 
-void UUI_PopUp_Setting::RotateGear(float TargetAngle)
+void UUI_PopUp_Setting::StartRotateGear(float Target)
+{
+	TargetAngle = Target;
+	bRotateGear = true;
+}
+
+void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 {
 	const float AddAngle = GetShortestAddAngle(CurrentAngle, TargetAngle);
 	const float FinalAngle = CurrentAngle + AddAngle;
-
-	const float DeltaSeconds = GetWorld()->GetDeltaSeconds();
 	const float RotateSpeed = 90.f;
 
-	GetWorld()->GetTimerManager().SetTimer(AngleHandle, FTimerDelegate::CreateWeakLambda(this, [this, FinalAngle, DeltaSeconds, RotateSpeed]()
-		{
-			FWidgetTransform TargetTrans;
-			CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, DeltaSeconds, RotateSpeed);
-			TargetTrans.Angle = CurrentAngle;
+	FWidgetTransform TargetTrans;
+	CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, InDeltaTime, RotateSpeed);
+	TargetTrans.Angle = CurrentAngle;
 
-			UI_Gear->SetRenderTransform(TargetTrans);
+	UI_Gear->SetRenderTransform(TargetTrans);
 
-			if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
-			{
-				CurrentAngle = FinalAngle;
-				TargetTrans.Angle = CurrentAngle;
-				UI_Gear->SetRenderTransform(TargetTrans);
+	if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
+	{
+		CurrentAngle = FinalAngle;
+		TargetTrans.Angle = CurrentAngle;
+		UI_Gear->SetRenderTransform(TargetTrans);
 
-				GetWorld()->GetTimerManager().ClearTimer(AngleHandle);
-			}
-		}), DeltaSeconds, true);
+		bRotateGear = false;
+	}
 }
 
 const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
@@ -127,7 +161,11 @@ const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
 
 void UUI_PopUp_Setting::Click_Apply()
 {
-	UGameUserSettings::GetGameUserSettings()->ApplySettings(false);
+	auto* SettingHandle = UGameUserSettings::GetGameUserSettings();
+	SettingHandle->SaveSettings();
+	SettingHandle->ApplySettings(false);
+
+	USaveManager::SaveSettingData(Data_Setting);
 
 	Input_ESC();
 }

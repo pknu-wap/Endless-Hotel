@@ -20,6 +20,7 @@ void UUI_Slider_Base::NativeOnInitialized()
 
 void UUI_Slider_Base::Slide_Slider(float Value)
 {
+	Slider_Default->SetValue(Value);
 	ProgressBar_Left->SetPercent(Value);
 	Text_Value->SetText(FText::FromString(FString::FromInt(Value * 100)));
 }

@@ -4,10 +4,11 @@
 
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "Type/UI/Type_UI_Setting.h"
+#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <UI_PopUp_Setting.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
+UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
@@ -16,6 +17,8 @@ class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 #pragma endregion
 
@@ -38,22 +41,22 @@ public:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_Screen;
+	TObjectPtr<class UUI_PopUp_Option> UI_Screen;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_Grapic;
+	TObjectPtr<class UUI_PopUp_Option> UI_Grapic;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_Sound;
+	TObjectPtr<class UUI_PopUp_Option> UI_Sound;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_Control;
-
-	/*UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_Gameplay;
+	TObjectPtr<class UUI_PopUp_Option> UI_Control;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_Base> UI_System;*/
+	TObjectPtr<class UUI_PopUp_Option> UI_Gameplay;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_PopUp_Option> UI_System;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBorder> Border_HideBox;
@@ -63,17 +66,27 @@ protected:
 #pragma region Gear
 
 public:
-	void RotateGear(float TargetAngle);
+	void StartRotateGear(float Target);
 
 protected:
+	void RotateGear(float InDeltaTime);
 	const float GetShortestAddAngle(int32 Cur, int32 Tar);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUserWidget> UI_Gear;
 
-	FTimerHandle AngleHandle;
+	bool bRotateGear = false;
+
 	float CurrentAngle = 0;
+	float TargetAngle = 0;
+
+#pragma endregion
+
+#pragma region Save
+
+public:
+	FSaveData_Setting Data_Setting;
 
 #pragma endregion
 
