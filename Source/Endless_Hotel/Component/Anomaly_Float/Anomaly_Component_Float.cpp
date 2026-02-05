@@ -70,6 +70,24 @@ void UAnomaly_Component_Float::StopFloating()
     {
         TargetMesh->SetSimulatePhysics(true);
         TargetMesh->SetEnableGravity(true);
+
+        TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+
+        GetWorld()->GetTimerManager().SetTimer(FreezeTimerHandle, this, &UAnomaly_Component_Float::FreezePhysics, 2.f, false);
+    }
+}
+
+void UAnomaly_Component_Float::FreezePhysics()
+{
+    GetWorld()->GetTimerManager().ClearTimer(FreezeTimerHandle);
+
+    if (TargetMesh)
+    {
+        TargetMesh->SetSimulatePhysics(false);
+        TargetMesh->SetEnableGravity(false);
+
+        TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+        TargetMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
     }
 }
 

@@ -4,6 +4,9 @@
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Components/WidgetComponent.h"   
 #include "Component/LookAt/LookAtComponent.h"
+#include "Component/Anomaly_Component_Restore.h"
+#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include <EngineUtils.h>
 
 #pragma region Base
 
@@ -13,16 +16,48 @@ AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectIni
     : Super(ObjectInitializer)
 {
     bIsFloating = false;
+    bSolved = false;   
 }
 
 void AAnomaly_Object_Float::BeginPlay()
 {
     Super::BeginPlay();
+    AffectedActors.Empty();
+    RestoredActors.Empty();
 }
 
 #pragma endregion
 
 #pragma region Floating
+
+void AAnomaly_Object_Float::SearchAndStart()
+{
+    for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+    {
+        AActor* Target = *It;
+        auto* FloatComp = Target->FindComponentByClass<UAnomaly_Component_Float>();
+        auto* RestoreComp = Target->FindComponentByClass<UAnomaly_Component_Restore>();
+
+        if (FloatComp && RestoreComp)
+        {
+            AffectedActors.Add(Target);
+            FloatComp->StartFloating();
+
+            if (auto* BaseObj = Cast<AAnomaly_Object_Base>(Target))
+            {
+                BaseObj->InteractAction = [this, Target, FloatComp, RestoreComp]()
+                    {
+                        if (RestoredActors.Contains(Target) || FloatComp->bIsFloating) return;
+                        FloatComp->StopFloating();
+                        RestoreComp->StartRestoring(2.5f);
+
+                        RestoredActors.Add(Target);
+                        CheckAllRestored();
+                    };
+            }
+        }
+    }
+}
 
 void AAnomaly_Object_Float::StartFloating()
 {
@@ -97,4 +132,15 @@ void AAnomaly_Object_Float::StopFloating()
 //        };
 //}
 
+void AAnomaly_Object_Float::CheckAllRestored()
+{
+    if (AffectedActors.Num() > 0 && RestoredActors.Num() >= AffectedActors.Num())
+    {
+
+        bSolved = true;
+
+        // 디버그 로그 (확인용)
+        UE_LOG(LogTemp, Warning, TEXT("Anomaly Float Solved! All objects restored."));
+    }
+}
 #pragma endregion
