@@ -13,19 +13,8 @@
 AAnomaly_Object_ShelfBook::AAnomaly_Object_ShelfBook(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
-
-	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	TriggerBox->SetupAttachment(Root);
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	TriggerBox->SetGenerateOverlapEvents(true);
-	TriggerBox->InitBoxExtent(FVector(100.f, 100.f, 100.f));
-	TriggerBox->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Object_ShelfBook::OnBooksFallRange);
-
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->SetupAttachment(Root);
+	AC->SetupAttachment(RootComponent);
 	AC->bAutoActivate = false;
 }
 
@@ -38,9 +27,6 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 
 	for (UStaticMeshComponent* Comp : MeshComps)
 	{
-		if (!Comp)
-			continue;
-
 		if (!Comp->ComponentHasTag(TEXT("Book")))
 			continue;
 
@@ -69,28 +55,8 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 
 #pragma region Fall
 
-void AAnomaly_Object_ShelfBook::ActiveTrigger()
+void AAnomaly_Object_ShelfBook::FallSound()
 {
-	if (TriggerBox)
-	{
-		TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-}
-
-void AAnomaly_Object_ShelfBook::OnBooksFallRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (bIsFallen)
-	{
-		return;
-	}
-
-	bIsFallen = true;
-
-	if (TriggerBox)
-	{
-		TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-
 	if (AC && Sound_BookDrop)
 	{
 		if (!AC->IsPlaying())
@@ -99,16 +65,16 @@ void AAnomaly_Object_ShelfBook::OnBooksFallRange(UPrimitiveComponent* Overlapped
 			AC->Play();
 		}
 	}
-	BooksFall();
+	ShelfBooksFall();
 }
 
-void AAnomaly_Object_ShelfBook::BooksFall()
+void AAnomaly_Object_ShelfBook::ShelfBooksFall()
 {
 	for (auto& Book : BookComps)
 	{
 		if (!Book)
 			continue;
-
+		
 		Book->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 		Book->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		Book->SetCollisionProfileName(TEXT("PhysicsActor"));

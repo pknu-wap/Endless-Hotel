@@ -62,4 +62,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AAnomaly_Object_Door> TriggerTargetDoor;
+
+#pragma endregion
 };
