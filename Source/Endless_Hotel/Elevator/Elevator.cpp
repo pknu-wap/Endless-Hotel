@@ -49,8 +49,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
 	Entrance->SetupAttachment(ElevatorSceneRoot);
 
-	ElevatorButton = CreateDefaultSubobject<AElevator_Button>(TEXT("ElevatorButton"));
-
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
 	ElevatorLight->SetupAttachment(Car);
 
@@ -108,9 +106,6 @@ void AElevator::BeginPlay()
 	// 4) Delegate Setup
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
-
-	// 5) Buttons
-	ElevatorButton->SetOwnerElevator(this);
 
 	// 6) MoveElevator
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
