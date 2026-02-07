@@ -6,7 +6,7 @@
 #include <Components/ActorComponent.h>
 #include <EHComponent.generated.h>
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom))
 class ENDLESS_HOTEL_API UEHComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -15,6 +15,17 @@ class ENDLESS_HOTEL_API UEHComponent : public UActorComponent
 
 public:
 	UEHComponent(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Owner
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<AActor> Owner;
 
 #pragma endregion
 
