@@ -2,7 +2,7 @@
 
 #include "Elevator.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Elevator/Elevator_Button.h"
+#include "Actor/Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/StaticMeshComponent.h>
@@ -256,6 +256,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 
 	if (bIsStart)
 	{
+		bIsPlayerInside = true;
 		FTimerHandle MoveHandle;
 		GetWorld()->GetTimerManager().SetTimer(
 			MoveHandle,
@@ -264,6 +265,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 					MoveDoors(true);
 					SetPlayerInputEnabled(true);
 					GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+					bIsPlayerInside = false;
 				}),
 			ElevatorMoveDuration,
 			false

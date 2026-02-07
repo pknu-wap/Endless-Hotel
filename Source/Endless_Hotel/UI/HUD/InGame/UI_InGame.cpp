@@ -5,7 +5,7 @@
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
-#include "Elevator/Elevator.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Kismet/GameplayStatics.h>

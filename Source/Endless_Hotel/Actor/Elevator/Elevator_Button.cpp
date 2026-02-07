@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Elevator/Elevator_Button.h"
-#include "Elevator/Elevator.h"
+#include "Actor/Elevator/Elevator_Button.h"
+#include "Actor/Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
 #include "Player/Controller/EHPlayerController.h"
