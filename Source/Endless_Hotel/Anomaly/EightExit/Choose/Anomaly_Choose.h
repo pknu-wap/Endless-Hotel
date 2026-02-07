@@ -24,4 +24,12 @@ public:
 	virtual void SetAnomalyActivate() override;
 
 #pragma endregion
+
+#pragma region Position
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Position")
+	FVector ChooseStartPos = FVector(-1010, 560, -900);
+
+#pragma endregion
 };

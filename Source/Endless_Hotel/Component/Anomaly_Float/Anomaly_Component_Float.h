@@ -36,18 +36,22 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Anomaly")
     void StopFloating();
 
+    bool bIsFloating;
+
 private:
     void FloatTick();
+    void FreezePhysics();
 
     UPROPERTY()
     TObjectPtr<class UPrimitiveComponent> TargetMesh;
 
     FTimerHandle FloatTickTimer;
     FTimerHandle StopFloatTimer;
+    FTimerHandle FreezeTimerHandle;
 
     FVector FloatVelocity;
     FRotator RotationVelocity;
-    bool bIsFloating;
+    
 
     float TickInterval = 0.016f;
 

@@ -26,14 +26,22 @@ protected:
 public:
     /*virtual void SetInteraction() override;*/
 
+private:
+    UPROPERTY()
+    TArray<AActor*> AffectedActors;
+
+    TSet<AActor*> RestoredActors;
+
+    void CheckAllRestored();
+
 #pragma endregion
 
 #pragma region Floating
 
 public:
+    void SearchAndStart();
     void StartFloating();
     void StopFloating();
-    void RestoreToOrigin();
     void FloatAccelerate();
 
 protected:
