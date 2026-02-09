@@ -3,10 +3,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "GameSystem/SaveGame/SaveManager.h"
-#include "Interact/Interactable.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Component/Interact/InteractComponent.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 #include <Camera/CameraComponent.h>
@@ -24,8 +21,6 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	// Interact
 	bCanInteract = false;
 	TraceDistance = 100.f;
-
-	//UUI_PopUp_Setting::SettingSensitivity.AddDynamic(this, &ThisClass::SetLookSensitivity);
 
 	bCanMove = true;
 	bIsCameraFixed = false;
@@ -310,7 +305,7 @@ void AEHPlayerController::CheckForInteractables()
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetPawn());
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(
+	GetWorld()->LineTraceSingleByChannel(
 		HitResult,
 		Start,
 		End,
@@ -321,38 +316,39 @@ void AEHPlayerController::CheckForInteractables()
 	// Debug line (시각 확인용)
 	// DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.0f, 0, 1.0f);
 
-	if (bHit && HitResult.GetActor())
+	AActor* HitActor = HitResult.GetActor();
+	UInteractComponent* Comp_Interact = nullptr;
+	if (HitActor)
 	{
-		AActor* HitActor = HitResult.GetActor();
+		Comp_Interact = HitActor->FindComponentByClass<UInteractComponent>();
+	}
 
-		if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	if (Comp_Interact)
+	{
+		bCanInteract = true;
+		CurrentInteractActor = HitActor;
+		EHPlayer->CanInteract.Broadcast(true);
+		Comp_Interact->ShowDescriptionWidget(true);
+	}
+	else
+	{
+		if (CurrentInteractActor)
 		{
-			bCanInteract = true;
-			CurrentInteractActor = HitActor;
-			EHPlayer->CanInteract.Broadcast(true);
-			IInteractable::Execute_ShowInteractWidget(CurrentInteractActor, true);
-			return;
+			Comp_Interact->ShowDescriptionWidget(false);
 		}
+		bCanInteract = false;
+		CurrentInteractActor = nullptr;
+		EHPlayer->CanInteract.Broadcast(false);
 	}
-
-	if (CurrentInteractActor)
-	{
-		IInteractable::Execute_ShowInteractWidget(CurrentInteractActor, false);
-	}
-
-	// 트레이스 실패 or 유효하지 않음
-	bCanInteract = false;
-	CurrentInteractActor = nullptr;
-	EHPlayer->CanInteract.Broadcast(false);
 }
 
 void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 {
 	if (!bCanInteract || !CurrentInteractActor) return;
 
-	if (CurrentInteractActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	if (auto* Comp_Interact = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
 	{
-		IInteractable::Execute_Interacted(CurrentInteractActor);
+		Comp_Interact->Interact();
 	}
 }
 
@@ -371,7 +367,7 @@ UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 	return nullptr;
 }
 
-void AEHPlayerController::TurnPlayerLight() 
+void AEHPlayerController::TurnPlayerLight()
 {
 	if (!bCanMove) {
 		return;

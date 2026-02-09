@@ -3,14 +3,11 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Actor/Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
-#include "UI/World/Interact/UI_Interact.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/WidgetComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
-
-#define LOCTEXT_NAMESPACE "Elevator"
 
 #pragma region Base
 
@@ -29,27 +26,19 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 	Down_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_ButtonRing"));
 	Down_ButtonRing->SetupAttachment(Pannel);
 
-	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
-	WC->SetupAttachment(Pannel);
+    Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
+    Component_Widget->SetupAttachment(Pannel);
 
-	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
-}
+    Component_LookAt = CreateDefaultSubobject<ULookAtComponent>(TEXT("Component LookAt"));
 
-void AElevator_Button::BeginPlay()
-{
-	Super::BeginPlay();
-	if (!WC) return;
-	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
-	UI_Interact->SetDescription(LOCTEXT("Key1", "버튼 누르기"));
-
-	LAC->SettingWidgetComponent(WC);
+    Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
 }
 
 #pragma endregion
 
 #pragma region Interact
 
-void AElevator_Button::Interacted_Implementation()
+void AElevator_Button::InteractElevator()
 {
 	if (OwnerElevator->bIsDoorMoving || OwnerElevator->bIsDoorOpened) return;
 	
@@ -59,11 +48,6 @@ void AElevator_Button::Interacted_Implementation()
 		{
 			OwnerElevator->CallElevator();
 		}), 1.0f, false);
-}
-
-void AElevator_Button::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	UI_Interact->ShowDescription(bIsShow);
 }
 
 void AElevator_Button::MoveToButtonPlayer()
@@ -119,5 +103,3 @@ void AElevator_Button::OnMoveCompleted()
     }
 }
 #pragma endregion
-
-#undef LOCTEXT_NAMESPACE

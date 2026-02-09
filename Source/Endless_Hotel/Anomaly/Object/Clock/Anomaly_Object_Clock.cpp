@@ -6,8 +6,6 @@
 
 #pragma region Base
 
-#define LOCTEXT_NAMESPACE "Clock"
-
 AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
@@ -15,8 +13,6 @@ AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectIni
 	SM_Bar->SetupAttachment(Object);
 
 	Timeline_TikTok = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_TikTok"));
-
-	DescriptionText = LOCTEXT("Key1", "알람 끄기");
 
 	AC_TikTok = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_TikTok"));
 	AC_TikTok->SetupAttachment(Object);
@@ -44,19 +40,25 @@ void AAnomaly_Object_Clock::BeginPlay()
 	Timeline_TikTok->PlayFromStart();
 }
 
-#undef LOCTEXT_NAMESPACE
-
 #pragma endregion
 
 #pragma region Interact
 
-void AAnomaly_Object_Clock::Interacted_Implementation()
+void AAnomaly_Object_Clock::SetInteraction()
 {
-	if (bInTime)
+	Super::SetInteraction();
+
+	switch (AnomalyName)
 	{
-		bSolved = true;
-		AC_Ringing->OnAudioFinished.Clear();
-		GetWorld()->GetTimerManager().ClearTimer(TurnOffHandle);
+	case EAnomalyName::Clock_Ringing:
+		Component_Interact->AdditionalAction = ([this]()
+			{
+				if (bInTime)
+				{
+					StopRinging();
+				}
+			});
+		break;
 	}
 }
 
@@ -90,11 +92,14 @@ void AAnomaly_Object_Clock::RingingClock()
 	AC_Ringing->Play();
 	bInTime = true;
 
-	GetWorld()->GetTimerManager().SetTimer(TurnOffHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			bInTime = false;
-			AC_Ringing->OnAudioFinished.Clear();
-		}), 30, false);
+	GetWorld()->GetTimerManager().SetTimer(TurnOffHandle, this, &ThisClass::StopRinging, 30, false);
+}
+
+void AAnomaly_Object_Clock::StopRinging()
+{
+	AC_Ringing->OnAudioFinished.Clear();
+	AC_Ringing->Stop();
+	GetWorld()->GetTimerManager().ClearTimer(TurnOffHandle);
 }
 
 #pragma endregion

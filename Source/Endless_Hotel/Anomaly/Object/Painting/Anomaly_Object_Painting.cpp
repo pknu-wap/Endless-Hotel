@@ -2,7 +2,6 @@
 
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "UI/Miscellaneous/PaintingBlur/UI_PaintingBlur.h"
-#include "Component/AnomalyInteract/Painting/PaintingRotate_Interact.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -32,10 +31,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
 	Widget_PaintingBlur->SetupAttachment(RootComponent);
-
-	/*RotatePainting = CreateDefaultSubobject<UPaintingRotate_Interact>(TEXT("RotatePainting"));*/
-
-	bSolved = false;
 }
 
 #pragma endregion
@@ -126,18 +121,10 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 void AAnomaly_Object_Painting::SetInteraction()
 {
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	default:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_Painting::InteractRotate();
-			});
-		break;
-	}
+	Component_Interact->AdditionalAction = ([this]()
+		{
+			InteractRotate();
+		});
 }
 
 void AAnomaly_Object_Painting::InteractRotate()

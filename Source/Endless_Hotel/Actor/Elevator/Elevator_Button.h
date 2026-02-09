@@ -2,10 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Actor/EHActor.h"
-#include "Interact/Interactable.h"
-#include "Elevator_Button.generated.h"
+#include <CoreMinimal.h>
+#include <Elevator_Button.generated.h>
 
 #pragma region Declare
 
@@ -14,7 +13,7 @@ class AElevator;
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
+class ENDLESS_HOTEL_API AElevator_Button : public AEHActor
 {
 	GENERATED_BODY()
 
@@ -22,9 +21,6 @@ class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
 
 public:
 	AElevator_Button(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -59,18 +55,17 @@ public:
 #pragma region Interact
 
 public:
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
+	void InteractElevator();
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> WC;
+	TObjectPtr<class UWidgetComponent> Component_Widget;
 
 	UPROPERTY()
-	TObjectPtr<class UUI_Interact> UI_Interact;
+	TObjectPtr<class ULookAtComponent> Component_LookAt;
 
-	UPROPERTY()
-	TObjectPtr<class ULookAtComponent> LAC;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UInteractComponent> Component_Interact;
 
 protected: 
 	void MoveToButtonPlayer();
@@ -80,6 +75,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	float PlayerToElevatorDistance = 50.0f;
+
 #pragma endregion
 
 };

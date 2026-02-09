@@ -21,18 +21,18 @@ protected:
 
 #pragma endregion
 
-#pragma region Interact
-
-public:
-	virtual void Interacted_Implementation() override;
-
-#pragma endregion
-
 #pragma region Clock
 
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_Bar;
+
+#pragma endregion
+
+#pragma region Interact
+
+protected:
+	virtual void SetInteraction() override;
 
 #pragma endregion
 
@@ -69,6 +69,9 @@ protected:
 public:
 	UFUNCTION()
 	void RingingClock();
+
+protected:
+	void StopRinging();
 
 protected:
 	UPROPERTY(EditAnywhere)

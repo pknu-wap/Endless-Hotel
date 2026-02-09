@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Component/Anomaly_Component_Restore.h"
@@ -36,9 +36,6 @@ void UAnomaly_Component_Restore::StartRestoring(float Duration)
 
 void UAnomaly_Component_Restore::RestoreTick()
 {
-    AActor* Owner = GetOwner();
-    if (!Owner) return;
-
     RestoreCurrentTime += 0.016f;
     float Alpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
 

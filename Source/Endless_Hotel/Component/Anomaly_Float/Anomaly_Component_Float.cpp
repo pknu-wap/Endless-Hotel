@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
@@ -16,11 +16,7 @@ void UAnomaly_Component_Float::BeginPlay()
 {
     Super::BeginPlay();
 
-    AActor* Owner = GetOwner();
-    if (Owner)
-    {
-        TargetMesh = Cast<UPrimitiveComponent>(Owner->GetRootComponent());
-    }
+    TargetMesh = Cast<UPrimitiveComponent>(Owner->GetRootComponent());
 }
 
 #pragma endregion
@@ -49,12 +45,8 @@ void UAnomaly_Component_Float::FloatTick()
 {
     if (!bIsFloating || !TargetMesh) return;
 
-    AActor* Owner = GetOwner();
-    if (Owner)
-    {
-        Owner->AddActorWorldOffset(FloatVelocity * TickInterval, true);
-        Owner->AddActorWorldRotation(RotationVelocity * TickInterval);
-    }
+    Owner->AddActorWorldOffset(FloatVelocity * TickInterval, true);
+    Owner->AddActorWorldRotation(RotationVelocity * TickInterval);
 }
 
 void UAnomaly_Component_Float::StopFloating()

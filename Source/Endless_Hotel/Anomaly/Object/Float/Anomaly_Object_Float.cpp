@@ -45,7 +45,7 @@ void AAnomaly_Object_Float::SearchAndStart()
 
             if (auto* BaseObj = Cast<AAnomaly_Object_Base>(Target))
             {
-                BaseObj->InteractAction = [this, Target, FloatComp, RestoreComp]()
+                /*BaseObj->InteractAction = [this, Target, FloatComp, RestoreComp]()
                     {
                         if (RestoredActors.Contains(Target) || FloatComp->bIsFloating) return;
                         FloatComp->StopFloating();
@@ -53,7 +53,7 @@ void AAnomaly_Object_Float::SearchAndStart()
 
                         RestoredActors.Add(Target);
                         CheckAllRestored();
-                    };
+                    };*/
             }
         }
     }
