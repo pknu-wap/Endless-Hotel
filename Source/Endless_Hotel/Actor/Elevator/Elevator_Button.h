@@ -27,11 +27,8 @@ public:
 #pragma region Elevator
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Elevator")
+	UPROPERTY(EditAnywhere, Category = "Elevator")
 	TObjectPtr<AElevator> OwnerElevator;
-
-public:
-	void SetOwnerElevator(AElevator* InElevator) { OwnerElevator = InElevator; }
 
 #pragma endregion
 

@@ -4,7 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_InGame.h"
 #include "Sound/SoundController.h"
-#include "Elevator/Elevator.h"
+#include "Actor/Elevator/Elevator.h"
 #include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>

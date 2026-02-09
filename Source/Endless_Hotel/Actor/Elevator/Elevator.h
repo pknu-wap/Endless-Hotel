@@ -68,14 +68,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Buttons
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<AElevator_Button> ElevatorButton;
-
-#pragma endregion
-
 #pragma region Light
 
 protected:

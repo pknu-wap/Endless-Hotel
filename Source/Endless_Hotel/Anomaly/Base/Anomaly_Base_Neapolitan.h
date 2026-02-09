@@ -28,11 +28,4 @@ public:
     
 #pragma endregion
 
-#pragma region Position
-
-public:
-    virtual FVector GetAnomalyStartPos() const { return FVector(-1360, 570, 710); }
-
-#pragma endregion
-
 };

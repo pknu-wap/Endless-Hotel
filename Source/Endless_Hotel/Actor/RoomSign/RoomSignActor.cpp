@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "RoomSign/RoomSignActor.h"
+#include "Actor/RoomSign/RoomSignActor.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
