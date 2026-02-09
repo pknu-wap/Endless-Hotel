@@ -69,18 +69,10 @@ void AAnomaly_Object_ShelfDoll::ActivateDoll_Show()
 
 void AAnomaly_Object_ShelfDoll::SetInteraction()
 {
-	switch (AnomalyID)
-	{
-	case 0:
-		break;
-
-	default:
-		InteractAction = ([this]()
-			{
-				AAnomaly_Object_ShelfDoll::InteractFire();
-			});
-		break;
-	}
+	Component_Interact->AdditionalAction = ([this]()
+		{
+			InteractFire();
+		});
 }
 
 void AAnomaly_Object_ShelfDoll::InteractFire()

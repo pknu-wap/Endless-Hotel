@@ -1,29 +1,16 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "UI/World/Interact/UI_Interact.h"
-#include "Component/LookAt/LookAtComponent.h"
-#include <Components/WidgetComponent.h>
-
 
 #pragma region Base
-
-AAnomaly_Object_Neapolitan::AAnomaly_Object_Neapolitan(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
 
 void AAnomaly_Object_Neapolitan::BeginPlay()
 {
 	Super::BeginPlay();
+
 	bSolved = false;
-	if (!WC) return;
-	UI_Interact = Cast<UUI_Interact>(WC->GetUserWidgetObject());
-	LAC->SettingWidgetComponent(WC);
 
 	OriginalTransform = GetActorTransform();
 }
 
 #pragma endregion
-
-#undef LOCTEXT_NAMESPACE

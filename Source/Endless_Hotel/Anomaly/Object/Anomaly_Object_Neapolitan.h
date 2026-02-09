@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Interact/Interactable.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Neapolitan.generated.h>
 
@@ -13,9 +12,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base
 	GENERATED_BODY()
 	
 #pragma region Base
-
-public:
-	AAnomaly_Object_Neapolitan(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;

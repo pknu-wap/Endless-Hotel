@@ -97,7 +97,7 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 void AAnomaly_Object_SignDrop::SetInteraction()
 {
-    InteractAction = [this]()
+    Component_Interact->AdditionalAction = [this]()
         {
             if (bSolved) return;
             bSolved = true;

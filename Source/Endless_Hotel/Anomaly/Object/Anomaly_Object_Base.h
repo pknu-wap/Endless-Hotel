@@ -3,12 +3,13 @@
 #pragma once
 
 #include "Actor/EHActor.h"
-#include "Interact/Interactable.h"
+#include "Component/Interact/InteractComponent.h"
+#include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Base.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor, public IInteractable
+class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor
 {
 	GENERATED_BODY()
 
@@ -17,13 +18,18 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor, public IInteract
 public:
 	AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer);
 
-#pragma endregion
+protected:
+	virtual void BeginPlay() override;
 
+#pragma endregion
 
 #pragma region Anomaly
 
 public:
 	uint8 AnomalyID;
+
+protected:
+	EAnomalyName AnomalyName;
 
 #pragma endregion
 
@@ -37,29 +43,18 @@ protected:
 
 #pragma region Interact
 
-public:
-	virtual void Interacted_Implementation() override;
-	virtual void ShowInteractWidget_Implementation(bool bIsShow) override;
-	virtual void SetInteraction() {};
-
 protected:
-	virtual void StartInteractaction();
+	virtual void SetInteraction() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> WC;
+	TObjectPtr<class UWidgetComponent> Component_Widget;
 
 	UPROPERTY()
-	TObjectPtr<class UUI_Interact> UI_Interact;
+	TObjectPtr<class ULookAtComponent> Component_LookAt;
 
-	UPROPERTY()
-	TObjectPtr<class ULookAtComponent> LAC;
-
-	// 크로스헤어 오버 시 나타날 텍스트
-	FText DescriptionText;
-
-public:
-	TFunction<void()> InteractAction;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UInteractComponent> Component_Interact;
 
 #pragma endregion
 

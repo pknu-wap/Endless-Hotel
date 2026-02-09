@@ -10,4 +10,11 @@ UEHComponent::UEHComponent(const FObjectInitializer& ObjectInitializer)
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void UEHComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Owner = GetOwner();
+}
+
 #pragma endregion

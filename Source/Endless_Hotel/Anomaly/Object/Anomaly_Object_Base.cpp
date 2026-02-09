@@ -1,15 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Player/Character/EHPlayer.h"
-#include "Player/Component/EHCameraComponent.h"
-#include "UI/World/Interact/UI_Interact.h"
 #include "Component/LookAt/LookAtComponent.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include <Kismet/GameplayStatics.h>
 #include <Components/WidgetComponent.h>
-
-#define LOCTEXT_NAMESPACE "Anomaly_Object_Base"
 
 #pragma region Base
 
@@ -19,34 +12,25 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
 	SetRootComponent(Object);
 
-	WC = CreateDefaultSubobject<UWidgetComponent>(TEXT("WC"));
-	WC->SetupAttachment(RootComponent);
+	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
+	Component_Widget->SetupAttachment(RootComponent);
 
-	LAC = CreateDefaultSubobject<ULookAtComponent>(TEXT("LAC"));
+	Component_LookAt = CreateDefaultSubobject<ULookAtComponent>(TEXT("Component LookAt"));
 
-	DescriptionText = LOCTEXT("Key1", "상호작용");
+	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
 }
 
-#pragma endregion
-
-#undef LOCTEXT_NAMESPACE
-
-#pragma region Interact
-
-void AAnomaly_Object_Base::Interacted_Implementation()
+void AAnomaly_Object_Base::BeginPlay()
 {
-	StartInteractaction();
-}
+	Super::BeginPlay();
 
-void AAnomaly_Object_Base::ShowInteractWidget_Implementation(bool bIsShow)
-{
-	if (!UI_Interact) return;
-	UI_Interact->ShowDescription(bIsShow);
-}
+	if (!Component_Interact->CanInteract())
+	{
+		Component_Widget->SetActive(false);
+		Component_LookAt->SetActive(false);
+	}
 
-void AAnomaly_Object_Base::StartInteractaction()
-{
-	InteractAction();
+	SetInteraction();
 }
 
 #pragma endregion
