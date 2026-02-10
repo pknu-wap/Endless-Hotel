@@ -34,17 +34,6 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UProgressBar> ProgressBar_Left;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text_Value;
-
-#pragma endregion
-
-#pragma region CheckBox
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_CheckBox_Setting> CheckBox_Off;
-
 #pragma endregion
 
 };

@@ -11,6 +11,7 @@
 #include <Sound/SoundClass.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/Image.h>
+#include <Components/TextBlock.h>
 
 #pragma region Base
 
@@ -28,6 +29,8 @@ void UUI_Slider_Setting::NativeOnInitialized()
 void UUI_Slider_Setting::Slide_Slider(float Value)
 {
 	Super::Slide_Slider(Value);
+
+	Text_Value->SetText(FText::FromString(FString::FromInt(Value * 100)));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
 	FSaveData_Setting& Data = UI_Setting->Data_Setting;
