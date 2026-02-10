@@ -16,7 +16,7 @@ void AEHGameMode_Base::BeginPlay()
 	Super::BeginPlay();
 
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenMapBaseWidget();
+	UICon->OpenWidget(UI_HUD);
 }
 
 void AEHGameMode_Base::EndPlay(EEndPlayReason::Type EndPlayReason)

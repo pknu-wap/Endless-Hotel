@@ -2,7 +2,7 @@
 
 #include "Player/Component/EHCameraComponent.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Sound/SoundController.h"
 #include "Actor/Elevator/Elevator.h"
 #include "Anomaly/Base/Anomaly_Base.h"
@@ -34,7 +34,7 @@ void UEHCameraComponent::BeginPlay()
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
 	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_InGame* UI_InGame = Cast<UUI_InGame>(UICon->GetCurrentBaseWidget());
+	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
 
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);

@@ -2,7 +2,7 @@
 
 #include "UI/Slider/Setting/UI_Slider_Setting.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/CheckBox/Setting/UI_CheckBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
@@ -85,7 +85,7 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 		Image_Brightness->SetColorAndOpacity(Color);
 
 		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-		if (auto* UI_InGame = Cast<UUI_InGame>(UICon->GetCurrentBaseWidget()))
+		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget()))
 		{
 			UI_InGame->SetBrightness(AlphaValue);
 		}

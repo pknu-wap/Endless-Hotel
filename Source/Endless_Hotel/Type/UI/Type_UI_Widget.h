@@ -10,8 +10,7 @@ enum class EWidgetType : uint8
 	HUD			UMETA(DisplayName = "HUD"),
 	PopUp		UMETA(DisplayName = "PopUp"),
 	PopUp_Pause UMETA(DisplayName = "PopUp_Pause"),
-	World		UMETA(DisplayName = "World"),
-	Cover		UMETA(DisplayName = "Cover")
+	World		UMETA(DisplayName = "World")
 };
 
 UENUM(BlueprintType)

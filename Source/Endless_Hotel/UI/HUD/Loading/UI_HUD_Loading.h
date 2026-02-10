@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "UI/PopUp/UI_PopUp_Base.h"
+#include "UI/HUD/UI_HUD_Base.h"
 #include <CoreMinimal.h>
-#include <UI_PopUp_Loading.generated.h>
+#include <UI_HUD_Loading.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_PopUp_Loading : public UUI_PopUp_Base
+class ENDLESS_HOTEL_API UUI_HUD_Loading : public UUI_HUD_Base
 {
 	GENERATED_BODY()
 	

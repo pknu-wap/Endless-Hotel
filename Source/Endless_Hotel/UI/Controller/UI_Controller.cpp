@@ -6,25 +6,6 @@
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/PlayerController.h>
 
-#pragma region Base
-
-UUI_Controller::UUI_Controller()
-{
-	static ConstructorHelpers::FClassFinder<UUI_Base> TitleFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/MainMenu/WBP_Title.WBP_Title_C"));
-	if (TitleFinder.Succeeded())
-	{
-		UI_Title = TitleFinder.Class;
-	}
-
-	static ConstructorHelpers::FClassFinder<UUI_Base> InGameFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/InGame/WBP_InGame.WBP_InGame_C"));
-	if (InGameFinder.Succeeded())
-	{
-		UI_InGame = InGameFinder.Class;
-	}
-}
-
-#pragma endregion
-
 #pragma region Open & Close
 
 UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
@@ -35,13 +16,15 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 	{
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		break;
 
 	case EWidgetType::HUD:
-	case EWidgetType::PopUp:
-		CreatedWidget->AddToViewport(Widget_ZOrder);
-		PopUpWidgets.Add(CreatedWidget);
+		ClearAllWidget();
 		break;
 	}
+
+	CreatedWidget->AddToViewport(Widget_ZOrder);
+	PopUpWidgets.Add(CreatedWidget);
 
 	AdjustZOrder(true);
 	SetInputMode(CreatedWidget->InputModeType);
@@ -128,26 +111,6 @@ void UUI_Controller::AdjustZOrder(bool bUp)
 	}
 
 	Widget_ZOrder = FMath::Clamp(Widget_ZOrder - 1, Min_ZOrder, Max_ZOrder);
-}
-
-#pragma endregion
-
-#pragma region Widget
-
-void UUI_Controller::OpenMapBaseWidget()
-{
-	ClearAllWidget();
-
-	switch (UEHGameInstance::CurrentMap)
-	{
-	case EMapType::MainMenu:
-		OpenWidget(UI_Title);
-		break;
-
-	case EMapType::Hotel:
-		OpenWidget(UI_InGame);
-		break;
-	}
 }
 
 #pragma endregion

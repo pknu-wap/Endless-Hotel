@@ -6,9 +6,23 @@
 #include <CoreMinimal.h>
 #include <UI_Slider_Loading.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
+UCLASS()
 class ENDLESS_HOTEL_API UUI_Slider_Loading : public UUI_Slider_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+#pragma endregion
+
+#pragma region Loading
+
+protected:
+	void SetLoadingPercentage();
+
+#pragma endregion
+
 };

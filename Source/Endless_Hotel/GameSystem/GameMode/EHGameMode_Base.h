@@ -22,4 +22,12 @@ protected:
 
 #pragma endregion
 
+#pragma region HUD
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<class UUI_Base> UI_HUD;
+
+#pragma endregion
+
 };

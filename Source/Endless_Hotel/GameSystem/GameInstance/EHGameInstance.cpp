@@ -5,45 +5,37 @@
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 
-#pragma region Base
-
-void UEHGameInstance::OnStart()
-{
-	Super::OnStart();
-
-	FString MapName = GetWorld()->GetMapName();
-	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
-
-	if (MapName == TEXT("MainMenu"))
-	{
-		CurrentMap = EMapType::MainMenu;
-	}
-	else if (MapName == TEXT("Hotel"))
-	{
-		CurrentMap = EMapType::Hotel;
-	}
-	else
-	{
-		CurrentMap = EMapType::None;
-	}
-}
-
-#pragma endregion
-
 #pragma region Map
-
-EMapType UEHGameInstance::CurrentMap = EMapType::MainMenu;
 
 void UEHGameInstance::OpenMap(const EMapType& MapName)
 {
-	CurrentMap = MapName;
-	FName TargetMapName = FName(FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(CurrentMap)));
-	UGameplayStatics::OpenLevel(GetWorld(), TargetMapName, true);
+	UGameplayStatics::OpenLevel(GetWorld(), LoadingMapName, true);
+
+	FString TargetMapPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(MapName));
+	TargetMapName = FName(*TargetMapPath);
+
+	LoadPackageAsync(TargetMapPath, FLoadPackageAsyncDelegate::CreateWeakLambda(this, [this, MapName](const FName& PackageName, UPackage* LoadedPackage, EAsyncLoadingResult::Type Result)
+		{
+			if (Result == EAsyncLoadingResult::Succeeded)
+			{
+				UGameplayStatics::OpenLevel(GetWorld(), TargetMapName, true);
+			}
+		}), 0, PKG_ContainsMap);
 }
 
 void UEHGameInstance::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
+}
+
+float UEHGameInstance::GetMapLoadingPercentage()
+{
+	if (TargetMapName.IsNone())
+	{
+		return 0.f;
+	}
+
+	return GetAsyncLoadPercentage(TargetMapName) / 100.f;
 }
 
 #pragma endregion

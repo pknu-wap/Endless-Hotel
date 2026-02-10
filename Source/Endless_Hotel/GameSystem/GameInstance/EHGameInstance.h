@@ -12,6 +12,7 @@ UENUM(BlueprintType)
 enum class EMapType : uint8
 {
 	None		UMETA(DisplayName = "None"),
+	Loading		UMETA(DisplayName = "Loading"),
 	MainMenu	UMETA(DisplayName = "MainMenu"),
 	Hotel		UMETA(DisplayName = "Hotel")
 };
@@ -23,21 +24,17 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void OnStart() override;
-
-#pragma endregion
-
 #pragma region Map
 
 public:
 	void OpenMap(const EMapType& MapName);
 	void QuitGame();
 
-public:
-	static EMapType CurrentMap;
+	float GetMapLoadingPercentage();
+
+protected:
+	const FName LoadingMapName = TEXT("/Game/EndlessHotel/Map/Loading");
+	FName TargetMapName;
 
 #pragma endregion
 
@@ -48,4 +45,5 @@ public:
 	int32 GlobalSelectedKeyIndex = 0;
 
 #pragma endregion
+
 };
