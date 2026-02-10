@@ -70,6 +70,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class AActor> CurrentInteractActor;
 
+	UPROPERTY()
+	TWeakObjectPtr<class UInteractComponent> CurrentInteractComp;
+
 	// Crouch
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Crouch;
