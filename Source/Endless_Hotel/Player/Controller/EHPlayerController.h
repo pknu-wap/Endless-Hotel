@@ -175,8 +175,6 @@ public:
 #pragma region State_Death
 
 public:
-	UFUNCTION()
-	void OnAnomalyVerdict(bool bIsAlive);
 	void PlayDeathSequence();
 
 public:
