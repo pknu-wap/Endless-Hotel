@@ -79,7 +79,6 @@ protected:
 public:
 	virtual void SetInteraction() override;
 
-protected:
 	void InteractRotate();
 
 protected:

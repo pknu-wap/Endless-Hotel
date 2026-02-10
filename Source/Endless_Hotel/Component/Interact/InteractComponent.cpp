@@ -5,6 +5,7 @@
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include <Components/WidgetComponent.h>
+#include <Anomaly/Object/Painting/Anomaly_Object_Painting.h>
 
 #pragma region Interact
 
@@ -87,6 +88,7 @@ void UInteractComponent::Action_Restore()
 void UInteractComponent::Action_Rotate()
 {
 	// 그림 회전 (담당: 경원 김)
+	Cast<AAnomaly_Object_Painting>(Owner)->InteractRotate();
 }
 
 void UInteractComponent::Action_TurnOff()
