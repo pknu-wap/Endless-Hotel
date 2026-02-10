@@ -327,17 +327,19 @@ void AEHPlayerController::CheckForInteractables()
 	{
 		bCanInteract = true;
 		CurrentInteractActor = HitActor;
+		CurrentInteractComp = Comp_Interact;
 		EHPlayer->CanInteract.Broadcast(true);
-		Comp_Interact->ShowDescriptionWidget(true);
+		CurrentInteractComp->ShowDescriptionWidget(true);
 	}
 	else
 	{
-		if (CurrentInteractActor)
+		if (CurrentInteractComp.Get())
 		{
-			Comp_Interact->ShowDescriptionWidget(false);
+			CurrentInteractComp->ShowDescriptionWidget(false);
 		}
 		bCanInteract = false;
 		CurrentInteractActor = nullptr;
+		CurrentInteractComp = nullptr;
 		EHPlayer->CanInteract.Broadcast(false);
 	}
 }

@@ -3,7 +3,7 @@
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
-#include "Elevator/Elevator_Button.h"
+#include "Actor/Elevator/Elevator_Button.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Interact
