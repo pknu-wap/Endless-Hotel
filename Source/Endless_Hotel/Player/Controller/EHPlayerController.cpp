@@ -332,7 +332,7 @@ void AEHPlayerController::CheckForInteractables()
 	}
 	else
 	{
-		if (CurrentInteractActor)
+		if (CurrentInteractActor && Comp_Interact)
 		{
 			Comp_Interact->ShowDescriptionWidget(false);
 		}
