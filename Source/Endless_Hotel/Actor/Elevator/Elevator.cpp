@@ -2,7 +2,7 @@
 
 #include "Elevator.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Elevator/Elevator_Button.h"
+#include "Actor/Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/StaticMeshComponent.h>
@@ -48,8 +48,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
 	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
 	Entrance->SetupAttachment(ElevatorSceneRoot);
-
-	ElevatorButton = CreateDefaultSubobject<AElevator_Button>(TEXT("ElevatorButton"));
 
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
 	ElevatorLight->SetupAttachment(Car);
@@ -108,9 +106,6 @@ void AElevator::BeginPlay()
 	// 4) Delegate Setup
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
-
-	// 5) Buttons
-	ElevatorButton->SetOwnerElevator(this);
 
 	// 6) MoveElevator
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
@@ -261,6 +256,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 
 	if (bIsStart)
 	{
+		bIsPlayerInside = true;
 		FTimerHandle MoveHandle;
 		GetWorld()->GetTimerManager().SetTimer(
 			MoveHandle,
@@ -269,6 +265,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 					MoveDoors(true);
 					SetPlayerInputEnabled(true);
 					GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+					bIsPlayerInside = false;
 				}),
 			ElevatorMoveDuration,
 			false

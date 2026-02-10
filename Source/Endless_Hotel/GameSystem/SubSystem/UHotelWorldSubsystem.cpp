@@ -3,7 +3,7 @@
 #include "GameSystem/SubSystem/UHotelWorldSubsystem.h"
 #include "AnomalyProgressSubSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
-#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
@@ -21,7 +21,7 @@ void UUHotelWorldSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	}
 
 	AAnomaly_Generator* AnomalyGenerator;
-	AAnomaly_Base_Neapolitan* AnomalyActor = Cast<AAnomaly_Base_Neapolitan>(AnomalyGenerator->CurrentAnomaly);
+	AAnomaly_Base* AnomalyActor = Cast<AAnomaly_Base>(AnomalyGenerator->CurrentAnomaly);
 	
 	if (!AnomalyActor) return;
 	FVector TargetPos = AnomalyActor->GetAnomalyStartPos();
