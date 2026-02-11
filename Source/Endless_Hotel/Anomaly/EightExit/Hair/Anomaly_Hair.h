@@ -6,11 +6,6 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Hair.generated.h>
 
-class UCurveFloat;
-class UMaterialParameterCollection;
-class UTimelineComponent;
-class UStaticMeshComponent;
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Hair : public AAnomaly_Base_EightExit
 {

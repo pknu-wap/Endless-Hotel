@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Base_EightExit.h"
-#include "Anomaly_FootStep.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_FootStep.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_FootStep : public AAnomaly_Base_EightExit
@@ -18,9 +18,4 @@ public:
 
 #pragma endregion
 
-#pragma region FootStep
-
-protected:
-	void FootStep();
-#pragma endregion
 };

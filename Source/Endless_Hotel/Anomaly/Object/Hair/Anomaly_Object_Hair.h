@@ -13,11 +13,15 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Hair : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
 public:
 	AAnomaly_Object_Hair(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
 
 #pragma region Hair
 
