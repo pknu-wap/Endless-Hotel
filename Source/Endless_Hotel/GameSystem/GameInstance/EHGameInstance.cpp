@@ -9,10 +9,14 @@
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>
 
-#pragma region Level
+#pragma region Declare
 
 ELevelType UEHGameInstance::CurrentLevelType = ELevelType::Persistent;
 FLevelLoaded UEHGameInstance::OnLevelLoaded;
+
+#pragma endregion
+
+#pragma region Level
 
 void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bIsFirst)
 {
@@ -44,16 +48,25 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bIsFirst)
 	}
 
 	CurrentLevel = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld(), TargetLevel, FVector::ZeroVector, FRotator::ZeroRotator, OUT bSuccess);
+
 	CurrentLevel->SetShouldBeVisible(false);
 	CurrentLevel->SetShouldBeLoaded(true);
+
 	CurrentLevel->OnLevelLoaded.Clear();
 	CurrentLevel->OnLevelLoaded.AddDynamic(this, &ThisClass::LoadLevelCompleted);
+
+	CurrentLevel->OnLevelShown.Clear();
+	CurrentLevel->OnLevelShown.AddDynamic(this, &ThisClass::ShowLevelCompleted);
 }
 
 void UEHGameInstance::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
 }
+
+#pragma endregion
+
+#pragma region Loading
 
 bool UEHGameInstance::IsLevelLoaded()
 {
@@ -63,7 +76,10 @@ bool UEHGameInstance::IsLevelLoaded()
 void UEHGameInstance::LoadLevelCompleted()
 {
 	CurrentLevel->SetShouldBeVisible(true);
+}
 
+void UEHGameInstance::ShowLevelCompleted()
+{
 	auto* UICon = GetSubsystem<UUI_Controller>();
 	UICon->CloseWidget();
 
@@ -82,12 +98,12 @@ void UEHGameInstance::LoadLevelCompleted()
 	auto* GameMode = GetWorld()->GetAuthGameMode<AEHGameMode>();
 	GameMode->RestartPlayer(GetWorld()->GetFirstPlayerController());
 
-	OnLevelLoaded.Broadcast(CurrentLevelType);
+	OnLevelLoaded.Broadcast();
 }
 
 void UEHGameInstance::UnloadCurrentLevel()
 {
-	if (!CurrentLevel.Get())
+	if (!CurrentLevel)
 	{
 		return;
 	}

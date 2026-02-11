@@ -4,7 +4,6 @@
 
 #include "Component/EHComponent.h"
 #include "Type/Player/Type_Death.h"
-#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <EHCameraComponent.generated.h>
 
@@ -26,6 +25,9 @@ protected:
 #pragma region Post Processing
 
 protected:
+	void FindPPV();
+
+protected:
 	UPROPERTY()
 	TObjectPtr<APostProcessVolume> PostProcessVolume;
 
@@ -35,10 +37,7 @@ protected:
 
 public:
 	UFUNCTION()
-	void StartEyeEffect_bool(bool bIsOpen);
-
-	UFUNCTION()
-	void StartEyeEffect_enum(ELevelType Type);
+	void StartEyeEffect(bool bIsOpen);
 
 protected:
 	void SettingEyeEffect();
@@ -64,6 +63,14 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DynMat_EyeEffect;
+
+#pragma endregion
+
+#pragma region Loading
+
+protected:
+	UFUNCTION()
+	void LevelLoadCompleted();
 
 #pragma endregion
 

@@ -10,7 +10,7 @@
 
 #pragma region Declare
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLevelLoaded, ELevelType, Type);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
 
 #pragma endregion
 
@@ -25,21 +25,12 @@ public:
 	void OpenLevel(const ELevelType& LevelName, bool bIsFirst = false);
 	void QuitGame();
 
-	bool IsLevelLoaded();
-
-protected:
-	UFUNCTION()
-	void LoadLevelCompleted();
-
-	void UnloadCurrentLevel();
-
 public:
 	static ELevelType CurrentLevelType;
-	static FLevelLoaded OnLevelLoaded;
 
 protected:
 	UPROPERTY()
-	TWeakObjectPtr<class ULevelStreamingDynamic> CurrentLevel;
+	TObjectPtr<class ULevelStreamingDynamic> CurrentLevel;
 
 	UPROPERTY(EditAnyWhere, Category = "Level")
 	TObjectPtr<UWorld> Level_MainMenu;
@@ -50,6 +41,21 @@ protected:
 #pragma endregion
 
 #pragma region Loading
+
+public:
+	bool IsLevelLoaded();
+
+protected:
+	UFUNCTION()
+	void LoadLevelCompleted();
+
+	UFUNCTION()
+	void ShowLevelCompleted();
+
+	void UnloadCurrentLevel();
+
+public:
+	static FLevelLoaded OnLevelLoaded;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Widget")

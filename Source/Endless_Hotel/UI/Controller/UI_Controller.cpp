@@ -10,7 +10,7 @@
 
 UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 {
-	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld(), WidgetClass);
+	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass);
 
 	switch (CreatedWidget->WidgetType)
 	{
@@ -23,7 +23,7 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 		break;
 
 	case EWidgetType::Cover:
-		GEngine->GameViewport->AddViewportWidgetContent(CreatedWidget->TakeWidget(), 100);
+		CreatedWidget->AddToViewport(100);
 		PopUpWidgets.Add(CreatedWidget);
 		return CreatedWidget;
 	}
@@ -54,7 +54,8 @@ void UUI_Controller::CloseWidget()
 		break;
 
 	case EWidgetType::Cover:
-		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidgets.Top()->TakeWidget());
+		PopUpWidgets.Top()->RemoveFromViewport();
+		PopUpWidgets.Pop();
 		return;
 	}
 
