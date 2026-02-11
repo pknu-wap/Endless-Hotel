@@ -22,48 +22,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+#pragma endregion
+
+#pragma region Activity
+
 public:
 	virtual void SetAnomalyActivate() override;
 
-
-#pragma region Trigger
-
-public:
-	virtual void ActiveTrigger() override;
-
-	UFUNCTION()
-	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-#pragma endregion
-
-#pragma region Hair
-	
 protected:
-	UPROPERTY()
-	TObjectPtr<UTimelineComponent> HairTimeline;
-
-	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> HairMesh;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UMaterialParameterCollection> HairMPC;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UCurveFloat> Curve_HairOpacity;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UCurveFloat> Curve_HairLocation;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	FName Param_Opacity = "Scalar";
-
-	UFUNCTION()
-	void UpdateHair(float Value);
-
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	float ScheduleAnomaly = 0.5f;
-};
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Hair")
+	FVector SpawnLocation;
 
 #pragma endregion
+
+};
