@@ -4,10 +4,13 @@
 #include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameMode/EHGameMode.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "UI/Controller/UI_Controller.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>
+#include <GameFramework/Character.h>
 
 #pragma region Declare
 
@@ -86,7 +89,7 @@ void UEHGameInstance::ShowLevelCompleted()
 	switch (CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		GetWorld()->SpawnActor<AAnomaly_Generator>(Generator);
+		SpawnAnomalyGenerator();
 		UICon->OpenWidget(UI_HUD_InGame);
 		break;
 
@@ -95,8 +98,7 @@ void UEHGameInstance::ShowLevelCompleted()
 		break;
 	}
 
-	auto* GameMode = GetWorld()->GetAuthGameMode<AEHGameMode>();
-	GameMode->RestartPlayer(GetWorld()->GetFirstPlayerController());
+	RelocatePlayer();
 
 	OnLevelLoaded.Broadcast();
 }
@@ -111,6 +113,43 @@ void UEHGameInstance::UnloadCurrentLevel()
 	CurrentLevel->SetShouldBeLoaded(false);
 	CurrentLevel->SetShouldBeVisible(false);
 	CurrentLevel = nullptr;
+}
+
+#pragma endregion
+
+#pragma region Anomaly
+
+void UEHGameInstance::SpawnAnomalyGenerator()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.OverrideLevel = CurrentLevel->GetLoadedLevel();
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	Generator = GetWorld()->SpawnActor<AAnomaly_Generator>(GeneratorClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+}
+
+#pragma endregion
+
+#pragma region Spawn
+
+void UEHGameInstance::RelocatePlayer()
+{
+	UWorld* World = GetWorld();
+
+	auto* GameMode = World->GetAuthGameMode<AEHGameMode>();
+	GameMode->RestartPlayer(World->GetFirstPlayerController());
+
+	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
+
+	if (!Subsystem->bPassed)
+	{
+		Player->SetActorTransform(DefaultTransform);
+		return;
+	}
+
+	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
+	Player->SetActorTransform(AnomalyTransform);
 }
 
 #pragma endregion

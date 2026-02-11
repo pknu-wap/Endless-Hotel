@@ -61,9 +61,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> Component_Widget;
 
-	UPROPERTY()
-	TObjectPtr<class ULookAtComponent> Component_LookAt;
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UInteractComponent> Component_Interact;
 

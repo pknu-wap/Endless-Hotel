@@ -1,7 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Component/LookAt/LookAtComponent.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Base
@@ -14,8 +13,7 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 
 	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
 	Component_Widget->SetupAttachment(RootComponent);
-
-	Component_LookAt = CreateDefaultSubobject<ULookAtComponent>(TEXT("Component LookAt"));
+	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
 
 	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
 }
@@ -27,7 +25,6 @@ void AAnomaly_Object_Base::BeginPlay()
 	if (!Component_Interact->CanInteract())
 	{
 		Component_Widget->SetActive(false);
-		Component_LookAt->SetActive(false);
 	}
 
 	SetInteraction();

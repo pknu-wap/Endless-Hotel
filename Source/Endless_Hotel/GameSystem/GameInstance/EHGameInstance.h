@@ -57,28 +57,44 @@ protected:
 public:
 	static FLevelLoaded OnLevelLoaded;
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Widget")
-	TSubclassOf<class UUI_Base> UI_Loading;
-
 #pragma endregion
 
 #pragma region Anomaly
 
 protected:
+	void SpawnAnomalyGenerator();
+
+protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
-	TSubclassOf<class AAnomaly_Generator> Generator;
+	TSubclassOf<class AAnomaly_Generator> GeneratorClass;
+
+	UPROPERTY()
+	TObjectPtr<class AAnomaly_Generator> Generator;
 
 #pragma endregion
 
-#pragma region HUD
+#pragma region Spawn
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "HUD")
+	void RelocatePlayer();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	FTransform DefaultTransform = FTransform(FRotator::ZeroRotator, FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
+
+#pragma endregion
+
+#pragma region Widget
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
 	TSubclassOf<class UUI_Base> UI_HUD_InGame;
 
-	UPROPERTY(EditAnywhere, Category = "HUD")
+	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
 	TSubclassOf<class UUI_Base> UI_HUD_MainMenu;
+
+	UPROPERTY(EditAnywhere, Category = "Widget|Cover")
+	TSubclassOf<class UUI_Base> UI_Loading;
 
 #pragma endregion
 

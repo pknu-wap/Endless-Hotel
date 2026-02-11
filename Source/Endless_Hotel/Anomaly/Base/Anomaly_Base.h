@@ -101,10 +101,11 @@ protected:
 
 #pragma endregion
 
-#pragma region Position
+#pragma region Transform
 
 public:
-	virtual FVector GetAnomalyStartPos() const { return FVector(-1360, 570, 710); }
+	UPROPERTY(EditAnywhere, Category = "Start")
+	FTransform PlayerStartTransform = FTransform(FRotator::ZeroRotator, FVector(-1360, 570, 710), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 

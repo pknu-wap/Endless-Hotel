@@ -2,7 +2,6 @@
 
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Actor/Elevator/Elevator.h"
-#include "Component/LookAt/LookAtComponent.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/WidgetComponent.h>
 #include <GameFramework/Character.h>
@@ -28,8 +27,7 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 
     Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
     Component_Widget->SetupAttachment(Pannel);
-
-    Component_LookAt = CreateDefaultSubobject<ULookAtComponent>(TEXT("Component LookAt"));
+    Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
 
     Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
 }
