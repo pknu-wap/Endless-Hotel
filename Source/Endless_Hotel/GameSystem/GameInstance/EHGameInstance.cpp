@@ -21,11 +21,11 @@ FLevelLoaded UEHGameInstance::OnLevelLoaded;
 
 #pragma region Level
 
-void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bIsFirst)
+void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 {
 	UnloadCurrentLevel();
 
-	if (!bIsFirst)
+	if (bNeedLoading)
 	{
 		auto* UICon = GetSubsystem<UUI_Controller>();
 		UICon->OpenWidget(UI_Loading);

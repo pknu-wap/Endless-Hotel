@@ -20,7 +20,7 @@ void UUI_PopUp_Demo::NativeOnInitialized()
 void UUI_PopUp_Demo::Click_Return()
 {
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenLevel(ELevelType::MainMenu);
+	GameInstance->OpenLevel(ELevelType::MainMenu, true);
 }
 
 #pragma endregion

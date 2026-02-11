@@ -22,7 +22,7 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 #pragma region Level
 
 public:
-	void OpenLevel(const ELevelType& LevelName, bool bIsFirst = false);
+	void OpenLevel(const ELevelType& LevelName, bool bNeedLoading);
 	void QuitGame();
 
 public:

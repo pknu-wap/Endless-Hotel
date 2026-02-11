@@ -41,7 +41,7 @@ public:
 	bool bDidInitialSpawn = false;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	TWeakObjectPtr<AAnomaly_Base> CurrentAnomaly;
+	TObjectPtr<AAnomaly_Base> CurrentAnomaly;
 
 #pragma endregion
 

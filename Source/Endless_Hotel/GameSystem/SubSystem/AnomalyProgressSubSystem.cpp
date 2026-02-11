@@ -94,7 +94,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	if (!bIsClear)
 	{
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-		GameInstance->OpenLevel(ELevelType::Hotel);
+		GameInstance->OpenLevel(ELevelType::Hotel, false);
 	}
 }
 
