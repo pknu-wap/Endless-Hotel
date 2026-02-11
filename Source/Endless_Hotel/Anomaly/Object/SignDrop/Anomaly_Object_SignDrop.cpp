@@ -2,6 +2,7 @@
 
 
 #include "Anomaly/Object/SignDrop/Anomaly_Object_SignDrop.h"
+#include "Component/Interact/InteractComponent.h"
 #include "Actor/RoomSign/RoomSignActor.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -16,24 +17,6 @@ AAnomaly_Object_SignDrop::AAnomaly_Object_SignDrop(const FObjectInitializer& Obj
 void AAnomaly_Object_SignDrop::BeginPlay()
 {
 	Super::BeginPlay();
-
-    SetInteraction();
-	RoomSigns.Empty();
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(
-		GetWorld(),
-		ARoomSignActor::StaticClass(),
-		FoundActors
-	);
-
-	for (AActor* Actor : FoundActors)
-	{
-		if (ARoomSignActor* Sign = Cast<ARoomSignActor>(Actor))
-		{
-			RoomSigns.Add(Sign);
-		}
-	}
 }
 #pragma endregion
 
@@ -48,6 +31,7 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
         {
             RootPrim->SetSimulatePhysics(false);
         }
+        
 
         FAttachmentTransformRules AttachRules(
             EAttachmentRule::KeepWorld, 
@@ -58,6 +42,7 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
 
         TargetActor->AttachToComponent(this->GetRootComponent(), AttachRules);
         TargetActor->SetActorRelativeLocation(FVector(0.f, 0.f, 10.f));
+
     }
 }
 
@@ -70,23 +55,22 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
     if (!TargetSign) return;
 
-    OriginalTransform = TargetSign->GetActorTransform();
+    if (auto* InteractComp = this->FindComponentByClass<UInteractComponent>())
+    {
+        InteractComp->OnRestored.RemoveDynamic(this, &AAnomaly_Object_SignDrop::OnSignRestored);
+        InteractComp->OnRestored.AddDynamic(this, &AAnomaly_Object_SignDrop::OnSignRestored);
+        InteractComp->OriginalTransform = TargetSign->GetActorTransform();
+    }
 
     TargetSign->DropSign();
 
     FTimerHandle AttachTimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(
-        AttachTimerHandle,
-        FTimerDelegate::CreateWeakLambda(this, [this, TargetSign]()
-            {
-                if (!IsValid(this) || !IsValid(TargetSign)) return;
-
-                SetActorLocationAndRotation(TargetSign->GetActorLocation(), TargetSign->GetActorRotation());
-                AttachSignToMe(TargetSign);
-            }),
-        1.0f,
-        false
-    );
+    GetWorld()->GetTimerManager().SetTimer(AttachTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetSign]()
+        {
+            if (!IsValid(this) || !IsValid(TargetSign)) return;
+            SetActorLocationAndRotation(TargetSign->GetActorLocation(), TargetSign->GetActorRotation());
+            AttachSignToMe(TargetSign);
+        }), 1.0f, false);
 
     RoomSigns.RemoveAt(RandomIndex);
 }
@@ -95,25 +79,13 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 #pragma region Interact
 
-void AAnomaly_Object_SignDrop::SetInteraction()
+void AAnomaly_Object_SignDrop::OnSignRestored(AActor* RestoredActor)
 {
-    Component_Interact->AdditionalAction = [this]()
-        {
-            if (bSolved) return;
-            bSolved = true;
+    if (!RestoredActor) return;
 
-            TArray<AActor*> AttachedActors;
-            GetAttachedActors(AttachedActors);
-            for (AActor* Attached : AttachedActors)
-            {
-                if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Attached->GetRootComponent()))
-                {
-                    RootPrim->SetSimulatePhysics(false);
-                }
-            }
+    // 디버그 로그
+    UE_LOG(LogTemp, Log, TEXT("Sign Restored"));
 
-            RestoreObjectTransform();
-        };
+    bSolved = true;
 }
-
 #pragma endregion

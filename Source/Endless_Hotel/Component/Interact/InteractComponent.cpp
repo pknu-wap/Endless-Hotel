@@ -12,7 +12,11 @@
 void UInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	SaveOriginalTransform();
+
+	if (AActor* RestoreOwner = GetOwner())
+	{
+		OriginalTransform = RestoreOwner->GetActorTransform();
+	}
 }
 
 #pragma endregion

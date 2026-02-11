@@ -23,13 +23,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Interact
-
-public:
-	virtual void SetInteraction() override;
-
-#pragma endregion
-
 #pragma region Drop
 
 public:
@@ -39,6 +32,10 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")
 	TArray<ARoomSignActor*> RoomSigns;
+
+protected:
+	UFUNCTION()
+	void OnSignRestored(AActor* RestoredActor);
 
 #pragma endregion 
 };

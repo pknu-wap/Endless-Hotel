@@ -52,6 +52,9 @@ void AAnomaly_Choose::SetAnomalyActivate()
 
 #pragma region Position
 
-
+FVector AAnomaly_Choose::GetAnomalyStartPos() const
+{
+	return ChooseStartPos;
+}
 
 #pragma endregion
