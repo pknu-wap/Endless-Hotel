@@ -14,13 +14,18 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 
 	switch (CreatedWidget->WidgetType)
 	{
+	case EWidgetType::HUD:
+		ClearAllWidget();
+		break;
+
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		break;
 
-	case EWidgetType::HUD:
-		ClearAllWidget();
-		break;
+	case EWidgetType::Cover:
+		GEngine->GameViewport->AddViewportWidgetContent(CreatedWidget->TakeWidget(), 100);
+		PopUpWidgets.Add(CreatedWidget);
+		return CreatedWidget;
 	}
 
 	CreatedWidget->AddToViewport(Widget_ZOrder);
@@ -34,6 +39,11 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 
 void UUI_Controller::CloseWidget()
 {
+	if (PopUpWidgets.IsEmpty())
+	{
+		return;
+	}
+
 	switch (PopUpWidgets.Top()->WidgetType)
 	{
 	case EWidgetType::HUD:
@@ -42,6 +52,10 @@ void UUI_Controller::CloseWidget()
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		break;
+
+	case EWidgetType::Cover:
+		GEngine->GameViewport->RemoveViewportWidgetContent(PopUpWidgets.Top()->TakeWidget());
+		return;
 	}
 
 	AdjustZOrder(false);

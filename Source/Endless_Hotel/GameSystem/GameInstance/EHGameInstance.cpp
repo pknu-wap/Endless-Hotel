@@ -2,25 +2,52 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/Enum/EnumConverter.h"
+#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "GameSystem/GameMode/EHGameMode.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Engine/LevelStreamingDynamic.h>
 
-#pragma region Map
+#pragma region Level
 
-void UEHGameInstance::OpenMap(const EMapType& MapName)
+ELevelType UEHGameInstance::CurrentLevelType = ELevelType::Persistent;
+FLevelLoaded UEHGameInstance::OnLevelLoaded;
+
+void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bIsFirst)
 {
-	UGameplayStatics::OpenLevel(GetWorld(), LoadingMapName, true);
+	UnloadCurrentLevel();
 
-	FString TargetMapPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(MapName));
-	TargetMapName = FName(*TargetMapPath);
+	if (!bIsFirst)
+	{
+		auto* UICon = GetSubsystem<UUI_Controller>();
+		UICon->OpenWidget(UI_Loading);
+	}
 
-	LoadPackageAsync(TargetMapPath, FLoadPackageAsyncDelegate::CreateWeakLambda(this, [this, MapName](const FName& PackageName, UPackage* LoadedPackage, EAsyncLoadingResult::Type Result)
-		{
-			if (Result == EAsyncLoadingResult::Succeeded)
-			{
-				UGameplayStatics::OpenLevel(GetWorld(), TargetMapName, true);
-			}
-		}), 0, PKG_ContainsMap);
+	FString TargetLevelPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<ELevelType>(LevelName));
+	FName TargetLevelName = FName(*TargetLevelPath);
+
+	bool bSuccess = false;
+	UWorld* TargetLevel = nullptr;
+
+	switch (LevelName)
+	{
+	case ELevelType::MainMenu:
+		TargetLevel = Level_MainMenu;
+		CurrentLevelType = ELevelType::MainMenu;
+		break;
+
+	case ELevelType::Hotel:
+		TargetLevel = Level_Hotel;
+		CurrentLevelType = ELevelType::Hotel;
+		break;
+	}
+
+	CurrentLevel = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld(), TargetLevel, FVector::ZeroVector, FRotator::ZeroRotator, OUT bSuccess);
+	CurrentLevel->SetShouldBeVisible(false);
+	CurrentLevel->SetShouldBeLoaded(true);
+	CurrentLevel->OnLevelLoaded.Clear();
+	CurrentLevel->OnLevelLoaded.AddDynamic(this, &ThisClass::LoadLevelCompleted);
 }
 
 void UEHGameInstance::QuitGame()
@@ -28,14 +55,46 @@ void UEHGameInstance::QuitGame()
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
 }
 
-float UEHGameInstance::GetMapLoadingPercentage()
+bool UEHGameInstance::IsLevelLoaded()
 {
-	if (TargetMapName.IsNone())
+	return CurrentLevel->IsLevelLoaded();
+}
+
+void UEHGameInstance::LoadLevelCompleted()
+{
+	CurrentLevel->SetShouldBeVisible(true);
+
+	auto* UICon = GetSubsystem<UUI_Controller>();
+	UICon->CloseWidget();
+
+	switch (CurrentLevelType)
 	{
-		return 0.f;
+	case ELevelType::Hotel:
+		GetWorld()->SpawnActor<AAnomaly_Generator>(Generator);
+		UICon->OpenWidget(UI_HUD_InGame);
+		break;
+
+	case ELevelType::MainMenu:
+		UICon->OpenWidget(UI_HUD_MainMenu);
+		break;
 	}
 
-	return GetAsyncLoadPercentage(TargetMapName) / 100.f;
+	auto* GameMode = GetWorld()->GetAuthGameMode<AEHGameMode>();
+	GameMode->RestartPlayer(GetWorld()->GetFirstPlayerController());
+
+	OnLevelLoaded.Broadcast(CurrentLevelType);
+}
+
+void UEHGameInstance::UnloadCurrentLevel()
+{
+	if (!CurrentLevel.Get())
+	{
+		return;
+	}
+
+	CurrentLevel->SetShouldBeLoaded(false);
+	CurrentLevel->SetShouldBeVisible(false);
+	CurrentLevel = nullptr;
 }
 
 #pragma endregion

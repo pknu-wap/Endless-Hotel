@@ -75,7 +75,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	FTimerHandle EyeHandle;
 	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Component_Camera->StartEyeEffect(false);
+			Component_Camera->StartEyeEffect_bool(false);
 		}), AnimLength, false);
 
 	FTimerHandle DeathHandle;

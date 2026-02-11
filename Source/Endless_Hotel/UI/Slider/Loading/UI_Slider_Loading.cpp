@@ -5,23 +5,39 @@
 
 #pragma region Base
 
+void UUI_Slider_Loading::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+}
+
 void UUI_Slider_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	SetLoadingPercentage();
+	if (!bIsLoaded)
+	{
+		SetLoadingPercentage(InDeltaTime);
+	}
 }
 
 #pragma endregion
 
 #pragma region Loading
 
-void UUI_Slider_Loading::SetLoadingPercentage()
+void UUI_Slider_Loading::SetLoadingPercentage(float InDeltaTime)
 {
-	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	float Value = GameInstance->GetMapLoadingPercentage();
+	LoadingPercentage += InDeltaTime * 0.8f;
+	LoadingPercentage = FMath::Clamp(LoadingPercentage, 0, TargetPercentage);
 
-	Slide_Slider(Value);
+	if (GameInstance->IsLevelLoaded())
+	{
+		LoadingPercentage = 1.f;
+		bIsLoaded = true;
+	}
+
+	Slide_Slider(LoadingPercentage);
 }
 
 #pragma endregion

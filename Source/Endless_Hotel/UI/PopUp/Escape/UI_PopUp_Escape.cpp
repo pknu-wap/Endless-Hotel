@@ -30,7 +30,7 @@ void UUI_PopUp_Escape::Click_Setting()
 void UUI_PopUp_Escape::Click_MainMenu()
 {
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenMap(EMapType::MainMenu);
+	GameInstance->OpenLevel(ELevelType::MainMenu);
 }
 
 void UUI_PopUp_Escape::Click_Quit()

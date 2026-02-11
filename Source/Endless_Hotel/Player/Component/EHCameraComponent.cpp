@@ -6,6 +6,7 @@
 #include "Sound/SoundController.h"
 #include "Actor/Elevator/Elevator.h"
 #include "Anomaly/Base/Anomaly_Base.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>
 
@@ -23,15 +24,18 @@ void UEHCameraComponent::BeginPlay()
 
 	SettingEyeEffect();
 
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	StartEyeEffect(true);
+	AElevator::ElevatorDelegate.Clear();
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect_bool);
+
+	UEHGameInstance::OnLevelLoaded.Clear();
+	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::StartEyeEffect_enum);
 }
 
 #pragma endregion
 
 #pragma region Eye Effect
 
-void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
+void UEHCameraComponent::StartEyeEffect_bool(bool bIsOpen)
 {
 	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
@@ -51,7 +55,7 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	}
 
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), OUT FoundActors);
 	PostProcessVolume = Cast<APostProcessVolume>(FoundActors[0]);
 
 	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
@@ -61,6 +65,16 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	PostProcessVolume->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DynMat_EyeEffect));
 
 	Timeline_EyeEffect->PlayFromStart();
+}
+
+void UEHCameraComponent::StartEyeEffect_enum(ELevelType Type)
+{
+	switch (Type)
+	{
+	case ELevelType::Hotel:
+		StartEyeEffect_bool(true);
+		break;
+	}
 }
 
 void UEHCameraComponent::SettingEyeEffect()

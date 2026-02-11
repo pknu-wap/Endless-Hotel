@@ -4,6 +4,7 @@
 
 #include "Component/EHComponent.h"
 #include "Type/Player/Type_Death.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <EHCameraComponent.generated.h>
 
@@ -34,7 +35,10 @@ protected:
 
 public:
 	UFUNCTION()
-	void StartEyeEffect(bool bIsOpen);
+	void StartEyeEffect_bool(bool bIsOpen);
+
+	UFUNCTION()
+	void StartEyeEffect_enum(ELevelType Type);
 
 protected:
 	void SettingEyeEffect();

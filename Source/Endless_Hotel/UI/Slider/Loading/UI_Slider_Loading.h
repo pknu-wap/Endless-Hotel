@@ -14,14 +14,24 @@ class ENDLESS_HOTEL_API UUI_Slider_Loading : public UUI_Slider_Base
 #pragma region Base
 
 protected:
+	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class UEHGameInstance> GameInstance;
 
 #pragma endregion
 
 #pragma region Loading
 
 protected:
-	void SetLoadingPercentage();
+	void SetLoadingPercentage(float InDeltaTime);
+
+protected:
+	const float TargetPercentage = 0.95f;
+	float LoadingPercentage = 0.f;
+	bool bIsLoaded = false;
 
 #pragma endregion
 

@@ -1,7 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/HUD/Title/UI_HUD_Title.h"
-#include "UI/Controller/UI_Controller.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
@@ -38,7 +37,7 @@ void UUI_HUD_Title::Click_Start()
 	Subsystem->Floor = 9;
 
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenMap(EMapType::Hotel);
+	GameInstance->OpenLevel(ELevelType::Hotel);
 }
 
 void UUI_HUD_Title::Click_Setting()
