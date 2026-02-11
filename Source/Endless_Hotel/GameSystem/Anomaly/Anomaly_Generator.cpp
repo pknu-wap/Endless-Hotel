@@ -8,27 +8,6 @@
 #include "Data/Controller/DataController.h"
 #include <Kismet/GameplayStatics.h>
 
-#pragma region Base
-
-void AAnomaly_Generator::BeginPlay()
-{
-	Super::BeginPlay();
-
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-
-	int32 IsNormal = FMath::RandRange(1, 10);
-	if (IsNormal > 8 || Sub->Floor == 9)
-	{
-		//정상 이상현상 스폰 방지 -> 그래도 통과 여부 확인을 쉽게 하기 위해서 스폰 위치는 다름
-		/*SpawnNormal();
-		return;*/
-	}
-	SpawnAnomalyAtIndex(Sub->ActIndex);
-	Sub->ActIndex++;
-}
-
-#pragma endregion
-
 #pragma region AnomalyObjectLinker
 
 void AAnomaly_Generator::AnomalyObjectLinker()
@@ -58,7 +37,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 #pragma region Generate
 
 // Spawn Anomaly at Specific Index
-AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
+AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
 {
 	UE_LOG(LogTemp, Verbose, TEXT("[Gen %s] SpawnAnomalyAtIndex(%d)"), *GetName(), Index);
 
@@ -74,7 +53,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 		}
 		Index = 0;
 		Sub->InitializePool();
-		return SpawnAnomalyAtIndex(Index); // restart
+		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
 	}
 
 	TSubclassOf<AAnomaly_Base> AnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
@@ -83,6 +62,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
 	FActorSpawnParameters Params;
+	Params.OverrideLevel = SpawnLevel;
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -110,7 +90,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index)
 	return Spawned;
 }
 
-AAnomaly_Base* AAnomaly_Generator::SpawnNormal()
+AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 
@@ -120,6 +100,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal()
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
 	FActorSpawnParameters Params;
+	Params.OverrideLevel = SpawnLevel;
 	Params.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 

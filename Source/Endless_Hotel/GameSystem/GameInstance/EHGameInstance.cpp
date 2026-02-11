@@ -121,11 +121,25 @@ void UEHGameInstance::UnloadCurrentLevel()
 
 void UEHGameInstance::SpawnAnomalyGenerator()
 {
+	ULevel* SpawnLevel = CurrentLevel->GetLoadedLevel();
+
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.OverrideLevel = CurrentLevel->GetLoadedLevel();
+	SpawnParams.OverrideLevel = SpawnLevel;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	Generator = GetWorld()->SpawnActor<AAnomaly_Generator>(GeneratorClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	int32 IsNormal = FMath::RandRange(1, 10);
+
+	if (IsNormal > 8 || Subsystem->Floor == 9)
+	{
+		Generator->SpawnNormal(SpawnLevel);
+		return;
+	}
+
+	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);
+	Subsystem->ActIndex++;
 }
 
 #pragma endregion
