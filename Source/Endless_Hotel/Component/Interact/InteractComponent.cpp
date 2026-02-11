@@ -4,9 +4,33 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Actor/Elevator/Elevator_Button.h"
+#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
 #include <Components/WidgetComponent.h>
 
+#pragma region Base
+
+void UInteractComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	SaveOriginalTransform();
+}
+
+#pragma endregion
+
 #pragma region Interact
+
+bool UInteractComponent::CanInteract() 
+{
+	if (auto* FloatComp = Owner->FindComponentByClass<UAnomaly_Component_Float>())
+	{
+		if (FloatComp->bIsFloating)
+		{
+			return false;
+		}
+	}
+
+	return !List_Interact.IsEmpty(); 
+}
 
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
@@ -81,7 +105,12 @@ void UInteractComponent::Interact()
 
 void UInteractComponent::Action_Restore()
 {
-	// 복구시키기 (담당: 미스 조)
+	if (!CanInteract())
+	{
+		return;
+	}
+
+	StartRestoring(2.5);
 }
 
 void UInteractComponent::Action_Rotate()
@@ -106,4 +135,65 @@ void UInteractComponent::Action_Elevator()
 	Cast<AElevator_Button>(Owner)->InteractElevator();
 }
 
+#pragma endregion
+
+#pragma region Restore
+
+void UInteractComponent::SaveOriginalTransform()
+{
+	if (AActor* RestoreOwner = GetOwner())
+	{
+		OriginalTransform = RestoreOwner->GetActorTransform();
+	}
+}
+
+void UInteractComponent::StartRestoring(float Duration)
+{
+	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+
+	RestoreDuration = FMath::Max(Duration, 0.01f);
+	RestoreCurrentTime = 0.f;
+
+	GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &UInteractComponent::RestoreTick, 0.01f, true);
+}
+
+void UInteractComponent::RestoreTick()
+{
+	RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
+	float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
+	float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
+
+	if (AActor* RestoreOwner = GetOwner())
+	{
+		FTransform CurrentTransform = RestoreOwner->GetActorTransform();
+		FTransform NewTransform;
+		NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+		RestoreOwner->SetActorTransform(NewTransform);
+	}
+
+	if (RawAlpha >= 1.0f)
+	{
+		FinishRestoring();
+	}
+}
+
+void UInteractComponent::FinishRestoring()
+{
+	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+
+	if (AActor* RestoreOwner = GetOwner())
+	{
+		RestoreOwner->SetActorTransform(OriginalTransform);
+
+		if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(RestoreOwner->GetRootComponent()))
+		{
+			RootPrim->SetSimulatePhysics(false);
+		}
+
+		if (OnRestored.IsBound())
+		{
+			OnRestored.Broadcast(RestoreOwner);
+		}
+	}
+}
 #pragma endregion

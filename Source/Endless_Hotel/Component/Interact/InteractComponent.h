@@ -7,10 +7,19 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
+
 UCLASS(ClassGroup = (Custom))
 class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 {
 	GENERATED_BODY()
+
+#pragma region Base
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
 
 #pragma region Interact
 
@@ -19,7 +28,7 @@ public:
 	void ShowDescriptionWidget(bool bIsShow);
 
 	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없으면 상호작용 불가능 )
-	bool CanInteract() { return !List_Interact.IsEmpty(); }
+	bool CanInteract();
 
 	// 현재 선택된 상호작용 번호 변경
 	void ChangeIndex(bool bUp);
@@ -56,4 +65,26 @@ protected:
 
 #pragma endregion
 
+#pragma region Restore
+
+public:
+	void SaveOriginalTransform();
+	void StartRestoring(float Duration = 2.5f);
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnRestoredSignature OnRestored;
+
+private:
+	void RestoreTick();
+	void FinishRestoring();
+
+	FTransform OriginalTransform;
+	FTransform StartTransform;
+	FTimerHandle RestoreHandle;
+
+	float RestoreDuration = 2.5f;
+	float RestoreCurrentTime = 0.f;
+
+#pragma endregion
 };

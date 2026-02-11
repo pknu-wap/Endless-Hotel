@@ -77,8 +77,6 @@ void AElevator_Button::MoveToButtonPlayer()
         EMoveComponentAction::Move,
         FLatentActionInfo(0, FMath::Rand(), TEXT("OnMoveCompleted"), this)
     );
-
-    Player->GetController()->SetIgnoreMoveInput(true);
 }
 
 void AElevator_Button::OnMoveCompleted()
@@ -98,7 +96,6 @@ void AElevator_Button::OnMoveCompleted()
             GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]()
                 {
                     EHPC->OnEVButtonPressStarted();
-                    EHPC->GetPawn()->GetController()->SetIgnoreMoveInput(false);
                 }), 2.0f, false);
         }
     }
