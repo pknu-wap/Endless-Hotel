@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/EightExit/SignDrop/Anomaly_SignDrop.h"
+#include "Anomaly/Neapolitan/SignDrop/Anomaly_SignDrop.h"
 #include "Anomaly/Object/SignDrop/Anomaly_Object_SignDrop.h"
 
 #pragma region Base
