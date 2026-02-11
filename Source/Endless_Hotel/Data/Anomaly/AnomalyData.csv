@@ -28,3 +28,4 @@
 27,88,Float,/Game/EndlessHotel/Anomaly/Base/BP_Float.BP_Float_C,/Game/EndlessHotel/Anomaly/Object/Float/BP_Object_Float.BP_Object_Float_C
 28,23,RugColor,/Game/EndlessHotel/Anomaly/Base/BP_Rug.BP_Rug_C,/Game/EndlessHotel/Anomaly/Object/Rug/BP_Object_Rug.BP_Object_Rug_C
 29,12,Choose,/Game/EndlessHotel/Anomaly/Base/BP_Choose.BP_Choose_C,/Game/EndlessHotel/Anomaly/Object/Choose/BP_Object_Choose.BP_Object_Choose_C
+30,85,Twin,/Game/EndlessHotel/Anomaly/Base/BP_Twin.BP_Twin_C,/Game/EndlessHotel/Anomaly/Object/Twin/BP_Object_Twin.BP_Object_Twin_C
