@@ -5,10 +5,8 @@
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Sound/SoundController.h"
 #include "Actor/Elevator/Elevator.h"
-#include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Type/Level/Type_Level.h"
-#include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>
 
 #pragma region Base
@@ -25,22 +23,22 @@ UEHCameraComponent::UEHCameraComponent(const FObjectInitializer& ObjectInitializ
 	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::LevelLoadCompleted);
 }
 
-void UEHCameraComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SettingEyeEffect();
-}
-
 #pragma endregion
 
 #pragma region Post Processing
 
 void UEHCameraComponent::FindPPV()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), OUT FoundActors);
-	PostProcessVolume = Cast<APostProcessVolume>(FoundActors[0]);
+	for (auto* PPV : GetWorld()->PostProcessVolumes)
+	{
+		auto Props = PPV->GetProperties();
+
+		if (Props.bIsUnbound)
+		{
+			PostProcessVolume = Cast<APostProcessVolume>(PPV);
+			break;
+		}
+	}
 
 	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 }
@@ -106,6 +104,7 @@ void UEHCameraComponent::LevelLoadCompleted()
 	{
 	case ELevelType::Hotel:
 		FindPPV();
+		SettingEyeEffect();
 		StartEyeEffect(true);
 		break;
 	}

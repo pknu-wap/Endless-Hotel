@@ -17,9 +17,6 @@ class ENDLESS_HOTEL_API UEHCameraComponent : public UEHComponent
 public:
 	UEHCameraComponent(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma endregion
 
 #pragma region Post Processing

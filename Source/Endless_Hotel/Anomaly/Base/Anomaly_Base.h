@@ -105,7 +105,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Start")
-	FTransform PlayerStartTransform = FTransform(FRotator::ZeroRotator, FVector(-1360, 570, 710), FVector(0.75f, 0.75f, 0.75f));
+	FTransform PlayerStartTransform = FTransform(FRotator::ZeroRotator, FVector(-750, 566.568f, 997), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 
