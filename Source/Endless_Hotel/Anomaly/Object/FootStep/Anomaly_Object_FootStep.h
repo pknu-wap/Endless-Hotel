@@ -1,0 +1,29 @@
+// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly_Object_FootStep.generated.h"
+
+
+UCLASS()
+class ENDLESS_HOTEL_API AAnomaly_Object_FootStep : public AAnomaly_Object_Base
+{
+	GENERATED_BODY()
+
+#pragma region Base
+
+public:
+	AAnomaly_Object_FootStep(const FObjectInitializer& ObjectInitializer);
+
+
+#pragma endregion
+
+#pragma region FootStep
+
+public:
+	void ChangeFootStep();
+
+#pragma endregion
+};

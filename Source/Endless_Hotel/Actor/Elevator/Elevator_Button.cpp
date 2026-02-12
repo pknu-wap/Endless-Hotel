@@ -4,6 +4,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include "Component/LookAt/LookAtComponent.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Component/Interact/InteractComponent.h"
 #include <Components/WidgetComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
@@ -76,8 +77,6 @@ void AElevator_Button::MoveToButtonPlayer()
         EMoveComponentAction::Move,
         FLatentActionInfo(0, FMath::Rand(), TEXT("OnMoveCompleted"), this)
     );
-
-    Player->GetController()->SetIgnoreMoveInput(true);
 }
 
 void AElevator_Button::OnMoveCompleted()
@@ -91,13 +90,12 @@ void AElevator_Button::OnMoveCompleted()
 
         if (AEHPlayerController* EHPC = Cast<AEHPlayerController>(Controller))
         {
-            EHPC->OnButtonPressStarted();
+            EHPC->OnEVButtonPressStarted();
 
             FTimerHandle ButtonAnim;
             GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]()
                 {
-                    EHPC->OnButtonPressCompleted();
-                    EHPC->GetPawn()->GetController()->SetIgnoreMoveInput(false);
+                    EHPC->OnEVButtonPressStarted();
                 }), 2.0f, false);
         }
     }

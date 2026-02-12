@@ -4,8 +4,8 @@
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Components/WidgetComponent.h"   
 #include "Component/LookAt/LookAtComponent.h"
-#include "Component/Anomaly_Component_Restore.h"
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Interact/InteractComponent.h"
 #include <EngineUtils.h>
 
 #pragma region Base
@@ -35,27 +35,31 @@ void AAnomaly_Object_Float::SearchAndStart()
     for (TActorIterator<AActor> It(GetWorld()); It; ++It)
     {
         AActor* Target = *It;
-        auto* FloatComp = Target->FindComponentByClass<UAnomaly_Component_Float>();
-        auto* RestoreComp = Target->FindComponentByClass<UAnomaly_Component_Restore>();
 
-        if (FloatComp && RestoreComp)
+        auto* InteractComp = Target->FindComponentByClass<UInteractComponent>();
+        auto* FloatComp = Target->FindComponentByClass<UAnomaly_Component_Float>();
+
+        if (InteractComp && FloatComp)
         {
             AffectedActors.Add(Target);
             FloatComp->StartFloating();
 
-            if (auto* BaseObj = Cast<AAnomaly_Object_Base>(Target))
-            {
-                /*BaseObj->InteractAction = [this, Target, FloatComp, RestoreComp]()
-                    {
-                        if (RestoredActors.Contains(Target) || FloatComp->bIsFloating) return;
-                        FloatComp->StopFloating();
-                        RestoreComp->StartRestoring(2.5f);
-
-                        RestoredActors.Add(Target);
-                        CheckAllRestored();
-                    };*/
-            }
+            InteractComp->OnRestored.AddDynamic(this, &AAnomaly_Object_Float::OnActorRestored);
         }
+    }
+}
+
+// 복구될 때마다 호출되는 콜백 함수
+void AAnomaly_Object_Float::OnActorRestored(AActor* RestoredActor)
+{
+    if (RestoredActors.Contains(RestoredActor)) return;
+
+    RestoredActors.Add(RestoredActor);
+
+    // 전체 검사
+    if (RestoredActors.Num() >= AffectedActors.Num())
+    {
+        CheckAllRestored();
     }
 }
 
@@ -120,17 +124,6 @@ void AAnomaly_Object_Float::StopFloating()
 #pragma endregion
 
 #pragma region Interact
-
-//void AAnomaly_Object_Float::SetInteraction()
-//{
-//    InteractAction = [this]()
-//        {
-//            if (bIsFloating) return;
-//
-//            RestoreObjectTransform();
-//            Object->SetSimulatePhysics(false);
-//        };
-//}
 
 void AAnomaly_Object_Float::CheckAllRestored()
 {

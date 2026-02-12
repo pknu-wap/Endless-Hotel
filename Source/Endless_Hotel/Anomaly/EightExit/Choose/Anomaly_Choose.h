@@ -31,5 +31,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Position")
 	FVector ChooseStartPos = FVector(-1010, 560, -900);
 
+#pragma region Position
+
+protected:
+	virtual FVector GetAnomalyStartPos() const override;
+
 #pragma endregion
 };
