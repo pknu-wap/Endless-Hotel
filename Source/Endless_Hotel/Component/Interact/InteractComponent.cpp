@@ -6,6 +6,7 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
 #include <Components/WidgetComponent.h>
+#include <Anomaly/Object/Painting/Anomaly_Object_Painting.h>
 
 #pragma region Base
 
@@ -120,6 +121,7 @@ void UInteractComponent::Action_Restore()
 void UInteractComponent::Action_Rotate()
 {
 	// 그림 회전 (담당: 경원 김)
+	Cast<AAnomaly_Object_Painting>(Owner)->InteractRotate();
 }
 
 void UInteractComponent::Action_TurnOff()

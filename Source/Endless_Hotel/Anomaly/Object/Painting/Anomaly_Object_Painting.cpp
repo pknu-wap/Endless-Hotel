@@ -121,10 +121,10 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 void AAnomaly_Object_Painting::SetInteraction()
 {
-	Component_Interact->AdditionalAction = ([this]()
+	/*Component_Interact->AdditionalAction = ([this]()
 		{
 			InteractRotate();
-		});
+		});*/
 }
 
 void AAnomaly_Object_Painting::InteractRotate()
