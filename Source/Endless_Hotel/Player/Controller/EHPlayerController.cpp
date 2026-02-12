@@ -13,6 +13,8 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/SpotLightComponent.h>
 
+#pragma region Base
+
 AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -52,6 +54,8 @@ void AEHPlayerController::Tick(float DeltaSeconds)
 	CheckForInteractables();
 }
 
+#pragma endregion 
+
 #pragma region Input
 
 void AEHPlayerController::SetupInputComponent()
@@ -82,11 +86,40 @@ void AEHPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
 
 		// Light
-		EnhancedInputComponent->BindAction(IA_Light, ETriggerEvent::Started, this, &ThisClass::TurnPlayerLight);
+		EnhancedInputComponent->BindAction(IA_Light, ETriggerEvent::Started, this, &ThisClass::TurnPlayerHandLight);
+
 		//ESC
 		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Started, this, &ThisClass::EscapeStarted);
 	}
 }
+
+#pragma endregion
+
+#pragma region Component
+
+UCameraComponent* AEHPlayerController::GetPlayerCamera() const
+{
+	if (EHPlayer)
+	{
+		return EHPlayer->FindComponentByClass<UCameraComponent>();
+	}
+	return nullptr;
+}
+
+#pragma endregion
+
+#pragma region Widget
+
+void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
+{
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_Escape);
+}
+
+#pragma endregion 
+
+
+#pragma region Move
 
 void AEHPlayerController::Move(const FInputActionValue& Value)
 {
@@ -108,6 +141,10 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 		EHPlayer->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
+
+#pragma endregion
+
+#pragma region Look
 
 void AEHPlayerController::Look(const FInputActionValue& Value)
 {
@@ -132,6 +169,10 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 		}
 	}
 }
+
+#pragma endregion
+
+#pragma region State_Run
 
 void AEHPlayerController::OnRunStarted()
 {
@@ -170,6 +211,10 @@ void AEHPlayerController::OnRunCompleted()
 		MovementComp->MaxWalkSpeed = WalkSpeed;
 	}
 }
+
+#pragma endregion
+
+#pragma region State_Crouch
 
 void AEHPlayerController::OnCrouchStarted()
 {
@@ -210,6 +255,10 @@ void AEHPlayerController::OnCrouchCompleted()
 		Capsule->SetCapsuleSize(45.f, 100.f);
 	}
 }
+
+#pragma endregion
+
+#pragma region State_Crouch
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
@@ -280,18 +329,65 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	}
 }
 
-void AEHPlayerController::OnButtonPressStarted()
+#pragma endregion
+
+#pragma region State_EVButton
+
+void AEHPlayerController::OnEVButtonPressStarted()
 {
+
 	bIsButtonPressing = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
 }
 
-void AEHPlayerController::OnButtonPressCompleted()
+void AEHPlayerController::OnEVButtonPressCompleted()
 {
 	bIsButtonPressing = false;
 	bCanMove = true;
 }
+
+#pragma endregion
+
+#pragma region State_HandLight
+
+void AEHPlayerController::TurnPlayerHandLight()
+{
+	if (!bCanMove) {
+		return;
+	}
+
+	if (!FlashLight)
+	{
+		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+	}
+	FlashLight->SetVisibility(!FlashLight->IsVisible());
+}
+
+#pragma endregion
+
+
+#pragma region State_Death
+
+void AEHPlayerController::PlayDeathSequence()
+{
+	if (!EHPlayer) return;
+
+	bIsPlayerDead = true;
+	bIsCameraFixed = true;
+	bCanMove = false;
+
+	if (!PlayerCameraComponent)
+	{
+		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
+	}
+
+	PlayerCameraComponent->SetRelativeRotation(FRotator(-5.f, 0.f, 0.f));
+}
+
+#pragma endregion
+
+#pragma region Interact
 
 void AEHPlayerController::CheckForInteractables()
 {
@@ -312,9 +408,6 @@ void AEHPlayerController::CheckForInteractables()
 		ECC_Visibility,
 		Params
 	);
-
-	// Debug line (시각 확인용)
-	// DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.0f, 0, 1.0f);
 
 	AActor* HitActor = HitResult.GetActor();
 	UInteractComponent* Comp_Interact = nullptr;
@@ -354,56 +447,8 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 	}
 }
 
-void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Escape);
-}
+#pragma endregion
 
-UCameraComponent* AEHPlayerController::GetPlayerCamera() const
-{
-	if (EHPlayer)
-	{
-		return EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-	return nullptr;
-}
 
-void AEHPlayerController::TurnPlayerLight()
-{
-	if (!bCanMove) {
-		return;
-	}
 
-	if (!FlashLight)
-	{
-		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
-	}
-	FlashLight->SetVisibility(!FlashLight->IsVisible());
-}
 
-#pragma region Death
-
-void AEHPlayerController::OnAnomalyVerdict(bool bIsAlive)
-{
-	if (bIsAlive)
-		return;
-
-	PlayDeathSequence();
-}
-
-void AEHPlayerController::PlayDeathSequence()
-{
-	if (!EHPlayer) return;
-
-	bIsPlayerDead = true;
-	bIsCameraFixed = true;
-	bCanMove = false;
-
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	PlayerCameraComponent->SetRelativeRotation(FRotator(-5.f, 0.f, 0.f));
-}

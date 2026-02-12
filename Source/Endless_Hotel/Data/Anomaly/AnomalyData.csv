@@ -1,5 +1,5 @@
 ﻿Row,AnomalyID,Anomaly_En,AnomalyPath,ObjectPath
-1,1,Hair,/Game/EndlessHotel/Anomaly/Base/BP_Hair.BP_Hair_C,
+1,1,Hair,/Game/EndlessHotel/Anomaly/Base/BP_Hair.BP_Hair_C,/Game/EndlessHotel/Anomaly/Object/Hair/BP_Object_Hair.BP_Object_Hair_C
 2,2,Light_Destory,/Game/EndlessHotel/Anomaly/Base/BP_Light.BP_Light_C,/Game/EndlessHotel/Anomaly/Object/Light/BP_Light.BP_Light_C
 3,3,Light_Blue,/Game/EndlessHotel/Anomaly/Base/BP_Light.BP_Light_C,/Game/EndlessHotel/Anomaly/Object/Light/BP_Light.BP_Light_C
 4,4,Door_Shake,/Game/EndlessHotel/Anomaly/Base/BP_Door.BP_Door_C,/Game/EndlessHotel/Anomaly/Object/Door/BP_Door.BP_Door_C
@@ -11,7 +11,7 @@
 10,11,Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
 11,99,Portrait_Eye,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
 12,96,Portrait_Blood,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
-13,15,FootStep,/Game/EndlessHotel/Anomaly/Base/BP_FootStep.BP_FootStep_C,
+13,15,FootStep,/Game/EndlessHotel/Anomaly/Base/BP_FootStep.BP_FootStep_C,/Game/EndlessHotel/Anomaly/Object/FootStep/BP_Object_FootStep.BP_Object_FootStep_C
 14,95,Portrait_Blur,/Game/EndlessHotel/Anomaly/Base/BP_Painting.BP_Painting_C,/Game/EndlessHotel/Anomaly/Object/Painting/BP_Object_Painting.BP_Object_Painting_C
 15,9,ShelfBook,/Game/EndlessHotel/Anomaly/Base/BP_ShelfBook.BP_ShelfBook_C,/Game/EndlessHotel/Anomaly/Object/ShelfBook/BP_ShelfBook.BP_ShelfBook_C
 16,98,ShelfDoll,/Game/EndlessHotel/Anomaly/Base/BP_ShelfDoll.BP_ShelfDoll_C,/Game/EndlessHotel/Anomaly/Object/ShelfDoll/BP_ShelfDoll.BP_ShelfDoll_C
@@ -24,7 +24,8 @@
 23,17,Blood_Ceiling,/Game/EndlessHotel/Anomaly/Base/BP_Ceiling.BP_Ceiling_C,/Game/EndlessHotel/Anomaly/Object/Ceiling/BP_Ceiling.BP_Ceiling_C
 24,18,Disappear,/Game/EndlessHotel/Anomaly/Base/BP_Disappear.BP_Disappear_C,/Game/EndlessHotel/Anomaly/Object/Disappear/BP_Disappear.BP_Disappear_C
 25,13,Bug,/Game/EndlessHotel/Anomaly/Base/BP_Bug.BP_Bug_C,/Game/EndlessHotel/Anomaly/Object/Bug/BP_Bug.BP_Bug_C
-26,21,SignDrop,/Game/EndlessHotel/Anomaly/Base/BP_SignDrop.BP_SignDrop_C,/Game/EndlessHotel/Anomaly/Object/SignDrop/BP_Object_SignDrop.BP_Object_SignDrop_C
+26,86,SignDrop,/Game/EndlessHotel/Anomaly/Base/BP_SignDrop.BP_SignDrop_C,/Game/EndlessHotel/Anomaly/Object/SignDrop/BP_Object_SignDrop.BP_Object_SignDrop_C
 27,88,Float,/Game/EndlessHotel/Anomaly/Base/BP_Float.BP_Float_C,/Game/EndlessHotel/Anomaly/Object/Float/BP_Object_Float.BP_Object_Float_C
 28,23,RugColor,/Game/EndlessHotel/Anomaly/Base/BP_Rug.BP_Rug_C,/Game/EndlessHotel/Anomaly/Object/Rug/BP_Object_Rug.BP_Object_Rug_C
 29,12,Choose,/Game/EndlessHotel/Anomaly/Base/BP_Choose.BP_Choose_C,/Game/EndlessHotel/Anomaly/Object/Choose/BP_Object_Choose.BP_Object_Choose_C
+30,85,Twin,/Game/EndlessHotel/Anomaly/Base/BP_Twin.BP_Twin_C,/Game/EndlessHotel/Anomaly/Object/Twin/BP_Object_Twin.BP_Object_Twin_C

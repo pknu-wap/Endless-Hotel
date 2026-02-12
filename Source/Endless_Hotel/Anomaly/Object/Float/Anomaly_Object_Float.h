@@ -44,6 +44,9 @@ public:
     void StopFloating();
     void FloatAccelerate();
 
+    UFUNCTION()
+    void OnActorRestored(AActor* RestoredActor);
+
 protected:
     FTimerHandle FloatTickTimer;
     FTimerHandle StopFloatTimer;

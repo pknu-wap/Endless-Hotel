@@ -98,12 +98,4 @@ protected:
 
 #pragma endregion
 
-#pragma region KeyVal
-
-public:
-	UPROPERTY(BlueprintReadWrite, Category = "AnomalyData")
-	int32 GlobalSelectedKeyIndex = 0;
-
-#pragma endregion
-
 };

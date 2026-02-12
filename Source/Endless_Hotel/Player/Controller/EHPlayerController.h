@@ -21,6 +21,7 @@ class ENDLESS_HOTEL_API AEHPlayerController : public APlayerController
 	GENERATED_BODY()
 
 #pragma region Base
+
 public:
 	AEHPlayerController(const FObjectInitializer& ObjectInitializer);
 
@@ -29,15 +30,17 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
+
 	UPROPERTY()
 	TObjectPtr<class AEHPlayer> EHPlayer;
+
 #pragma endregion
 
 #pragma region Input
+
 protected:
 	virtual void SetupInputComponent() override;
 	
-
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputMappingContext> IMC_Default;
@@ -54,24 +57,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Run;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float WalkSpeed = 300.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float RunSpeed = 600.0f;
-
 	// Interact 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Interact;
-
-	bool bCanInteract;
-	float TraceDistance;
-
-	UPROPERTY()
-	TObjectPtr<class AActor> CurrentInteractActor;
-
-	UPROPERTY()
-	TWeakObjectPtr<class UInteractComponent> CurrentInteractComp;
 
 	// Crouch
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
@@ -90,33 +78,49 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_ESC;
 
-	// Look Sensitivity
+#pragma region Move
+
 public:
-	void SetLookSensitivity(float Value) { LookSensitivity = 0.2f + Value * 1.8f; }
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float WalkSpeed = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+	float RunSpeed = 600.0f;
+
+protected:
+	void Move(const FInputActionValue& Value);
+
+#pragma endregion
+
+#pragma region Look
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	float LookSensitivity = 1.1f;
 
-	// Input Callbacks
-	void EscapeStarted(const struct FInputActionValue& InputValue);
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void OnRunStarted();
-	void OnRunCompleted();
-	void OnCrouchStarted();
-	void OnCrouchCompleted();
-	void OnFaceCoverStarted();
-	void OnFaceCoverCompleted();
-	void TurnPlayerLight();
-	void OnInteract(const FInputActionValue& Value);
-
-	/** Tick 내 상호작용 탐색 */
-	void CheckForInteractables();
-
 public:
-	void OnButtonPressStarted();
-	void OnButtonPressCompleted();
+	void SetLookSensitivity(float Value) { LookSensitivity = 0.2f + Value * 1.8f; }
+	void Look(const FInputActionValue& Value);
+
+#pragma endregion
+
+#pragma region Interact
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class AActor> CurrentInteractActor;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UInteractComponent> CurrentInteractComp;
+
+protected:
+	bool bCanInteract;
+	float TraceDistance;
+
+protected:
+	void CheckForInteractables();
+	void OnInteract(const FInputActionValue& Value);
 
 #pragma endregion
 
@@ -126,24 +130,30 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<class UUI_Base> UI_Escape;
 
+protected:
+	void EscapeStarted(const struct FInputActionValue& InputValue);
+
 #pragma endregion
 
 #pragma region Components
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* SpringArm;
+	TObjectPtr<class USpringArmComponent> SpringArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* PlayerCameraComponent;
+	TObjectPtr<class UCameraComponent> PlayerCameraComponent;
 
 	// Helper function to get camera
 	UCameraComponent* GetPlayerCamera() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FlashLight", meta = (AllowPrivateAccess = "true"))
-	USpotLightComponent* FlashLight;
+	TObjectPtr<class USpotLightComponent> FlashLight;
+
 #pragma endregion
 
 #pragma region State
+
 public:
 	bool bIsFaceCovering = false;
 	bool bIsCameraFixed = false;
@@ -154,18 +164,61 @@ public:
 	bool bIsCrouching = false;
 	bool bIsButtonPressing = false;
 
+public:
 	bool GetIsRunning() const { return bIsRunning; }
 	bool GetIsCrouching() const { return bIsCrouching; }
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
 	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
+
 #pragma endregion
 
-#pragma region Death
-	UFUNCTION()
-	void OnAnomalyVerdict(bool bIsAlive);
+#pragma region State_Death
 
+public:
 	void PlayDeathSequence();
 
+public:
 	bool bIsPlayerDead = false;
 	bool GetIsPlayerDead() const { return bIsPlayerDead; }
+
+#pragma endregion
+
+
+#pragma region State_Run
+	
+protected:
+	void OnRunStarted();
+	void OnRunCompleted();
+
+#pragma endregion
+
+#pragma region State_Crouch
+
+protected:
+	void OnCrouchStarted();
+	void OnCrouchCompleted();
+
+#pragma endregion
+
+#pragma region State_FaceCover
+
+protected:
+	void OnFaceCoverStarted();
+	void OnFaceCoverCompleted();
+
+#pragma region State_EVButton
+
+public:
+	void OnEVButtonPressStarted();
+	void OnEVButtonPressCompleted();
+
+#pragma endregion
+
+#pragma region State_HandLight
+
+protected:
+	void TurnPlayerHandLight();
+
+#pragma endregion
+
 };

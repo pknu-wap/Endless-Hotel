@@ -3,7 +3,6 @@
 
 #include "Anomaly/EightExit/Choose/Anomaly_Choose.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
@@ -35,10 +34,10 @@ void AAnomaly_Choose::SetAnomalyActivate()
 				{
 					PlayerChar->SetActorLocation(TargetLocation, false, nullptr, ETeleportType::TeleportPhysics);
 
-					UEHGameInstance* GI = Cast<UEHGameInstance>(GetGameInstance());
-					if (GI)
+					UAnomalyProgressSubSystem* APSS = Cast<UAnomalyProgressSubSystem>(GetGameInstance());
+					if (APSS)
 					{
-						if (GI->GlobalSelectedKeyIndex == 2)
+						if (APSS->GlobalSelectedKeyIndex == 2)
 						{
 							SetVerdictMode(EAnomalyVerdictMode::Normal);
 						}
@@ -53,6 +52,9 @@ void AAnomaly_Choose::SetAnomalyActivate()
 
 #pragma region Position
 
-
+FVector AAnomaly_Choose::GetAnomalyStartPos() const
+{
+	return ChooseStartPos;
+}
 
 #pragma endregion
