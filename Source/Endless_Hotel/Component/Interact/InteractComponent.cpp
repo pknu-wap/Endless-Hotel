@@ -43,6 +43,11 @@ bool UInteractComponent::CanInteract()
 
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
+	if (!List_Interact.IsValidIndex(CurrentIndex))
+	{
+		return;
+	}
+
 	if (!CanInteract())
 	{
 		bIsShow = false;
