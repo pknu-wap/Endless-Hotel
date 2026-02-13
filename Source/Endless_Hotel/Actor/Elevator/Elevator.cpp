@@ -15,6 +15,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
 #include <Camera/CameraComponent.h>
+#include <GameFramework/SpringArmComponent.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogElevator, Log, All);
 
@@ -77,18 +78,15 @@ void AElevator::BeginPlay()
 	Super::BeginPlay();
 	check(LeftDoor && RightDoor && DoorTimeline && InsideTrigger);
 
-	// 1) Closed Location Save
 	LeftDoorClosed = LeftDoor->GetRelativeLocation();
 	RightDoorClosed = RightDoor->GetRelativeLocation();
 
-	// 2) Open Location Compute
 	const FVector LOff = bSlideOnX ? FVector(-DoorGap, 0, 0) : FVector(0, -DoorGap, 0);
 	const FVector ROff = bSlideOnX ? FVector(DoorGap, 0, 0) : FVector(0, DoorGap, 0);
 
 	LeftDoorOpenPos = LeftDoorClosed + LOff;
 	RightDoorOpenPos = RightDoorClosed + ROff;
 
-	// 3) Timeline Setup
 	if (DoorCurve != nullptr)
 	{
 		FOnTimelineFloat Update;
@@ -103,17 +101,14 @@ void AElevator::BeginPlay()
 		DoorTimeline->SetIgnoreTimeDilation(true);
 	}
 
-	// 4) Delegate Setup
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
 
-	// 6) MoveElevator
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	if (Sub->bPassed)
 	{
 		if (!bIsNormalElevator)
 		{
-			//SetPlayerInputEnabled(false);
 			ElevatorLight->SetIntensity(LightOnIntensity);
 			ElevatorMove(StartPos, MapPos, true);
 		}
@@ -122,6 +117,7 @@ void AElevator::BeginPlay()
 	{
 		SetActorLocation(MapPos);
 	}
+	SetPlayerInputEnabled(true);
 }
 #pragma endregion
 
@@ -141,7 +137,6 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	bIsDoorMoving = false;
-	SetPlayerInputEnabled(true);
 }
 
 #pragma endregion
@@ -152,7 +147,6 @@ void AElevator::MoveDoors(bool bIsOpening)
 {
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bIsDoorMoving && bIsOpening == bIsDoorOpened) return;
-
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
 	AC->Sound = Sound_DoorMove;
@@ -161,7 +155,6 @@ void AElevator::MoveDoors(bool bIsOpening)
 	if (bIsOpening)
 	{
 		bIsDoorOpened = true;
-		//SetPlayerInputEnabled(false);
 		DoorTimeline->PlayFromStart();
 	}
 	else
@@ -190,27 +183,13 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (!Player) return;
 	if (bIsPlayerInside) return;
 	bIsPlayerInside = true;
-	FTimerHandle MovePlayerHandle;
-	GetWorld()->GetTimerManager().SetTimer(
-		MovePlayerHandle,
-		FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-			{
-				TakePlayer();
-				GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-			}),
-		0.5f,
-		false
-	);
-	GetWorld()->GetTimerManager().SetTimer(
-		MovePlayerHandle,
-		FTimerDelegate::CreateWeakLambda(this, [this, &MovePlayerHandle]()
-			{
-				RotatePlayer();
-				GetWorld()->GetTimerManager().ClearTimer(MovePlayerHandle);
-			}),
-		0.1f,
-		false
-	);
+	
+	FTimerHandle RotateTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(RotateTimerHandle, this, &AElevator::RotatePlayer, 0.1f, false);
+
+	FTimerHandle TakeTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TakeTimerHandle, this, &AElevator::TakePlayer, 0.5f, false);
+
 	MoveDoors(false);
 	ElevatorLight->SetIntensity(LightOnIntensity);
 	if (!bChoiceSentThisRide)
@@ -245,7 +224,6 @@ void AElevator::CallElevator()
 
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
-	//SetPlayerInputEnabled(false);
 	AC->Sound = Sound_ElevatorMove;
 	AC->Play();
 	SetActorLocation(Start);
@@ -263,7 +241,6 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 			FTimerDelegate::CreateWeakLambda(this, [this, MoveHandle]() mutable
 				{
 					MoveDoors(true);
-					SetPlayerInputEnabled(true);
 					GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
 					bIsPlayerInside = false;
 				}),
@@ -285,7 +262,6 @@ void AElevator::NotifySubsystemElevatorChoice()
 {
 	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-	//SetPlayerInputEnabled(false);
 	FTimerHandle WaitHandle;
 	FTimerHandle MoveHandle;
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
@@ -323,34 +299,25 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 void AElevator::RotatePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	FRotator LookRotation = FRotator(0.f, RotateAngle, 0.f);
-	Player->bUseControllerRotationYaw = false;
-	auto* MoveComp = Player->GetCharacterMovement();
-	MoveComp->StopMovementImmediately();
-	MoveComp->DisableMovement();
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this, LookRotation]()
+
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			SmoothRotate(LookRotation);
+			SmoothRotate(RotateAngle);
 		}), 0.01f, true);
-	TakePlayer();
-	MoveComp->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
 void AElevator::SmoothRotate(FRotator TargetRotation)
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	FRotator CurrentRotation = FRotator(0, Player->GetActorRotation().Yaw, 0);
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	FRotator CurrentRotation = PC->GetControlRotation();
 	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
-	UCameraComponent* PlayerCamera = Player->FindComponentByClass<UCameraComponent>();
-	Player->SetActorRotation(SmoothRotation);
-	PlayerCamera->SetRelativeRotation(FRotator(-3, -0.000768, -0.000162));
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(SmoothRotation);
+	PC->SetControlRotation(SmoothRotation);
 
 	if (SmoothRotation.Equals(TargetRotation, 0.01f))
 	{
 		SmoothRotation = TargetRotation;
-		Player->SetActorRotation(SmoothRotation);
-		TakePlayer();
+		PC->SetControlRotation(SmoothRotation);
 		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 	}
 }
@@ -362,6 +329,7 @@ void AElevator::TakePlayer()
 	FixedLocation.X = PlayerLocationInElevator.X;
 	FixedLocation.Y = PlayerLocationInElevator.Y;
 	Player->SetActorLocation(FixedLocation);
+	SetPlayerInputEnabled(false);
 }
 
 #pragma endregion

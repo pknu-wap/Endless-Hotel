@@ -185,7 +185,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	int16 RotateAngle;
+	FRotator RotateAngle;
 
 	FTimerHandle RotateHandle;
 
