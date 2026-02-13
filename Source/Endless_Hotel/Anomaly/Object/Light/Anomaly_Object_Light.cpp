@@ -18,7 +18,7 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 	Mesh_Destroy->SetSimulatePhysics(false);
 	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh_Destroy->SetNotifyBreaks(true);
-
+	
 	PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
 	PointLight->SetupAttachment(RootComponent);
 
@@ -38,15 +38,11 @@ void AAnomaly_Object_Light::BeginPlay()
 
 #pragma region Light
 
-void AAnomaly_Object_Light::TurnOffLight()
+void AAnomaly_Object_Light::TurnLight(bool bIsOn)
 {
-	PointLight->bAffectsWorld = false;
-	PointLight->MarkRenderStateDirty();
-}
-
-void AAnomaly_Object_Light::TurnOnLight()
-{
-	PointLight->bAffectsWorld = true;
+	PointLight->SetVisibility(bIsOn);
+	PointLight->SetActive(bIsOn);
+	PointLight->bAffectsWorld = bIsOn;
 	PointLight->MarkRenderStateDirty();
 }
 
@@ -68,9 +64,9 @@ void AAnomaly_Object_Light::DropLight()
 void AAnomaly_Object_Light::LightDestroyed(const FChaosBreakEvent& BreakEvent)
 {
 	Object->SetVisibility(false);
+	Object->SetActive(false);
 
-	PointLight->bAffectsWorld = false;
-	PointLight->MarkRenderStateDirty();
+	TurnLight(false);
 
 	AC->Sound = Sound_LightDestroy;
 	AC->Play();

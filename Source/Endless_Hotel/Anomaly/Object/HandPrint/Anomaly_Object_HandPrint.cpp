@@ -65,7 +65,7 @@ void AAnomaly_Object_HandPrint::TurnOffLights()
 	for (auto* FoundActor : FoundActors)
 	{
 		auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-		Light->TurnOffLight();
+		Light->TurnLight(false);
 	}
 }
 

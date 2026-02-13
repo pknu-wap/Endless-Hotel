@@ -38,8 +38,7 @@ protected:
 #pragma region Light
 
 public:
-	void TurnOffLight();
-	void TurnOnLight();
+	void TurnLight(bool bIsOn);
 
 #pragma endregion
 
