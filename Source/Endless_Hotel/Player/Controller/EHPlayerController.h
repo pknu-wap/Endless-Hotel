@@ -61,6 +61,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Interact;
 
+	// Interact 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<class UInputAction> IA_ChangeInteract;
+
 	// Crouch
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Crouch;
@@ -119,6 +123,7 @@ protected:
 protected:
 	void CheckForInteractables();
 	void OnInteract(const FInputActionValue& Value);
+	void ChangeInteract(const FInputActionValue& Value);
 
 #pragma endregion
 
