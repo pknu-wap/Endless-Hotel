@@ -78,6 +78,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_ESC;
 
+#pragma endregion
+
 #pragma region Move
 
 public:
@@ -109,14 +111,10 @@ public:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class AActor> CurrentInteractActor;
-
-	UPROPERTY()
-	TWeakObjectPtr<class UInteractComponent> CurrentInteractComp;
+	TWeakObjectPtr<class UInteractComponent> CachedInteractComp;
 
 protected:
-	bool bCanInteract;
-	float TraceDistance;
+	const float TraceDistance = 100.f;
 
 protected:
 	void CheckForInteractables();
@@ -183,7 +181,6 @@ public:
 
 #pragma endregion
 
-
 #pragma region State_Run
 	
 protected:
@@ -205,6 +202,8 @@ protected:
 protected:
 	void OnFaceCoverStarted();
 	void OnFaceCoverCompleted();
+
+#pragma endregion
 
 #pragma region State_EVButton
 

@@ -2,19 +2,15 @@
 
 #pragma once
 
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Engine/GameInstance.h>
+#include <Delegates/DelegateCombinations.h>
 #include <EHGameInstance.generated.h>
 
 #pragma region Declare
 
-UENUM(BlueprintType)
-enum class EMapType : uint8
-{
-	None		UMETA(DisplayName = "None"),
-	MainMenu	UMETA(DisplayName = "MainMenu"),
-	Hotel		UMETA(DisplayName = "Hotel")
-};
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
 
 #pragma endregion
 
@@ -23,21 +19,82 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void OnStart() override;
-
-#pragma endregion
-
-#pragma region Map
+#pragma region Level
 
 public:
-	void OpenMap(const EMapType& MapName);
+	void OpenLevel(const ELevelType& LevelName, bool bNeedLoading);
 	void QuitGame();
 
 public:
-	static EMapType CurrentMap;
+	static ELevelType CurrentLevelType;
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class ULevelStreamingDynamic> CurrentLevel;
+
+	UPROPERTY(EditAnyWhere, Category = "Level")
+	TObjectPtr<UWorld> Level_MainMenu;
+
+	UPROPERTY(EditAnyWhere, Category = "Level")
+	TObjectPtr<UWorld> Level_Hotel;
+
+#pragma endregion
+
+#pragma region Loading
+
+public:
+	bool IsLevelLoaded();
+
+protected:
+	UFUNCTION()
+	void LoadLevelCompleted();
+
+	UFUNCTION()
+	void ShowLevelCompleted();
+
+	void UnloadCurrentLevel();
+
+public:
+	static FLevelLoaded OnLevelLoaded;
+
+#pragma endregion
+
+#pragma region Anomaly
+
+protected:
+	void SpawnAnomalyGenerator();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	TSubclassOf<class AAnomaly_Generator> GeneratorClass;
+
+	UPROPERTY()
+	TObjectPtr<class AAnomaly_Generator> Generator;
+
+#pragma endregion
+
+#pragma region Spawn
+
+protected:
+	void RelocatePlayer();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	FTransform DefaultTransform = FTransform(FRotator::ZeroRotator, FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
+
+#pragma endregion
+
+#pragma region Widget
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
+	TSubclassOf<class UUI_Base> UI_HUD_InGame;
+
+	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
+	TSubclassOf<class UUI_Base> UI_HUD_MainMenu;
+
+	UPROPERTY(EditAnywhere, Category = "Widget|Cover")
+	TSubclassOf<class UUI_Base> UI_Loading;
 
 #pragma endregion
 

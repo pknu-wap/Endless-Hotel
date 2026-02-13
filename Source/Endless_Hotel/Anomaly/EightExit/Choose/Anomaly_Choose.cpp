@@ -1,18 +1,16 @@
-// Copyright by 2025-2 WAP Game 2 team
-
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Choose/Anomaly_Choose.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include <Kismet/GameplayStatics.h>
-#include <GameFramework/Character.h>
 
 #pragma region Base
 
 AAnomaly_Choose::AAnomaly_Choose(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-
+	PlayerStartTransform.SetLocation(FVector(-1010, 560, -900));
 }
+
 #pragma endregion
 
 #pragma region Activity
@@ -26,35 +24,18 @@ void AAnomaly_Choose::SetAnomalyActivate()
 	case EAnomalyName::Choose:
 		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
 			{
-				FVector TargetLocation = ChooseStartPos;
-
-				ACharacter* PlayerChar = UGameplayStatics::GetPlayerCharacter(this, 0);
-
-				if (PlayerChar)
+				UAnomalyProgressSubSystem* APSS = Cast<UAnomalyProgressSubSystem>(GetGameInstance());
+				if (APSS)
 				{
-					PlayerChar->SetActorLocation(TargetLocation, false, nullptr, ETeleportType::TeleportPhysics);
-
-					UAnomalyProgressSubSystem* APSS = Cast<UAnomalyProgressSubSystem>(GetGameInstance());
-					if (APSS)
+					if (APSS->GlobalSelectedKeyIndex == 2)
 					{
-						if (APSS->GlobalSelectedKeyIndex == 2)
-						{
-							SetVerdictMode(EAnomalyVerdictMode::Normal);
-						}
+						SetVerdictMode(EAnomalyVerdictMode::Normal);
 					}
-					
 				}
 			});
 		ScheduleAnomaly();
 		break;
 	}
-}
-
-#pragma region Position
-
-FVector AAnomaly_Choose::GetAnomalyStartPos() const
-{
-	return ChooseStartPos;
 }
 
 #pragma endregion

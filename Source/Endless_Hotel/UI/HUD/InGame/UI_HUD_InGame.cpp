@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
@@ -12,7 +12,7 @@
 
 #pragma region Base
 
-void UUI_InGame::NativeOnInitialized()
+void UUI_HUD_InGame::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
@@ -29,7 +29,7 @@ void UUI_InGame::NativeOnInitialized()
 
 #pragma region Crosshair
 
-void UUI_InGame::ChangeCrosshair(bool bCanInteract)
+void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 {
 	if (bCanInteract)
 	{
@@ -49,7 +49,7 @@ void UUI_InGame::ChangeCrosshair(bool bCanInteract)
 	}
 }
 
-void UUI_InGame::ShowCrosshair(bool bIsShow)
+void UUI_HUD_InGame::ShowCrosshair(bool bIsShow)
 {
 	if (bIsShow)
 	{
@@ -65,7 +65,7 @@ void UUI_InGame::ShowCrosshair(bool bIsShow)
 
 #pragma region Brightness
 
-void UUI_InGame::SetBrightness(float Value)
+void UUI_HUD_InGame::SetBrightness(float Value)
 {
 	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
 	Color.A = (1 - Value) * 0.8f;
@@ -76,7 +76,7 @@ void UUI_InGame::SetBrightness(float Value)
 
 #pragma region Blur
 
-void UUI_InGame::AnomalyBlur()
+void UUI_HUD_InGame::AnomalyBlur()
 {
 	const float TargetStrength = 20;
 	float CurrentStrength = 0;
@@ -93,7 +93,7 @@ void UUI_InGame::AnomalyBlur()
 		}), 0.01f, true);
 }
 
-void UUI_InGame::EyeEffectBlur(bool bIsStart)
+void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart)
 {
 	float TargetStrength = 0;
 	float CurrentStrength = 20;
@@ -133,7 +133,7 @@ void UUI_InGame::EyeEffectBlur(bool bIsStart)
 
 #pragma region Demo
 
-void UUI_InGame::OpenDemoWidget()
+void UUI_HUD_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Demo);

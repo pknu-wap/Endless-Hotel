@@ -31,9 +31,6 @@ protected:
 	void ShowBlurWiget();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_Base> UI_Blur;
-
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC;
 
