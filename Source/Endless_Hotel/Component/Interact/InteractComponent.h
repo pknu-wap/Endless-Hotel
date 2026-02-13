@@ -7,7 +7,11 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+#pragma region Declare
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
+
+#pragma endregion
 
 UCLASS(ClassGroup = (Custom))
 class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
@@ -21,13 +25,27 @@ protected:
 
 #pragma endregion
 
+#pragma region Reference
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class AEHPlayer> Player;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_Interact> UI_Interact;
+
+#pragma endregion
+
 #pragma region Interact
 
 public:
 	// 상호작용 UI를 보여주는 함수
 	void ShowDescriptionWidget(bool bIsShow);
 
-	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없으면 상호작용 불가능 )
+	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없어야 하고, 한번이라도 상호작용 X 이어야 함 )
 	bool CanInteract();
 
 	// 현재 선택된 상호작용 번호 변경
@@ -51,6 +69,9 @@ protected:
 
 	// 현재 선택된 상호작용 번호
 	uint8 CurrentIndex = 0;
+
+	// 해당 물체를 상호작용 했는지 여부
+	bool bIsInteracted = false;
 
 #pragma endregion
 
@@ -87,4 +108,5 @@ public:
 	FTimerHandle RestoreHandle;
 
 #pragma endregion
+
 };

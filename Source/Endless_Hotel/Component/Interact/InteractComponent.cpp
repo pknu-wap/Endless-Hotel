@@ -2,17 +2,21 @@
 
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
 #include <Components/WidgetComponent.h>
-#include <Anomaly/Object/Painting/Anomaly_Object_Painting.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
 void UInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
+	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
 
 	if (AActor* RestoreOwner = GetOwner())
 	{
@@ -34,21 +38,21 @@ bool UInteractComponent::CanInteract()
 		}
 	}
 
-	return !List_Interact.IsEmpty(); 
+	return !List_Interact.IsEmpty() && !bIsInteracted;
 }
 
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
 	if (!CanInteract())
 	{
-		return;
+		bIsShow = false;
 	}
 
-	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
-	auto* UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-
-	UI_Interact->ShowDescription(bIsShow);
-	UI_Interact->SetDescription(GetDescription());
+	if (UI_Interact.IsValid())
+	{
+		UI_Interact->ShowDescription(bIsShow);
+		UI_Interact->SetDescription(GetDescription());
+	}
 }
 
 void UInteractComponent::ChangeIndex(bool bUp)
@@ -73,7 +77,8 @@ void UInteractComponent::ChangeIndex(bool bUp)
 void UInteractComponent::Interact()
 {
 	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
-	InteractInfo.bIsInteracted = !InteractInfo.bIsInteracted;
+	InteractInfo.bIsInteracted = true;
+	bIsInteracted = true;
 
 	switch (InteractInfo.InteractType)
 	{
@@ -120,7 +125,6 @@ void UInteractComponent::Action_Restore()
 
 void UInteractComponent::Action_Rotate()
 {
-	// 그림 회전 (담당: 경원 김)
 	Cast<AAnomaly_Object_Painting>(Owner)->InteractRotate();
 }
 
@@ -202,4 +206,5 @@ void UInteractComponent::FinishRestoring()
 		}
 	}
 }
+
 #pragma endregion
