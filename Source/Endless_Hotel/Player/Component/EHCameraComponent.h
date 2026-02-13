@@ -17,12 +17,12 @@ class ENDLESS_HOTEL_API UEHCameraComponent : public UEHComponent
 public:
 	UEHCameraComponent(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma endregion
 
 #pragma region Post Processing
+
+protected:
+	void FindPPV();
 
 protected:
 	UPROPERTY()
@@ -60,6 +60,14 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DynMat_EyeEffect;
+
+#pragma endregion
+
+#pragma region Loading
+
+protected:
+	UFUNCTION()
+	void LevelLoadCompleted();
 
 #pragma endregion
 

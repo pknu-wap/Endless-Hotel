@@ -4,10 +4,10 @@
 
 #include "UI/HUD/UI_HUD_Base.h"
 #include <CoreMinimal.h>
-#include <UI_InGame.generated.h>
+#include <UI_HUD_InGame.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_InGame : public UUI_HUD_Base
+class ENDLESS_HOTEL_API UUI_HUD_InGame : public UUI_HUD_Base
 {
 	GENERATED_BODY()
 	

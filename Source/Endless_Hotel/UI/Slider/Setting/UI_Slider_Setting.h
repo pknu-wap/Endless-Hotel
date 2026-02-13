@@ -32,6 +32,10 @@ public:
 public:
 	virtual void Slide_Slider(float Value) override;
 
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Value;
+
 #pragma endregion
 
 #pragma region CheckBox
@@ -45,6 +49,9 @@ public:
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Off;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_CheckBox_Setting> CheckBox_Off;
 
 #pragma endregion
 

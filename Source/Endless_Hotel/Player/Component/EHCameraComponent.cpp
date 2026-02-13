@@ -2,11 +2,11 @@
 
 #include "Player/Component/EHCameraComponent.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Sound/SoundController.h"
 #include "Actor/Elevator/Elevator.h"
-#include "Anomaly/Base/Anomaly_Base.h"
-#include <Kismet/GameplayStatics.h>
+#include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Type/Level/Type_Level.h"
 #include <Components/TimelineComponent.h>
 
 #pragma region Base
@@ -15,16 +15,32 @@ UEHCameraComponent::UEHCameraComponent(const FObjectInitializer& ObjectInitializ
 	:Super(ObjectInitializer)
 {
 	Timeline_EyeEffect = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_EyeEffect"));
+
+	AElevator::ElevatorDelegate.Clear();
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
+
+	UEHGameInstance::OnLevelLoaded.Clear();
+	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::LevelLoadCompleted);
 }
 
-void UEHCameraComponent::BeginPlay()
+#pragma endregion
+
+#pragma region Post Processing
+
+void UEHCameraComponent::FindPPV()
 {
-	Super::BeginPlay();
+	for (auto* PPV : GetWorld()->PostProcessVolumes)
+	{
+		auto Props = PPV->GetProperties();
 
-	SettingEyeEffect();
+		if (Props.bIsUnbound)
+		{
+			PostProcessVolume = Cast<APostProcessVolume>(PPV);
+			break;
+		}
+	}
 
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	StartEyeEffect(true);
+	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 }
 
 #pragma endregion
@@ -34,7 +50,7 @@ void UEHCameraComponent::BeginPlay()
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
 	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_InGame* UI_InGame = Cast<UUI_InGame>(UICon->GetCurrentBaseWidget());
+	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
 
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
@@ -49,12 +65,6 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 		UI_InGame->EyeEffectBlur(false);
 		Timeline_EyeEffect->SetFloatCurve(Curve_EyeClose, FName("Eye"));
 	}
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundActors);
-	PostProcessVolume = Cast<APostProcessVolume>(FoundActors[0]);
-
-	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 
 	PostProcessVolume->bUnbound = true;
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
@@ -82,6 +92,22 @@ void UEHCameraComponent::ApplyEyeEffect(float Value)
 void UEHCameraComponent::EndEyeEffect()
 {
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
+}
+
+#pragma endregion
+
+#pragma region Loading
+
+void UEHCameraComponent::LevelLoadCompleted()
+{
+	switch (UEHGameInstance::CurrentLevelType)
+	{
+	case ELevelType::Hotel:
+		FindPPV();
+		SettingEyeEffect();
+		StartEyeEffect(true);
+		break;
+	}
 }
 
 #pragma endregion

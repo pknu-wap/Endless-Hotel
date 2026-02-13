@@ -2,48 +2,168 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/Enum/EnumConverter.h"
+#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "GameSystem/GameMode/EHGameMode.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "UI/Controller/UI_Controller.h"
+#include "Anomaly/Base/Anomaly_Base.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Engine/LevelStreamingDynamic.h>
+#include <GameFramework/Character.h>
 
-#pragma region Base
+#pragma region Declare
 
-void UEHGameInstance::OnStart()
-{
-	Super::OnStart();
-
-	FString MapName = GetWorld()->GetMapName();
-	MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
-
-	if (MapName == TEXT("MainMenu"))
-	{
-		CurrentMap = EMapType::MainMenu;
-	}
-	else if (MapName == TEXT("Hotel"))
-	{
-		CurrentMap = EMapType::Hotel;
-	}
-	else
-	{
-		CurrentMap = EMapType::None;
-	}
-}
+ELevelType UEHGameInstance::CurrentLevelType = ELevelType::Persistent;
+FLevelLoaded UEHGameInstance::OnLevelLoaded;
 
 #pragma endregion
 
-#pragma region Map
+#pragma region Level
 
-EMapType UEHGameInstance::CurrentMap = EMapType::MainMenu;
-
-void UEHGameInstance::OpenMap(const EMapType& MapName)
+void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 {
-	CurrentMap = MapName;
-	FName TargetMapName = FName(FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<EMapType>(CurrentMap)));
-	UGameplayStatics::OpenLevel(GetWorld(), TargetMapName, true);
+	UnloadCurrentLevel();
+
+	if (bNeedLoading)
+	{
+		auto* UICon = GetSubsystem<UUI_Controller>();
+		UICon->OpenWidget(UI_Loading);
+	}
+
+	FString TargetLevelPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<ELevelType>(LevelName));
+	FName TargetLevelName = FName(*TargetLevelPath);
+
+	bool bSuccess = false;
+	UWorld* TargetLevel = nullptr;
+
+	switch (LevelName)
+	{
+	case ELevelType::MainMenu:
+		TargetLevel = Level_MainMenu;
+		CurrentLevelType = ELevelType::MainMenu;
+		break;
+
+	case ELevelType::Hotel:
+		TargetLevel = Level_Hotel;
+		CurrentLevelType = ELevelType::Hotel;
+		break;
+	}
+
+	CurrentLevel = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld(), TargetLevel, FVector::ZeroVector, FRotator::ZeroRotator, OUT bSuccess);
+
+	CurrentLevel->SetShouldBeVisible(false);
+	CurrentLevel->SetShouldBeLoaded(true);
+
+	CurrentLevel->OnLevelLoaded.Clear();
+	CurrentLevel->OnLevelLoaded.AddDynamic(this, &ThisClass::LoadLevelCompleted);
+
+	CurrentLevel->OnLevelShown.Clear();
+	CurrentLevel->OnLevelShown.AddDynamic(this, &ThisClass::ShowLevelCompleted);
 }
 
 void UEHGameInstance::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
+}
+
+#pragma endregion
+
+#pragma region Loading
+
+bool UEHGameInstance::IsLevelLoaded()
+{
+	return CurrentLevel->IsLevelLoaded();
+}
+
+void UEHGameInstance::LoadLevelCompleted()
+{
+	CurrentLevel->SetShouldBeVisible(true);
+}
+
+void UEHGameInstance::ShowLevelCompleted()
+{
+	auto* UICon = GetSubsystem<UUI_Controller>();
+	UICon->CloseWidget();
+
+	switch (CurrentLevelType)
+	{
+	case ELevelType::Hotel:
+		SpawnAnomalyGenerator();
+		UICon->OpenWidget(UI_HUD_InGame);
+		break;
+
+	case ELevelType::MainMenu:
+		UICon->OpenWidget(UI_HUD_MainMenu);
+		break;
+	}
+
+	RelocatePlayer();
+
+	OnLevelLoaded.Broadcast();
+}
+
+void UEHGameInstance::UnloadCurrentLevel()
+{
+	if (!CurrentLevel)
+	{
+		return;
+	}
+
+	CurrentLevel->SetShouldBeLoaded(false);
+	CurrentLevel->SetShouldBeVisible(false);
+	CurrentLevel = nullptr;
+}
+
+#pragma endregion
+
+#pragma region Anomaly
+
+void UEHGameInstance::SpawnAnomalyGenerator()
+{
+	ULevel* SpawnLevel = CurrentLevel->GetLoadedLevel();
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.OverrideLevel = SpawnLevel;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	Generator = GetWorld()->SpawnActor<AAnomaly_Generator>(GeneratorClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
+
+	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	int32 IsNormal = FMath::RandRange(1, 10);
+
+	if (IsNormal > 8 || Subsystem->Floor == 9)
+	{
+		Generator->SpawnNormal(SpawnLevel);
+		return;
+	}
+
+	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);
+	Subsystem->ActIndex++;
+}
+
+#pragma endregion
+
+#pragma region Spawn
+
+void UEHGameInstance::RelocatePlayer()
+{
+	UWorld* World = GetWorld();
+
+	auto* GameMode = World->GetAuthGameMode<AEHGameMode>();
+	GameMode->RestartPlayer(World->GetFirstPlayerController());
+
+	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
+
+	if (!Subsystem->bPassed)
+	{
+		Player->SetActorTransform(DefaultTransform);
+		return;
+	}
+
+	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
+	Player->SetActorTransform(AnomalyTransform);
 }
 
 #pragma endregion

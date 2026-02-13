@@ -21,13 +21,6 @@ class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
 #pragma region Linker
 
 	void AnomalyObjectLinker();
@@ -41,7 +34,7 @@ public:
 	bool bDidInitialSpawn = false;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	TWeakObjectPtr<AAnomaly_Base> CurrentAnomaly;
+	TObjectPtr<AAnomaly_Base> CurrentAnomaly;
 
 #pragma endregion
 
@@ -55,9 +48,9 @@ public:
 #pragma region Generate Anomaly
 
 public:
-	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index);
+	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
 
-	AAnomaly_Base* SpawnNormal();
+	AAnomaly_Base* SpawnNormal(ULevel* SpawnLevel);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")

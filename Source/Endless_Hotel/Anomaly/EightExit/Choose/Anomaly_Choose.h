@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -25,16 +25,4 @@ public:
 
 #pragma endregion
 
-#pragma region Position
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Position")
-	FVector ChooseStartPos = FVector(-1010, 560, -900);
-
-#pragma region Position
-
-protected:
-	virtual FVector GetAnomalyStartPos() const override;
-
-#pragma endregion
 };

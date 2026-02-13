@@ -99,5 +99,5 @@ public:
 public:
 	// System
 	UPROPERTY(SaveGame)
-	EOptionValue Language = EOptionValue::English;
+	EOptionValue Language = EOptionValue::Korean;
 };

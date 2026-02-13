@@ -4,21 +4,27 @@
 
 #include <CoreMinimal.h>
 #include <GameFramework/GameModeBase.h>
-#include <EHGameMode_Base.generated.h>
+#include <EHGameMode.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AEHGameMode_Base : public AGameModeBase
+class ENDLESS_HOTEL_API AEHGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 #pragma region Base
 
 public:
-	AEHGameMode_Base(const FObjectInitializer& ObjectInitializer);
+	AEHGameMode(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
+#pragma endregion
+
+#pragma region Respawn
+
+public:
+	void RespawnPlayer();
 
 #pragma endregion
 

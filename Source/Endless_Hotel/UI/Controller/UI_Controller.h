@@ -7,23 +7,10 @@
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <UI_Controller.generated.h>
 
-#pragma region Declare
-
-class UUI_Base;
-
-#pragma endregion
-
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
-
-#pragma region Base
-
-public:
-	UUI_Controller();
-
-#pragma endregion
 
 #pragma region Open & Close
 
@@ -31,12 +18,6 @@ public:
 	class UUI_Base* OpenWidget(TSubclassOf<class UUI_Base> WidgetClass);
 	void CloseWidget();
 	void ClearAllWidget();
-
-protected:
-	void SetInputMode(const EInputModeType& InputMode);
-
-protected:
-	void AdjustZOrder(bool bUp);
 
 public:
 	class UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
@@ -46,24 +27,25 @@ protected:
 	UPROPERTY()
 	TArray<TObjectPtr<class UUI_Base>> PopUpWidgets;
 
+#pragma endregion
+
+#pragma region Input
+
+protected:
+	void SetInputMode(const EInputModeType& InputMode);
+
+#pragma endregion
+
+#pragma region Adjust
+
+protected:
+	void AdjustZOrder(bool bUp);
+
+protected:
 	const int32 Max_ZOrder = 100;
 	const int32 Min_ZOrder = 0;
 
 	int32 Widget_ZOrder = 0;
-
-#pragma endregion
-
-#pragma region Widget
-
-public:
-	void OpenMapBaseWidget();
-
-protected:
-	UPROPERTY()
-	TSubclassOf<class UUI_Base> UI_Title;
-
-	UPROPERTY()
-	TSubclassOf<class UUI_Base> UI_InGame;
 
 #pragma endregion
 

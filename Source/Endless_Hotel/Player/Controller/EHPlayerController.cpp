@@ -20,10 +20,6 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Interact
-	bCanInteract = false;
-	TraceDistance = 100.f;
-
 	bCanMove = true;
 	bIsCameraFixed = false;
 	bIsPlayerDead = false;
@@ -117,7 +113,6 @@ void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 }
 
 #pragma endregion 
-
 
 #pragma region Move
 
@@ -366,7 +361,6 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 #pragma endregion
 
-
 #pragma region State_Death
 
 void AEHPlayerController::PlayDeathSequence()
@@ -399,56 +393,40 @@ void AEHPlayerController::CheckForInteractables()
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetPawn());
+	Params.AddIgnoredActor(EHPlayer);
 
-	GetWorld()->LineTraceSingleByChannel(
-		HitResult,
-		Start,
-		End,
-		ECC_Visibility,
-		Params
-	);
+	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
 
-	AActor* HitActor = HitResult.GetActor();
-	UInteractComponent* Comp_Interact = nullptr;
+	auto* HitActor = HitResult.GetActor();
+	UInteractComponent* HitComp = nullptr;
 	if (HitActor)
 	{
-		Comp_Interact = HitActor->FindComponentByClass<UInteractComponent>();
+		HitComp = HitActor->FindComponentByClass<UInteractComponent>();
 	}
 
-	if (Comp_Interact)
+	if (CachedInteractComp.Get())
 	{
-		bCanInteract = true;
-		CurrentInteractActor = HitActor;
-		CurrentInteractComp = Comp_Interact;
-		EHPlayer->CanInteract.Broadcast(true);
-		CurrentInteractComp->ShowDescriptionWidget(true);
+		CachedInteractComp->ShowDescriptionWidget(false);
+		CachedInteractComp = nullptr;
 	}
-	else
+
+	if (HitComp)
 	{
-		if (CurrentInteractComp.Get())
-		{
-			CurrentInteractComp->ShowDescriptionWidget(false);
-		}
-		bCanInteract = false;
-		CurrentInteractActor = nullptr;
-		CurrentInteractComp = nullptr;
-		EHPlayer->CanInteract.Broadcast(false);
+		HitComp->ShowDescriptionWidget(true);
+		CachedInteractComp = HitComp;
 	}
+
+	EHPlayer->CanInteract.Broadcast(CachedInteractComp.IsValid() && CachedInteractComp->CanInteract());
 }
 
 void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 {
-	if (!bCanInteract || !CurrentInteractActor) return;
-
-	if (auto* Comp_Interact = CurrentInteractActor->FindComponentByClass<UInteractComponent>())
+	if (!CachedInteractComp.Get() || !CachedInteractComp->CanInteract())
 	{
-		Comp_Interact->Interact();
+		return;
 	}
+
+	CachedInteractComp->Interact();
 }
 
 #pragma endregion
-
-
-
-

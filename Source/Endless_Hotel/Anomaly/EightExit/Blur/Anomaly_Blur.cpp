@@ -2,7 +2,7 @@
 
 #include "Anomaly/EightExit/Blur/Anomaly_Blur.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_InGame.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -42,7 +42,7 @@ void AAnomaly_Blur::ShowBlurWiget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UUI_Base* BlurWidget = UICon->GetCurrentBaseWidget();
-	Cast<UUI_InGame>(BlurWidget)->AnomalyBlur();
+	Cast<UUI_HUD_InGame>(BlurWidget)->AnomalyBlur();
 
 	AC->Sound = Sound_Blur;
 	AC->Play();
