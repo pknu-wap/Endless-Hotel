@@ -18,6 +18,7 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 	TriggerBox_Close->SetupAttachment(RootComponent);
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+
 #pragma endregion
 
 #pragma region Activity
@@ -31,7 +32,7 @@ void AAnomaly_Door::SetAnomalyActivate()
 	case EAnomalyName::Door_Shake:
 		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
 			{
-				DoorShake();
+				Cast<AAnomaly_Object_Door>(AnomalyObject)->DoorShaking();
 			});
 		ActiveTrigger();
 		break;
@@ -44,39 +45,6 @@ void AAnomaly_Door::SetAnomalyActivate()
 		ActiveTrigger();
 		break;
 	}
-}
-
-#pragma endregion
-
-#pragma region Shake
-
-void AAnomaly_Door::DoorShake()
-{
-	FTimerHandle DoorHandle;
-	GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this, DoorHandle]() mutable
-		{
-			TArray<AActor*> RemoveTargets;
-
-			for (auto* FoundActor : LinkedObjects)
-			{
-				auto* Door = Cast<AAnomaly_Object_Door>(FoundActor);
-				if (CurrentIndex == Door->DoorIndex)
-				{
-					AnomalyAction(Door);
-					RemoveTargets.Add(FoundActor);
-				}
-			}
-
-			for (auto* RemoveTarget : RemoveTargets)
-			{
-				LinkedObjects.Remove(RemoveTarget);
-			}
-
-			if (++CurrentIndex > MaxIndex)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(DoorHandle);
-			}
-		}), NextActionDelay, true);
 }
 
 #pragma endregion
