@@ -29,8 +29,8 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Niagara_Blood_Right->SetupAttachment(RootComponent);
 	Niagara_Blood_Right->SetAutoActivate(false);
 
-	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
-	Widget_PaintingBlur->SetupAttachment(RootComponent);
+	/*Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
+	Widget_PaintingBlur->SetupAttachment(RootComponent);*/
 }
 
 #pragma endregion
@@ -88,10 +88,11 @@ void AAnomaly_Object_Painting::BloodDropping()
 void AAnomaly_Object_Painting::BlurPaint()
 {
 	bSolved = false;
-	Widget_PaintingBlur->SetVisibility(true);
+	/*Widget_PaintingBlur->SetVisibility(true);
 	UUserWidget* UW = Widget_PaintingBlur->GetUserWidgetObject();
 	UUI_PaintingBlur* BlurWidget = Cast<UUI_PaintingBlur>(UW);
-	BlurWidget->StartPaintingBlur();
+	BlurWidget->StartPaintingBlur();*/
+	Object->SetMaterial(1, BlurMaterial);
 }
 
 #pragma endregion

@@ -60,6 +60,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "PaintingBlur")
+	TObjectPtr<class UMaterialInterface> BlurMaterial;
+
 #pragma endregion
 
 #pragma region FrameTilt
