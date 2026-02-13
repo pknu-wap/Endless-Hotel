@@ -57,6 +57,9 @@ protected:
 #pragma region Verdicts
 
 public:
+	virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	bool bIsSolved = false;
 

@@ -39,6 +39,7 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
+	bSolved = false;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -75,6 +76,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
+	bSolved = false;
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Right->SetActive(true);
 }
@@ -85,6 +87,7 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
+	bSolved = false;
 	Widget_PaintingBlur->SetVisibility(true);
 	UUserWidget* UW = Widget_PaintingBlur->GetUserWidgetObject();
 	UUI_PaintingBlur* BlurWidget = Cast<UUI_PaintingBlur>(UW);
@@ -97,6 +100,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
+	bSolved = false;
 	CurrentTilt = Root->GetRelativeRotation().Pitch;
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())

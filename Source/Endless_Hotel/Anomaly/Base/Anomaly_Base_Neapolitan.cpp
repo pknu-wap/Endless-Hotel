@@ -21,24 +21,3 @@ void AAnomaly_Base_Neapolitan::BeginPlay()
 }
 
 #pragma endregion
-
-#pragma region Anomaly
-
-void AAnomaly_Base_Neapolitan::InteractSolveVerdict()
-{
-    //상호작용 기반 해결여부
-    UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
-    bool bAllSolved = true;
-    for (auto* FoundActor : LinkedObjects)
-    {
-        auto* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(FoundActor);
-        if (!AnomalyObject->bSolved)
-        {
-            bAllSolved = false;
-            break;
-        }
-    }
-    bIsSolved = bAllSolved;
-    Sub->SetIsAnomalySolved(bIsSolved);
-}
-#pragma endregion
