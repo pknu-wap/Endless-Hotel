@@ -23,6 +23,9 @@ public:
 public:
 	virtual void SetAnomalyActivate() override;
 
+protected:
+	virtual void StartAnomalyAction() override;
+
 #pragma endregion
 
 #pragma region Blur

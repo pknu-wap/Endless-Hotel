@@ -35,10 +35,10 @@ protected:
 	TObjectPtr<class ULevelStreamingDynamic> CurrentLevel;
 
 	UPROPERTY(EditAnyWhere, Category = "Level")
-	TObjectPtr<UWorld> Level_MainMenu;
+	TSoftObjectPtr<UWorld> Level_MainMenu;
 
 	UPROPERTY(EditAnyWhere, Category = "Level")
-	TObjectPtr<UWorld> Level_Hotel;
+	TSoftObjectPtr<UWorld> Level_Hotel;
 
 #pragma endregion
 

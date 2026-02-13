@@ -35,7 +35,7 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	FName TargetLevelName = FName(*TargetLevelPath);
 
 	bool bSuccess = false;
-	UWorld* TargetLevel = nullptr;
+	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
 
 	switch (LevelName)
 	{

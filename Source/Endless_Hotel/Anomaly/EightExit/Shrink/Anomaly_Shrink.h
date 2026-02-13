@@ -44,9 +44,6 @@ protected:
 	UFUNCTION()
 	void ShrinkPlayer(float Value);
 
-	UFUNCTION()
-	void RestorePlayer();
-
 protected:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline_Shrink;
