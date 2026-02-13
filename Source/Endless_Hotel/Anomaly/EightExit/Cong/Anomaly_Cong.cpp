@@ -13,54 +13,13 @@ void AAnomaly_Cong::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Cong:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
+		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
 			{
-				StartCongCong();
+				Cast<AAnomaly_Object_HandPrint>(AnomalyObject)->ReserveCongCong();
 			});
 		ActiveTrigger();
 		break;
 	}
-}
-
-#pragma endregion
-
-#pragma region Cong
-
-void AAnomaly_Cong::StartCongCong()
-{
-	CongDelegate = FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			TArray<AActor*> RemoveTargets;
-
-			for (auto* FoundActor : LinkedObjects)
-			{
-				auto* HandPrint = Cast<AAnomaly_Object_HandPrint>(FoundActor);
-
-				if (CurrentIndex == HandPrint->HandPrintIndex)
-				{
-					HandPrint->StartCongCong(NextCong);
-					RemoveTargets.Add(FoundActor);
-				}
-			}
-
-			for (auto* RemoveTarget : RemoveTargets)
-			{
-				LinkedObjects.Remove(RemoveTarget);
-			}
-
-			if (CurrentIndex >= MaxIndex)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(CongHandle);
-				return;
-			}
-
-			CurrentIndex++;
-			GetWorld()->GetTimerManager().SetTimer(CongHandle, CongDelegate, NextCong, false);
-		});
-
-	GetWorld()->GetTimerManager().SetTimer(CongHandle, CongDelegate, 0.01f, false);
-
-	AAnomaly_Object_HandPrint::bIsFirstHandPrint = true;
 }
 
 #pragma endregion
