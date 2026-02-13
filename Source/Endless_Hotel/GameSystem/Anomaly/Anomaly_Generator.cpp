@@ -50,6 +50,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		CurrentAnomaly->LinkedObjects.Add(FoundActor);
+		AnomalyObject->SetInteraction();
 	}
 }
 

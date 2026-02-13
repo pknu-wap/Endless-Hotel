@@ -30,7 +30,7 @@ void AAnomaly_Object_Base::BeginPlay()
 		Component_LookAt->SetActive(false);
 	}
 
-	SetInteraction();
+	/*SetInteraction();*/
 }
 
 #pragma endregion
