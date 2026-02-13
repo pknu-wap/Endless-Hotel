@@ -4,7 +4,9 @@
 #include "Anomaly/Object/Fire/Anomaly_Object_Candle.h"
 #include "Anomaly/Object/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
+#include <Engine/LevelStreamingDynamic.h>
 
 #pragma region Base
 
@@ -56,7 +58,10 @@ void AAnomaly_Fire::SpawnFires()
 		{
 			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
 
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator);
+			FActorSpawnParameters Params;
+			Params.OverrideLevel = GetGameInstance<UEHGameInstance>()->GetCurrentLevel()->GetLoadedLevel();
+
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator, Params);
 			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
 
 			if (!FireSpawnPositions.IsValidIndex(CurrentSpawnIndex))

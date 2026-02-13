@@ -16,8 +16,13 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Base_EightExit
 protected:
 	virtual void BeginPlay() override;
 
+#pragma endregion
+
+#pragma region Reference
+
 protected:
-	TObjectPtr<class AEHPlayer> EHPlayer;
+	UPROPERTY()
+	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion
 
