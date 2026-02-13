@@ -12,6 +12,13 @@ AAnomaly_Cry::AAnomaly_Cry(const FObjectInitializer& ObjectInitializer)
 	AC->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
 }
 
+void AAnomaly_Cry::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AC->SetWorldLocation(CryLocation);
+}
+
 #pragma endregion
 
 #pragma region Activity
@@ -23,13 +30,14 @@ void AAnomaly_Cry::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Cry:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
-			{
-				PlayCrySound();
-			});
-		ScheduleAnomaly(20);
+		ActiveTrigger();
 		break;
 	}
+}
+
+void AAnomaly_Cry::StartAnomalyAction()
+{
+	PlayCrySound();
 }
 
 #pragma endregion
