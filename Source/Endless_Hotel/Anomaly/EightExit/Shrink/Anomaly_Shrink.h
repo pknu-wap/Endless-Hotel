@@ -21,10 +21,10 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<class USkeletalMeshComponent> PlayerSM;
+	TWeakObjectPtr<class USkeletalMeshComponent> PlayerSM;
 
 	UPROPERTY()
-	TObjectPtr<class UCharacterMovementComponent> PlayerMC;
+	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
 
 #pragma endregion
 
@@ -33,6 +33,9 @@ protected:
 public:
 	virtual void SetAnomalyActivate() override;
 
+protected:
+	virtual void StartAnomalyAction() override;
+
 #pragma endregion
 
 #pragma region Shrink
@@ -40,6 +43,9 @@ public:
 protected:
 	UFUNCTION()
 	void ShrinkPlayer(float Value);
+
+	UFUNCTION()
+	void RestorePlayer();
 
 protected:
 	UPROPERTY()

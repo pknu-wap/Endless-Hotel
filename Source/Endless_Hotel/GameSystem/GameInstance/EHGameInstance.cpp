@@ -55,10 +55,10 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	CurrentLevel->SetShouldBeVisible(false);
 	CurrentLevel->SetShouldBeLoaded(true);
 
-	CurrentLevel->OnLevelLoaded.Clear();
+	CurrentLevel->OnLevelLoaded.RemoveDynamic(this, &ThisClass::LoadLevelCompleted);
 	CurrentLevel->OnLevelLoaded.AddDynamic(this, &ThisClass::LoadLevelCompleted);
 
-	CurrentLevel->OnLevelShown.Clear();
+	CurrentLevel->OnLevelShown.RemoveDynamic(this, &ThisClass::ShowLevelCompleted);
 	CurrentLevel->OnLevelShown.AddDynamic(this, &ThisClass::ShowLevelCompleted);
 }
 

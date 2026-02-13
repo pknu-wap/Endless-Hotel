@@ -25,6 +25,8 @@ public:
 	void OpenLevel(const ELevelType& LevelName, bool bNeedLoading);
 	void QuitGame();
 
+	class ULevelStreamingDynamic* GetCurrentLevel() const { return CurrentLevel; }
+
 public:
 	static ELevelType CurrentLevelType;
 

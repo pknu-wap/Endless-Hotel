@@ -41,13 +41,14 @@ void AAnomaly_Shrink::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Shrink:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
-			{
-				Timeline_Shrink->PlayFromStart();
-			});
 		ScheduleAnomaly(5);
 		break;
 	}
+}
+
+void AAnomaly_Shrink::StartAnomalyAction()
+{
+	Timeline_Shrink->PlayFromStart();
 }
 
 #pragma endregion
