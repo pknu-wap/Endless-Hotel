@@ -5,6 +5,7 @@
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -18,10 +19,6 @@ void UInteractComponent::BeginPlay()
 	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
 
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		OriginalTransform = RestoreOwner->GetActorTransform();
-	}
 }
 
 #pragma endregion
@@ -151,10 +148,7 @@ void UInteractComponent::Action_Elevator()
 
 void UInteractComponent::SaveOriginalTransform()
 {
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		OriginalTransform = RestoreOwner->GetActorTransform();
-	}
+	OriginalTransform = Owner->GetActorTransform();
 }
 
 void UInteractComponent::StartRestoring(float Duration)
@@ -173,13 +167,10 @@ void UInteractComponent::RestoreTick()
 	float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
 	float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
 
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		FTransform CurrentTransform = RestoreOwner->GetActorTransform();
-		FTransform NewTransform;
-		NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
-		RestoreOwner->SetActorTransform(NewTransform);
-	}
+	FTransform CurrentTransform = Owner->GetActorTransform();
+	FTransform NewTransform;
+	NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+	Owner->SetActorTransform(NewTransform);
 
 	if (RawAlpha >= 1.0f)
 	{
@@ -191,19 +182,16 @@ void UInteractComponent::FinishRestoring()
 {
 	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
 
-	if (AActor* RestoreOwner = GetOwner())
+	Owner->SetActorTransform(OriginalTransform);
+
+	if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
 	{
-		RestoreOwner->SetActorTransform(OriginalTransform);
+		RootPrim->SetSimulatePhysics(false);
+	}
 
-		if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(RestoreOwner->GetRootComponent()))
-		{
-			RootPrim->SetSimulatePhysics(false);
-		}
-
-		if (OnRestored.IsBound())
-		{
-			OnRestored.Broadcast(RestoreOwner);
-		}
+	if (OnRestored.IsBound())
+	{
+		OnRestored.Broadcast(Owner.Get());
 	}
 }
 

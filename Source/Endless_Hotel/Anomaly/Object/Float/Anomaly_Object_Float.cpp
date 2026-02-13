@@ -21,6 +21,9 @@ AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectIni
 void AAnomaly_Object_Float::BeginPlay()
 {
     Super::BeginPlay();
+
+    Cast<UInteractComponent>(Owner)->SaveOriginalTransform();
+
     AffectedActors.Empty();
     RestoredActors.Empty();
 }
@@ -128,7 +131,6 @@ void AAnomaly_Object_Float::CheckAllRestored()
 {
     if (AffectedActors.Num() > 0 && RestoredActors.Num() >= AffectedActors.Num())
     {
-
         bSolved = true;
 
         // 디버그 로그 (확인용)

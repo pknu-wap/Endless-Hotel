@@ -330,7 +330,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 void AEHPlayerController::OnEVButtonPressStarted()
 {
-
 	bIsButtonPressing = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
@@ -340,6 +339,7 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 {
 	bIsButtonPressing = false;
 	bCanMove = true;
+	bIsCameraFixed = false;
 }
 
 #pragma endregion

@@ -93,7 +93,7 @@ void AElevator_Button::OnMoveCompleted()
             FTimerHandle ButtonAnim;
             GetWorld()->GetTimerManager().SetTimer(ButtonAnim, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]()
                 {
-                    EHPC->OnEVButtonPressStarted();
+                    EHPC->OnEVButtonPressCompleted();
                 }), 2.0f, false);
         }
     }
