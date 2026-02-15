@@ -1,7 +1,7 @@
 // Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Actor/Anomaly_Actor_Choose/Actor_Choose_Frame.h"
+#include "Actor/ChooseKey/ChooseKey.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 
 AActor_Choose_Frame::AActor_Choose_Frame(const FObjectInitializer& ObjectInitializer)

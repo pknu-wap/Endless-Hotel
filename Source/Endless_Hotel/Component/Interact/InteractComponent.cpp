@@ -4,7 +4,7 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
-#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>

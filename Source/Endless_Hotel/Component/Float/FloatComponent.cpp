@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Float/FloatComponent.h"
 
 #pragma region Base
 

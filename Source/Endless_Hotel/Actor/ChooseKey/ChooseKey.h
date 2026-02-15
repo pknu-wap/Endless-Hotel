@@ -4,7 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
-#include <Actor_Choose_Frame.generated.h>
+#include <ChooseKey.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AActor_Choose_Frame : public AEHActor

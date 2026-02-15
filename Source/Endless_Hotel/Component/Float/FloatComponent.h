@@ -5,7 +5,7 @@
 #include "Component/EHComponent.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Component_Float.generated.h>
+#include <FloatComponent.generated.h>
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ENDLESS_HOTEL_API UAnomaly_Component_Float : public UEHComponent

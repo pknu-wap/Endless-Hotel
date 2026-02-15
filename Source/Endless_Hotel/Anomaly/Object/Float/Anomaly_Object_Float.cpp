@@ -3,7 +3,7 @@
 #include "Anomaly/Object/Float/Anomaly_Object_Float.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Components/WidgetComponent.h"   
-#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Float/FloatComponent.h"
 #include "Component/Interact/InteractComponent.h"
 #include <EngineUtils.h>
 
