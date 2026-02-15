@@ -96,7 +96,7 @@ void AEHPlayerController::SetupInputComponent()
 
 UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 {
-	if (EHPlayer.IsValid())
+	if (EHPlayer)
 	{
 		return EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
@@ -121,7 +121,7 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
 
-	if (!EHPlayer.IsValid()) return;
+	if (!EHPlayer) return;
 
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -258,7 +258,7 @@ void AEHPlayerController::OnCrouchCompleted()
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	if (!EHPlayer.IsValid()) return;
+	if (!EHPlayer) return;
 
 	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
@@ -294,7 +294,7 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 void AEHPlayerController::OnFaceCoverCompleted()
 {
-	if (!EHPlayer.IsValid()) return;
+	if (!EHPlayer) return;
 
 	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
@@ -367,7 +367,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 void AEHPlayerController::PlayDeathSequence()
 {
-	if (!EHPlayer.IsValid()) return;
+	if (!EHPlayer) return;
 
 	bIsPlayerDead = true;
 	bIsCameraFixed = true;
@@ -395,7 +395,7 @@ void AEHPlayerController::CheckForInteractables()
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(EHPlayer.Get());
+	Params.AddIgnoredActor(EHPlayer);
 
 	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
 
