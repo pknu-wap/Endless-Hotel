@@ -5,10 +5,17 @@
 #include "Anomaly/Object/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/LevelStreamingDynamic.h>
 
 #pragma region Base
+
+AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RemoveSmokeTimer);
+}
 
 void AAnomaly_Fire::BeginPlay()
 {
@@ -77,6 +84,11 @@ void AAnomaly_Fire::SpawnFires()
 
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
+	if (bIsRemoved)
+	{
+		return;
+	}
+
 	if (bIsCrouch)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
@@ -87,6 +99,16 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 		{
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
 		}), 5, false);
+}
+
+#pragma endregion
+
+#pragma region Restore
+
+void AAnomaly_Fire::RemoveSmokeTimer(bool bStart)
+{
+	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
+	bIsRemoved = true;
 }
 
 #pragma endregion
