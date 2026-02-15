@@ -53,6 +53,7 @@ void AAnomaly_Object_Clock::SetInteraction()
 	case EAnomalyName::Clock_Ringing:
 		Component_Interact->AdditionalAction = ([this]()
 			{
+				bSolved = !bSolved;
 				if (bInTime)
 				{
 					StopRinging();
@@ -89,6 +90,7 @@ void AAnomaly_Object_Clock::PlayTikTokSound()
 
 void AAnomaly_Object_Clock::RingingClock()
 {
+	bSolved = false;
 	AC_Ringing->Play();
 	bInTime = true;
 

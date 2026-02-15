@@ -20,12 +20,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Painting")
 	TObjectPtr<class USceneComponent> Root;
 
-protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
+
+	UPROPERTY(EditAnywhere, Category = "ObjectID")
+	bool bIsPortrait = false;
 
 #pragma endregion
 
