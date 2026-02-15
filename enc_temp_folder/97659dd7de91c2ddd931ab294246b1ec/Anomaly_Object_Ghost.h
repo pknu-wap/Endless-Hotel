@@ -58,10 +58,10 @@ private:
     TObjectPtr<class USoundBase> Sound_Off;
 
     UPROPERTY(EditAnywhere)
-    TObjectPtr<class USoundBase> Sound_Shake;
+    TObjectPtr<class USoundWave> Sound_Shake;
 
     UPROPERTY(EditAnywhere)
-    TObjectPtr<class USoundBase> Sound_Fin;
+    TObjectPtr<class USoundWave> Sound_Fin;
 
     ACharacter* Player;
     APlayerController* PC;
