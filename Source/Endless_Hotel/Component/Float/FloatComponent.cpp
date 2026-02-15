@@ -2,6 +2,7 @@
 
 
 #include "Component/Float/FloatComponent.h"
+#include "Component/Interact/InteractComponent.h"
 
 #pragma region Base
 
@@ -17,6 +18,9 @@ void UAnomaly_Component_Float::BeginPlay()
     Super::BeginPlay();
 
     TargetMesh = Cast<UPrimitiveComponent>(Owner->GetRootComponent());
+
+    UInteractComponent* InteractComp = Owner->FindComponentByClass<UInteractComponent>();
+    InteractComp->SaveOriginalTransform();
 }
 
 #pragma endregion

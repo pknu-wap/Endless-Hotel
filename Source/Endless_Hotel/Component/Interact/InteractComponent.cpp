@@ -18,7 +18,6 @@ void UInteractComponent::BeginPlay()
 	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-
 }
 
 #pragma endregion
@@ -112,11 +111,6 @@ void UInteractComponent::Interact()
 
 void UInteractComponent::Action_Restore()
 {
-	if (!CanInteract())
-	{
-		return;
-	}
-
 	StartRestoring(2.5);
 }
 

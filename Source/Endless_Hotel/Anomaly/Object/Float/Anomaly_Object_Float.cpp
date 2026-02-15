@@ -22,8 +22,6 @@ void AAnomaly_Object_Float::BeginPlay()
 {
     Super::BeginPlay();
 
-    Cast<UInteractComponent>(Owner)->SaveOriginalTransform();
-
     AffectedActors.Empty();
     RestoredActors.Empty();
 }
