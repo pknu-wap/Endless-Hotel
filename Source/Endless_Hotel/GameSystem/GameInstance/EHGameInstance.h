@@ -25,6 +25,8 @@ public:
 	void OpenLevel(const ELevelType& LevelName, bool bNeedLoading);
 	void QuitGame();
 
+	class ULevelStreamingDynamic* GetCurrentLevel() const { return CurrentLevel; }
+
 public:
 	static ELevelType CurrentLevelType;
 
@@ -33,10 +35,10 @@ protected:
 	TObjectPtr<class ULevelStreamingDynamic> CurrentLevel;
 
 	UPROPERTY(EditAnyWhere, Category = "Level")
-	TObjectPtr<UWorld> Level_MainMenu;
+	TSoftObjectPtr<UWorld> Level_MainMenu;
 
 	UPROPERTY(EditAnyWhere, Category = "Level")
-	TObjectPtr<UWorld> Level_Hotel;
+	TSoftObjectPtr<UWorld> Level_Hotel;
 
 #pragma endregion
 

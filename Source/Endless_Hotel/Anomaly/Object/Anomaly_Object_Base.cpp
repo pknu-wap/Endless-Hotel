@@ -26,8 +26,6 @@ void AAnomaly_Object_Base::BeginPlay()
 	{
 		Component_Widget->SetActive(false);
 	}
-
-	SetInteraction();
 }
 
 #pragma endregion

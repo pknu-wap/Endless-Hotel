@@ -4,9 +4,18 @@
 #include "Anomaly/Object/Fire/Anomaly_Object_Candle.h"
 #include "Anomaly/Object/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
+#include <Engine/LevelStreamingDynamic.h>
 
 #pragma region Base
+
+AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RemoveSmokeTimer);
+}
 
 void AAnomaly_Fire::BeginPlay()
 {
@@ -56,7 +65,10 @@ void AAnomaly_Fire::SpawnFires()
 		{
 			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
 
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator);
+			FActorSpawnParameters Params;
+			Params.OverrideLevel = GetGameInstance<UEHGameInstance>()->GetCurrentLevel()->GetLoadedLevel();
+
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator, Params);
 			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
 
 			if (!FireSpawnPositions.IsValidIndex(CurrentSpawnIndex))
@@ -72,6 +84,11 @@ void AAnomaly_Fire::SpawnFires()
 
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
+	if (bIsRemoved)
+	{
+		return;
+	}
+
 	if (bIsCrouch)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
@@ -82,6 +99,16 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 		{
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
 		}), 5, false);
+}
+
+#pragma endregion
+
+#pragma region Restore
+
+void AAnomaly_Fire::RemoveSmokeTimer(bool bStart)
+{
+	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
+	bIsRemoved = true;
 }
 
 #pragma endregion

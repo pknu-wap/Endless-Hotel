@@ -39,6 +39,11 @@ bool UInteractComponent::CanInteract()
 
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
+	if (!List_Interact.IsValidIndex(CurrentIndex))
+	{
+		return;
+	}
+
 	if (!CanInteract())
 	{
 		bIsShow = false;
@@ -123,7 +128,7 @@ void UInteractComponent::Action_TurnOff()
 {
 	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
 	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(this)->bSolved = true;
+	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
 }
 
 void UInteractComponent::Action_Burn()

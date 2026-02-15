@@ -43,7 +43,7 @@ protected:
 
 #pragma region Interact
 
-protected:
+public:
 	virtual void SetInteraction() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
 
 protected:

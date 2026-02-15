@@ -19,12 +19,16 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+#pragma endregion
+
+#pragma region Reference
+
 protected:
 	UPROPERTY()
-	TObjectPtr<class USkeletalMeshComponent> PlayerSM;
+	TWeakObjectPtr<class USkeletalMeshComponent> PlayerSM;
 
 	UPROPERTY()
-	TObjectPtr<class UCharacterMovementComponent> PlayerMC;
+	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
 
 #pragma endregion
 
@@ -32,6 +36,9 @@ protected:
 
 public:
 	virtual void SetAnomalyActivate() override;
+
+protected:
+	virtual void StartAnomalyAction() override;
 
 #pragma endregion
 
@@ -50,6 +57,14 @@ protected:
 
 	FVector OriginalScale;
 	float OriginalSpeed;
+
+#pragma endregion
+
+#pragma region Restore
+
+protected:
+	UFUNCTION()
+	void RestorePlayer(bool bStart);
 
 #pragma endregion
 
