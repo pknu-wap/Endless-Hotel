@@ -28,9 +28,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Niagara_Blood_Right = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Right"));
 	Niagara_Blood_Right->SetupAttachment(RootComponent);
 	Niagara_Blood_Right->SetAutoActivate(false);
-
-	Widget_PaintingBlur = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_PaintingBlur"));
-	Widget_PaintingBlur->SetupAttachment(RootComponent);
 }
 
 #pragma endregion
@@ -39,6 +36,8 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
+	if (!bIsPortrait) return;
+	bSolved = false;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -63,7 +62,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 				targetYaw = FMath::Clamp(targetYaw, -45.f, 45.f);
 			}
 
-			const FRotator EyeRot(0.f, targetYaw - 90, 0.f);
+			const FRotator EyeRot(0.f, targetYaw + 90, 0.f);
 			Mesh_LeftEye->SetRelativeRotation(EyeRot);
 			Mesh_RightEye->SetRelativeRotation(EyeRot);
 		}), 0.17f, true);
@@ -75,6 +74,8 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
+	if (!bIsPortrait) return;
+	bSolved = false;
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Right->SetActive(true);
 }
@@ -85,10 +86,8 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
-	Widget_PaintingBlur->SetVisibility(true);
-	UUserWidget* UW = Widget_PaintingBlur->GetUserWidgetObject();
-	UUI_PaintingBlur* BlurWidget = Cast<UUI_PaintingBlur>(UW);
-	BlurWidget->StartPaintingBlur();
+	bSolved = false;
+	Object->SetMaterial(1, BlurMaterial);
 }
 
 #pragma endregion
@@ -97,6 +96,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
+	bSolved = false;
 	CurrentTilt = Root->GetRelativeRotation().Pitch;
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())

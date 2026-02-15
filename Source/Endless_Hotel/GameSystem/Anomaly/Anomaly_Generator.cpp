@@ -26,10 +26,17 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 
 	for (auto* FoundActor : FoundActors)
 	{
+		if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
+		{
+			continue;
+		}
+
+
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		AnomalyObject->SetInteraction();
 		CurrentAnomaly->LinkedObjects.Add(FoundActor);
+		AnomalyObject->SetInteraction();
 	}
 }
 
@@ -114,6 +121,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 	}
 
 	CurrentAnomaly = Spawned;
+	Sub->CurrentAnomaly = Spawned;
 
 	return Spawned;
 }

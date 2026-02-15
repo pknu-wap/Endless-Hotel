@@ -54,14 +54,12 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 {
 	switch (VerdictMode)
 	{
-	case EAnomalyVerdictMode::AnomalyElevatorOnly:
-		return !bNormalElevator;
 	case EAnomalyVerdictMode::SolvedOnly:
 		return bSolved;
 	case EAnomalyVerdictMode::Both_AND:
 		return bSolved && !bNormalElevator;
 	case EAnomalyVerdictMode::Normal:
-		return !bSolved && bNormalElevator;
+		return bSolved && bNormalElevator;
 	default:
 		return false;
 	}
@@ -100,7 +98,7 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 
 void UAnomalyProgressSubSystem::TryInteractSolveVerdict()
 {
-	if (AAnomaly_Base_Neapolitan* Neo = Cast<AAnomaly_Base_Neapolitan>(CurrentAnomaly))
+	if (AAnomaly_Base* Neo = Cast<AAnomaly_Base>(CurrentAnomaly))
 	{
 		Neo->InteractSolveVerdict();
 	}
@@ -179,22 +177,6 @@ void UAnomalyProgressSubSystem::GameClear()
 	Floor = 9;
 
 	USaveManager::SaveGameClearData();
-}
-
-#pragma endregion
-
-#pragma region KillPlayer
-
-void UAnomalyProgressSubSystem::KillPlayer(bool bIsSignalActive)
-{
-	VerdictMode = EAnomalyVerdictMode::SolvedOnly;
-	FTimerHandle DieTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(DieTimerHandle, FTimerDelegate::CreateWeakLambda(
-		this,
-		[this]()
-		{
-			ApplyVerdict();
-		}), 5, false);
 }
 
 #pragma endregion

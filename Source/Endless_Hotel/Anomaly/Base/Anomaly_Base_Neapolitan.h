@@ -20,12 +20,4 @@ protected:
     virtual void BeginPlay() override;
 
 #pragma endregion
-
-#pragma region Activities
-
-public:
-    virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
-    
-#pragma endregion
-
 };

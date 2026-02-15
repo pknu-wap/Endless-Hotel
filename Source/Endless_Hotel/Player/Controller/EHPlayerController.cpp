@@ -339,6 +339,7 @@ void AEHPlayerController::OnEVButtonPressStarted()
 void AEHPlayerController::OnEVButtonPressCompleted()
 {
 	bIsButtonPressing = false;
+	bIsCameraFixed = false;
 	bCanMove = true;
 	bIsCameraFixed = false;
 }
