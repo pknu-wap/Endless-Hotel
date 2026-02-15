@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+ï»¿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Object/Ghost/Anomaly_Object_Ghost.h"
@@ -120,10 +120,10 @@ void AAnomaly_Object_Ghost::StartStep()
         return;
     }
 
-    // È­¸é ¾îµÓ°Ô
+    // í™”ë©´ ì–´ë‘¡ê²Œ
     TurnOffLights();
 
-    // 0.3ÃÊ ÈÄ ÀÌµ¿
+    // 0.3ì´ˆ í›„ ì´ë™
     FTimerHandle TH;
     GetWorld()->GetTimerManager().SetTimer(
         TH, this, &AAnomaly_Object_Ghost::MoveStep,
@@ -136,8 +136,8 @@ void AAnomaly_Object_Ghost::MoveStep()
     FVector PlayerLoc = Player->GetActorLocation();
     FVector Forward = Player->GetActorForwardVector();
 
-    // ¸¶Áö¸· StepÀÌ¸é ÇÃ·¹ÀÌ¾î ¾Õ 100cm·Î ÀÌµ¿
-    if (StepIndex == 2)  // 0,1,2 ¡æ 3´Ü°è
+    // ë§ˆì§€ë§‰ Stepì´ë©´ í”Œë ˆì´ì–´ ì• 100cmë¡œ ì´ë™
+    if (StepIndex == 2)  // 0,1,2 â†’ 3ë‹¨ê³„
     {   
         AEHPlayerController* EHPC = Cast<AEHPlayerController>(PC);
         EHPC->bCanMove = false;
@@ -160,7 +160,7 @@ void AAnomaly_Object_Ghost::MoveStep()
         TurnOnLights();
         StepIndex++;
 
-        // ¹Ù·Î FinishSequence() È£Ãâ
+        // ë°”ë¡œ FinishSequence() í˜¸ì¶œ
         FTimerHandle TH;
         GetWorld()->GetTimerManager().SetTimer(
             TH, this, &AAnomaly_Object_Ghost::FinishSequence,
@@ -237,7 +237,7 @@ void AAnomaly_Object_Ghost::TurnOffLights()
     for (auto* FoundActor : FoundActors)
     {
         auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-        Light->TurnOffLight();
+        Light->TurnLight(false);
     }
 
     AC->Sound = Sound_Off;
@@ -252,7 +252,7 @@ void AAnomaly_Object_Ghost::TurnOnLights()
     for (auto* FoundActor : FoundActors)
     {
         auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-        Light->TurnOnLight();
+        Light->TurnLight(true);
     }
 
     AC->Sound = Sound_On;

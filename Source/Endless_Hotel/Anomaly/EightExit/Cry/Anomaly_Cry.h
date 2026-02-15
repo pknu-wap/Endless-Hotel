@@ -16,12 +16,18 @@ class ENDLESS_HOTEL_API AAnomaly_Cry : public AAnomaly_Base_EightExit
 public:
 	AAnomaly_Cry(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region Activity
 
 public:
 	virtual void SetAnomalyActivate() override;
+
+protected:
+	virtual void StartAnomalyAction() override;
 
 #pragma endregion
 
@@ -37,6 +43,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_Cry;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	FVector CryLocation;
 
 #pragma endregion
 

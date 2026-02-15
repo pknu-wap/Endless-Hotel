@@ -15,7 +15,7 @@ AAnomaly_Object_Bug::AAnomaly_Object_Bug(const FObjectInitializer& ObjectInitial
 	NiagaraComponent->Deactivate();
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AudioComponent->SetupAttachment(NiagaraComponent);
+	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->SetAutoActivate(false);
 }
 

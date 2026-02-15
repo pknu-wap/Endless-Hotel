@@ -17,6 +17,7 @@ void AAnomaly_Light::SetAnomalyActivate()
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->DropLight();
 			});
+		ActiveTrigger();
 		break;
 
 	case EAnomalyName::Light_Blue:
@@ -24,6 +25,7 @@ void AAnomaly_Light::SetAnomalyActivate()
 			{
 				Cast<AAnomaly_Object_Light>(AnomalyObject)->ChangeLightColor();
 			});
+		ActiveTrigger();
 		break;
 	}
 }

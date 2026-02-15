@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_HandPrint.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_HandPrint.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_HandPrint : public AAnomaly_Object_Base
@@ -16,38 +16,34 @@ class ENDLESS_HOTEL_API AAnomaly_Object_HandPrint : public AAnomaly_Object_Base
 public:
 	AAnomaly_Object_HandPrint(const FObjectInitializer& ObjectInitializer);
 
-public:
-	UPROPERTY(EditAnywhere)
-	uint8 HandPrintIndex = 0;
-
-protected:
-	UPROPERTY()
-	TObjectPtr<class USceneComponent> Root;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UDecalComponent> Decal_HandPrint;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
-
 #pragma endregion
 
 #pragma region Cong
 
 public:
-	void StartCongCong(float& NextCong);
+	void ReserveCongCong();
 
 protected:
+	void ShowHandPrint();
 	void TurnOffLights();
 
 public:
 	static bool bIsFirstHandPrint;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	uint8 HandPrintIndex = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Decal")
+	TObjectPtr<class UDecalComponent> Decal_HandPrint;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_First;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_Default;
 
 #pragma endregion
