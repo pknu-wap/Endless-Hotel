@@ -19,6 +19,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+#pragma endregion
+
+#pragma region Reference
+
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<class USkeletalMeshComponent> PlayerSM;
@@ -53,6 +57,14 @@ protected:
 
 	FVector OriginalScale;
 	float OriginalSpeed;
+
+#pragma endregion
+
+#pragma region Restore
+
+protected:
+	UFUNCTION()
+	void RestorePlayer(bool bStart);
 
 #pragma endregion
 
