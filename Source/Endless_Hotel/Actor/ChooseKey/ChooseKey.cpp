@@ -22,21 +22,20 @@ void AActor_Choose_Frame::BeginPlay()
 {
     Super::BeginPlay();
 
-    UAnomalyProgressSubSystem* APSS = Cast<UAnomalyProgressSubSystem>(GetGameInstance());
-    if (APSS)
+    if (UGameInstance* GI = GetGameInstance())
     {
-        // 1. 이미 결정된 열쇠가 있는지 확인
-        if (APSS->GlobalSelectedKeyIndex == 0)
+        UAnomalyProgressSubSystem* APSS = GI->GetSubsystem<UAnomalyProgressSubSystem>();
+
+        if (APSS)
         {
-            // 게임 시작 후 처음 배치되는 경우에만 랜덤 결정
-            APSS->GlobalSelectedKeyIndex = FMath::RandRange(1, 2);
+            if (APSS->GlobalSelectedKeyIndex == 0)
+            {
+                APSS->GlobalSelectedKeyIndex = FMath::RandRange(1, 2);
+            }
+
+            SelectedKeyIndex = APSS->GlobalSelectedKeyIndex;
         }
-
-        // 2. 인스턴스에 저장된 정답을 가져와서 내 상태로 설정
-        SelectedKeyIndex = APSS->GlobalSelectedKeyIndex;
     }
-
-    // 3. 결정된 값에 따라 메쉬 설정 (기존 로직)
     bool bIsKey1 = (SelectedKeyIndex == 1);
     KeyMesh1->SetVisibility(bIsKey1);
     KeyMesh1->SetCollisionEnabled(bIsKey1 ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
