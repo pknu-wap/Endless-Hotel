@@ -4,7 +4,6 @@
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include <CoreMinimal.h>
-#include <Components/BoxComponent.h>
 #include <Anomaly_Object_Door.generated.h>
 
 UCLASS()
@@ -26,9 +25,6 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh_Door;
-
-	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
 	UPROPERTY()
@@ -45,9 +41,10 @@ protected:
 #pragma region Shake
 
 public:
-	void PlayShake_Handle();
+	void DoorShaking();
 
 protected:
+	void PlayShake_Handle();
 	void PlayShake_Door();
 
 	UFUNCTION()
@@ -90,6 +87,7 @@ protected:
 #pragma endregion
 
 #pragma region Open
+
 public:
 	void OpenDoor();
 	void PlayOpen_Door();
@@ -99,6 +97,7 @@ protected:
 	TObjectPtr<class USoundWave> Sound_DoorOpen;
 
 	bool bOpenTriggered = false;
+
 #pragma endregion
 
 #pragma region Close
@@ -112,6 +111,7 @@ protected:
 	TObjectPtr<class USoundWave> Sound_DoorClose;
 
 	bool bCloseTriggered = false;
+
 #pragma endregion
 
 #pragma region Rotate
@@ -133,5 +133,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
 	float RotateSpeed = 8.f;
+
 #pragma endregion
+
 };

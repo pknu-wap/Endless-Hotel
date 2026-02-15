@@ -72,6 +72,7 @@ void AEHPlayerController::SetupInputComponent()
 
 		// Interact
 		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Started, this, &ThisClass::OnInteract);
+		EnhancedInputComponent->BindAction(IA_ChangeInteract, ETriggerEvent::Started, this, &ThisClass::ChangeInteract);
 
 		// Crouch - Started/Completed 사용
 		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &ThisClass::OnCrouchStarted);
@@ -428,6 +429,19 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 	}
 
 	CachedInteractComp->Interact();
+}
+
+void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
+{
+	if (!CachedInteractComp.Get() || !CachedInteractComp->CanInteract())
+	{
+		return;
+	}
+
+	float WheelValue = Value.Get<float>();
+	bool bIsUp = WheelValue >= 0 ? true : false;
+
+	CachedInteractComp->ChangeIndex(bIsUp);
 }
 
 #pragma endregion

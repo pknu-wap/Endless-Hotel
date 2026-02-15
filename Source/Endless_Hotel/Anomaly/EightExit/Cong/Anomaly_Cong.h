@@ -18,20 +18,4 @@ public:
 
 #pragma endregion
 
-#pragma region Cong
-
-protected:
-	void StartCongCong();
-
-protected:
-	FTimerDelegate CongDelegate;
-	FTimerHandle CongHandle;
-
-	const uint8 MaxIndex = 50;
-	uint8 CurrentIndex = 0;
-
-	float NextCong = 2.9f;
-
-#pragma endregion
-
 };

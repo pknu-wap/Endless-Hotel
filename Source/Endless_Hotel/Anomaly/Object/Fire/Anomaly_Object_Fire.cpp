@@ -6,7 +6,11 @@
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 
+#pragma region Declare
+
 bool AAnomaly_Object_Fire::bIsFirst = true;
+
+#pragma endregion
 
 #pragma region Base
 
@@ -24,6 +28,7 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 
 	DeathTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathTrigger"));
 	DeathTrigger->SetupAttachment(NiagaraComponent);
+	DeathTrigger->OnComponentBeginOverlap.Clear();
 	DeathTrigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDeathRange);
 }
 

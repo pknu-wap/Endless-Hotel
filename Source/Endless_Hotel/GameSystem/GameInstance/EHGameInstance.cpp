@@ -35,7 +35,7 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	FName TargetLevelName = FName(*TargetLevelPath);
 
 	bool bSuccess = false;
-	UWorld* TargetLevel = nullptr;
+	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
 
 	switch (LevelName)
 	{
@@ -55,10 +55,10 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	CurrentLevel->SetShouldBeVisible(false);
 	CurrentLevel->SetShouldBeLoaded(true);
 
-	CurrentLevel->OnLevelLoaded.Clear();
+	CurrentLevel->OnLevelLoaded.RemoveDynamic(this, &ThisClass::LoadLevelCompleted);
 	CurrentLevel->OnLevelLoaded.AddDynamic(this, &ThisClass::LoadLevelCompleted);
 
-	CurrentLevel->OnLevelShown.Clear();
+	CurrentLevel->OnLevelShown.RemoveDynamic(this, &ThisClass::ShowLevelCompleted);
 	CurrentLevel->OnLevelShown.AddDynamic(this, &ThisClass::ShowLevelCompleted);
 }
 
@@ -134,8 +134,8 @@ void UEHGameInstance::SpawnAnomalyGenerator()
 
 	if (IsNormal > 8 || Subsystem->Floor == 9)
 	{
-		Generator->SpawnNormal(SpawnLevel);
-		return;
+		//Generator->SpawnNormal(SpawnLevel);
+		//return;
 	}
 
 	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);

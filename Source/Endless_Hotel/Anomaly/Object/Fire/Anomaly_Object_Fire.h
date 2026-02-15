@@ -6,12 +6,6 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Fire.generated.h>
 
-#pragma region Declare
-
-class UNiagaraSystem;
-
-#pragma endregion
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Fire : public AAnomaly_Object_Base
 {
@@ -27,7 +21,7 @@ public:
 #pragma region Fire
 
 public:
-	void StartFire(UNiagaraSystem* Effect);
+	void StartFire(class UNiagaraSystem* Effect);
 
 protected:
 	UPROPERTY(EditAnywhere)

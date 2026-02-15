@@ -25,13 +25,14 @@ void AAnomaly_Blur::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Blur:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Object)
-			{
-				ShowBlurWiget();
-			});
-		ScheduleAnomaly(15);
+		ActiveTrigger();
 		break;
 	}
+}
+
+void AAnomaly_Blur::StartAnomalyAction()
+{
+	ShowBlurWiget();
 }
 
 #pragma endregion

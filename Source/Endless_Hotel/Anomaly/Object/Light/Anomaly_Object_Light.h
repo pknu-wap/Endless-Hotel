@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_Light.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Light.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Light : public AAnomaly_Object_Base
@@ -25,9 +25,6 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh_Default;
-
-	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UGeometryCollectionComponent> Mesh_Destroy;
 
 	UPROPERTY(EditAnywhere)
@@ -41,8 +38,7 @@ protected:
 #pragma region Light
 
 public:
-	void TurnOffLight();
-	void TurnOnLight();
+	void TurnLight(bool bIsOn);
 
 #pragma endregion
 

@@ -13,10 +13,6 @@
 AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Mesh_Door = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Door"));
-	SetRootComponent(Mesh_Door);
-	Mesh_Door->SetRelativeRotation(FRotator(0, 0, 90));
-
 	Mesh_Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle"));
 	Mesh_Handle->SetupAttachment(RootComponent);
 
@@ -51,7 +47,7 @@ void AAnomaly_Object_Door::BeginPlay()
 
 	if (DoorIndex == 8)
 	{
-		OriginYaw = Mesh_Door->GetRelativeRotation().Yaw;
+		OriginYaw = Object->GetRelativeRotation().Yaw;
 		CurrentYaw = OriginYaw;
 	}
 }
@@ -63,9 +59,9 @@ void AAnomaly_Object_Door::BeginPlay()
 void AAnomaly_Object_Door::ShakeDoor(float Value)
 {
 	FVector Target = Door_Origin;
-	Target.Y += Value;
+	Target.X += Value;
 
-	Mesh_Door->SetWorldLocation(Target);
+	Object->SetWorldLocation(Target);
 }
 
 void AAnomaly_Object_Door::ShakeHandle(float Value)
@@ -74,6 +70,12 @@ void AAnomaly_Object_Door::ShakeHandle(float Value)
 	Target.Y += Value;
 
 	Mesh_Handle->SetRelativeLocation(Target);
+}
+
+void AAnomaly_Object_Door::DoorShaking()
+{
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::PlayShake_Handle, DoorIndex, false);
 }
 
 void AAnomaly_Object_Door::PlayShake_Handle()
@@ -133,6 +135,7 @@ void AAnomaly_Object_Door::PlayShake_Door()
 #pragma endregion
 
 #pragma region Open
+
 void AAnomaly_Object_Door::OpenDoor()
 {
 	StartRotateOpen();
@@ -143,12 +146,11 @@ void AAnomaly_Object_Door::StartRotateOpen()
 {
 	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 
-	CurrentYaw = Mesh_Door->GetRelativeRotation().Yaw;
+	CurrentYaw = Object->GetRelativeRotation().Yaw;
 	TargetYaw = OriginYaw + OpenYawDelta;
 
 	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
 }
-
 
 void AAnomaly_Object_Door::PlayOpen_Door()
 {
@@ -158,6 +160,7 @@ void AAnomaly_Object_Door::PlayOpen_Door()
 		AC_DoorMove->Play();
 	}
 }
+
 #pragma endregion
 
 #pragma region Close
@@ -172,7 +175,7 @@ void AAnomaly_Object_Door::StartRotateClose()
 {
 	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 
-	CurrentYaw = Mesh_Door->GetRelativeRotation().Yaw;
+	CurrentYaw = Object->GetRelativeRotation().Yaw;
 	TargetYaw = OriginYaw;
 
 	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
@@ -186,21 +189,24 @@ void AAnomaly_Object_Door::PlayClose_Door()
 		AC_DoorMove->Play();
 	}
 }
+
 #pragma endregion
 
 #pragma region Rotate
+
 void AAnomaly_Object_Door::UpdateRotate()
 {
 	const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, GetWorld()->GetDeltaSeconds(), RotateSpeed);
 	CurrentYaw = NewYaw;
 
-	FRotator Rot = Mesh_Door->GetRelativeRotation();
+	FRotator Rot = Object->GetRelativeRotation();
 	Rot.Yaw = CurrentYaw;
-	Mesh_Door->SetRelativeRotation(Rot);
+	Object->SetRelativeRotation(Rot);
 
 	if (FMath::IsNearlyEqual(CurrentYaw, TargetYaw, 0.1f))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
 	}
 }
+
 #pragma endregion
