@@ -3,6 +3,7 @@
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
 #include <Kismet/GameplayStatics.h>
@@ -89,4 +90,34 @@ void AAnomaly_Base::ScheduleAnomaly(float delay)
 		}), delay, false);
 }
 
+#pragma endregion
+
+#pragma region Verdict
+
+void AAnomaly_Base::InteractSolveVerdict()
+{
+	//상호작용 기반 해결여부
+	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	bool bAllSolved = true;
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Neapolitan::StaticClass(), FoundActors);
+
+	for (auto* FoundActor : FoundActors)
+	{
+		if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
+		{
+			continue;
+		}
+
+		auto* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(FoundActor);
+		if (!AnomalyObject->bSolved)
+		{
+			bAllSolved = false;
+			break;
+		}
+	}
+	bIsSolved = bAllSolved;
+	Sub->SetIsAnomalySolved(bIsSolved);
+}
 #pragma endregion

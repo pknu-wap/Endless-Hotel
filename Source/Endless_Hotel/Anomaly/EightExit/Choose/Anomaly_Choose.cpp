@@ -8,7 +8,7 @@
 AAnomaly_Choose::AAnomaly_Choose(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PlayerStartTransform.SetLocation(FVector(-1010, 560, -900));
+	PlayerStartTransform.SetLocation(FVector(-916.5, 570, - 504)); //테스트용 좌표, 원래 좌표: -1010, 560, -900
 }
 
 #pragma endregion

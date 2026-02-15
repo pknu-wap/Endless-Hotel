@@ -46,7 +46,7 @@ void AEHPlayer::BeginPlay()
 void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 {
 	bIsDead = true;
-	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
+ 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
 
 	AEHPlayerController* PC = Cast<AEHPlayerController>(GetController());
 	if (PC)

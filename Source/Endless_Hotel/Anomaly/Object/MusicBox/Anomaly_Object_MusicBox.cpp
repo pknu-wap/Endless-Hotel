@@ -25,6 +25,7 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 
 void AAnomaly_Object_MusicBox::PlayMusicBox()
 {
+	bSolved = false;
 	AC->Sound = Sound_MusicBox;
 	AC->Play();
 	bWaitingInteract = true;

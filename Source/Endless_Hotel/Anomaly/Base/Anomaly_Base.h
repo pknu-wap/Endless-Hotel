@@ -57,6 +57,9 @@ protected:
 #pragma region Verdicts
 
 public:
+	virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
 	bool bIsSolved = false;
 
@@ -105,7 +108,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Start")
-	FTransform PlayerStartTransform = FTransform(FRotator::ZeroRotator, FVector(-750, 566.568f, 997), FVector(0.75f, 0.75f, 0.75f));
+	FTransform PlayerStartTransform = FTransform(FRotator(180, -180, -180), FVector(-750, 566.568f, 997), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 

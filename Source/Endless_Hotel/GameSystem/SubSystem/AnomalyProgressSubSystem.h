@@ -16,7 +16,6 @@ class AAnomaly_Object_Base;
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
 {
-	AnomalyElevatorOnly,
 	SolvedOnly,
 	Both_AND,
 	Normal
@@ -122,14 +121,6 @@ public:
 	bool bIsClear = false;
 	bool bIsAlreadyClear = false;
 	FGameClearEvent GameClearEvent;
-
-#pragma endregion
-
-#pragma region KillPlayer
-
-public:
-	UFUNCTION()
-	void KillPlayer(bool bIsSignalActive);
 
 #pragma endregion
 

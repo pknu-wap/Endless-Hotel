@@ -21,7 +21,7 @@ protected:
 #pragma region Verdict
 
 public:
-	bool bSolved = false;
+	bool bSolved = true;
 
 #pragma endregion
 };

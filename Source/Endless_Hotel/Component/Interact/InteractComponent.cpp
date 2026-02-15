@@ -5,6 +5,8 @@
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Player/Character/EHPlayer.h"
+#include <GameFramework/Character.h>
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -137,7 +139,7 @@ void UInteractComponent::Action_TurnOff()
 {
 	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
 	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
+	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = !Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved;
 }
 
 void UInteractComponent::Action_Burn()
