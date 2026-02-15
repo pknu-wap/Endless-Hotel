@@ -4,6 +4,7 @@
 #include "Anomaly/Object/SignDrop/Anomaly_Object_SignDrop.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Actor/RoomSign/RoomSignActor.h"
+#include "Player/Controller/EHPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -60,7 +61,12 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
         InteractComp->OriginalTransform = TargetSign->GetActorTransform();
     }
 
+    if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+    {
+        PC->ClientStartCameraShake(CameraShakeClass, 0.3f);
+    }
     TargetSign->DropSign();
+
 
     FTimerHandle AttachTimerHandle;
     GetWorld()->GetTimerManager().SetTimer(AttachTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetSign]()
