@@ -96,7 +96,7 @@ void AEHPlayerController::SetupInputComponent()
 
 UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 {
-	if (EHPlayer)
+	if (EHPlayer.IsValid())
 	{
 		return EHPlayer->FindComponentByClass<UCameraComponent>();
 	}
@@ -121,7 +121,7 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 {
 	if (!bCanMove) return;
 
-	if (!EHPlayer) return;
+	if (!EHPlayer.IsValid()) return;
 
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -258,7 +258,7 @@ void AEHPlayerController::OnCrouchCompleted()
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	if (!EHPlayer) return;
+	if (!EHPlayer.IsValid()) return;
 
 	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
@@ -294,7 +294,7 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 void AEHPlayerController::OnFaceCoverCompleted()
 {
-	if (!EHPlayer) return;
+	if (!EHPlayer.IsValid()) return;
 
 	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
@@ -331,7 +331,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 void AEHPlayerController::OnEVButtonPressStarted()
 {
-
 	bIsButtonPressing = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
@@ -342,6 +341,7 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 	bIsButtonPressing = false;
 	bIsCameraFixed = false;
 	bCanMove = true;
+	bIsCameraFixed = false;
 }
 
 #pragma endregion
@@ -367,7 +367,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 void AEHPlayerController::PlayDeathSequence()
 {
-	if (!EHPlayer) return;
+	if (!EHPlayer.IsValid()) return;
 
 	bIsPlayerDead = true;
 	bIsCameraFixed = true;
@@ -395,7 +395,7 @@ void AEHPlayerController::CheckForInteractables()
 
 	FHitResult HitResult;
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(EHPlayer);
+	Params.AddIgnoredActor(EHPlayer.Get());
 
 	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
 

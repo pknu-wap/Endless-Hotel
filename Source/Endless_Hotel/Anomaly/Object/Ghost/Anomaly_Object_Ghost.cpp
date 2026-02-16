@@ -10,6 +10,7 @@
 #include <GameFramework/PlayerController.h>
 #include <Camera/CameraComponent.h>
 #include <TimerManager.h>
+#include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -151,7 +152,7 @@ void AAnomaly_Object_Ghost::MoveStep()
         GhostLookRot.Roll = 0.f;
 
         UCameraComponent* Cam = Player->FindComponentByClass<UCameraComponent>();
-        Cam->SetRelativeRotation(FRotator(20.f, 0.f, 0.f));
+        Cam->SetRelativeRotation(FRotator(40.f, 0.f, 0.f));
 
         SetActorRotation(GhostLookRot);
 

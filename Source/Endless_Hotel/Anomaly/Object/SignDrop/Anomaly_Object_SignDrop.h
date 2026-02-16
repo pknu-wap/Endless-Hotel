@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")
 	TArray<ARoomSignActor*> RoomSigns;
 
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")
+	TSubclassOf<UCameraShakeBase> CameraShakeClass;
+
 protected:
 	UFUNCTION()
 	void OnSignRestored(AActor* RestoredActor);

@@ -3,7 +3,7 @@
 #include "Anomaly/Object/Float/Anomaly_Object_Float.h"
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Components/WidgetComponent.h"   
-#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Float/FloatComponent.h"
 #include "Component/Interact/InteractComponent.h"
 #include <EngineUtils.h>
 
@@ -21,6 +21,7 @@ AAnomaly_Object_Float::AAnomaly_Object_Float(const FObjectInitializer& ObjectIni
 void AAnomaly_Object_Float::BeginPlay()
 {
     Super::BeginPlay();
+
     AffectedActors.Empty();
     RestoredActors.Empty();
 }
@@ -128,7 +129,6 @@ void AAnomaly_Object_Float::CheckAllRestored()
 {
     if (AffectedActors.Num() > 0 && RestoredActors.Num() >= AffectedActors.Num())
     {
-
         bSolved = true;
 
         // 디버그 로그 (확인용)

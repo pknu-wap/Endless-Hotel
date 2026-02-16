@@ -12,14 +12,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_FootStep : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Object_FootStep(const FObjectInitializer& ObjectInitializer);
-
-
-#pragma endregion
-
 #pragma region FootStep
 
 public:

@@ -4,9 +4,8 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
-#include "Component/Anomaly_Float/Anomaly_Component_Float.h"
+#include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
-#include <GameFramework/Character.h>
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -19,11 +18,6 @@ void UInteractComponent::BeginPlay()
 	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		OriginalTransform = RestoreOwner->GetActorTransform();
-	}
 }
 
 #pragma endregion
@@ -122,11 +116,6 @@ void UInteractComponent::Interact()
 
 void UInteractComponent::Action_Restore()
 {
-	if (!CanInteract())
-	{
-		return;
-	}
-
 	StartRestoring(2.5);
 }
 
@@ -139,7 +128,7 @@ void UInteractComponent::Action_TurnOff()
 {
 	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
 	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = !Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved;
+	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
 }
 
 void UInteractComponent::Action_Burn()
@@ -158,10 +147,7 @@ void UInteractComponent::Action_Elevator()
 
 void UInteractComponent::SaveOriginalTransform()
 {
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		OriginalTransform = RestoreOwner->GetActorTransform();
-	}
+	OriginalTransform = Owner->GetActorTransform();
 }
 
 void UInteractComponent::StartRestoring(float Duration)
@@ -180,13 +166,10 @@ void UInteractComponent::RestoreTick()
 	float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
 	float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
 
-	if (AActor* RestoreOwner = GetOwner())
-	{
-		FTransform CurrentTransform = RestoreOwner->GetActorTransform();
-		FTransform NewTransform;
-		NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
-		RestoreOwner->SetActorTransform(NewTransform);
-	}
+	FTransform CurrentTransform = Owner->GetActorTransform();
+	FTransform NewTransform;
+	NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+	Owner->SetActorTransform(NewTransform);
 
 	if (RawAlpha >= 1.0f)
 	{
@@ -198,19 +181,16 @@ void UInteractComponent::FinishRestoring()
 {
 	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
 
-	if (AActor* RestoreOwner = GetOwner())
+	Owner->SetActorTransform(OriginalTransform);
+
+	if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
 	{
-		RestoreOwner->SetActorTransform(OriginalTransform);
+		RootPrim->SetSimulatePhysics(false);
+	}
 
-		if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(RestoreOwner->GetRootComponent()))
-		{
-			RootPrim->SetSimulatePhysics(false);
-		}
-
-		if (OnRestored.IsBound())
-		{
-			OnRestored.Broadcast(RestoreOwner);
-		}
+	if (OnRestored.IsBound())
+	{
+		OnRestored.Broadcast(Owner.Get());
 	}
 }
 

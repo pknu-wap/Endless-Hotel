@@ -12,6 +12,7 @@ class UCameraComponent;
 class UEnhancedInputComponent;
 class USpringArmComponent;
 class ACharacter;
+class AEHPlayer;
 class USpotLightComponent;
 struct FInputActionValue;
 
@@ -32,7 +33,7 @@ protected:
 protected:
 
 	UPROPERTY()
-	TObjectPtr<class AEHPlayer> EHPlayer;
+	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion
 
@@ -141,16 +142,16 @@ protected:
 #pragma region Components
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class UCameraComponent> PlayerCameraComponent;
 
 	// Helper function to get camera
 	UCameraComponent* GetPlayerCamera() const;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FlashLight", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USpotLightComponent> FlashLight;
 
 #pragma endregion
