@@ -107,7 +107,7 @@ void AElevator::BeginPlay()
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	if (Sub->bPassed)
 	{
-		if (!bIsNormalElevator)
+		if (bMapStartElevator)
 		{
 			ElevatorLight->SetIntensity(LightOnIntensity);
 			ElevatorMove(StartPos, MapPos, true);

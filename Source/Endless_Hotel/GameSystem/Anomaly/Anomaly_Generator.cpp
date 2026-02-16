@@ -47,7 +47,6 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 // Spawn Anomaly at Specific Index
 AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
 {
-	UE_LOG(LogTemp, Verbose, TEXT("[Gen %s] SpawnAnomalyAtIndex(%d)"), *GetName(), Index);
 
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
@@ -64,7 +63,21 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
 	}
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
+	TSoftClassPtr<AAnomaly_Base> SoftAnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
+	UClass* AnomalyClass = SoftAnomalyClass.LoadSynchronous();
+
+	if (!IsValid(AnomalyClass))
+	{
+		FTimerHandle RetryHandle;
+		GetWorld()->GetTimerManager().SetTimer(RetryHandle, FTimerDelegate::CreateWeakLambda(this, [this, Index, SpawnLevel]()
+			{
+				this->SpawnAnomalyAtIndex(Index, SpawnLevel);
+			}), 0.5f, false);
+
+		return nullptr;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("클래스 이름: %s"), *AnomalyClass->GetName());
 
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
@@ -81,7 +94,6 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 	}
 
 	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
-
 	CurrentAnomaly = Spawned;
 
 	AnomalyObjectLinker();
