@@ -250,7 +250,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	}
 	else
 	{
-		ElevatorDelegate.Broadcast(bIsStart);
+		ElevatorDelegate.Broadcast(false);
 	}
 }
 

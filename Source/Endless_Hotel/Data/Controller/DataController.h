@@ -14,7 +14,7 @@ struct FAnomalyEntry
 	GENERATED_BODY()
 
 	UPROPERTY()
-	uint8 AnomalyID;
+	uint8 AnomalyID = -1;
 
 	UPROPERTY()
 	TSubclassOf<class AAnomaly_Base> AnomalyClass;
@@ -34,19 +34,6 @@ class ENDLESS_HOTEL_API UDataController : public UGameInstanceSubsystem
 
 public:
 	UDataController();
-
-#pragma endregion
-
-#pragma region Compendium
-
-public:
-	struct FCompendium* GetCompendiumData(int32 Index);
-	struct FCompendium* GetCompendiumData(FString Name);
-	struct FCompendium* GetCompendiumData(int32 Page, int32 Number);
-
-protected:
-	UPROPERTY()
-	TObjectPtr<class UDataTable> DataTable_Compendium;
 
 #pragma endregion
 
@@ -74,4 +61,5 @@ private:
 	TArray<FAnomalyEntry> OriginAnomaly;
 
 #pragma endregion
+
 };

@@ -17,6 +17,9 @@ class ENDLESS_HOTEL_API UEHCameraComponent : public UEHComponent
 public:
 	UEHCameraComponent(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region Post Processing
@@ -26,7 +29,7 @@ protected:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<APostProcessVolume> PostProcessVolume;
+	TWeakObjectPtr<APostProcessVolume> PostProcessVolume;
 
 #pragma endregion
 
@@ -53,9 +56,6 @@ protected:
 	TObjectPtr<UCurveFloat> Curve_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
-	TObjectPtr<UCurveFloat> Curve_EyeClose;
-
-	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> Mat_EyeEffect;
 
 	UPROPERTY()
@@ -67,7 +67,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	void LevelLoadCompleted();
+	void LevelShownCompleted();
 
 #pragma endregion
 

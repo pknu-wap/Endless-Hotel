@@ -11,6 +11,7 @@
 #pragma region Declare
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelShown);
 
 #pragma endregion
 
@@ -58,6 +59,7 @@ protected:
 
 public:
 	static FLevelLoaded OnLevelLoaded;
+	static FLevelShown OnLevelShown;
 
 #pragma endregion
 

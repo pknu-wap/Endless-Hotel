@@ -15,12 +15,16 @@ UEHCameraComponent::UEHCameraComponent(const FObjectInitializer& ObjectInitializ
 	:Super(ObjectInitializer)
 {
 	Timeline_EyeEffect = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_EyeEffect"));
+}
 
-	AElevator::ElevatorDelegate.Clear();
+void UEHCameraComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
+	UEHGameInstance::OnLevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
 
-	UEHGameInstance::OnLevelLoaded.Clear();
-	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::LevelLoadCompleted);
+	SettingEyeEffect();
 }
 
 #pragma endregion
@@ -29,18 +33,20 @@ UEHCameraComponent::UEHCameraComponent(const FObjectInitializer& ObjectInitializ
 
 void UEHCameraComponent::FindPPV()
 {
+	if (PostProcessVolume.IsValid())
+	{
+		return;
+	}
+
 	for (auto* PPV : GetWorld()->PostProcessVolumes)
 	{
 		auto Props = PPV->GetProperties();
-
 		if (Props.bIsUnbound)
 		{
 			PostProcessVolume = Cast<APostProcessVolume>(PPV);
 			break;
 		}
 	}
-
-	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 }
 
 #pragma endregion
@@ -55,29 +61,33 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
 
-	if (bIsOpen)
-	{
-		UI_InGame->EyeEffectBlur(true);
-		Timeline_EyeEffect->SetFloatCurve(Curve_EyeOpen, FName("Eye"));
-	}
-	else
-	{
-		UI_InGame->EyeEffectBlur(false);
-		Timeline_EyeEffect->SetFloatCurve(Curve_EyeClose, FName("Eye"));
-	}
-
 	PostProcessVolume->bUnbound = true;
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
 	PostProcessVolume->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DynMat_EyeEffect));
 
-	Timeline_EyeEffect->PlayFromStart();
+	Timeline_EyeEffect->Stop();
+
+	if (bIsOpen)
+	{
+		UI_InGame->EyeEffectBlur(true);
+		Timeline_EyeEffect->SetNewTime(2.f);
+		Timeline_EyeEffect->Play();
+	}
+	else
+	{
+		UI_InGame->EyeEffectBlur(false);
+		Timeline_EyeEffect->SetNewTime(9.f);
+		Timeline_EyeEffect->Reverse();
+	}
 }
 
 void UEHCameraComponent::SettingEyeEffect()
 {
+	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
+
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
-	Timeline_EyeEffect->AddInterpFloat(Curve_EyeOpen, Update_Open, FName("Eye"), FName("Eye"));
+	Timeline_EyeEffect->AddInterpFloat(Curve_EyeOpen, Update_Open, FName("EyeTrack"));
 
 	FOnTimelineEvent FinishFunc;
 	FinishFunc.BindUFunction(this, FName("EndEyeEffect"));
@@ -98,13 +108,12 @@ void UEHCameraComponent::EndEyeEffect()
 
 #pragma region Loading
 
-void UEHCameraComponent::LevelLoadCompleted()
+void UEHCameraComponent::LevelShownCompleted()
 {
 	switch (UEHGameInstance::CurrentLevelType)
 	{
 	case ELevelType::Hotel:
 		FindPPV();
-		SettingEyeEffect();
 		StartEyeEffect(true);
 		break;
 	}

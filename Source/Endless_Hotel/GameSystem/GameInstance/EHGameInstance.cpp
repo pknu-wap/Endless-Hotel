@@ -16,6 +16,7 @@
 
 ELevelType UEHGameInstance::CurrentLevelType = ELevelType::Persistent;
 FLevelLoaded UEHGameInstance::OnLevelLoaded;
+FLevelShown UEHGameInstance::OnLevelShown;
 
 #pragma endregion
 
@@ -79,6 +80,8 @@ bool UEHGameInstance::IsLevelLoaded()
 void UEHGameInstance::LoadLevelCompleted()
 {
 	CurrentLevel->SetShouldBeVisible(true);
+
+	OnLevelLoaded.Broadcast();
 }
 
 void UEHGameInstance::ShowLevelCompleted()
@@ -100,7 +103,7 @@ void UEHGameInstance::ShowLevelCompleted()
 
 	RelocatePlayer();
 
-	OnLevelLoaded.Broadcast();
+	OnLevelShown.Broadcast();
 }
 
 void UEHGameInstance::UnloadCurrentLevel()
@@ -134,8 +137,8 @@ void UEHGameInstance::SpawnAnomalyGenerator()
 
 	if (IsNormal > 8 || Subsystem->Floor == 9)
 	{
-		//Generator->SpawnNormal(SpawnLevel);
-		//return;
+		Generator->SpawnNormal(SpawnLevel);
+		return;
 	}
 
 	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);
