@@ -49,7 +49,7 @@ protected:
 	void EndEyeEffect();
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UTimelineComponent> Timeline_EyeEffect;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")

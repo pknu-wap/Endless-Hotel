@@ -71,11 +71,9 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 
 	FActorSpawnParameters Params;
 	Params.OverrideLevel = SpawnLevel;
-	Params.SpawnCollisionHandlingOverride =
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AAnomaly_Base* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{

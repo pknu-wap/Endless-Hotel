@@ -70,14 +70,16 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	if (bIsOpen)
 	{
 		UI_InGame->EyeEffectBlur(true);
-		Timeline_EyeEffect->SetNewTime(2.f);
+		Timeline_EyeEffect->SetNewTime(0.f);
 		Timeline_EyeEffect->Play();
+		FTimerHandle RemoveHandle;
+		GetWorld()->GetTimerManager().SetTimer(RemoveHandle, this, &ThisClass::EndEyeEffect, 5, false);
 	}
 	else
 	{
 		UI_InGame->EyeEffectBlur(false);
 		Timeline_EyeEffect->SetNewTime(9.f);
-		Timeline_EyeEffect->Reverse();
+		Timeline_EyeEffect->Play();
 	}
 }
 
@@ -88,10 +90,6 @@ void UEHCameraComponent::SettingEyeEffect()
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
 	Timeline_EyeEffect->AddInterpFloat(Curve_EyeOpen, Update_Open, FName("EyeTrack"));
-
-	FOnTimelineEvent FinishFunc;
-	FinishFunc.BindUFunction(this, FName("EndEyeEffect"));
-	Timeline_EyeEffect->SetTimelineFinishedFunc(FinishFunc);
 }
 
 void UEHCameraComponent::ApplyEyeEffect(float Value)
@@ -101,6 +99,7 @@ void UEHCameraComponent::ApplyEyeEffect(float Value)
 
 void UEHCameraComponent::EndEyeEffect()
 {
+	Timeline_EyeEffect->Stop();
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
 }
 

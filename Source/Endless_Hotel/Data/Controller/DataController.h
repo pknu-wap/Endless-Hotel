@@ -49,8 +49,10 @@ public:
 	void RemoveClearedAnomaly();
 
 public:
+	UPROPERTY()
 	TSet<uint8> LoadedAnomalySet;
 
+	UPROPERTY()
 	TArray<FAnomalyEntry> ActAnomaly;
 
 protected:
@@ -58,6 +60,7 @@ protected:
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
 
 private:
+	UPROPERTY()
 	TArray<FAnomalyEntry> OriginAnomaly;
 
 #pragma endregion
