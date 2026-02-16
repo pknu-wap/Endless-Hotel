@@ -47,6 +47,9 @@ protected:
 	void PlayShake_Handle();
 	void PlayShake_Door();
 
+	void Timer_Handle();
+	void Timer_Door();
+
 	UFUNCTION()
 	void ShakeDoor(float Value);
 
