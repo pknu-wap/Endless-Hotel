@@ -158,6 +158,7 @@ void UEHGameInstance::RelocatePlayer()
 
 	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
+	auto* PC = Player->GetController();
 
 	if (!Subsystem->bPassed)
 	{
@@ -167,6 +168,7 @@ void UEHGameInstance::RelocatePlayer()
 
 	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
 	Player->SetActorTransform(AnomalyTransform);
+	PC->SetControlRotation(AnomalyTransform.GetRotation().Rotator());
 }
 
 #pragma endregion

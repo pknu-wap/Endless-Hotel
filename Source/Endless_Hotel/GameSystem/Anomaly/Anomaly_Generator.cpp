@@ -31,7 +31,6 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 			continue;
 		}
 
-
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		AnomalyObject->SetInteraction();
@@ -119,11 +118,9 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 
 	FActorSpawnParameters Params;
 	Params.OverrideLevel = SpawnLevel;
-	Params.SpawnCollisionHandlingOverride =
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AAnomaly_Base* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{
