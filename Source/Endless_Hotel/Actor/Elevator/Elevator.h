@@ -37,6 +37,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
 

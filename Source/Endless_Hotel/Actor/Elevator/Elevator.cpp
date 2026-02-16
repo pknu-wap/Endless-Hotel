@@ -314,7 +314,7 @@ void AElevator::SmoothRotate(FRotator TargetRotation)
 	FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, 0.01f, 5.0f);
 	PC->SetControlRotation(SmoothRotation);
 
-	if (SmoothRotation.Equals(TargetRotation, 0.01f))
+	if (SmoothRotation.Equals(TargetRotation, 0.1f))
 	{
 		SmoothRotation = TargetRotation;
 		PC->SetControlRotation(SmoothRotation);
@@ -324,6 +324,7 @@ void AElevator::SmoothRotate(FRotator TargetRotation)
 
 void AElevator::TakePlayer()
 {
+	/*GetWorld()->GetTimerManager().ClearTimer(RotateHandle);*/
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	FVector3d FixedLocation = Player->GetActorLocation();
 	FixedLocation.X = PlayerLocationInElevator.X;

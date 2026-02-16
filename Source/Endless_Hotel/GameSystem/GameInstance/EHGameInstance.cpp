@@ -173,13 +173,9 @@ void UEHGameInstance::RelocatePlayer()
 	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
 	Player->SetActorLocation(AnomalyTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
 
-	FTimerHandle RotateHandle;
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AnomalyTransform]()
-	{
-		FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();
-		Player->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);
-		Player->GetController()->SetControlRotation(TargetRotation);
-	}), 0.05f, false);
+	FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();
+	Player->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);
+	Player->GetController()->SetControlRotation(TargetRotation);
 }
 
 #pragma endregion
