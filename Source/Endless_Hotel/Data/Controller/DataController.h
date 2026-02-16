@@ -14,10 +14,10 @@ struct FAnomalyEntry
 	GENERATED_BODY()
 
 	UPROPERTY()
-	uint8 AnomalyID = -1;
+	uint8 AnomalyID = 0;
 
 	UPROPERTY()
-	TSubclassOf<class AAnomaly_Base> AnomalyClass;
+	TSoftClassPtr<class AAnomaly_Base> AnomalyClass;
 
 	UPROPERTY()
 	TSubclassOf<class AAnomaly_Object_Base> ObjectClass;
