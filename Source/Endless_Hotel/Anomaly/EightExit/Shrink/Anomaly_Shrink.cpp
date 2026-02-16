@@ -14,13 +14,13 @@ AAnomaly_Shrink::AAnomaly_Shrink(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Timeline_Shrink = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Shrink"));
-
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RestorePlayer);
 }
 
 void AAnomaly_Shrink::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RestorePlayer);
 
 	FOnTimelineFloat Update_Size;
 	Update_Size.BindUFunction(this, FName("ShrinkPlayer"));

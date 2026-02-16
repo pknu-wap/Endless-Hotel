@@ -8,6 +8,7 @@
 UENUM(BlueprintType)
 enum class ESettingCategory : uint8
 {
+	None		UMETA(DisplayName = "None"),
 	Screen		UMETA(DisplayName = "Screen"),
 	Grapic		UMETA(DisplayName = "Grapic"),
 	Sound		UMETA(DisplayName = "Sound"),
@@ -23,13 +24,13 @@ struct FSettingCategory
 
 public:
 	UPROPERTY(EditAnyWhere)
-	ESettingCategory Enum;
+	ESettingCategory Enum = ESettingCategory::None;
 
 	UPROPERTY(EditAnyWhere)
 	FText Name;
 
 	UPROPERTY(EditAnyWhere)
-	float Angle;
+	float Angle = 0;
 };
 
 UENUM(BlueprintType)
@@ -61,6 +62,8 @@ enum class EOptionValue : uint8
 UENUM(BlueprintType)
 enum class EOptionCategory : uint8
 {
+	None			UMETA(DisplayName = "None"),
+
 	// Screen
 	Resolution		UMETA(DisplayName = "Resolution"),
 	Window			UMETA(DisplayName = "Window"),
@@ -110,8 +113,8 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	EOptionCategory Category;
+	EOptionCategory Category = EOptionCategory::None;
 
 	UPROPERTY(EditAnywhere)
-	EOptionValue Value;
+	EOptionValue Value = EOptionValue::None;
 };

@@ -11,7 +11,7 @@ struct FAnomalyData : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 AnomalyID;
+	uint8 AnomalyID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Anomaly_En;

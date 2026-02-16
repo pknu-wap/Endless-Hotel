@@ -11,15 +11,11 @@
 
 #pragma region Base
 
-AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RemoveSmokeTimer);
-}
-
 void AAnomaly_Fire::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RemoveSmokeTimer);
 
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	EHPlayer->CrouchDelegate.AddDynamic(this, &ThisClass::SmokeTimer);

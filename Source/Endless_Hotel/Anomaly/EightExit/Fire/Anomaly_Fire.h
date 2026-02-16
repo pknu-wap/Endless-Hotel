@@ -13,9 +13,6 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Base_EightExit
 	
 #pragma region Base
 
-public:
-	AAnomaly_Fire(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	virtual void BeginPlay() override;
 
