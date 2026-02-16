@@ -173,6 +173,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	float ElevatorMoveDuration = 3.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	bool bMapStartElevator;
+
 public:
 	void CallElevator();
 
