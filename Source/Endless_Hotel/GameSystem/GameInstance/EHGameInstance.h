@@ -84,7 +84,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FTransform DefaultTransform = FTransform(FRotator::ZeroRotator, FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
+	FTransform DefaultTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 

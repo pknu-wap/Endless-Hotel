@@ -111,8 +111,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = NormalClass;
-
+	UClass* AnomalyClass = NormalClass.LoadSynchronous();
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
