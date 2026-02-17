@@ -24,6 +24,7 @@ void UEHCameraComponent::BeginPlay()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
 	UEHGameInstance::OnLevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
 
+	FindPPV();
 	SettingEyeEffect();
 }
 
@@ -61,11 +62,10 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
 
-	PostProcessVolume->bUnbound = true;
-	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
-	PostProcessVolume->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DynMat_EyeEffect));
+	EndEyeEffect();
 
-	Timeline_EyeEffect->Stop();
+	PostProcessVolume->bUnbound = true;
+	PostProcessVolume->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DynMat_EyeEffect));
 
 	if (bIsOpen)
 	{
@@ -112,7 +112,7 @@ void UEHCameraComponent::LevelShownCompleted()
 	switch (UEHGameInstance::CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		FindPPV();
+		EndEyeEffect();
 		StartEyeEffect(true);
 		break;
 	}
