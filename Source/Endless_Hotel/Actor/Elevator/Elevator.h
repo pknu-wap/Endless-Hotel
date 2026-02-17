@@ -167,6 +167,9 @@ private:
 public:
 	static FElevatorDelegate ElevatorDelegate;
 
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	bool bIsMapStartElevator;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	FVector StartPos;
@@ -179,9 +182,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	float ElevatorMoveDuration = 3.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-	bool bIsMapStartElevator;
 
 public:
 	void CallElevator();
