@@ -84,7 +84,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UAudioComponent> AC;
+	TObjectPtr<class UAudioComponent> Elevator_AC;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> Door_AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_DoorMove;
@@ -115,6 +118,21 @@ protected:
 #pragma region DoorMovement
 
 public:
+	void MoveDoors(bool isOpening);
+
+	void TryCloseDoorAfterDelay();
+
+	UFUNCTION()
+	void OnDoorTimelineUpdate(float Alpha);
+
+	UFUNCTION()
+	void OnDoorTimelineFinished();
+
+protected:
+	UFUNCTION()
+	void OpenDoorAfterMove();
+
+public:
 	bool bIsDoorMoving;
 	bool bIsDoorOpened;
 
@@ -142,18 +160,6 @@ private:
 
 	bool bIsPlayerInside;
 
-
-public:
-	void MoveDoors(bool isOpening);
-
-	void TryCloseDoorAfterDelay();
-
-	UFUNCTION()
-	void OnDoorTimelineUpdate(float Alpha);
-
-	UFUNCTION()
-	void OnDoorTimelineFinished();
-
 #pragma endregion
 
 #pragma region ElevatorMovement
@@ -175,13 +181,16 @@ protected:
 	float ElevatorMoveDuration = 3.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-	bool bMapStartElevator;
+	bool bIsMapStartElevator;
 
 public:
 	void CallElevator();
 
 protected:
 	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
+
+private:
+	FTimerHandle MoveHandle;
 
 #pragma endregion
 

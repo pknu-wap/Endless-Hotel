@@ -53,8 +53,11 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
 	ElevatorLight->SetupAttachment(Car);
 
-	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->SetupAttachment(RootComponent);
+	Elevator_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Elevator AC"));
+	Elevator_AC->SetupAttachment(RootComponent);
+
+	Door_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Door AC"));
+	Door_AC->SetupAttachment(RootComponent);
 
 	InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
 	InsideTrigger->SetupAttachment(Car);
@@ -107,10 +110,15 @@ void AElevator::BeginPlay()
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	if (Sub->bPassed)
 	{
-		if (bMapStartElevator)
+		if (bIsMapStartElevator)
 		{
+			bIsPlayerInside = true;
 			ElevatorLight->SetIntensity(LightOnIntensity);
-			ElevatorMove(StartPos, MapPos, true);
+
+			FTimerHandle StartDelayHandle;
+			GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, [this]() {
+				ElevatorMove(StartPos, MapPos, true);
+				}, 0.1f, false);
 		}
 	}
 	else
@@ -149,8 +157,8 @@ void AElevator::MoveDoors(bool bIsOpening)
 	if (bIsDoorMoving && bIsOpening == bIsDoorOpened) return;
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
-	AC->Sound = Sound_DoorMove;
-	AC->Play();
+	Door_AC->Sound = Sound_DoorMove;
+	Door_AC->Play();
 
 	if (bIsOpening)
 	{
@@ -170,6 +178,13 @@ void AElevator::TryCloseDoorAfterDelay()
 {
 	if (bIsPlayerInside) return;
 	if(bIsDoorOpened && !bIsDoorMoving) MoveDoors(false);
+}
+
+void AElevator::OpenDoorAfterMove()
+{
+	MoveDoors(true);
+	bIsPlayerInside = true;
+	MoveHandle.Invalidate();
 }
 
 #pragma endregion
@@ -200,6 +215,7 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 {
 	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
 	if (!Player) return;
+	bIsPlayerInside = false;
 	if (!bIsPlayerInside && bIsDoorOpened)
 	{
 		GetWorld()->GetTimerManager().SetTimer(
@@ -224,29 +240,22 @@ void AElevator::CallElevator()
 
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
-	AC->Sound = Sound_ElevatorMove;
-	AC->Play();
+	Elevator_AC->Sound = Sound_ElevatorMove;
+	Elevator_AC->Play();
 	SetActorLocation(Start);
+
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
+	LatentInfo.Linkage = 0;
+	LatentInfo.UUID = __LINE__;
+
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, End, GetActorRotation(),
 		false, false, ElevatorMoveDuration, false, EMoveComponentAction::Type::Move, LatentInfo);
 
 	if (bIsStart)
 	{
 		bIsPlayerInside = true;
-		FTimerHandle MoveHandle;
-		GetWorld()->GetTimerManager().SetTimer(
-			MoveHandle,
-			FTimerDelegate::CreateWeakLambda(this, [this, MoveHandle]() mutable
-				{
-					MoveDoors(true);
-					GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
-					bIsPlayerInside = false;
-				}),
-			ElevatorMoveDuration,
-			false
-		);
+		GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &AElevator::OpenDoorAfterMove, ElevatorMoveDuration, false);
 	}
 	else
 	{
@@ -260,11 +269,9 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 
 void AElevator::NotifySubsystemElevatorChoice()
 {
-	if (bChoiceSentThisRide) return;
 	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 	FTimerHandle WaitHandle;
-	FTimerHandle MoveHandle;
-	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub, MoveHandle]() mutable
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub]() mutable
 		{
 			ElevatorMove(MapPos, EndPos, false);
 			GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
