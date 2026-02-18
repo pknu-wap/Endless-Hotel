@@ -165,11 +165,11 @@ void UEHGameInstance::RelocatePlayer()
 		Player->SetActorTransform(DefaultTransform);
 		return;
 	}
+	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
 	//Player->SetActorTransform(AnomalyTransform);
 	Player->GetCharacterMovement()->StopMovementImmediately();//삭제
 	Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;//삭제
 
-	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;//삭제
 	Player->SetActorLocation(AnomalyTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);//삭제
 
 	FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();//삭제
