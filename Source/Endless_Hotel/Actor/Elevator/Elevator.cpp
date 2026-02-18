@@ -145,6 +145,7 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
 	bIsDoorMoving = false;
+	SetPlayerInputEnabled(true);
 }
 
 #pragma endregion
@@ -155,6 +156,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 {
 	if (!DoorTimeline || !DoorCurve) return;
 	if (bIsDoorMoving && bIsOpening == bIsDoorOpened) return;
+
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
 	Door_AC->Sound = Sound_DoorMove;
@@ -244,6 +246,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 	Elevator_AC->Sound = Sound_ElevatorMove;
 	Elevator_AC->SetActive(true);
 	Elevator_AC->Play();
+	SetPlayerInputEnabled(false);
 	SetActorLocation(Start);
 
 	FLatentActionInfo LatentInfo;
