@@ -66,6 +66,9 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 	InsideTrigger->SetGenerateOverlapEvents(true);
 	InsideTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
 	InsideTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	
+	TriggerBlockBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerBlockBox"));
+	TriggerBlockBox->SetupAttachment(Car);
 
 	LeftDoor->SetUsingAbsoluteLocation(false);
 	RightDoor->SetUsingAbsoluteLocation(false);
@@ -114,7 +117,7 @@ void AElevator::BeginPlay()
 		{
 			bIsPlayerInside = true;
 			ElevatorLight->SetIntensity(LightOnIntensity);
-
+			InsideTrigger->SetBoxExtent(FVector(150.0f, 150.0f, 40.0f));
 			FTimerHandle StartDelayHandle;
 			GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, [this]() {
 				ElevatorMove(StartPos, MapPos, true);
@@ -146,6 +149,8 @@ void AElevator::OnDoorTimelineFinished()
 {
 	bIsDoorMoving = false;
 	SetPlayerInputEnabled(true);
+	if (bIsMapStartElevator && bIsDoorOpened) return;
+	TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion
@@ -219,6 +224,8 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
 	if (!Player) return;
 	bIsPlayerInside = false;
+	InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 40.0f));
+	TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	if (!bIsPlayerInside && bIsDoorOpened)
 	{
 		GetWorld()->GetTimerManager().SetTimer(
@@ -228,7 +235,7 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 			DoorDuration,
 			false
 		);
-		if (!bIsPlayerInside) ElevatorLight->SetIntensity(LightOffIntensity);
+		ElevatorLight->SetIntensity(LightOffIntensity);
 	}
 }
 

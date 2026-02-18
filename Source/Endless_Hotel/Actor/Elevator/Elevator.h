@@ -104,6 +104,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
+	UPROPERTY(EditAnywhere, Category = "Trigger")
+	TObjectPtr<UStaticMeshComponent> TriggerBlockBox;
+
 protected:
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
