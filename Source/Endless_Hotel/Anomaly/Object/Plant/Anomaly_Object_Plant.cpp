@@ -29,10 +29,4 @@ void AAnomaly_Object_Plant::StartChange()
 
 #pragma endregion
 
-#pragma region Plant Off
-void AAnomaly_Object_Plant::StartPlantOff()
-{
-	SetActorHiddenInGame(true);
-}
-#pragma endregion
 

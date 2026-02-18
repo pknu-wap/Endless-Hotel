@@ -30,9 +30,4 @@ public:
 	void StartChange();
 
 #pragma endregion
-
-#pragma region Plant Off
-public:
-		void StartPlantOff();
-#pragma endregion
 };

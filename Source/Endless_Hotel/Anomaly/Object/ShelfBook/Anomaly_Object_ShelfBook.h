@@ -86,9 +86,4 @@ protected:
 	void PlayRandomDropSound(UStaticMeshComponent* BookMesh, const FVector& WorldLocation, float DropImpulse);
 
 #pragma endregion
-
-#pragma region Book Off
-public:
-	void StartBookOff();
-#pragma endregion
 };

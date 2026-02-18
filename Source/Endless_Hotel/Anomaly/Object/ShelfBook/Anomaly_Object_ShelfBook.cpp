@@ -174,10 +174,3 @@ void AAnomaly_Object_ShelfBook::PlayRandomDropSound(UStaticMeshComponent* BookMe
 }
 
 #pragma endregion
-
-#pragma region Book Off
-void AAnomaly_Object_ShelfBook::StartBookOff()
-{
-	SetActorHiddenInGame(true);
-}
-#pragma endregion
