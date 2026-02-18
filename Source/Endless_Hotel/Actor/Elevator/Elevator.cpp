@@ -158,6 +158,7 @@ void AElevator::MoveDoors(bool bIsOpening)
 	DoorTimeline->Stop();
 	DoorTimeline->SetPlayRate(1.f / FMath::Max(0.01f, DoorDuration));
 	Door_AC->Sound = Sound_DoorMove;
+	Door_AC->SetActive(true);
 	Door_AC->Play();
 
 	if (bIsOpening)
@@ -241,6 +242,7 @@ void AElevator::CallElevator()
 void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 {
 	Elevator_AC->Sound = Sound_ElevatorMove;
+	Elevator_AC->SetActive(true);
 	Elevator_AC->Play();
 	SetActorLocation(Start);
 

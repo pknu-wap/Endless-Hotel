@@ -34,7 +34,7 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	}
 
 	FString TargetLevelPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<ELevelType>(LevelName));
-	FName TargetLevelName = FName(*TargetLevelPath);
+	//FName TargetLevelName = FName(*TargetLevelPath);
 
 	bool bSuccess = false;
 	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
@@ -159,23 +159,22 @@ void UEHGameInstance::RelocatePlayer()
 
 	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
-	auto* PC = Player->GetController();
 
 	if (!Subsystem->bPassed)
 	{
 		Player->SetActorTransform(DefaultTransform);
 		return;
 	}
+	//Player->SetActorTransform(AnomalyTransform);
+	Player->GetCharacterMovement()->StopMovementImmediately();//삭제
+	Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;//삭제
 
-	Player->GetCharacterMovement()->StopMovementImmediately();
-	Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;//삭제
+	Player->SetActorLocation(AnomalyTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);//삭제
 
-	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
-	Player->SetActorLocation(AnomalyTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-
-	FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();
-	Player->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);
-	Player->GetController()->SetControlRotation(TargetRotation);
+	FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();//삭제
+	Player->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);//삭제
+	Player->GetController()->SetControlRotation(TargetRotation); //삭제
 }
 
 #pragma endregion
