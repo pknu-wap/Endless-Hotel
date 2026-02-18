@@ -54,7 +54,7 @@ protected:
 	FTimeline TL_EyeEffect;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
-	TObjectPtr<UCurveFloat> Curve_EyeOpen;
+	TSoftObjectPtr<UCurveFloat> Curve_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> Mat_EyeEffect;
@@ -71,6 +71,14 @@ protected:
 protected:
 	UFUNCTION()
 	void LevelShownCompleted();
+
+#pragma endregion
+
+#pragma region ASync
+
+protected:
+	void LoadASyncCurveFloat();
+	void LoadedCurveFloat(TSoftObjectPtr<UCurveFloat> Curve);
 
 #pragma endregion
 

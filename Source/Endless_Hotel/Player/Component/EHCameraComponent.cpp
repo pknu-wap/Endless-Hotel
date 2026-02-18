@@ -94,11 +94,7 @@ void UEHCameraComponent::SettingEyeEffect()
 
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
-
-	TL_EyeEffect.AddInterpFloat(Curve_EyeOpen, Update_Open);
-	TL_EyeEffect.SetTimelineLength(20.f);
-	TL_EyeEffect.SetTimelineLengthMode(ETimelineLengthMode::TL_TimelineLength);
-	TL_EyeEffect.SetLooping(false);
+	TL_EyeEffect.AddInterpFloat(Curve_EyeOpen.Get(), Update_Open);
 }
 
 void UEHCameraComponent::ApplyEyeEffect(float Value)
@@ -120,7 +116,7 @@ void UEHCameraComponent::LevelShownCompleted()
 	switch (UEHGameInstance::CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		StartEyeEffect(true);
+		LoadASyncCurveFloat();
 		break;
 
 	case ELevelType::MainMenu:
@@ -128,6 +124,23 @@ void UEHCameraComponent::LevelShownCompleted()
 		GetWorld()->GetTimerManager().ClearTimer(RemoveHandle);
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region ASync
+
+void UEHCameraComponent::LoadASyncCurveFloat()
+{
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->StreamableManager.RequestAsyncLoad(Curve_EyeOpen.ToSoftObjectPath(), FStreamableDelegate::CreateUObject(this, &ThisClass::LoadedCurveFloat, Curve_EyeOpen));
+}
+
+void UEHCameraComponent::LoadedCurveFloat(TSoftObjectPtr<UCurveFloat> Curve)
+{
+	Curve_EyeOpen = Curve.Get();
+
+	StartEyeEffect(true);
 }
 
 #pragma endregion
