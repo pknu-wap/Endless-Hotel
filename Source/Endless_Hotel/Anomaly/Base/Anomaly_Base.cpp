@@ -35,6 +35,7 @@ void AAnomaly_Base::StartAnomalyAction()
 	for (auto* FoundActor : LinkedObjects)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyName)) return;
 		AnomalyAction(AnomalyObject);
 	}
 }
