@@ -36,7 +36,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
-	if (!bIsPortrait) return;
 	bSolved = false;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
@@ -74,10 +73,13 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	if (!bIsPortrait) return;
 	bSolved = false;
+
 	Niagara_Blood_Left->SetActive(true);
+	Niagara_Blood_Left->SetVisibility(true);
+
 	Niagara_Blood_Right->SetActive(true);
+	Niagara_Blood_Right->SetVisibility(true);
 }
 
 #pragma endregion
@@ -118,14 +120,6 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
-
-void AAnomaly_Object_Painting::SetInteraction()
-{
-	/*Component_Interact->AdditionalAction = ([this]()
-		{
-			InteractRotate();
-		});*/
-}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {

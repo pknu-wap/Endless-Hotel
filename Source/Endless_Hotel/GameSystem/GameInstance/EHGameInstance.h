@@ -5,6 +5,7 @@
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Engine/GameInstance.h>
+#include <Engine/StreamableManager.h>
 #include <Delegates/DelegateCombinations.h>
 #include <EHGameInstance.generated.h>
 
@@ -20,6 +21,13 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+#pragma region ASync
+
+public:
+	FStreamableManager StreamableManager;
+
+#pragma endregion
+
 #pragma region Level
 
 public:

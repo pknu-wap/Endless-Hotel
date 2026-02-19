@@ -52,6 +52,9 @@ protected:
 	TSubclassOf<class UUI_Base> UI_Setting;
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUI_Base> UI_MainMenuCheck;
+
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_QuitCheck;
 
 #pragma endregion

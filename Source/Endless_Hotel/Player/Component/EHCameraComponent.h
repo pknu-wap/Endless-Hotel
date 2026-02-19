@@ -5,6 +5,7 @@
 #include "Component/EHComponent.h"
 #include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
+#include <Components/TimelineComponent.h>
 #include <EHCameraComponent.generated.h>
 
 UCLASS()
@@ -19,6 +20,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 #pragma endregion
 
@@ -49,17 +51,18 @@ protected:
 	void EndEyeEffect();
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTimelineComponent> Timeline_EyeEffect;
+	FTimeline TL_EyeEffect;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
-	TObjectPtr<UCurveFloat> Curve_EyeOpen;
+	TSoftObjectPtr<UCurveFloat> Curve_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> Mat_EyeEffect;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> DynMat_EyeEffect;
+
+	FTimerHandle RemoveHandle;
 
 #pragma endregion
 
@@ -68,6 +71,14 @@ protected:
 protected:
 	UFUNCTION()
 	void LevelShownCompleted();
+
+#pragma endregion
+
+#pragma region ASync
+
+protected:
+	void LoadASyncCurveFloat();
+	void LoadedCurveFloat(TSoftObjectPtr<UCurveFloat> Curve);
 
 #pragma endregion
 

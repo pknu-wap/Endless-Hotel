@@ -29,8 +29,8 @@ void UUI_PopUp_Escape::Click_Setting()
 
 void UUI_PopUp_Escape::Click_MainMenu()
 {
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenLevel(ELevelType::MainMenu, true);
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->OpenWidget(UI_MainMenuCheck);
 }
 
 void UUI_PopUp_Escape::Click_Quit()

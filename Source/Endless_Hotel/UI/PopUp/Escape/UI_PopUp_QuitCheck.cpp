@@ -22,7 +22,17 @@ void UUI_PopUp_QuitCheck::NativeOnInitialized()
 void UUI_PopUp_QuitCheck::Click_Yes()
 {
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->QuitGame();
+
+	switch (QuitType)
+	{
+	case EQuitType::Quit:
+		GameInstance->QuitGame();
+		break;
+
+	case EQuitType::MainMenu:
+		GameInstance->OpenLevel(ELevelType::MainMenu, true);
+		break;
+	}
 }
 
 #pragma endregion
