@@ -33,6 +33,16 @@ protected:
 public:
 	void EyeFollowing();
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float EyeCorrection;
+
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float YawLimitDeg;
+
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float Sensitivity;
+
 #pragma endregion
 
 #pragma region Blood

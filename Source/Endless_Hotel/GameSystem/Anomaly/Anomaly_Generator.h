@@ -54,7 +54,7 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
-	TSubclassOf<AAnomaly_Base> NormalClass;
+	TSoftClassPtr<AAnomaly_Base> NormalClass;
 
 #pragma endregion
 

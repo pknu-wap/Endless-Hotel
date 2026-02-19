@@ -37,6 +37,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Elevator")
 	TObjectPtr<USceneComponent> ElevatorSceneRoot;
 
@@ -83,7 +84,10 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UAudioComponent> AC;
+	TObjectPtr<class UAudioComponent> Elevator_AC;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> Door_AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_DoorMove;
@@ -100,6 +104,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Trigger")
 	TObjectPtr<UBoxComponent> InsideTrigger;
 
+	UPROPERTY(EditAnywhere, Category = "Trigger")
+	TObjectPtr<UStaticMeshComponent> TriggerBlockBox;
+
 protected:
 	UFUNCTION()
 	void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -112,6 +119,21 @@ protected:
 #pragma endregion
 
 #pragma region DoorMovement
+
+public:
+	void MoveDoors(bool isOpening);
+
+	void TryCloseDoorAfterDelay();
+
+	UFUNCTION()
+	void OnDoorTimelineUpdate(float Alpha);
+
+	UFUNCTION()
+	void OnDoorTimelineFinished();
+
+protected:
+	UFUNCTION()
+	void OpenDoorAfterMove();
 
 public:
 	bool bIsDoorMoving;
@@ -141,24 +163,15 @@ private:
 
 	bool bIsPlayerInside;
 
-
-public:
-	void MoveDoors(bool isOpening);
-
-	void TryCloseDoorAfterDelay();
-
-	UFUNCTION()
-	void OnDoorTimelineUpdate(float Alpha);
-
-	UFUNCTION()
-	void OnDoorTimelineFinished();
-
 #pragma endregion
 
 #pragma region ElevatorMovement
 
 public:
 	static FElevatorDelegate ElevatorDelegate;
+
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	bool bIsMapStartElevator;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
@@ -173,14 +186,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
 	float ElevatorMoveDuration = 3.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-	bool bMapStartElevator;
-
 public:
 	void CallElevator();
 
 protected:
 	void ElevatorMove(FVector Start, FVector End, bool bIsStart);
+
+private:
+	FTimerHandle MoveHandle;
 
 #pragma endregion
 
