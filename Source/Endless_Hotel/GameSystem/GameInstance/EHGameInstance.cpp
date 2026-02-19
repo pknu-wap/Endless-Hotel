@@ -155,7 +155,7 @@ void UEHGameInstance::RelocatePlayer()
 	UWorld* World = GetWorld();
 
 	auto* GameMode = World->GetAuthGameMode<AEHGameMode>();
-	GameMode->RestartPlayer(World->GetFirstPlayerController());
+	GameMode->RespawnPlayer();
 
 	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
