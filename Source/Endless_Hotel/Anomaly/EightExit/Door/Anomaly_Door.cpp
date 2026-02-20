@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Door/Anomaly_Door.h"
-#include "Anomaly/Object/Door/Anomaly_Object_Door.h"
+#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
@@ -13,6 +13,7 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 {
 	TriggerBox_Open = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Open"));
 	TriggerBox_Open->SetupAttachment(RootComponent);
+	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TriggerBox_Close = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Close"));
 	TriggerBox_Close->SetupAttachment(RootComponent);
@@ -38,10 +39,7 @@ void AAnomaly_Door::SetAnomalyActivate()
 		break;
 
 	case EAnomalyName::Door_Close:
-		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
-			{
-				SetupDoorTrigger();
-			});
+		SetupDoorTrigger();
 		ActiveTrigger();
 		break;
 	}

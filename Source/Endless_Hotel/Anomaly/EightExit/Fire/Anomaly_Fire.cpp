@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Fire/Anomaly_Fire.h"
-#include "Anomaly/Object/Fire/Anomaly_Object_Candle.h"
-#include "Anomaly/Object/Fire/Anomaly_Object_Fire.h"
+#include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Candle.h"
+#include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Actor/Elevator/Elevator.h"
