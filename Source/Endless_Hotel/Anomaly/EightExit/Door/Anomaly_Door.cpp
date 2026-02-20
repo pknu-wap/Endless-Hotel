@@ -13,6 +13,7 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 {
 	TriggerBox_Open = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Open"));
 	TriggerBox_Open->SetupAttachment(RootComponent);
+	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TriggerBox_Close = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Close"));
 	TriggerBox_Close->SetupAttachment(RootComponent);
@@ -38,10 +39,7 @@ void AAnomaly_Door::SetAnomalyActivate()
 		break;
 
 	case EAnomalyName::Door_Close:
-		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
-			{
-				SetupDoorTrigger();
-			});
+		SetupDoorTrigger();
 		ActiveTrigger();
 		break;
 	}

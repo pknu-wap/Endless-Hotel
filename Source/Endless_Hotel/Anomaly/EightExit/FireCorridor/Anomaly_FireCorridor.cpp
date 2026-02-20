@@ -8,7 +8,7 @@
 AAnomaly_FireCorridor::AAnomaly_FireCorridor(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PlayerStartTransform.SetLocation(FVector(-1360, 570, 710));
+	PlayerStartTransform.SetLocation(FVector(-950, 566, 2016));
 }
 
 #pragma endregion
