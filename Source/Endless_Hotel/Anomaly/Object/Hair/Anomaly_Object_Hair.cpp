@@ -2,6 +2,7 @@
 
 
 #include "Anomaly/Object/Hair/Anomaly_Object_Hair.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Materials/MaterialParameterCollection.h>
 #include <Materials/MaterialParameterCollectionInstance.h>
@@ -32,25 +33,37 @@ void AAnomaly_Object_Hair::BeginPlay()
 	FOnTimelineFloat UpdateDelegate;
 	UpdateDelegate.BindUFunction(this, FName("UpdateHair"));
 	HairTimeline->AddInterpFloat(Curve_HairOpacity, UpdateDelegate);
+
+	APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	TArray<UStaticMeshComponent*> MeshComps;
+	Pawn->GetComponents<UStaticMeshComponent>(MeshComps);
+
+	for (auto* Comp : MeshComps)
+	{
+		if (Comp->GetName().Contains("StaticMesh"))
+		{
+			HairMesh = Comp;
+			InitialHairLocation = HairMesh->GetRelativeLocation();
+			break;
+		}
+	}
+
+	AElevator::ElevatorDelegate.AddDynamic(this, &AAnomaly_Object_Hair::ResetHair);
+}
+
+void AAnomaly_Object_Hair::ResetHair(bool bIsStart)
+{
+	HairTimeline->Stop();
+	HairTimeline->SetPlaybackPosition(0.0f, false);
+
+	auto* Inst = GetWorld()->GetParameterCollectionInstance(HairMPC);
+	Inst->SetScalarParameterValue("MP_HairOpacity", 0.0f);
+
+	HairMesh->SetRelativeLocation(InitialHairLocation);
 }
 
 void AAnomaly_Object_Hair::StartHair()
 {
-	APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-		if (!Pawn) return;
-
-		TArray<UStaticMeshComponent*> MeshComps;
-		Pawn->GetComponents<UStaticMeshComponent>(MeshComps);
-
-		for (auto* Comp : MeshComps)
-		{
-			if (Comp->GetName().Contains("StaticMesh"))
-			{
-				HairMesh = Comp;
-				break;
-			}
-		}
-		
 	FTimerHandle HairTimer;
 	GetWorld()->GetTimerManager().SetTimer(HairTimer, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
