@@ -5,6 +5,7 @@
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Engine/GameInstance.h>
+#include <Engine/StreamableManager.h>
 #include <Delegates/DelegateCombinations.h>
 #include <EHGameInstance.generated.h>
 
@@ -20,6 +21,13 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+#pragma region ASync
+
+public:
+	FStreamableManager StreamableManager;
+
+#pragma endregion
+
 #pragma region Level
 
 public:
@@ -84,7 +92,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FTransform DefaultTransform = FTransform(FRotator::ZeroRotator, FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
+	FTransform DefaultTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 900, 680), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 

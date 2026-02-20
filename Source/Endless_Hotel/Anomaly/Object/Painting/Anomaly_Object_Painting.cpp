@@ -9,6 +9,7 @@
 #include <Components/BoxComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/SceneComponent.h>
+#include <Kismet/KismetMathLibrary.h>
 
 #pragma region Base
 
@@ -36,35 +37,29 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
-	if (!bIsPortrait) return;
 	bSolved = false;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
+
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
 	FTimerHandle EyeFollowHandle;
 	GetWorld()->GetTimerManager().SetTimer(EyeFollowHandle, FTimerDelegate::CreateWeakLambda(
 		this,
 		[this, Player]()
 		{
-			const FTransform SelfXform = GetActorTransform();
-			FVector PlayerLocal = SelfXform.InverseTransformPosition(Player->GetActorLocation());
+			FVector EyeLocation = Mesh_LeftEye->GetComponentLocation();
+			FVector TargetLocation = Player->GetActorLocation() + FVector(0.f, 0.f, 60.f);
 
-			const float lateralY = PlayerLocal.Y;
+			FRotator WorldLookAt = UKismetMathLibrary::FindLookAtRotation(EyeLocation, TargetLocation);
+			FRotator LocalRot = UKismetMathLibrary::NormalizedDeltaRotator(WorldLookAt, GetActorRotation());
 
-			constexpr float DeadZoneCm = 2.f;
-			constexpr float Sensitivity = 250.f;
-			constexpr float YawLimitDeg = 45.f;
+			float finalYaw = LocalRot.Yaw * Sensitivity;
+			finalYaw = FMath::Clamp(finalYaw, -YawLimitDeg, YawLimitDeg);
+			const FRotator FinalEyeRot(0.f, finalYaw + EyeCorrection, 0.f);
 
-			float targetYaw = 0.f;
-			if (FMath::Abs(lateralY) > DeadZoneCm)
-			{
-				targetYaw = FMath::RadiansToDegrees(FMath::Atan2(lateralY, Sensitivity));
-				targetYaw = FMath::Clamp(targetYaw, -45.f, 45.f);
-			}
-
-			const FRotator EyeRot(0.f, targetYaw + 90, 0.f);
-			Mesh_LeftEye->SetRelativeRotation(EyeRot);
-			Mesh_RightEye->SetRelativeRotation(EyeRot);
+			Mesh_LeftEye->SetRelativeRotation(FinalEyeRot);
+			Mesh_RightEye->SetRelativeRotation(FinalEyeRot);
 		}), 0.17f, true);
 }
 
@@ -74,10 +69,13 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	if (!bIsPortrait) return;
 	bSolved = false;
+
 	Niagara_Blood_Left->SetActive(true);
+	Niagara_Blood_Left->SetVisibility(true);
+
 	Niagara_Blood_Right->SetActive(true);
+	Niagara_Blood_Right->SetVisibility(true);
 }
 
 #pragma endregion
@@ -118,14 +116,6 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
-
-void AAnomaly_Object_Painting::SetInteraction()
-{
-	/*Component_Interact->AdditionalAction = ([this]()
-		{
-			InteractRotate();
-		});*/
-}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {

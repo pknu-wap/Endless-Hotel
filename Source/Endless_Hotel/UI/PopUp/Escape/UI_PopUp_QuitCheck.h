@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
+#include "Type/UI/Type_UI_Quit.h"
 #include <CoreMinimal.h>
 #include <UI_PopUp_QuitCheck.generated.h>
 
@@ -15,6 +16,14 @@ class ENDLESS_HOTEL_API UUI_PopUp_QuitCheck : public UUI_PopUp_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
+#pragma region Type
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Type")
+	EQuitType QuitType;
 
 #pragma endregion
 

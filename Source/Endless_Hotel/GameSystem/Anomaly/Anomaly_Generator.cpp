@@ -31,7 +31,6 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 			continue;
 		}
 
-
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
 		AnomalyObject->SetInteraction();
@@ -112,18 +111,15 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 
-	TSubclassOf<AAnomaly_Base> AnomalyClass = NormalClass;
-
+	UClass* AnomalyClass = NormalClass.LoadSynchronous();
 	// Spawn
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
 	FActorSpawnParameters Params;
 	Params.OverrideLevel = SpawnLevel;
-	Params.SpawnCollisionHandlingOverride =
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AAnomaly_Base* Spawned =
-		GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{

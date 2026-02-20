@@ -26,15 +26,22 @@ protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
 
-	UPROPERTY(EditAnywhere, Category = "ObjectID")
-	bool bIsPortrait = false;
-
 #pragma endregion
 
 #pragma region EyeMove
 
 public:
 	void EyeFollowing();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float EyeCorrection;
+
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float YawLimitDeg;
+
+	UPROPERTY(EditAnywhere, Category = "EyeRotate")
+	float Sensitivity;
 
 #pragma endregion
 
@@ -83,8 +90,6 @@ protected:
 #pragma region Interact
 
 public:
-	virtual void SetInteraction() override;
-
 	void InteractRotate();
 
 protected:
