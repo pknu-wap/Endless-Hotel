@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Cong/Anomaly_Cong.h"
-#include "Anomaly/Object/HandPrint/Anomaly_Object_HandPrint.h"
+#include "Anomaly/Object/EightExit/HandPrint/Anomaly_Object_HandPrint.h"
 #include <Components/BoxComponent.h>
 
 #pragma region Activity

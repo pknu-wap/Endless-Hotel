@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Ceiling/Anomaly_Ceiling.h"
-#include "Anomaly/Object/Ceiling/Anomaly_Object_Ceiling.h"
+#include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
 
 #pragma region Activity
 

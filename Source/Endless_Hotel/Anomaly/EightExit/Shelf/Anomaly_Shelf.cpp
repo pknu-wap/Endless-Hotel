@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/EightExit/Shelf/Anomaly_Shelf.h"
-#include "Anomaly/Object/Shelf/Anomaly_Object_Shelf.h"
+#include "Anomaly/Object/EightExit/Shelf/Anomaly_Object_Shelf.h"
 
 #pragma region Activity
 

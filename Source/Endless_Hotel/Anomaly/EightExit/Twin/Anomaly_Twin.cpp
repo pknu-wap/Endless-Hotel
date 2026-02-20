@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/EightExit/Twin/Anomaly_Twin.h"
-#include "Anomaly/Object/Twin/Anomaly_Object_Twin.h"
+#include "Anomaly/Object/Neapolitan/Twin/Anomaly_Object_Twin.h"
 
 #pragma region Base
 

@@ -2,9 +2,7 @@
 
 
 #include "Anomaly/Neapolitan/ShelfDoll/Anomaly_ShelfDoll.h"
-#include "Anomaly/Object/ShelfDoll/Anomaly_Object_ShelfDoll.h"
-#include "Anomaly/Object/ShelfBook/Anomaly_Object_ShelfBook.h"
-#include "Anomaly/Object/Plant/Anomaly_Object_Plant.h"
+#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 #include <Kismet/GameplayStatics.h>
 
 void AAnomaly_ShelfDoll::SetAnomalyActivate()

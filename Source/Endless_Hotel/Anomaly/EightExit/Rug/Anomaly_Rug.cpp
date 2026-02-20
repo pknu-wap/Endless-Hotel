@@ -1,5 +1,5 @@
 ﻿#include "Anomaly/EightExit/Rug/Anomaly_Rug.h"
-#include "Anomaly/Object/Rug/Anomlay_Object_Rug.h"
+#include "Anomaly/Object/EightExit/Rug/Anomlay_Object_Rug.h"
 
 #pragma region Base
 
