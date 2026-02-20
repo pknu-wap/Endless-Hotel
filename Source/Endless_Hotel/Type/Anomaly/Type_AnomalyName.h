@@ -26,6 +26,7 @@ enum class EAnomalyName : uint8
 	Door_Close			= 16	UMETA(DisplayName = "Door_Close"),
 	Ceil_Blood			= 17	UMETA(DisplayName = "Ceil_Blood"),
 	Disappear			= 18	UMETA(DisplayName = "Disappear"),
+	FireCorridor		= 22	UMETA(DisplayName = "FireCorridor"),
 	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color"),
 	GhostHand			= 24	UMETA(DisplayName = "GhostHand"),
 	Ghost               = 28	UMETA(DisplayName = "Ghost"),

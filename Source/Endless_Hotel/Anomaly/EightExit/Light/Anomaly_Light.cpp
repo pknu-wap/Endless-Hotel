@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Light/Anomaly_Light.h"
-#include "Anomaly/Object/Light/Anomaly_Object_Light.h"
+#include "Anomaly/Object/EightExit/Light/Anomaly_Object_Light.h"
 #include <Components/BoxComponent.h>
 
 #pragma region Activity
