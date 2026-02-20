@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Hair/Anomaly_Hair.h"
-#include "Anomaly/Object/Hair/Anomaly_Object_Hair.h"
+#include "Anomaly/Object/EightExit/Hair/Anomaly_Object_Hair.h"
 
 #pragma region Base
 

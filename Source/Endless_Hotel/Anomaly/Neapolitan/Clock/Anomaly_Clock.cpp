@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Neapolitan/Clock/Anomaly_Clock.h"
-#include "Anomaly/Object/Clock/Anomaly_Object_Clock.h"
+#include "Anomaly/Object/Neapolitan/Clock/Anomaly_Object_Clock.h"
 
 #pragma region Activity
 

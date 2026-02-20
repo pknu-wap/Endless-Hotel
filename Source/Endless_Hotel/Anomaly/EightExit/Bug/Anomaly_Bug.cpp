@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Bug/Anomaly_Bug.h"
-#include "Anomaly/Object/Bug/Anomaly_Object_Bug.h"
+#include "Anomaly/Object/EightExit/Bug/Anomaly_Object_Bug.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Engine/LevelStreamingDynamic.h>
 

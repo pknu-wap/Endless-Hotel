@@ -2,7 +2,7 @@
 
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
-#include "Anomaly/Object/Painting/Anomaly_Object_Painting.h"
+#include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
