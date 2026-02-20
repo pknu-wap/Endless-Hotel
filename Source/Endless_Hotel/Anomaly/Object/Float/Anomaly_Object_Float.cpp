@@ -37,7 +37,7 @@ void AAnomaly_Object_Float::SearchAndStart()
         AActor* Target = *It;
 
         auto* InteractComp = Target->FindComponentByClass<UInteractComponent>();
-        auto* FloatComp = Target->FindComponentByClass<UAnomaly_Component_Float>();
+        auto* FloatComp = Target->FindComponentByClass<UFloatComponent>();
 
         if (InteractComp && FloatComp)
         {
