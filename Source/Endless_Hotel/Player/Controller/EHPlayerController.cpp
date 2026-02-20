@@ -226,10 +226,10 @@ void AEHPlayerController::OnCrouchStarted()
 	EHPlayer->Crouch();
 	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
-	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
+	/*if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
 	{
 		Capsule->SetCapsuleSize(70.f, 60.f);
-	}
+	}*/
 }
 
 void AEHPlayerController::OnCrouchCompleted()
@@ -246,15 +246,15 @@ void AEHPlayerController::OnCrouchCompleted()
 	EHPlayer->UnCrouch();
 	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
 
-	if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
-	{
-		Capsule->SetCapsuleSize(45.f, 100.f);
-	}
+	//if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
+	//{
+	//	Capsule->SetCapsuleSize(45.f, 100.f);
+	//}
 }
 
 #pragma endregion
 
-#pragma region State_Crouch
+#pragma region State_FaceCover
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
