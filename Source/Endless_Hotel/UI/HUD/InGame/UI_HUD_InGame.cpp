@@ -2,7 +2,7 @@
 
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
@@ -19,7 +19,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	AEHPlayer* EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	EHPlayer->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
 
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);

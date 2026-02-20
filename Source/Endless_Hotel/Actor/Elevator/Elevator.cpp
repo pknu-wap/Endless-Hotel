@@ -3,7 +3,7 @@
 #include "Elevator.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Button.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
@@ -110,7 +110,7 @@ void AElevator::BeginPlay()
 	InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
 	InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
 
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	if (Sub->bPassed)
 	{
 		if (bIsMapStartElevator)
@@ -281,7 +281,7 @@ void AElevator::ElevatorMove(FVector Start, FVector End, bool bIsStart)
 
 void AElevator::NotifySubsystemElevatorChoice()
 {
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	FTimerHandle WaitHandle;
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this, Sub]() mutable
 		{

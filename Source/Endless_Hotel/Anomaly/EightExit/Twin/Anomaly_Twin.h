@@ -1,13 +1,13 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
-#include "Anomaly/Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Twin.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Twin : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Twin : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 

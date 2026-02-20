@@ -49,6 +49,9 @@ protected:
 public:
 	virtual void SetInteraction() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
 
+public:
+	uint8 CorrectInteractID;
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UWidgetComponent> Component_Widget;
