@@ -74,7 +74,6 @@ protected:
 
 private:
     EElevatorState CurrentState = EElevatorState::Idle;
-    bool bIsPlayerInside = false;
 
 #pragma endregion
 
@@ -166,9 +165,13 @@ protected:
 
 private:
     FTimerHandle MoveHandle;
+
     FTimerHandle BoardingCloseTimerHandle;
+
     bool bShouldMoveAfterClose = false;
+
     bool bIsDoorOpened = false;
+
     bool bIsDoorMoving = false;
 
 #pragma endregion
@@ -188,10 +191,10 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Player")
     FRotator RotateAngle;
 
-    UPROPERTY(EditAnywhere, Category = "Player")
-    FVector2D PlayerLocationInElevator;
-
+private:
     FTimerHandle RotateHandle;
+
+    bool bIsPlayerInside = false;
 
 #pragma endregion
 
