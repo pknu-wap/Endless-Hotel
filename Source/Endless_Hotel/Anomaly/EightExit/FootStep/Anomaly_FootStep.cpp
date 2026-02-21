@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/EightExit/FootStep/Anomaly_FootStep.h"
-#include "Anomaly/Object/FootStep/Anomaly_Object_FootStep.h"
+#include "Anomaly/Object/EightExit/FootStep/Anomaly_Object_FootStep.h"
 
 
 void AAnomaly_FootStep::SetAnomalyActivate()

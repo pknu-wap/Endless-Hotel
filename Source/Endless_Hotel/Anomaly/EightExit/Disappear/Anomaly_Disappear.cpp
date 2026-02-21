@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/EightExit/Disappear/Anomaly_Disappear.h"
-#include "Anomaly/Object/Disappear/Anomaly_Object_Disappear.h"
+#include "Anomaly/Object/EightExit/Disappear/Anomaly_Object_Disappear.h"
 
 
 #pragma region Activity
