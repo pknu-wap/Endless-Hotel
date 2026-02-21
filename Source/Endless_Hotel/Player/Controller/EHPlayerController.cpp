@@ -225,11 +225,6 @@ void AEHPlayerController::OnCrouchStarted()
 
 	EHPlayer->Crouch();
 	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
-
-	/*if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
-	{
-		Capsule->SetCapsuleSize(70.f, 60.f);
-	}*/
 }
 
 void AEHPlayerController::OnCrouchCompleted()
@@ -245,11 +240,6 @@ void AEHPlayerController::OnCrouchCompleted()
 
 	EHPlayer->UnCrouch();
 	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
-
-	//if (UCapsuleComponent* Capsule = EHPlayer->GetCapsuleComponent())
-	//{
-	//	Capsule->SetCapsuleSize(45.f, 100.f);
-	//}
 }
 
 #pragma endregion
@@ -372,13 +362,13 @@ void AEHPlayerController::PlayDeathSequence()
 	bIsPlayerDead = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
+}
 
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	PlayerCameraComponent->SetRelativeRotation(FRotator(-5.f, 0.f, 0.f));
+void AEHPlayerController::RevivePlayer()
+{
+	bIsPlayerDead = false;
+	bIsCameraFixed = false;
+	bCanMove = true;
 }
 
 #pragma endregion
