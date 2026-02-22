@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Float/Anomaly_Object_Float.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Components/WidgetComponent.h"   
 #include "Component/Float/FloatComponent.h"
 #include "Component/Interact/InteractComponent.h"

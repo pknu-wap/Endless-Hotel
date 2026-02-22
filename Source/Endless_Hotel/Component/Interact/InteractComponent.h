@@ -20,6 +20,9 @@ class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 
 #pragma region Base
 
+public:
+	UInteractComponent(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -42,8 +45,8 @@ protected:
 #pragma region Interact
 
 public:
-	// 상호작용 UI를 보여주는 함수
-	void ShowDescriptionWidget(bool bIsShow);
+	// 상호작용 가능 여부 시각 확인 함수
+	void ShowInteracting(bool bIsShow);
 
 	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없어야 하고, 한번이라도 상호작용 X 이어야 함 )
 	bool CanInteract();
@@ -55,6 +58,9 @@ public:
 	void Interact();
 
 protected:
+	// 상호작용 UI를 보여주는 함수
+	void ShowDescriptionWidget(bool bIsShow);
+
 	// 현재 선택된 상호작용의 설명 텍스트 값 리턴
 	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
 
@@ -72,6 +78,29 @@ protected:
 
 	// 해당 물체를 상호작용 했는지 여부
 	bool bIsInteracted = false;
+
+#pragma endregion
+
+#pragma region Highlight
+
+protected:
+	// 다이나믹 머테리얼 세팅
+	void SettingHighlightMaterial();
+
+	// 상호작용 윤곽선을 보여주는 함수
+	void ShowInteractingHighlight(bool bActive);
+
+protected:
+	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
+	const FName HighlightTag = TEXT("Highlight");
+
+	// 윤곽선 머테리얼
+	UPROPERTY()
+	TObjectPtr<class UMaterialInterface> MI_Interact;
+
+	// 윤곽선 다이나믹 머테리얼
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> DM_Interact;
 
 #pragma endregion
 

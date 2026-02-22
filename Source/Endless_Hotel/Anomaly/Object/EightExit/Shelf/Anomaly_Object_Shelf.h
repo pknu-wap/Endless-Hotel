@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Shelf.generated.h>
 
@@ -14,7 +14,7 @@ class UAudioComponent;
 class UPrimitiveComponent;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Shelf : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Shelf : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 
@@ -43,14 +43,14 @@ protected:
 
 #pragma region Change
 
-		UPROPERTY(EditAnywhere, Category = "Plant");
-		TObjectPtr<class UStaticMeshComponent> SM_Plant;
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_Plant;
 
-		UPROPERTY(EditAnywhere, Category = "Plant");
-		TObjectPtr<class UStaticMeshComponent> SM_AfterPlant;
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_AfterPlant;
 
-	public:
-		void StartChange();
+public:
+	void StartChange();
 
 #pragma endregion
 
@@ -99,4 +99,5 @@ protected:
 	void PlayRandomDropSound(UStaticMeshComponent* BookMesh, const FVector& WorldLocation, float DropImpulse);
 
 #pragma endregion
+
 };

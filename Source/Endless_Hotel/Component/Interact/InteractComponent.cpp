@@ -8,8 +8,16 @@
 #include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Materials/MaterialInstanceDynamic.h>
 
 #pragma region Base
+
+UInteractComponent::UInteractComponent(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MFinder(TEXT("/Assets/Object/Interact/M_Interact.M_Interact"));
+	MI_Interact = MFinder.Object;
+}
 
 void UInteractComponent::BeginPlay()
 {
@@ -18,13 +26,21 @@ void UInteractComponent::BeginPlay()
 	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
+
+	SettingHighlightMaterial();
 }
 
 #pragma endregion
 
 #pragma region Interact
 
-bool UInteractComponent::CanInteract() 
+void UInteractComponent::ShowInteracting(bool bIsShow)
+{
+	ShowDescriptionWidget(bIsShow);
+	ShowInteractingHighlight(bIsShow);
+}
+
+bool UInteractComponent::CanInteract()
 {
 	if (auto* FloatComp = Owner->FindComponentByClass<UAnomaly_Component_Float>())
 	{
@@ -112,6 +128,32 @@ void UInteractComponent::Interact()
 
 #pragma endregion
 
+#pragma region Hightight
+
+void UInteractComponent::SettingHighlightMaterial()
+{
+	DM_Interact = UMaterialInstanceDynamic::Create(MI_Interact, this);
+
+	TArray<UMeshComponent*> TaggedComponents;
+	Owner->GetComponents<UMeshComponent>(OUT TaggedComponents);
+
+	for (auto Check : TaggedComponents)
+	{
+		if (Check->ComponentHasTag(HighlightTag))
+		{
+			Check->SetMaterial(Check->GetNumMaterials(), DM_Interact);
+		}
+	}
+}
+
+void UInteractComponent::ShowInteractingHighlight(bool bActive)
+{
+	float Value = bActive ? 0.5f : 0.f;
+	DM_Interact->SetScalarParameterValue(TEXT("Thickness"), Value);
+}
+
+#pragma endregion
+
 #pragma region Action
 
 void UInteractComponent::Action_Restore()
@@ -126,8 +168,6 @@ void UInteractComponent::Action_Rotate()
 
 void UInteractComponent::Action_TurnOff()
 {
-	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
-	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
 	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
 }
 

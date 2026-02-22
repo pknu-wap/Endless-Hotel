@@ -3,7 +3,7 @@
 
 #include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 
 // Anomaly_Base_Neapolitan.cpp
 

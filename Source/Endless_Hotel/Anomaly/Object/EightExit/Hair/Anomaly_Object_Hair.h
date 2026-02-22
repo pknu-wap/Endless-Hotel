@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Hair.generated.h>
 
 class UTimelineComponent;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Hair : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Hair : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Component/EHComponent.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
 #include <FloatComponent.generated.h>
 

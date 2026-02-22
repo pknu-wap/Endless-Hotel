@@ -2,8 +2,7 @@
 
 #include "Anomaly/Base/Anomaly_Base.h"
 #include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
 #include <Kismet/GameplayStatics.h>
