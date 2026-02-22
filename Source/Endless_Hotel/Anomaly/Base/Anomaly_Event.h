@@ -6,7 +6,7 @@
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
-#include <Anomaly_Base.generated.h>
+#include <Anomaly_Event.generated.h>
 
 #pragma region Declare
 
@@ -15,14 +15,14 @@ class AAnomaly_Object_Base;
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
-class ENDLESS_HOTEL_API AAnomaly_Base : public AEHActor
+class ENDLESS_HOTEL_API AAnomaly_Event : public AEHActor
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	AAnomaly_Base(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	AAnomaly_Event(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 protected:
 	virtual void BeginPlay() override;
@@ -108,7 +108,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Start")
-	FTransform PlayerStartTransform = FTransform(FRotator(0, 180, 0), FVector(-750, 566.568f, 997), FVector(0.75f, 0.75f, 0.75f));
+	FTransform PlayerStartTransform = FTransform(FRotator(0, 180, 0), FVector(-750, 570, 997), FVector(0.75f, 0.75f, 0.75f));
 
 #pragma endregion
 

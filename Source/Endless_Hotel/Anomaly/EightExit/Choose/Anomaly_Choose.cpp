@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/EightExit/Choose/Anomaly_Choose.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 
 #pragma region Base
 
@@ -28,7 +28,7 @@ void AAnomaly_Choose::SetAnomalyActivate()
 			{
 				if (UGameInstance* GI = GetGameInstance())
 				{
-					UAnomalyProgressSubSystem* APSS = GI->GetSubsystem<UAnomalyProgressSubSystem>();
+					UGameSystem* APSS = GI->GetSubsystem<UGameSystem>();
 
 					if (APSS->GlobalSelectedKeyIndex == 2)
 					{

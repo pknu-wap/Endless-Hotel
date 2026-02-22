@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Anomaly/Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Door.generated.h>
 
@@ -10,7 +10,7 @@ class UBoxComponent;
 class AAnomaly_Object_Door;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 

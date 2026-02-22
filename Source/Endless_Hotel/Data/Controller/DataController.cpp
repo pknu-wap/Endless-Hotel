@@ -2,7 +2,7 @@
 
 #include "Data/Controller/DataController.h"
 #include "Data/Anomaly/AnomalyData.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 
 #pragma region Base
@@ -29,7 +29,7 @@ void UDataController::GetAnomalyEntries()
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
 		if (Data->AnomalyPath.IsEmpty()) return;
 		
-		UClass* LoadedClass = StaticLoadClass(AAnomaly_Base::StaticClass(), nullptr, *Data->AnomalyPath);
+		UClass* LoadedClass = StaticLoadClass(AAnomaly_Event::StaticClass(), nullptr, *Data->AnomalyPath);
 		UClass* ObjectClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
 
 		if (LoadedClass)

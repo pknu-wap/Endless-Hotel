@@ -101,13 +101,23 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		break;
+		return;
 	}
 
 	if (AdditionalAction)
 	{
 		AdditionalAction();
 	}
+
+	AAnomaly_Object_Neapolitan* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(Owner);
+
+	if (AnomalyObject->CorrectInteractID == CurrentIndex)
+	{
+		AnomalyObject->bSolved = !AnomalyObject->bSolved;
+		return;
+	}
+
+	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion
@@ -128,7 +138,6 @@ void UInteractComponent::Action_TurnOff()
 {
 	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
 	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
 }
 
 void UInteractComponent::Action_Burn()

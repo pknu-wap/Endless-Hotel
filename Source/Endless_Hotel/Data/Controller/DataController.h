@@ -17,7 +17,7 @@ struct FAnomalyEntry
 	uint8 AnomalyID = 0;
 
 	UPROPERTY()
-	TSoftClassPtr<class AAnomaly_Base> AnomalyClass;
+	TSoftClassPtr<class AAnomaly_Event> AnomalyClass;
 
 	UPROPERTY()
 	TSubclassOf<class AAnomaly_Object_Base> ObjectClass;

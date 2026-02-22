@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Actor/RoomSign/RoomSignActor.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
 #include <Components/AudioComponent.h>
@@ -22,7 +22,7 @@ void ARoomSignActor::BeginPlay()
 
 	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(2);
 	FLinearColor Offset = FLinearColor::Black;
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	uint8 UVFloorValue = FMath::Clamp(Sub->Floor - 1, 1, 8);
 	EFloorUV UVFloor = static_cast<EFloorUV>(UVFloorValue);
 	float GValue = GetOffsetG(UVFloor);

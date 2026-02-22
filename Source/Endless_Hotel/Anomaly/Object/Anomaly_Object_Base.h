@@ -28,6 +28,9 @@ protected:
 public:
 	uint8 AnomalyID;
 
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	TArray<EAnomalyName> ExecuteAnomalies;
+
 protected:
 	EAnomalyName AnomalyName;
 
@@ -45,6 +48,9 @@ protected:
 
 public:
 	virtual void SetInteraction() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
+
+public:
+	uint8 CorrectInteractID;
 
 protected:
 	UPROPERTY(EditAnywhere)
