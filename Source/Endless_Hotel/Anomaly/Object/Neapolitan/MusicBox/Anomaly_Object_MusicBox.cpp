@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/Object/Neapolitan/MusicBox/Anomaly_Object_MusicBox.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/KismetSystemLibrary.h>

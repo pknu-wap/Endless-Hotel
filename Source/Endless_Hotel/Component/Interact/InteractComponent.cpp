@@ -117,13 +117,23 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		break;
+		return;
 	}
 
 	if (AdditionalAction)
 	{
 		AdditionalAction();
 	}
+
+	AAnomaly_Object_Neapolitan* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(Owner);
+
+	if (AnomalyObject->CorrectInteractID == CurrentIndex)
+	{
+		AnomalyObject->bSolved = !AnomalyObject->bSolved;
+		return;
+	}
+
+	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion
@@ -168,7 +178,7 @@ void UInteractComponent::Action_Rotate()
 
 void UInteractComponent::Action_TurnOff()
 {
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = true;
+	
 }
 
 void UInteractComponent::Action_Burn()

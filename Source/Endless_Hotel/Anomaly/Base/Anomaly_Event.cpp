@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Anomaly/Base/Anomaly_Base.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "Anomaly/Base/Anomaly_Event.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
@@ -10,7 +10,7 @@
 
 #pragma region Base
 
-AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
+AAnomaly_Event::AAnomaly_Event(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	AnomalyID = -1;
@@ -19,7 +19,7 @@ AAnomaly_Base::AAnomaly_Base(const FObjectInitializer& ObjectInitializer)
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::BeginPlay()
+void AAnomaly_Event::BeginPlay()
 {
 	Super::BeginPlay();
 	TriggerBox->SetWorldTransform(Transform_TriggerBox);
@@ -29,11 +29,12 @@ void AAnomaly_Base::BeginPlay()
 
 #pragma region Anomaly
 
-void AAnomaly_Base::StartAnomalyAction()
+void AAnomaly_Event::StartAnomalyAction()
 {
 	for (auto* FoundActor : LinkedObjects)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyName)) return;
 		AnomalyAction(AnomalyObject);
 	}
 }
@@ -42,9 +43,9 @@ void AAnomaly_Base::StartAnomalyAction()
 
 #pragma region Verdicts
 
-void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
+void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Sub->SetVerdictMode(NewMode); // VerdictMode Setting
 }
 
@@ -52,7 +53,7 @@ void AAnomaly_Base::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma region Activity
 
-void AAnomaly_Base::SetAnomalyActivate()
+void AAnomaly_Event::SetAnomalyActivate()
 {
 	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
 }
@@ -61,7 +62,7 @@ void AAnomaly_Base::SetAnomalyActivate()
 
 #pragma region StartType
 
-void AAnomaly_Base::ActiveTrigger()
+void AAnomaly_Event::ActiveTrigger()
 {
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
@@ -69,7 +70,7 @@ void AAnomaly_Base::ActiveTrigger()
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
 }
 
-void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+void AAnomaly_Event::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
@@ -78,7 +79,7 @@ void AAnomaly_Base::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Base::ScheduleAnomaly(float delay)
+void AAnomaly_Event::ScheduleAnomaly(float delay)
 {
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
@@ -93,10 +94,10 @@ void AAnomaly_Base::ScheduleAnomaly(float delay)
 
 #pragma region Verdict
 
-void AAnomaly_Base::InteractSolveVerdict()
+void AAnomaly_Event::InteractSolveVerdict()
 {
 	//상호작용 기반 해결여부
-	UAnomalyProgressSubSystem* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	bool bAllSolved = true;
 
 	TArray<AActor*> FoundActors;

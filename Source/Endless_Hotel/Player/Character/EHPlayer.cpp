@@ -3,7 +3,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Component/EHCameraComponent.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/CapsuleComponent.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
@@ -81,7 +81,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			auto* SubSystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
 		}), AnimLength + 5, false);
 }

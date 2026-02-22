@@ -4,7 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/Image.h>
 #include <Components/Button.h>
 #include <Kismet/GameplayStatics.h>
@@ -33,7 +33,7 @@ void UUI_HUD_Title::NativeConstruct()
 
 void UUI_HUD_Title::Click_Start()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->bIsClear = false;
 	Subsystem->Floor = 9;
 
