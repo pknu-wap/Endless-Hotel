@@ -23,12 +23,20 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Maze : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
-#pragma region MazeMonster
+#pragma region Anomaly
 
 public:
 	void StartMazeMonster();
 
 #pragma endregion
+
+#pragma region AI
+
+private:
+	void StartAI();
+
+#pragma endregion
+
 
 #pragma region Elevator
 
@@ -41,6 +49,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	FMazeElevatorSetting ElevatorPoint;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TWeakObjectPtr<class AMazeMonster> MazeMonster;
 
 #pragma endregion
 

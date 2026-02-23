@@ -2,12 +2,23 @@
 
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Actor/Elevator/Elevator.h"
+#include "Character/AI/MazeMonster/MazeMonster.h"
 
 #pragma region MazeMonster
 
 void AAnomaly_Object_Maze::StartMazeMonster()
 {
 	SetElevatorPos();
+	StartAI();
+}
+
+#pragma endregion
+
+#pragma region AI
+
+void AAnomaly_Object_Maze::StartAI()
+{
+	MazeMonster->ActivateMob();
 }
 
 #pragma endregion
