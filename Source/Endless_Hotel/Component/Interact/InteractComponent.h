@@ -71,7 +71,7 @@ protected:
 	TArray<FInteractInfo> List_Interact;
 
 	// 현재 선택된 상호작용 번호
-	uint8 CurrentIndex = 0;
+	int8 CurrentIndex = 0;
 
 	// 해당 물체를 상호작용 했는지 여부
 	bool bIsInteracted = false;
