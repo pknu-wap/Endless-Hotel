@@ -30,4 +30,4 @@
 29,12,Choose,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_Choose.BP_Choose_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Choose/BP_Object_Choose.BP_Object_Choose_C
 30,85,Twin,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Twin.BP_Twin_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Twin/BP_Object_Twin.BP_Object_Twin_C
 31,28,Ghost,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_Ghost.BP_Ghost_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Ghost/BP_Object_Ghost.BP_Object_Ghost_C
-33,97,MazeMonster,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Maze.BP_Maze_C
+33,97,MazeMonster,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Maze.BP_Maze_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Maze/BP_Object_Maze.BP_Object_Maze_C

@@ -14,28 +14,36 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 {
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
-	UClass* TargetClass = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 	
-	if (!TargetClass)
+	if (TargetClasses.Num() == 0)
 	{
 		return;
 	}
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, OUT FoundActors);
-
-	for (auto* FoundActor : FoundActors)
+	for (TSubclassOf<AAnomaly_Object_Base> TargetClass : TargetClasses)
 	{
-		if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
-		{
-			continue;
-		}
+		if (!TargetClass) continue;
 
-		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-		AnomalyObject->SetInteraction();
-		CurrentAnomaly->LinkedObjects.Add(FoundActor);
-		AnomalyObject->SetInteraction();
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, FoundActors);
+
+		for (auto* FoundActor : FoundActors)
+		{
+			if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
+			{
+				continue;
+			}
+
+			auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+			if (AnomalyObject)
+			{
+				AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+				AnomalyObject->SetInteraction();
+
+				CurrentAnomaly->LinkedObjects.Add(FoundActor);
+			}
+		}
 	}
 }
 

@@ -20,7 +20,7 @@ struct FAnomalyEntry
 	TSoftClassPtr<class AAnomaly_Event> AnomalyClass;
 
 	UPROPERTY()
-	TSubclassOf<class AAnomaly_Object_Base> ObjectClass;
+	TArray<UClass*> ObjectClasses;
 };
 
 #pragma endregion
@@ -42,7 +42,7 @@ public:
 public:
 	void GetAnomalyEntries();
 
-	TSubclassOf<class AAnomaly_Object_Base> GetObjectByID(uint8 ObjectID);
+	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(uint8 ObjectID);
 
 	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
 

@@ -23,12 +23,38 @@ void AAnomaly_Maze::SetAnomalyActivate()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Maze_Monster:
-		AnomalyAction = ([](AAnomaly_Object_Base* Maze)
-			{
-				Cast<AAnomaly_Object_Maze>(Maze)->StartMazeMonster();
-			});
 		ScheduleAnomaly();
 		break;
+	}
+}
+
+void AAnomaly_Maze::StartAnomalyAction()
+{
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Maze_Monster:
+		MazeMonster();
+		break;
+	}
+}
+
+#pragma endregion
+
+#pragma region MazeMonster
+
+void AAnomaly_Maze::MazeMonster()
+{
+	const uint8 MaxIndex = LinkedObjects.Num() - 1;
+	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
+
+	AActor* TargetWall = LinkedObjects[PositionIndex];
+
+	TargetWall->SetActorEnableCollision(false);
+	TargetWall->SetActorHiddenInGame(true);
+
+	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
+	{
+		MazeObject->StartMazeMonster();
 	}
 }
 

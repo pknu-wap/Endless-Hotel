@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include <CoreMinimal.h>
 #include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
 #include "Anomaly_Object_Maze.generated.h"
 
@@ -23,13 +23,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Maze : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Object_Maze(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 #pragma region MazeMonster
 
 public:
@@ -40,22 +33,14 @@ public:
 #pragma region Elevator
 
 private:
-	void RandomizeElevatorLocation();
+	void SetElevatorPos();
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<AElevator> Elevator;
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	TWeakObjectPtr<class AElevator> Elevator;
 
-	UPROPERTY(EditAnywhere)
-	TArray<FMazeElevatorSetting> ElevatorPoint;
-
-#pragma endregion
-
-#pragma region Wall
-
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TArray<TObjectPtr<UChildActorComponent>> WallComponents;
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	FMazeElevatorSetting ElevatorPoint;
 
 #pragma endregion
 
