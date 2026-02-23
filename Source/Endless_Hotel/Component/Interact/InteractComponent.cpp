@@ -8,16 +8,8 @@
 #include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include <Materials/MaterialInstanceDynamic.h>
 
 #pragma region Base
-
-UInteractComponent::UInteractComponent(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> MFinder(TEXT("/Assets/Object/Interact/M_Interact.M_Interact"));
-	MI_Interact = MFinder.Object;
-}
 
 void UInteractComponent::BeginPlay()
 {
@@ -26,8 +18,6 @@ void UInteractComponent::BeginPlay()
 	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-
-	SettingHighlightMaterial();
 }
 
 #pragma endregion
@@ -140,26 +130,19 @@ void UInteractComponent::Interact()
 
 #pragma region Hightight
 
-void UInteractComponent::SettingHighlightMaterial()
-{
-	DM_Interact = UMaterialInstanceDynamic::Create(MI_Interact, this);
-
-	TArray<UMeshComponent*> TaggedComponents;
-	Owner->GetComponents<UMeshComponent>(OUT TaggedComponents);
-
-	for (auto Check : TaggedComponents)
-	{
-		if (Check->ComponentHasTag(HighlightTag))
-		{
-			Check->SetMaterial(Check->GetNumMaterials(), DM_Interact);
-		}
-	}
-}
-
 void UInteractComponent::ShowInteractingHighlight(bool bActive)
 {
-	float Value = bActive ? 0.5f : 0.f;
-	DM_Interact->SetScalarParameterValue(TEXT("Thickness"), Value);
+	TArray<UMeshComponent*> Comps;
+	Owner->GetComponents<UMeshComponent>(OUT Comps);
+
+	for (auto Target : Comps)
+	{
+		if (Target->ComponentHasTag(HighlightTag))
+		{
+			Target->SetRenderCustomDepth(bActive);
+			Target->MarkRenderStateDirty();
+		}
+	}
 }
 
 #pragma endregion

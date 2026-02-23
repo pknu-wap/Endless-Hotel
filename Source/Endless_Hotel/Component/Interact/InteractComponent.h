@@ -20,9 +20,6 @@ class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 
 #pragma region Base
 
-public:
-	UInteractComponent(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -84,23 +81,12 @@ protected:
 #pragma region Highlight
 
 protected:
-	// 다이나믹 머테리얼 세팅
-	void SettingHighlightMaterial();
-
 	// 상호작용 윤곽선을 보여주는 함수
 	void ShowInteractingHighlight(bool bActive);
 
 protected:
 	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
 	const FName HighlightTag = TEXT("Highlight");
-
-	// 윤곽선 머테리얼
-	UPROPERTY()
-	TObjectPtr<class UMaterialInterface> MI_Interact;
-
-	// 윤곽선 다이나믹 머테리얼
-	UPROPERTY()
-	TObjectPtr<class UMaterialInstanceDynamic> DM_Interact;
 
 #pragma endregion
 
