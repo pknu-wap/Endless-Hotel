@@ -64,9 +64,11 @@ void AAnomaly_Door::SetupDoorTrigger()
 	}
 	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerBox_Open->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	TriggerBox_Open->SetWorldLocation(FVector(-2681.0, 573.0, 600.0));
 
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox_Close->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	TriggerBox_Close->SetWorldLocation(FVector(-1398.0, 573.0, 600.0));
 
 	TriggerBox_Open->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_OpenBeginOverlap);
 	TriggerBox_Close->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_CloseBeginOverlap);

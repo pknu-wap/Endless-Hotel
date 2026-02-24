@@ -32,7 +32,7 @@ void UInteractComponent::ShowInteracting(bool bIsShow)
 
 bool UInteractComponent::CanInteract()
 {
-	if (auto* FloatComp = Owner->FindComponentByClass<UAnomaly_Component_Float>())
+	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 	{
 		if (FloatComp->bIsFloating)
 		{
@@ -107,23 +107,13 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		return;
+		break;
 	}
 
 	if (AdditionalAction)
 	{
 		AdditionalAction();
 	}
-
-	AAnomaly_Object_Neapolitan* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(Owner);
-
-	if (AnomalyObject->CorrectInteractID == CurrentIndex)
-	{
-		AnomalyObject->bSolved = !AnomalyObject->bSolved;
-		return;
-	}
-
-	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion

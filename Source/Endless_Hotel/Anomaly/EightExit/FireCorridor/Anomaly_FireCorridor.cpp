@@ -12,19 +12,3 @@ AAnomaly_FireCorridor::AAnomaly_FireCorridor(const FObjectInitializer& ObjectIni
 }
 
 #pragma endregion
-
-#pragma region Activity
-
-void AAnomaly_FireCorridor::SetAnomalyActivate()
-{
-	Super::SetAnomalyActivate();
-
-	switch (AnomalyName)
-	{
-	case EAnomalyName::FireCorridor:
-		ScheduleAnomaly();
-		break;
-	}
-}
-
-#pragma endregion
