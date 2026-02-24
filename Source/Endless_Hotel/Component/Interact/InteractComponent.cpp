@@ -24,7 +24,13 @@ void UInteractComponent::BeginPlay()
 
 #pragma region Interact
 
-bool UInteractComponent::CanInteract() 
+void UInteractComponent::ShowInteracting(bool bIsShow)
+{
+	ShowDescriptionWidget(bIsShow);
+	ShowInteractingHighlight(bIsShow);
+}
+
+bool UInteractComponent::CanInteract()
 {
 	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 	{
@@ -112,6 +118,25 @@ void UInteractComponent::Interact()
 
 #pragma endregion
 
+#pragma region Hightight
+
+void UInteractComponent::ShowInteractingHighlight(bool bActive)
+{
+	TArray<UMeshComponent*> Comps;
+	Owner->GetComponents<UMeshComponent>(OUT Comps);
+
+	for (auto Target : Comps)
+	{
+		if (Target->ComponentHasTag(HighlightTag))
+		{
+			Target->SetRenderCustomDepth(bActive);
+			Target->MarkRenderStateDirty();
+		}
+	}
+}
+
+#pragma endregion
+
 #pragma region Action
 
 void UInteractComponent::Action_Restore()
@@ -126,9 +151,7 @@ void UInteractComponent::Action_Rotate()
 
 void UInteractComponent::Action_TurnOff()
 {
-	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
-	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = !Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved;
+	
 }
 
 void UInteractComponent::Action_Burn()

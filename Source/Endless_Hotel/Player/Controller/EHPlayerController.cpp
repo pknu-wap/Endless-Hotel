@@ -398,13 +398,13 @@ void AEHPlayerController::CheckForInteractables()
 
 	if (CachedInteractComp.Get())
 	{
-		CachedInteractComp->ShowDescriptionWidget(false);
+		CachedInteractComp->ShowInteracting(false);
 		CachedInteractComp = nullptr;
 	}
 
 	if (HitComp)
 	{
-		HitComp->ShowDescriptionWidget(true);
+		HitComp->ShowInteracting(true);
 		CachedInteractComp = HitComp;
 	}
 
