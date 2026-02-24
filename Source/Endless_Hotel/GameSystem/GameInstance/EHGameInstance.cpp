@@ -4,9 +4,9 @@
 #include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameMode/EHGameMode.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>
@@ -133,7 +133,7 @@ void UEHGameInstance::SpawnAnomalyGenerator()
 
 	Generator = GetWorld()->SpawnActor<AAnomaly_Generator>(GeneratorClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
 
-	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Subsystem = GetSubsystem<UGameSystem>();
 	int32 IsNormal = FMath::RandRange(1, 10);
 
 	if (IsNormal > 8 || Subsystem->Floor == 9)
@@ -157,7 +157,7 @@ void UEHGameInstance::RelocatePlayer()
 	auto* GameMode = World->GetAuthGameMode<AEHGameMode>();
 	GameMode->RespawnPlayer();
 
-	auto* Subsystem = GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Subsystem = GetSubsystem<UGameSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
 
 	if (!Subsystem->bPassed)

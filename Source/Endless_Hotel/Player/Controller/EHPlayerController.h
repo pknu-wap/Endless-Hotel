@@ -180,6 +180,7 @@ public:
 
 public:
 	void PlayDeathSequence();
+	void RevivePlayer();
 
 public:
 	bool bIsPlayerDead = false;

@@ -1,10 +1,10 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Actor/ChooseKey/ChooseKey.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 
-AActor_Choose_Frame::AActor_Choose_Frame(const FObjectInitializer& ObjectInitializer)
+AChooseKey::AChooseKey(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -18,13 +18,13 @@ AActor_Choose_Frame::AActor_Choose_Frame(const FObjectInitializer& ObjectInitial
 	KeyMesh2->SetupAttachment(RootComponent);
 }
 
-void AActor_Choose_Frame::BeginPlay()
+void AChooseKey::BeginPlay()
 {
     Super::BeginPlay();
 
     if (UGameInstance* GI = GetGameInstance())
     {
-        UAnomalyProgressSubSystem* APSS = GI->GetSubsystem<UAnomalyProgressSubSystem>();
+        UGameSystem* APSS = GI->GetSubsystem<UGameSystem>();
 
         if (APSS)
         {

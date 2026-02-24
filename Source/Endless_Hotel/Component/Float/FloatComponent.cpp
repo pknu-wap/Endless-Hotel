@@ -6,14 +6,14 @@
 
 #pragma region Base
 
-UAnomaly_Component_Float::UAnomaly_Component_Float(const FObjectInitializer& ObjectInitializer)
+UFloatComponent::UFloatComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     PrimaryComponentTick.bCanEverTick = false;
     bIsFloating = false;
 }
 
-void UAnomaly_Component_Float::BeginPlay()
+void UFloatComponent::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -27,7 +27,7 @@ void UAnomaly_Component_Float::BeginPlay()
 
 #pragma region Float
 
-void UAnomaly_Component_Float::StartFloating()
+void UFloatComponent::StartFloating()
 {
     if (bIsFloating || !TargetMesh) return;
 
@@ -40,12 +40,12 @@ void UAnomaly_Component_Float::StartFloating()
     FloatVelocity = FVector(FMath::RandRange(-10.f, 10.f), FMath::RandRange(-10.f, 10.f), FMath::RandRange(20.f, 40.f));
     RotationVelocity = FRotator(FMath::RandRange(-30.f, 30.f), FMath::RandRange(-30.f, 30.f), FMath::RandRange(-30.f, 30.f));
 
-    GetWorld()->GetTimerManager().SetTimer(FloatTickTimer, this, &UAnomaly_Component_Float::FloatTick, TickInterval, true);
+    GetWorld()->GetTimerManager().SetTimer(FloatTickTimer, this, &UFloatComponent::FloatTick, TickInterval, true);
 
-    GetWorld()->GetTimerManager().SetTimer(StopFloatTimer, this, &UAnomaly_Component_Float::StopFloating, 10.0f, false);
+    GetWorld()->GetTimerManager().SetTimer(StopFloatTimer, this, &UFloatComponent::StopFloating, 10.0f, false);
 }
 
-void UAnomaly_Component_Float::FloatTick()
+void UFloatComponent::FloatTick()
 {
     if (!bIsFloating || !TargetMesh) return;
 
@@ -53,7 +53,7 @@ void UAnomaly_Component_Float::FloatTick()
     Owner->AddActorWorldRotation(RotationVelocity * TickInterval);
 }
 
-void UAnomaly_Component_Float::StopFloating()
+void UFloatComponent::StopFloating()
 {
     if (!bIsFloating) return;
 
@@ -69,11 +69,11 @@ void UAnomaly_Component_Float::StopFloating()
 
         TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
-        GetWorld()->GetTimerManager().SetTimer(FreezeTimerHandle, this, &UAnomaly_Component_Float::FreezePhysics, 2.f, false);
+        GetWorld()->GetTimerManager().SetTimer(FreezeTimerHandle, this, &UFloatComponent::FreezePhysics, 2.f, false);
     }
 }
 
-void UAnomaly_Component_Float::FreezePhysics()
+void UFloatComponent::FreezePhysics()
 {
     GetWorld()->GetTimerManager().ClearTimer(FreezeTimerHandle);
 

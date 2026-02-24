@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
+#include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Float.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Base_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 

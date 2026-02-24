@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Anomaly/Base/Anomaly_Base_EightExit.h"
+#include "Anomaly/Base/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Fire.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Base_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 	

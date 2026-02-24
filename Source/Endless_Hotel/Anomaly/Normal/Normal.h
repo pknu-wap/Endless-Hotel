@@ -3,17 +3,17 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Normal.generated.h"
 
 #pragma region Declare
 
-class UAnomalyProgressSubSystem;
+class UGameSystem;
 
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API ANormal : public AAnomaly_Base
+class ENDLESS_HOTEL_API ANormal : public AAnomaly_Event
 {
 	GENERATED_BODY()
 	

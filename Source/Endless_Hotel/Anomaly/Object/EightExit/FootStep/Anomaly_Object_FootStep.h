@@ -12,10 +12,16 @@ class ENDLESS_HOTEL_API AAnomaly_Object_FootStep : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma region FootStep
 
 public:
 	void ChangeFootStep();
+
+	UFUNCTION()
+	void ResetFootStep(bool bIsStart);
 
 #pragma endregion
 };
