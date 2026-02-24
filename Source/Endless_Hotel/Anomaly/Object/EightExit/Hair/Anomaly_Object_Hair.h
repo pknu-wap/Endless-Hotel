@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -48,7 +48,7 @@ protected:
 	void UpdateHair(float Value);
 
 	UFUNCTION()
-	void ResetHair(bool bIsStart);
+	void ResetHair(bool bIsStart) {};
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
 	float ScheduleAnomaly = 0.5f;
