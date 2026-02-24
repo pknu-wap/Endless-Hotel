@@ -3,7 +3,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Anomaly_Object_Maze.generated.h"
 
 #pragma region Declare
