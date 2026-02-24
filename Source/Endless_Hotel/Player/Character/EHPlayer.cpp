@@ -3,7 +3,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Component/EHCameraComponent.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/CapsuleComponent.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
@@ -101,7 +101,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 			Cast<AEHPlayerController>(GetController())->RevivePlayer();
 			bIsDead = false;
-			auto* SubSystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
 		}), AnimLength + 5, false);
 }
