@@ -24,4 +24,5 @@ public:
 	bool bSolved = true;
 
 #pragma endregion
+
 };

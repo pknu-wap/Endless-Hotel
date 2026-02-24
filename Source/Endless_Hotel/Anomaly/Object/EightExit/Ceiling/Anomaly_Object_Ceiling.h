@@ -2,12 +2,12 @@
 
 #pragma once
 
+#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
-#include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly_Object_Ceiling.generated.h"
+#include <Anomaly_Object_Ceiling.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Ceiling : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Ceiling : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 
