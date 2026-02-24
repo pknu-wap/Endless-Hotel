@@ -9,10 +9,10 @@
 #pragma region Declare
 
 // Forward Declaration
-class AAnomaly_Base;
+class AAnomaly_Event;
 
 // Delegate
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Base*, Spawned);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Event*, Spawned);
 
 #pragma endregion
 
@@ -34,7 +34,7 @@ public:
 	bool bDidInitialSpawn = false;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
-	TObjectPtr<AAnomaly_Base> CurrentAnomaly;
+	TObjectPtr<AAnomaly_Event> CurrentAnomaly;
 
 #pragma endregion
 
@@ -48,13 +48,13 @@ public:
 #pragma region Generate Anomaly
 
 public:
-	AAnomaly_Base* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
+	AAnomaly_Event* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
 
-	AAnomaly_Base* SpawnNormal(ULevel* SpawnLevel);
+	AAnomaly_Event* SpawnNormal(ULevel* SpawnLevel);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
-	TSoftClassPtr<AAnomaly_Base> NormalClass;
+	TSoftClassPtr<AAnomaly_Event> NormalClass;
 
 #pragma endregion
 

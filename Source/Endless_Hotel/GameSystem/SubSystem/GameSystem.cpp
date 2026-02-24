@@ -1,23 +1,23 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "AnomalyProgressSubSystem.h"
+#include "GameSystem.h"
 #include "GameSystem/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Data/Anomaly/AnomalyData.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly/Base/Anomaly_Base_Neapolitan.h"
+#include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
 
 #pragma region Base
 
-UAnomalyProgressSubSystem::UAnomalyProgressSubSystem()
+UGameSystem::UGameSystem()
 {
 	GameClearEvent.AddDynamic(this, &ThisClass::GameClear);
 }
 
-void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
+void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
@@ -50,7 +50,7 @@ void UAnomalyProgressSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Verdict
 
-bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
+bool UGameSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
 {
 	switch (VerdictMode)
 	{
@@ -65,7 +65,7 @@ bool UAnomalyProgressSubSystem::ComputeVerdict(bool bSolved, bool bNormalElevato
 	}
 }
 
-void UAnomalyProgressSubSystem::ApplyVerdict()
+void UGameSystem::ApplyVerdict()
 {
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
@@ -96,9 +96,9 @@ void UAnomalyProgressSubSystem::ApplyVerdict()
 	}
 }
 
-void UAnomalyProgressSubSystem::TryInteractSolveVerdict()
+void UGameSystem::TryInteractSolveVerdict()
 {
-	if (AAnomaly_Base* Neo = Cast<AAnomaly_Base>(CurrentAnomaly))
+	if (AAnomaly_Event* Neo = Cast<AAnomaly_Event>(CurrentAnomaly))
 	{
 		Neo->InteractSolveVerdict();
 	}
@@ -108,7 +108,7 @@ void UAnomalyProgressSubSystem::TryInteractSolveVerdict()
 
 #pragma region Floor
 
-void UAnomalyProgressSubSystem::SubFloor()
+void UGameSystem::SubFloor()
 {
 	if (Floor > 2)
 	{
@@ -120,7 +120,7 @@ void UAnomalyProgressSubSystem::SubFloor()
 	}
 }
 
-void UAnomalyProgressSubSystem::AddFloor()
+void UGameSystem::AddFloor()
 {
 	if (Floor < 8)
 	{
@@ -132,7 +132,7 @@ void UAnomalyProgressSubSystem::AddFloor()
 
 #pragma region Pool & Reset
 
-void UAnomalyProgressSubSystem::InitializePool()
+void UGameSystem::InitializePool()
 {
 	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
@@ -167,7 +167,7 @@ void UAnomalyProgressSubSystem::InitializePool()
 
 #pragma region Clear
 
-void UAnomalyProgressSubSystem::GameClear()
+void UGameSystem::GameClear()
 {
 	// USaveManager에 로드 세이브 데이터로 클리어 여부 가져올 수 있음
 	bIsClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정

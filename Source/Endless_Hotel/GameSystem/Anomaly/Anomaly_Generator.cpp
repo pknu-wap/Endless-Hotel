@@ -1,10 +1,10 @@
 ﻿// Anomaly_Generator.cpp
 
 #include "Anomaly_Generator.h"
-#include "Anomaly/Base/Anomaly_Base.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
 #include <Kismet/GameplayStatics.h>
 
@@ -44,10 +44,10 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 #pragma region Generate
 
 // Spawn Anomaly at Specific Index
-AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
+AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
 {
 
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
 	// Out of Range Check
@@ -62,7 +62,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
 	}
 
-	TSoftClassPtr<AAnomaly_Base> SoftAnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
+	TSoftClassPtr<AAnomaly_Event> SoftAnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
 	UClass* AnomalyClass = SoftAnomalyClass.LoadSynchronous();
 
 	if (!IsValid(AnomalyClass))
@@ -85,7 +85,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 	Params.OverrideLevel = SpawnLevel;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{
@@ -107,9 +107,9 @@ AAnomaly_Base* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spaw
 	return Spawned;
 }
 
-AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
+AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
 	UClass* AnomalyClass = NormalClass.LoadSynchronous();
 	// Spawn
@@ -119,7 +119,7 @@ AAnomaly_Base* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 	Params.OverrideLevel = SpawnLevel;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AAnomaly_Base* Spawned = GetWorld()->SpawnActor<AAnomaly_Base>(AnomalyClass, SpawnTransform, Params);
+	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, SpawnTransform, Params);
 
 	if (!Spawned)
 	{

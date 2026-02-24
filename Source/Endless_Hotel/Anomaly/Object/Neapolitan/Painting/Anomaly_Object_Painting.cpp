@@ -38,6 +38,7 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 void AAnomaly_Object_Painting::EyeFollowing()
 {
 	bSolved = false;
+	CorrectInteractID = 0;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
 
@@ -70,7 +71,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 void AAnomaly_Object_Painting::BloodDropping()
 {
 	bSolved = false;
-
+	CorrectInteractID = 0;
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
@@ -85,6 +86,7 @@ void AAnomaly_Object_Painting::BloodDropping()
 void AAnomaly_Object_Painting::BlurPaint()
 {
 	bSolved = false;
+	CorrectInteractID = 0;
 	Object->SetMaterial(1, BlurMaterial);
 }
 
@@ -95,6 +97,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 void AAnomaly_Object_Painting::FrameTilt()
 {
 	bSolved = false;
+	CorrectInteractID = 0;
 	CurrentTilt = Root->GetRelativeRotation().Pitch;
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())
@@ -122,7 +125,6 @@ void AAnomaly_Object_Painting::InteractRotate()
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;
 	InteractedMoveStep(0);
-	bSolved = !bSolved;
 }
 
 void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)

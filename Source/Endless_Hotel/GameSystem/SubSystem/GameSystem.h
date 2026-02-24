@@ -5,10 +5,10 @@
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
-#include <AnomalyProgressSubSystem.generated.h>
+#include <GameSystem.generated.h>
 
 class AAnomaly_Generator;
-class AAnomaly_Base;
+class AAnomaly_Event;
 class AAnomaly_Object_Base;
 
 #pragma region Declare
@@ -26,14 +26,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API UAnomalyProgressSubSystem : public UGameInstanceSubsystem
+class ENDLESS_HOTEL_API UGameSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	UAnomalyProgressSubSystem();
+	UGameSystem();
 
 private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -95,7 +95,7 @@ public:
 	uint8 CurrentAnomalyID = -1;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
-	TObjectPtr<class AAnomaly_Base> CurrentAnomaly;
+	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
 
 #pragma endregion
 

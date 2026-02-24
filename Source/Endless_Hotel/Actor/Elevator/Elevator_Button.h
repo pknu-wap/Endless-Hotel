@@ -1,78 +1,65 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
-
-#pragma once
+﻿#pragma once
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
 #include <Elevator_Button.generated.h>
 
-#pragma region Declare
-
-class AElevator;
-
-#pragma endregion
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnElevatorButtonPressed);
 
 UCLASS()
 class ENDLESS_HOTEL_API AElevator_Button : public AEHActor
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	AElevator_Button(const FObjectInitializer& ObjectInitializer);
+    AElevator_Button(const FObjectInitializer& ObjectInitializer);
 
-#pragma endregion
-
-#pragma region Elevator
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Elevator")
-	TObjectPtr<AElevator> OwnerElevator;
+    UPROPERTY(BlueprintAssignable, Category = "Events")
+    FOnElevatorButtonPressed OnButtonPressed;
 
 #pragma endregion
 
 #pragma region Button
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> Pannel;
+    UPROPERTY(VisibleAnywhere, Category = "Button")
+    TObjectPtr<UStaticMeshComponent> Pannel;
 
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> Up_Button;
+    UPROPERTY(VisibleAnywhere, Category = "Button")
+    TObjectPtr<UStaticMeshComponent> Up_Button;
 
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> Up_ButtonRing;
+    UPROPERTY(VisibleAnywhere, Category = "Button")
+    TObjectPtr<UStaticMeshComponent> Up_ButtonRing;
 
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> Down_Button;
+    UPROPERTY(VisibleAnywhere, Category = "Button")
+    TObjectPtr<UStaticMeshComponent> Down_Button;
 
-	UPROPERTY(EditAnywhere, Category = "Button")
-	TObjectPtr<UStaticMeshComponent> Down_ButtonRing;
+    UPROPERTY(VisibleAnywhere, Category = "Button")
+    TObjectPtr<UStaticMeshComponent> Down_ButtonRing;
 
 #pragma endregion
 
 #pragma region Interact
 
 public:
-	void InteractElevator();
+    void InteractElevator();
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> Component_Widget;
+    UPROPERTY(VisibleAnywhere, Category = "Interact")
+    TObjectPtr<class UWidgetComponent> Component_Widget;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UInteractComponent> Component_Interact;
+    UPROPERTY(VisibleAnywhere, Category = "Interact")
+    TObjectPtr<class UInteractComponent> Component_Interact;
 
-protected: 
-	void MoveToButtonPlayer();
+    UPROPERTY(EditAnywhere, Category = "Interact")
+    float PlayerToElevatorDistance = 50.0f;
 
-	UFUNCTION()
-	void OnMoveCompleted();
+    void MoveToButtonPlayer();
 
-	UPROPERTY(EditAnywhere, Category = "Elevator")
-	float PlayerToElevatorDistance = 50.0f;
+    UFUNCTION()
+    void OnMoveCompleted();
 
 #pragma endregion
-
 };

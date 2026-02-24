@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/Normal/Normal.h"
-#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 
 #pragma region Base
 
@@ -23,7 +23,7 @@ void ANormal::BeginPlay()
 
 #pragma region Activities
 
-// Anomaly_Base_EightExit.cpp
+// Anomaly_Event_EightExit.cpp
 void ANormal::SetAnomalyActivate()
 {
     // Activites
