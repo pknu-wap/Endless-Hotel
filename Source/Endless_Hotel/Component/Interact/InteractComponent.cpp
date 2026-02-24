@@ -26,7 +26,7 @@ void UInteractComponent::BeginPlay()
 
 bool UInteractComponent::CanInteract() 
 {
-	if (auto* FloatComp = Owner->FindComponentByClass<UAnomaly_Component_Float>())
+	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 	{
 		if (FloatComp->bIsFloating)
 		{
@@ -101,23 +101,13 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		return;
+		break;
 	}
 
 	if (AdditionalAction)
 	{
 		AdditionalAction();
 	}
-
-	AAnomaly_Object_Neapolitan* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(Owner);
-
-	if (AnomalyObject->CorrectInteractID == CurrentIndex)
-	{
-		AnomalyObject->bSolved = !AnomalyObject->bSolved;
-		return;
-	}
-
-	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion
@@ -138,6 +128,7 @@ void UInteractComponent::Action_TurnOff()
 {
 	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
 	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
+	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = !Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved;
 }
 
 void UInteractComponent::Action_Burn()

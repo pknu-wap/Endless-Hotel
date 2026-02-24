@@ -3,7 +3,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Component/EHCameraComponent.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyProgressSubSystem.h"
 #include <Components/CapsuleComponent.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
@@ -34,6 +34,9 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 void AEHPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	bIsDead = false;
+
 	if (!Third_Mesh)
 	{
 		Third_Mesh = Cast<USkeletalMeshComponent>(GetDefaultSubobjectByName(TEXT("Third")));
@@ -45,8 +48,11 @@ void AEHPlayer::BeginPlay()
 
 void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 {
+	if (bIsDead) return;
+
 	bIsDead = true;
- 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
+
+	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
 
 	AEHPlayerController* PC = Cast<AEHPlayerController>(GetController());
 	if (PC)
@@ -62,9 +68,16 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		ThirdAnimInst->Montage_Play(DeathAnim);
 	}
 
-	const float AnimLength = DeathAnim->GetPlayLength();
+	SpringArm->bUsePawnControlRotation = false;
+	SpringArm->bInheritPitch = true;
+	SpringArm->bInheritYaw = true;
+	SpringArm->bInheritRoll = true;
 
-	const float FreezeTime = FMath::Max(0.0f, AnimLength - 0.15f);
+	SpringArm->bEnableCameraRotationLag = true;
+	SpringArm->CameraRotationLagSpeed = 20.0f;
+
+	const float AnimLength = DeathAnim->GetPlayLength();
+	const float FreezeTime = FMath::Max(0.0f, AnimLength - 0.3f);
 
 	FTimerHandle FreezeHandle;
 	GetWorld()->GetTimerManager().SetTimer(FreezeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -81,7 +94,14 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+			GetMesh()->bNoSkeletonUpdate = false;
+			Third_Mesh->bNoSkeletonUpdate = false;
+			SpringArm->bUsePawnControlRotation = true;
+			SpringArm->bEnableCameraRotationLag = false;
+
+			Cast<AEHPlayerController>(GetController())->RevivePlayer();
+			bIsDead = false;
+			auto* SubSystem = GetGameInstance()->GetSubsystem<UAnomalyProgressSubSystem>();
 			SubSystem->ApplyVerdict();
 		}), AnimLength + 5, false);
 }

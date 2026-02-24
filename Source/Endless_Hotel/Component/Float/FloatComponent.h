@@ -8,14 +8,14 @@
 #include <FloatComponent.generated.h>
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
-class ENDLESS_HOTEL_API UAnomaly_Component_Float : public UEHComponent
+class ENDLESS_HOTEL_API UFloatComponent : public UEHComponent
 {
 	GENERATED_BODY()
 	
 #pragma region Base
 
 public:
-    UAnomaly_Component_Float(const FObjectInitializer& ObjectInitializer);
+    UFloatComponent(const FObjectInitializer& ObjectInitializer);
 
 protected:
     virtual void BeginPlay() override;
