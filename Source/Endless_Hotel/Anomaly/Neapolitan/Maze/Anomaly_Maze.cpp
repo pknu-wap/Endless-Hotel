@@ -9,7 +9,7 @@
 AAnomaly_Maze::AAnomaly_Maze(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PlayerStartTransform.SetLocation(FVector(-3790, 640, -2852.849903f));
+	PlayerStartTransform.SetLocation(FVector(-3790, 640, -2852));
 }
 
 #pragma endregion
