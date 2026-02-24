@@ -7,12 +7,12 @@
 #include <ChooseKey.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AActor_Choose_Frame : public AEHActor
+class ENDLESS_HOTEL_API AChooseKey : public AEHActor
 {
 	GENERATED_BODY()
 
 public:
-	AActor_Choose_Frame(const FObjectInitializer& ObjectInitializer);
+	AChooseKey(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
