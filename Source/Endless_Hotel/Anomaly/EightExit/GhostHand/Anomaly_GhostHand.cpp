@@ -15,7 +15,7 @@ AAnomaly_GhostHand::AAnomaly_GhostHand(const FObjectInitializer& ObjectInitializ
 {
 	SM_Hand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Hand"));
 	SM_Hand->SetupAttachment(RootComponent);
-
+	SM_Hand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SM_Hand->SetVisibility(false);
 }
 #pragma endregion
@@ -42,23 +42,27 @@ void AAnomaly_GhostHand::AttachGhostHand()
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	USkeletalMeshComponent* PlayerMesh = PlayerCharacter->GetMesh();
 	UCharacterMovementComponent* Move = PlayerCharacter->GetCharacterMovement();
+	AEHPlayerController* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 	const FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
 	SM_Hand->AttachToComponent(PlayerMesh, AttachRules, AttachSoketName);
-
 	SM_Hand->SetVisibility(true);
 
 	if (bLockRun)
 	{
-		if (AEHPlayerController* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+		if (PC)
 		{
 			PC->bCanRun = false;
+			PC->bIsRunning = false;
 		}
 		Move->MaxWalkSpeed = LockWalkSpeed;
 		GetWorld()->GetTimerManager().ClearTimer(ReapplySpeedHandle);
 		GetWorld()->GetTimerManager().SetTimer(ReapplySpeedHandle, FTimerDelegate::CreateWeakLambda(this, [this, Move]()
 			{
-				Move->MaxWalkSpeed = LockWalkSpeed;
+				if (Move)
+				{
+					Move->MaxWalkSpeed = LockWalkSpeed;
+				}
 			}), ReapplyInterval, true);
 	}
 }

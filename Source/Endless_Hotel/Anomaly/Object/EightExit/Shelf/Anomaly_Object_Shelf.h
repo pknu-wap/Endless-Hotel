@@ -43,14 +43,14 @@ protected:
 
 #pragma region Change
 
-		UPROPERTY(EditAnywhere, Category = "Plant");
-		TObjectPtr<class UStaticMeshComponent> SM_Plant;
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_Plant;
 
-		UPROPERTY(EditAnywhere, Category = "Plant");
-		TObjectPtr<class UStaticMeshComponent> SM_AfterPlant;
+	UPROPERTY(EditAnywhere, Category = "Plant");
+	TObjectPtr<class UStaticMeshComponent> SM_AfterPlant;
 
-	public:
-		void StartChange();
+public:
+	void StartChange();
 
 #pragma endregion
 
@@ -69,34 +69,6 @@ protected:
 	TObjectPtr<class USoundWave> Sound_BookDrop;
 
 	bool bIsFallen = false;
-
-#pragma endregion
-
-#pragma region DropSound
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TArray<TObjectPtr<USoundWave>> Sounds_BookDropRandom;
-
-	UPROPERTY()
-	TMap<UStaticMeshComponent*, float> BookLastSoundTimeMap;
-
-	UPROPERTY()
-	TMap<UStaticMeshComponent*, UAudioComponent*> BookAudioMap;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	float MinSoundInterval = 0.08f;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	int32 MaxDropSoundCount = 100;
-
-	UPROPERTY()
-	int32 CurrentDropSoundCount = 0;
-
-	UFUNCTION()
-	void OnBookHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	void PlayRandomDropSound(UStaticMeshComponent* BookMesh, const FVector& WorldLocation, float DropImpulse);
 
 #pragma endregion
 };
