@@ -71,12 +71,16 @@ private:
 
 public:
 	void DropSign();
+	void SaveOriginalTransform();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Drop|Sound")
 	TObjectPtr<USoundBase> DropSound;
 
 	bool bDropped = false;
+
+public:
+	FTransform OriginalTransform;
 
 #pragma endregion
 

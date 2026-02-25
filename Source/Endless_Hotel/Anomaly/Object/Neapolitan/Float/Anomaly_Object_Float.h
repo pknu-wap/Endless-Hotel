@@ -9,7 +9,7 @@
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Float : public AAnomaly_Object_Neapolitan
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 #pragma region Base
 
@@ -40,9 +40,6 @@ private:
 
 public:
     void SearchAndStart();
-    void StartFloating();
-    void StopFloating();
-    void FloatAccelerate();
 
     UFUNCTION()
     void OnActorRestored(AActor* RestoredActor);

@@ -10,15 +10,11 @@
 #pragma region Base
 
 AAnomaly_Object_SignDrop::AAnomaly_Object_SignDrop(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+    :Super(ObjectInitializer)
 {
     bSolved = false;
 }
 
-void AAnomaly_Object_SignDrop::BeginPlay()
-{
-	Super::BeginPlay();
-}
 #pragma endregion
 
 #pragma region Drop
@@ -32,12 +28,12 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
         {
             RootPrim->SetSimulatePhysics(false);
         }
-        
+
 
         FAttachmentTransformRules AttachRules(
-            EAttachmentRule::KeepWorld, 
-            EAttachmentRule::KeepWorld, 
-            EAttachmentRule::KeepWorld, 
+            EAttachmentRule::KeepWorld,
+            EAttachmentRule::KeepWorld,
+            EAttachmentRule::KeepWorld,
             false
         );
 
@@ -54,12 +50,7 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
     if (!TargetSign) return;
 
-    if (auto* InteractComp = this->FindComponentByClass<UInteractComponent>())
-    {
-        InteractComp->OnRestored.RemoveDynamic(this, &AAnomaly_Object_SignDrop::OnSignRestored);
-        InteractComp->OnRestored.AddDynamic(this, &AAnomaly_Object_SignDrop::OnSignRestored);
-        InteractComp->OriginalTransform = TargetSign->GetActorTransform();
-    }
+    OriginalTransform = TargetSign->OriginalTransform;
 
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
@@ -83,13 +74,57 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 #pragma region Interact
 
-void AAnomaly_Object_SignDrop::OnSignRestored(AActor* RestoredActor)
+void AAnomaly_Object_SignDrop::OnSignRestored()
 {
-    if (!RestoredActor) return;
-
     // 디버그 로그
     UE_LOG(LogTemp, Log, TEXT("Sign Restored"));
 
     bSolved = true;
 }
+
+#pragma endregion
+
+#pragma region Restore
+
+void AAnomaly_Object_SignDrop::StartRestoring(float Duration)
+{
+    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+
+    RestoreDuration = FMath::Max(Duration, 0.01f);
+    RestoreCurrentTime = 0.f;
+
+    GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &AAnomaly_Object_SignDrop::RestoreTick, 0.01f, true);
+}
+
+void AAnomaly_Object_SignDrop::RestoreTick()
+{
+    RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
+    float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
+    float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
+
+    FTransform CurrentTransform = GetActorTransform();
+    FTransform NewTransform;
+    NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+    SetActorTransform(NewTransform);
+
+    if (RawAlpha >= 1.0f)
+    {
+        FinishRestoring();
+    }
+}
+
+void AAnomaly_Object_SignDrop::FinishRestoring()
+{
+    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+
+    SetActorTransform(OriginalTransform);
+
+    if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(GetRootComponent()))
+    {
+        RootPrim->SetSimulatePhysics(false);
+    }
+
+    OnSignRestored();
+}
+
 #pragma endregion

@@ -20,6 +20,7 @@ void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SaveOriginalTransform();
 	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(2);
 	FLinearColor Offset = FLinearColor::Black;
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
@@ -63,6 +64,11 @@ void ARoomSignActor::DropSign()
 		1.0f,
 		false
 	);
+}
+
+void ARoomSignActor::SaveOriginalTransform()
+{
+	OriginalTransform = GetActorTransform();
 }
 
 #pragma endregion
