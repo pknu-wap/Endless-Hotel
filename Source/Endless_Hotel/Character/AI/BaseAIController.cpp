@@ -16,6 +16,22 @@ ABaseAIController::ABaseAIController()
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 }
 
+void ABaseAIController::ActiveAI()
+{
+	if (BrainComponent)
+	{
+		BrainComponent->RestartLogic();
+	}
+}
+
+void ABaseAIController::DeActiveAI()
+{
+	if (BrainComponent)
+	{
+		BrainComponent->StartLogic();
+	}
+}
+
 #pragma endregion
 
 void ABaseAIController::OnPossess(APawn* InPawn)
@@ -26,5 +42,10 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (UseBlackboard(BBAsset, RawBB))
 	{
 		RunBehaviorTree(BTAsset);
+
+		if (BrainComponent)
+		{
+			BrainComponent->StopLogic(TEXT("Wait for Activation"));
+		}
 	}
 }

@@ -109,6 +109,10 @@ void AElevator::BeginPlay()
     }
 }
 
+#pragma endregion
+
+#pragma region Trigger
+
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
@@ -122,12 +126,11 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 
     bShouldMoveAfterClose = true;
 
-    if (CurrentState == EElevatorState::Idle)
-    {
-        GetWorld()->GetTimerManager().SetTimer(BoardingCloseTimerHandle, [this]() {
-            MoveDoors(false);
-            }, 1.0, false);
-    }
+    GetWorld()->GetTimerManager().ClearTimer(BoardingCloseTimerHandle);
+
+    GetWorld()->GetTimerManager().SetTimer(BoardingCloseTimerHandle, [this]() {
+        MoveDoors(false);
+        }, 1.0, false);
 }
 
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -157,21 +160,22 @@ void AElevator::MoveDoors(bool bIsOpening)
 {
     if (bIsDoorMoving && bIsOpening == bIsDoorOpened) return;
 
+    bIsDoorMoving = true;
+    CurrentState = EElevatorState::DoorMoving;
+    bIsDoorOpened = bIsOpening;
+
     float NewPlayRate = 1.0f / FMath::Max(0.01f, DoorDuration);
     DoorTimeline->SetPlayRate(NewPlayRate);
 
-    CurrentState = EElevatorState::DoorMoving;
     if (Sound_DoorMove) Door_AC->Play();
 
     if (bIsOpening)
     {
-        bIsDoorOpened = true;
-        DoorTimeline->PlayFromStart();
+        DoorTimeline->Play();
     }
     else
     {
-        bIsDoorOpened = false;
-        DoorTimeline->ReverseFromEnd();
+        DoorTimeline->Reverse();
     }
 }
 
@@ -199,9 +203,11 @@ void AElevator::OnDoorTimelineFinished()
     }
     else
     {
+        TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+        if (bIsPlayerInside) return;
         CurrentState = EElevatorState::Idle;
         SetPlayerInputEnabled(true);
-        TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
 }
 
