@@ -13,18 +13,12 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Float : public AAnomaly_Object_Neapolita
 
 #pragma region Base
 
-public:
-    AAnomaly_Object_Float(const FObjectInitializer& ObjectInitializer);
-
 protected:
     virtual void BeginPlay() override;
 
 #pragma endregion
 
 #pragma region Interact
-
-public:
-    /*virtual void SetInteraction() override;*/
 
 private:
     UPROPERTY()
@@ -44,25 +38,9 @@ public:
     UFUNCTION()
     void OnActorRestored(AActor* RestoredActor);
 
-protected:
-    FTimerHandle FloatTickTimer;
-    FTimerHandle StopFloatTimer;
-
 #pragma endregion
 
-#pragma region Object
-
-protected:
-
-    FVector OriginLocation;
-    FRotator OriginRotation;
-
-    FVector FloatVelocity;
-    FRotator RotationVelocity;
-
-    bool bIsFloating = false;
-
-#pragma endregion
+    
 
 
 };

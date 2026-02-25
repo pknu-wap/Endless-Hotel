@@ -7,16 +7,6 @@
 #include "Player/Controller/EHPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 
-#pragma region Base
-
-AAnomaly_Object_SignDrop::AAnomaly_Object_SignDrop(const FObjectInitializer& ObjectInitializer)
-    :Super(ObjectInitializer)
-{
-    bSolved = false;
-}
-
-#pragma endregion
-
 #pragma region Drop
 
 void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
@@ -43,6 +33,7 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
 
 void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 {
+    bSolved = false;
     if (RoomSigns.Num() == 0) return;
 
     int32 RandomIndex = FMath::RandRange(0, RoomSigns.Num() - 1);
@@ -76,9 +67,6 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 void AAnomaly_Object_SignDrop::OnSignRestored()
 {
-    // 디버그 로그
-    UE_LOG(LogTemp, Log, TEXT("Sign Restored"));
-
     bSolved = true;
 }
 

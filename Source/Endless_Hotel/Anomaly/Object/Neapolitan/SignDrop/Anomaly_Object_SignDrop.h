@@ -13,13 +13,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_SignDrop : public AAnomaly_Object_Neapol
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Object_SignDrop(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 #pragma region Drop
 
 public:

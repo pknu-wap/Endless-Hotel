@@ -35,7 +35,7 @@ bool UInteractComponent::CanInteract()
 {
 	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 	{
-		if (FloatComp->bIsFloating)
+		if (!FloatComp->bIsFloatStarted || FloatComp->bIsFloating)
 		{
 			return false;
 		}
@@ -144,7 +144,7 @@ void UInteractComponent::Action_Restore()
 {
 	if (FloatActorClass)
 	{
-		if (UFloatComponent* FloatComp = Cast<UFloatComponent>(Owner))
+		if (UFloatComponent* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 		{
 			FloatComp->StartRestoring(2.5f);
 		}
