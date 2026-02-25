@@ -65,13 +65,16 @@ protected:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Button Animation")
-    float ButtonPressDistance = 5.0f;
+    float ButtonPressDistance = 0.5f;
 
     UPROPERTY(EditAnywhere, Category = "Button Animation")
     float ButtonPressDuration = 0.7f;
 
     UPROPERTY(EditAnywhere, Category = "Button Animation")
     float ButtonTimerDuration = 0.7f;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    TObjectPtr<USoundBase> ButtonPressSound;
 
     UFUNCTION()
     void PlayButtonPressAnimation();

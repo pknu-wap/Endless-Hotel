@@ -5,6 +5,7 @@
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -93,6 +94,11 @@ void AElevator_Button::OnMoveCompleted()
     GetWorld()->GetTimerManager().SetTimer(PressAnimHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
             PlayButtonPressAnimation();
+            UGameplayStatics::PlaySoundAtLocation(
+                this,
+                ButtonPressSound,
+                GetActorLocation()
+            );
         }), ButtonTimerDuration, false);
 
     FTimerHandle ButtonAnimHandle;
