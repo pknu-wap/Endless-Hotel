@@ -19,6 +19,8 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Events")
     FOnElevatorButtonPressed OnButtonPressed;
 
+protected:
+    virtual void BeginPlay() override;
 #pragma endregion
 
 #pragma region Button
@@ -60,6 +62,25 @@ protected:
 
     UFUNCTION()
     void OnMoveCompleted();
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Button Animation")
+    float ButtonPressDistance = 5.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Button Animation")
+    float ButtonPressDuration = 0.7f;
+
+    UPROPERTY(EditAnywhere, Category = "Button Animation")
+    float ButtonTimerDuration = 0.7f;
+
+    UFUNCTION()
+    void PlayButtonPressAnimation();
+
+    UFUNCTION()
+    void RestoreButtonPosition();
+
+    FVector DownButtonDefaultLocation;
+    FVector DownButtonRingDefaultLocation;
 
 #pragma endregion
 };

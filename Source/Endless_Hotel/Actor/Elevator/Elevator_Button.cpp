@@ -32,6 +32,14 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 
     Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
 }
+
+void AElevator_Button::BeginPlay()
+{
+    Super::BeginPlay();
+
+    DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
+    DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
+}
 #pragma endregion
 
 #pragma region Interact
@@ -81,6 +89,12 @@ void AElevator_Button::OnMoveCompleted()
     EHPC->SetControlRotation(Player->GetActorRotation());
     EHPC->OnEVButtonPressStarted();
 
+    FTimerHandle PressAnimHandle;
+    GetWorld()->GetTimerManager().SetTimer(PressAnimHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+        {
+            PlayButtonPressAnimation();
+        }), ButtonTimerDuration, false);
+
     FTimerHandle ButtonAnimHandle;
     GetWorld()->GetTimerManager().SetTimer(ButtonAnimHandle, FTimerDelegate::CreateWeakLambda(this, [this, EHPC]()
         {
@@ -93,4 +107,89 @@ void AElevator_Button::OnMoveCompleted()
 
         }), 2.0f, false);
 }
+
+void AElevator_Button::PlayButtonPressAnimation()
+{
+    FVector PressedLocation_Button = DownButtonDefaultLocation;
+    FVector PressedLocation_Ring = DownButtonRingDefaultLocation;
+
+    PressedLocation_Button.X -= ButtonPressDistance;
+    PressedLocation_Ring.X -= ButtonPressDistance;
+
+    FLatentActionInfo LatentInfo1;
+    LatentInfo1.CallbackTarget = this;
+    LatentInfo1.ExecutionFunction = NAME_None;
+    LatentInfo1.UUID = __LINE__;
+    LatentInfo1.Linkage = 0;
+
+    UKismetSystemLibrary::MoveComponentTo(
+        Down_Button,
+        PressedLocation_Button,
+        Down_Button->GetRelativeRotation(),
+        true,
+        true,
+        ButtonPressDuration,
+        false,
+        EMoveComponentAction::Move,
+        LatentInfo1
+    );
+
+    FLatentActionInfo LatentInfo2;
+    LatentInfo2.CallbackTarget = this;
+    LatentInfo2.ExecutionFunction = FName("RestoreButtonPosition");
+    LatentInfo2.UUID = __LINE__;
+    LatentInfo2.Linkage = 0;
+
+    UKismetSystemLibrary::MoveComponentTo(
+        Down_ButtonRing,
+        PressedLocation_Ring,
+        Down_ButtonRing->GetRelativeRotation(),
+        true,
+        true,
+        ButtonPressDuration,
+        false,
+        EMoveComponentAction::Move,
+        LatentInfo2
+    );
+}
+
+void AElevator_Button::RestoreButtonPosition()
+{
+    FLatentActionInfo LatentInfo1;
+    LatentInfo1.CallbackTarget = this;
+    LatentInfo1.ExecutionFunction = NAME_None;
+    LatentInfo1.UUID = __LINE__;
+    LatentInfo1.Linkage = 0;
+
+    UKismetSystemLibrary::MoveComponentTo(
+        Down_Button,
+        DownButtonDefaultLocation,
+        Down_Button->GetRelativeRotation(),
+        true,
+        true,
+        ButtonPressDuration,
+        false,
+        EMoveComponentAction::Move,
+        LatentInfo1
+    );
+
+    FLatentActionInfo LatentInfo2;
+    LatentInfo2.CallbackTarget = this;
+    LatentInfo2.ExecutionFunction = NAME_None;
+    LatentInfo2.UUID = __LINE__;
+    LatentInfo2.Linkage = 0;
+
+    UKismetSystemLibrary::MoveComponentTo(
+        Down_ButtonRing,
+        DownButtonRingDefaultLocation,
+        Down_ButtonRing->GetRelativeRotation(),
+        true,
+        true,
+        ButtonPressDuration,
+        false,
+        EMoveComponentAction::Move,
+        LatentInfo2
+    );
+}
+
 #pragma endregion
