@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/Disappear/Anomaly_Disappear.h"
@@ -7,9 +7,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Disappear::SetAnomalyActivate()
+void AAnomaly_Disappear::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

@@ -16,9 +16,9 @@ AAnomaly_Maze::AAnomaly_Maze(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Anomaly
 
-void AAnomaly_Maze::SetAnomalyActivate()
+void AAnomaly_Maze::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Painting::SetAnomalyActivate()
+void AAnomaly_Painting::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

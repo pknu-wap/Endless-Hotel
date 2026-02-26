@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/Twin/Anomaly_Twin.h"
@@ -22,9 +22,9 @@ void AAnomaly_Twin::BeginPlay()
 
 #pragma region Twin
 
-void AAnomaly_Twin::SetAnomalyActivate()
+void AAnomaly_Twin::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

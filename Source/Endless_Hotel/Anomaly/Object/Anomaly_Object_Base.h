@@ -26,6 +26,9 @@ protected:
 #pragma region Anomaly
 
 public:
+	void SetSolvedFalse() { bSolved = false; }
+
+public:
 	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")

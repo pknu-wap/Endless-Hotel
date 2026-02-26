@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_Painting : public AAnomaly_Event_Neapolitan
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate() override;
+	virtual void SetAnomalyState() override;
 
 #pragma endregion
 

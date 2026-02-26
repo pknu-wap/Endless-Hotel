@@ -17,9 +17,9 @@ AAnomaly_Choose::AAnomaly_Choose(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Choose::SetAnomalyActivate()
+void AAnomaly_Choose::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

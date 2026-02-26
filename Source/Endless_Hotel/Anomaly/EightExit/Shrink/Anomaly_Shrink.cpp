@@ -37,9 +37,9 @@ void AAnomaly_Shrink::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Shrink::SetAnomalyActivate()
+void AAnomaly_Shrink::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

@@ -23,9 +23,9 @@ void AAnomaly_Cry::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Cry::SetAnomalyActivate()
+void AAnomaly_Cry::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
