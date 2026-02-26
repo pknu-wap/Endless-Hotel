@@ -40,6 +40,13 @@ public:
 	void SetHideBoxVisibility(ESlateVisibility Option);
 
 protected:
+	UFUNCTION()
+	void Click_Normal();
+
+	UFUNCTION()
+	void Click_Input();
+
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_PopUp_Option> UI_Screen;
 
@@ -50,7 +57,10 @@ protected:
 	TObjectPtr<class UUI_PopUp_Option> UI_Sound;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control;
+	TObjectPtr<class UUI_PopUp_Option> UI_Control_Normal;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_PopUp_Option> UI_Control_Input;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_PopUp_Option> UI_Gameplay;
@@ -60,6 +70,12 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBorder> Border_HideBox;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Normal;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Input;
 
 #pragma endregion
 

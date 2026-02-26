@@ -53,6 +53,9 @@ protected:
 	static FHighlightSetting HighlightSetting;
 
 	UPROPERTY(EditAnywhere, Category = "Highlight")
+	bool bIsSideButton = false;
+
+	UPROPERTY(EditAnywhere, Category = "Highlight")
 	FLinearColor Color_Highlight;
 
 	UPROPERTY(EditAnywhere, Category = "Highlight")
