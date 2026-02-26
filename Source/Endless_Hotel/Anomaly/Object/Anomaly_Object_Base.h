@@ -61,6 +61,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Verdict
+
+public:
+	bool bSolved = true;
+
+#pragma endregion
+
 #pragma region Restore
 
 protected:

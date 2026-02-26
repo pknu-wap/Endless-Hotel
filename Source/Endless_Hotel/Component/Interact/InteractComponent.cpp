@@ -114,6 +114,16 @@ void UInteractComponent::Interact()
 	{
 		AdditionalAction();
 	}
+
+	AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Owner);
+
+	if (AnomalyObject->CorrectInteractID == CurrentIndex)
+	{
+		AnomalyObject->bSolved = !AnomalyObject->bSolved;
+		return;
+	}
+
+	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion

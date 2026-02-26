@@ -21,7 +21,7 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Base::BeginPlay()
 {
 	Super::BeginPlay();
-
+	bSolved = true;
 	if (!Component_Interact->CanInteract())
 	{
 		Component_Widget->SetActive(false);
