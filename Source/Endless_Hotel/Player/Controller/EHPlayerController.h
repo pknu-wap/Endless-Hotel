@@ -164,6 +164,7 @@ public:
 	bool bCanMove = true;
 	bool bCanRun = true;
 	bool bCanCrouch = true;
+	bool bCanFaceCover = true;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 	bool bIsButtonPressing = false;
@@ -224,6 +225,13 @@ public:
 
 protected:
 	void TurnPlayerHandLight();
+
+#pragma endregion
+
+#pragma region SetInput
+	
+public:
+	void SetPlayerInputAble(bool Able);
 
 #pragma endregion
 

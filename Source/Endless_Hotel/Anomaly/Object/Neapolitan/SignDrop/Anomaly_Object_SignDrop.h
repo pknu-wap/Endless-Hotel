@@ -12,16 +12,6 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_SignDrop : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
-	
-#pragma region Base
-
-public:
-	AAnomaly_Object_SignDrop(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
 
 #pragma region Drop
 
@@ -38,7 +28,25 @@ protected:
 
 protected:
 	UFUNCTION()
-	void OnSignRestored(AActor* RestoredActor);
+	void OnSignRestored();
 
 #pragma endregion 
+
+#pragma region Restore
+
+public:
+	void StartRestoring(float Duration = 2.5f);
+
+private:
+	void RestoreTick();
+	void FinishRestoring();
+	float RestoreDuration = 2.5f;
+	float RestoreCurrentTime = 0.f;
+
+public:
+	FTransform OriginalTransform;
+	FTransform StartTransform;
+	FTimerHandle RestoreHandle;
+
+#pragma endregion
 };

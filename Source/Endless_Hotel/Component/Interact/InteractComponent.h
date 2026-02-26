@@ -103,24 +103,15 @@ protected:
 
 #pragma region Restore
 
-public:
-	void SaveOriginalTransform();
-	void StartRestoring(float Duration = 2.5f);
+protected:
+	UPROPERTY(EditAnywhere, Category = "Restore")
+	TSubclassOf<AActor> FloatActorClass;
 
-public:
+	UPROPERTY(EditAnywhere, Category = "Restore")
+	TSubclassOf<AActor> SignActorClass;
+
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnRestoredSignature OnRestored;
-
-private:
-	void RestoreTick();
-	void FinishRestoring();
-	float RestoreDuration = 2.5f;
-	float RestoreCurrentTime = 0.f;
-
-public:
-	FTransform OriginalTransform;
-	FTransform StartTransform;
-	FTimerHandle RestoreHandle;
 
 #pragma endregion
 
