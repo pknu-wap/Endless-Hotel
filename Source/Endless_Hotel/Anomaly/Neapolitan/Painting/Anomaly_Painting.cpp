@@ -35,7 +35,7 @@ void AAnomaly_Painting::SetAnomalyState()
 				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
 				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
-		ScheduleAnomaly(0.01f);
+		ScheduleAnomaly();
 		break;
 
 	case EAnomalyName::Painting_Tilt:
