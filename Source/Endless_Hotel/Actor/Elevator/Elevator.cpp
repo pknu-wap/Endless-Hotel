@@ -163,6 +163,11 @@ void AElevator::MoveDoors(bool bIsOpening)
     bIsDoorMoving = true;
     CurrentState = EElevatorState::DoorMoving;
     bIsDoorOpened = bIsOpening;
+    
+    if(bIsPlayerInside)
+    {
+        SetPlayerInputEnabled(false);
+    }
 
     float NewPlayRate = 1.0f / FMath::Max(0.01f, DoorDuration);
     DoorTimeline->SetPlayRate(NewPlayRate);
@@ -205,7 +210,6 @@ void AElevator::OnDoorTimelineFinished()
     {
         TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-        if (bIsPlayerInside) return;
         CurrentState = EElevatorState::Idle;
         SetPlayerInputEnabled(true);
     }
