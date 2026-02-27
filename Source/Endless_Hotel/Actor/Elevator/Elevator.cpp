@@ -259,15 +259,10 @@ void AElevator::BroadcastElevatorFinished()
 
 void AElevator::SetPlayerInputEnabled(bool bEnable)
 {
-    if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
-    {
-        if (AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController()))
-        {
-            PC->bIsCameraFixed = !bEnable;
-            PC->bCanMove = bEnable;
-            PC->bCanCrouch = bEnable;
-        }
-    }
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+
+    PC->SetPlayerInputAble(bEnable);
 }
 
 void AElevator::RotatePlayer()

@@ -108,7 +108,7 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		break;
+		return;
 	}
 
 	if (AdditionalAction)
