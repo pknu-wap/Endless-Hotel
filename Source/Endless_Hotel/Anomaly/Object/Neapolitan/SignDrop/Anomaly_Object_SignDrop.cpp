@@ -62,12 +62,3 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 }
 
 #pragma endregion
-
-#pragma region Interact
-
-void AAnomaly_Object_SignDrop::OnSignRestored()
-{
-    bSolved = true;
-}
-
-#pragma endregion

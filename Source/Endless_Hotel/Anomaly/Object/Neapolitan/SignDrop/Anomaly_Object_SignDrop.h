@@ -26,9 +26,5 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
-protected:
-	UFUNCTION()
-	void OnSignRestored();
-
 #pragma endregion 
 };
