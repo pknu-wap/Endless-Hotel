@@ -7,6 +7,7 @@
 #include <Components/CapsuleComponent.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -28,6 +29,8 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
 
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 
