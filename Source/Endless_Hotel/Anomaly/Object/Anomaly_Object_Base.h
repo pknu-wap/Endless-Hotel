@@ -63,15 +63,23 @@ protected:
 
 #pragma region Restore
 
-protected:
-	void RestoreObjectTransform();
+public:
+	void StartRestoring(float Duration = 2.5f);
+	void SaveOriginalTransform();
+	
+	bool bIsRestored = false;
 
-protected:
+private:
+	void RestoreTick();
+	void FinishRestoring();
+
+	float RestoreDuration = 2.5f;
+	float RestoreCurrentTime = 0.f;
+
+public:
 	FTransform OriginalTransform;
-
+	FTransform StartTransform;
 	FTimerHandle RestoreHandle;
-
-	float CurrentTime = 0.f;
 
 #pragma endregion
 

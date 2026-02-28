@@ -142,21 +142,7 @@ void UInteractComponent::ShowInteractingHighlight(bool bActive)
 
 void UInteractComponent::Action_Restore()
 {
-	if (FloatActorClass)
-	{
-		if (UFloatComponent* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
-		{
-			FloatComp->StartRestoring(2.5f);
-		}
-	}
-
-	if (SignActorClass)
-	{
-		if (AAnomaly_Object_SignDrop* SignActor = Cast<AAnomaly_Object_SignDrop>(Owner))
-		{
-			SignActor->StartRestoring(2.5f);
-		}
-	}
+	Cast<AAnomaly_Object_Base>(Owner)->StartRestoring(2.5);
 }
 
 void UInteractComponent::Action_Rotate()

@@ -18,5 +18,4 @@ public:
 	virtual void SetAnomalyActivate() override;
 
 #pragma endregion
-
 };
