@@ -72,15 +72,13 @@ void UGameSystem::ApplyVerdict()
 	if (bPassed)
 	{
 		SubFloor();
-		if(!AnomalyHistory.Contains(CurrentAnomalyID))
-		{
-			AnomalyHistory.Add(CurrentAnomalyID);
-		}
+
 		if (bIsAlreadyClear)
 		{
 			DataC->LoadedAnomalySet.Add(CurrentAnomalyID);
 			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
+
 		AnomalyCount++;
 	}
 	else 
@@ -169,11 +167,7 @@ void UGameSystem::InitializePool()
 
 void UGameSystem::GameClear()
 {
-	// USaveManager에 로드 세이브 데이터로 클리어 여부 가져올 수 있음
-	bIsClear = true;		// 게임 최초 클리어인지 판단용 bool 변수 -> 진행상황 리셋 추가 시 해당 변수 사용 예정
-	//Initialize();
-	//Todo:
-
+	bIsClear = true;
 	Floor = 9;
 
 	USaveManager::SaveGameClearData();
