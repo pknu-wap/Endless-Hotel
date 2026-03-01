@@ -22,9 +22,9 @@ void AAnomaly_SignDrop::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_SignDrop::SetAnomalyActivate()
+void AAnomaly_SignDrop::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

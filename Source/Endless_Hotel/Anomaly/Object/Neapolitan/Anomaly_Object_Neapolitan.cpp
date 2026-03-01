@@ -8,8 +8,6 @@ void AAnomaly_Object_Neapolitan::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bSolved = true;
-
 	OriginalTransform = GetActorTransform();
 }
 

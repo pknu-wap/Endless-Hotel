@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_MusicBox::SetAnomalyActivate()
+void AAnomaly_MusicBox::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

@@ -5,9 +5,9 @@
 #include "Anomaly/Object/EightExit/FootStep/Anomaly_Object_FootStep.h"
 
 
-void AAnomaly_FootStep::SetAnomalyActivate()
+void AAnomaly_FootStep::SetAnomalyState()
 {
-    Super::SetAnomalyActivate();
+    Super::SetAnomalyState();
 
     switch (AnomalyName) {
     case EAnomalyName::FootStep:
