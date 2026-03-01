@@ -31,6 +31,7 @@ void UUI_PopUp_Setting::NativeConstruct()
 	UI_Grapic->HighlightOptions();
 	UI_Sound->HighlightOptions();
 	UI_Control_Normal->HighlightOptions();
+	UI_Control_Input->HighlightOptions();
 	UI_Gameplay->HighlightOptions();
 	UI_System->HighlightOptions();
 

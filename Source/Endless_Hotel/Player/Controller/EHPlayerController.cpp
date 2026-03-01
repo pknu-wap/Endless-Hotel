@@ -4,8 +4,10 @@
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
+#include "Type/UI/Type_UI_Key.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
+#include <InputMappingContext.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
@@ -446,6 +448,59 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
+}
+
+#pragma endregion
+
+#pragma region Key
+
+void AEHPlayerController::SetKeyMapping(const FSaveData_Key& Data, FKeySettingInfo Info)
+{
+	IMC_Default->Modify();
+
+	switch (Info.Type)
+	{
+	case EKeySettingType::Up:
+		// 보류
+		break;
+
+	case EKeySettingType::Down:
+		// 보류
+		break;
+
+	case EKeySettingType::Left:
+		// 보류
+		break;
+
+	case EKeySettingType::Right:
+		// 보류
+		break;
+
+	case EKeySettingType::Run:
+		IMC_Default->UnmapAllKeysFromAction(IA_Run);
+		IMC_Default->MapKey(IA_Run, Info.Value);
+		break;
+
+	case EKeySettingType::Sit:
+		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
+		IMC_Default->MapKey(IA_Crouch, Info.Value);
+		break;
+
+	case EKeySettingType::Interact:
+		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
+		IMC_Default->MapKey(IA_Interact, Info.Value);
+		break;
+
+	case EKeySettingType::Hide:
+		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
+		IMC_Default->MapKey(IA_FaceCover, Info.Value);
+		break;
+
+	case EKeySettingType::Flash:
+		IMC_Default->UnmapAllKeysFromAction(IA_Light);
+		IMC_Default->MapKey(IA_Light, Info.Value);
+		break;
+	}
 }
 
 #pragma endregion
