@@ -109,12 +109,12 @@ protected:
 
 #pragma region Burn
 
-protected:
 	FTimerHandle BurnHandle;
 
+	UPROPERTY(EditAnywhere, Category = "Burn")
 	float BurnDuration = 1.f;
-	float BurnCurrentTime = 0.f;
 
+	float BurnCurrentTime = 0.f;
 	bool bIsBurning = false;
 
 	TWeakObjectPtr<UStaticMeshComponent> BurnMesh;
@@ -123,11 +123,19 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> BurnMID = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Burn|Param")
 	FName Param_Alpha = TEXT("Alpha");
+
+	UPROPERTY(EditAnywhere, Category = "Burn|Param")
 	FName Param_EdgeColor = TEXT("Edge Color");
+
+	UPROPERTY(EditAnywhere, Category = "Burn|Param")
 	FName Param_DissolveTex = TEXT("Dissolve Texture");
 
+	UPROPERTY(EditAnywhere, Category = "Burn|Param")
 	FName NiagaraVar_Alpha = TEXT("Alpha");
+
+	UPROPERTY(EditAnywhere, Category = "Burn|Param")
 	FName NiagaraVar_EdgeColor = TEXT("EdgeColor");
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
@@ -143,11 +151,10 @@ protected:
 	bool bDestroyOwnerOnBurnFinished = true;
 
 protected:
+	void SetupBurnTargets();
 	void StartBurning(float Duration);
 	void BurnTick();
-	void FinishBurning();
-
-	void SetupBurnTargets();
+	void FinishedBurning();
 
 #pragma endregion
 

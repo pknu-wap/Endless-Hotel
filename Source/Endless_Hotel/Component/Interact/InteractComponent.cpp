@@ -171,10 +171,10 @@ void UInteractComponent::Action_TurnOff()
 {
 	
 }
-
 void UInteractComponent::Action_Burn()
 {
-	StartBurning(1.f);
+	SetupBurnTargets();
+	StartBurning(BurnDuration);
 }
 
 void UInteractComponent::Action_Elevator()
@@ -185,98 +185,106 @@ void UInteractComponent::Action_Elevator()
 #pragma endregion
 
 #pragma region Burn
+
 void UInteractComponent::SetupBurnTargets()
 {
 	if (!BurnMesh.IsValid())
 	{
-		BurnMesh = Owner->FindComponentByClass<UStaticMeshComponent>();
-	}
+		TArray<UStaticMeshComponent*> Meshes;
+		Owner->GetComponents<UStaticMeshComponent>(OUT Meshes);
 
+		for (UStaticMeshComponent* M : Meshes)
+		{
+			if (M && M->ComponentHasTag(TEXT("BurnMesh")))
+			{
+				BurnMesh = M;
+				break;
+			}
+		}
+
+
+	}
 	if (!BurnNiagara.IsValid())
 	{
-		BurnNiagara = Owner->FindComponentByClass<UNiagaraComponent>();
-	}
+		TArray<UNiagaraComponent*> Nias;
+		Owner->GetComponents<UNiagaraComponent>(OUT Nias);
 
-	if (BurnMesh.IsValid() && BurnMID == nullptr)
+		for (UNiagaraComponent* N : Nias)
+		{
+			if (N && N->ComponentHasTag(TEXT("BurnNiagara")))
+			{
+				BurnNiagara = N;
+				break;
+			}
+
+		}
+	}
+	if (BurnMesh.IsValid())
 	{
-		BurnMID = BurnMesh->CreateAndSetMaterialInstanceDynamic(0);
+		if (!BurnMID)
+		{
+			BurnMID = BurnMesh->CreateAndSetMaterialInstanceDynamic(0);
+		}
+
+		if (BurnMID)
+		{
+			if (DissolveTexture)
+			{
+				BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
+			}
+			BurnMID->SetVectorParameterValue(Param_EdgeColor, EdgeColor * ColorBoost);
+			BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
+		}
 	}
 }
 
 void UInteractComponent::StartBurning(float Duration)
 {
-	if (bIsBurning)
-	{
-		return;
-	}
-
-	SetupBurnTargets();
-
-	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
-
-	BurnDuration = FMath::Max(Duration, 0.01f);
-	BurnCurrentTime = 0.f;
 	bIsBurning = true;
+	BurnCurrentTime = 0.f;
+	BurnDuration = FMath::Max(0.01f, Duration);
 
-	const float StartAlpha = 0.f;
-	const FLinearColor BoostedEdge = EdgeColor * ColorBoost;
-
-	BurnMID->SetScalarParameterValue(Param_Alpha, StartAlpha);
-	BurnMID->SetVectorParameterValue(Param_EdgeColor, BoostedEdge);
-
-	if (DissolveTexture)
+	if (BurnNiagara.IsValid())
 	{
-		BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
+		BurnNiagara->Activate(true);
 	}
 
-	if (UNiagaraComponent* NiagaraComp = BurnNiagara.Get())
-	{
-		NiagaraComp->SetVariableFloat(NiagaraVar_Alpha, StartAlpha);
-		NiagaraComp->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor);
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &UInteractComponent::BurnTick, 0.01f, true);
+	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &UInteractComponent::BurnTick, 0.02f, true);
 }
 
 void UInteractComponent::BurnTick()
 {
-	BurnCurrentTime += GetWorld()->GetDeltaSeconds();
+	BurnCurrentTime += 0.02f;
+	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
 
-	float RawAlpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-
-	float Alpha = RawAlpha;
-
-	const FLinearColor BoostedEdge = EdgeColor * ColorBoost;
-
-	BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
-	BurnMID->SetVectorParameterValue(Param_EdgeColor, BoostedEdge);
-
-	if (UNiagaraComponent* NiagaraComp = BurnNiagara.Get())
+	if (BurnMID)
 	{
-		NiagaraComp->SetVariableFloat(NiagaraVar_Alpha, Alpha);
-		NiagaraComp->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor);
+		BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
 	}
 
-	if (RawAlpha >= 1.0f)
+	if (BurnNiagara.IsValid())
 	{
-		FinishBurning();
+		BurnNiagara->SetVariableFloat(NiagaraVar_Alpha, Alpha);
+		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
+	}
+
+	if (Alpha >= 1.f)
+	{
+		FinishedBurning();
 	}
 }
 
-void UInteractComponent::FinishBurning()
+void UInteractComponent::FinishedBurning()
 {
-
 	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
-
 	bIsBurning = false;
 
-	UI_Interact->ShowDescription(false);
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->Deactivate();
+	}
 
-	BurnMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BurnMesh->SetGenerateOverlapEvents(false);
-
-	Owner->SetActorEnableCollision(false);
 	Owner->SetActorHiddenInGame(true);
+	Owner->SetActorEnableCollision(false);
 }
-
 #pragma endregion
