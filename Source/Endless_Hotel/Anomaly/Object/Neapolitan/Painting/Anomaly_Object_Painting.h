@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Painting.generated.h>
 

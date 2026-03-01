@@ -149,15 +149,6 @@ protected:
     FVector RightDoorOpenPos;
 
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    FVector StartPos;
-
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    FVector MapPos;
-
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    FVector EndPos;
-
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
     float ElevatorMoveDuration = 3.0f;
 
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
@@ -223,4 +214,19 @@ private:
     bool bChoiceSentThisRide = false;
 
 #pragma endregion
+
+#pragma region Position
+
+public:
+    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    FVector StartPos;
+
+    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    FVector MapPos;
+
+    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    FVector EndPos;
+
+#pragma endregion
+
 };

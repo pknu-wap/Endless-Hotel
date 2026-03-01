@@ -3,6 +3,7 @@
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
+#include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
@@ -27,11 +28,17 @@ void UInteractComponent::BeginPlay()
 
 #pragma region Interact
 
-bool UInteractComponent::CanInteract() 
+void UInteractComponent::ShowInteracting(bool bIsShow)
+{
+	ShowDescriptionWidget(bIsShow);
+	ShowInteractingHighlight(bIsShow);
+}
+
+bool UInteractComponent::CanInteract()
 {
 	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
 	{
-		if (FloatComp->bIsFloating)
+		if (!FloatComp->bIsFloatStarted || FloatComp->bIsFloating)
 		{
 			return false;
 		}
@@ -115,11 +122,44 @@ void UInteractComponent::Interact()
 
 #pragma endregion
 
+#pragma region Hightight
+
+void UInteractComponent::ShowInteractingHighlight(bool bActive)
+{
+	TArray<UMeshComponent*> Comps;
+	Owner->GetComponents<UMeshComponent>(OUT Comps);
+
+	for (auto Target : Comps)
+	{
+		if (Target->ComponentHasTag(HighlightTag))
+		{
+			Target->SetRenderCustomDepth(bActive);
+			Target->MarkRenderStateDirty();
+		}
+	}
+}
+
+#pragma endregion
+
 #pragma region Action
 
 void UInteractComponent::Action_Restore()
 {
-	StartRestoring(2.5);
+	if (FloatActorClass)
+	{
+		if (UFloatComponent* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
+		{
+			FloatComp->StartRestoring(2.5f);
+		}
+	}
+
+	if (SignActorClass)
+	{
+		if (AAnomaly_Object_SignDrop* SignActor = Cast<AAnomaly_Object_SignDrop>(Owner))
+		{
+			SignActor->StartRestoring(2.5f);
+		}
+	}
 }
 
 void UInteractComponent::Action_Rotate()
@@ -129,9 +169,7 @@ void UInteractComponent::Action_Rotate()
 
 void UInteractComponent::Action_TurnOff()
 {
-	// 시끄러운 소리 물체 관련 상호작용의 공통 코드 모음
-	// 나머지 필요한 기능들은 AdditionalAction에 집어넣기
-	Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved = !Cast<AAnomaly_Object_Neapolitan>(Owner)->bSolved;
+	
 }
 
 void UInteractComponent::Action_Burn()
@@ -239,59 +277,6 @@ void UInteractComponent::FinishBurning()
 
 	Owner->SetActorEnableCollision(false);
 	Owner->SetActorHiddenInGame(true);
-}
-
-#pragma endregion
-
-#pragma region Restore
-
-void UInteractComponent::SaveOriginalTransform()
-{
-	OriginalTransform = Owner->GetActorTransform();
-}
-
-void UInteractComponent::StartRestoring(float Duration)
-{
-	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-
-	RestoreDuration = FMath::Max(Duration, 0.01f);
-	RestoreCurrentTime = 0.f;
-
-	GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &UInteractComponent::RestoreTick, 0.01f, true);
-}
-
-void UInteractComponent::RestoreTick()
-{
-	RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
-	float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
-	float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
-
-	FTransform CurrentTransform = Owner->GetActorTransform();
-	FTransform NewTransform;
-	NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
-	Owner->SetActorTransform(NewTransform);
-
-	if (RawAlpha >= 1.0f)
-	{
-		FinishRestoring();
-	}
-}
-
-void UInteractComponent::FinishRestoring()
-{
-	GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-
-	Owner->SetActorTransform(OriginalTransform);
-
-	if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
-	{
-		RootPrim->SetSimulatePhysics(false);
-	}
-
-	if (OnRestored.IsBound())
-	{
-		OnRestored.Broadcast(Owner.Get());
-	}
 }
 
 #pragma endregion

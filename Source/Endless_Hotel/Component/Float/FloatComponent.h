@@ -3,15 +3,15 @@
 #pragma once
 
 #include "Component/EHComponent.h"
-#include "Anomaly/Object/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
 #include <FloatComponent.generated.h>
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class ENDLESS_HOTEL_API UFloatComponent : public UEHComponent
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 #pragma region Base
 
 public:
@@ -37,6 +37,7 @@ public:
     void StopFloating();
 
     bool bIsFloating;
+    bool bIsFloatStarted;
 
 private:
     void FloatTick();
@@ -51,11 +52,33 @@ private:
 
     FVector FloatVelocity;
     FRotator RotationVelocity;
-    
+
 
     float TickInterval = 0.016f;
 
 #pragma endregion
 
+#pragma region Restore
+
+public:
+    void SaveOriginalTransform();
+    void StartRestoring(float Duration = 2.5f);
+
+public:
+    UPROPERTY(BlueprintAssignable, Category = "Events")
+    FOnRestoredSignature OnRestored;
+
+private:
+    void RestoreTick();
+    void FinishRestoring();
+    float RestoreDuration = 2.5f;
+    float RestoreCurrentTime = 0.f;
+
+public:
+    FTransform OriginalTransform;
+    FTransform StartTransform;
+    FTimerHandle RestoreHandle;
+
+#pragma endregion
 };
 

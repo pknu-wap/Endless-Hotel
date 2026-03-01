@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Shelf.generated.h>
 
@@ -14,7 +14,7 @@ class UAudioComponent;
 class UPrimitiveComponent;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Shelf : public AAnomaly_Object_Base
+class ENDLESS_HOTEL_API AAnomaly_Object_Shelf : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 

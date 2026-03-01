@@ -21,6 +21,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	PrimaryActorTick.bCanEverTick = true;
 
 	bCanMove = true;
+	bCanFaceCover = true;
 	bIsCameraFixed = false;
 	bIsPlayerDead = false;
 }
@@ -249,6 +250,7 @@ void AEHPlayerController::OnCrouchCompleted()
 void AEHPlayerController::OnFaceCoverStarted()
 {
 	if (!EHPlayer.IsValid()) return;
+	if (!bCanFaceCover) return;
 
 	FVector Velocity = EHPlayer->GetVelocity();
 	float Speed = Velocity.Size();
@@ -398,13 +400,13 @@ void AEHPlayerController::CheckForInteractables()
 
 	if (CachedInteractComp.Get())
 	{
-		CachedInteractComp->ShowDescriptionWidget(false);
+		CachedInteractComp->ShowInteracting(false);
 		CachedInteractComp = nullptr;
 	}
 
 	if (HitComp)
 	{
-		HitComp->ShowDescriptionWidget(true);
+		HitComp->ShowInteracting(true);
 		CachedInteractComp = HitComp;
 	}
 
@@ -432,6 +434,18 @@ void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
 	bool bIsUp = WheelValue >= 0 ? true : false;
 
 	CachedInteractComp->ChangeIndex(bIsUp);
+}
+
+#pragma endregion
+
+#pragma region SetInput
+
+void AEHPlayerController::SetPlayerInputAble(bool bAble)
+{
+	bCanMove = bAble;
+	bCanFaceCover = bAble;
+	bCanCrouch = bAble;
+	bIsCameraFixed = !bAble;
 }
 
 #pragma endregion

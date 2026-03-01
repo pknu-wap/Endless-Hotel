@@ -27,30 +27,48 @@ void UDataController::GetAnomalyEntries()
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
-		if (Data->AnomalyPath.IsEmpty()) return;
+		if (Data->AnomalyPath.IsEmpty()) continue;
 		
 		UClass* LoadedClass = StaticLoadClass(AAnomaly_Event::StaticClass(), nullptr, *Data->AnomalyPath);
-		UClass* ObjectClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Data->ObjectPath);
+
+		TArray<FString> PathStrings;
+		Data->ObjectPath.ParseIntoArray(PathStrings, TEXT(";"), true);
+
+		TArray<UClass*> LoadedObjectClasses;
+		for (const FString& SinglePath : PathStrings)
+		{
+			FString TrimmedPath = SinglePath.TrimStartAndEnd();
+			if (TrimmedPath.IsEmpty()) continue;
+
+			UClass* ObjClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *TrimmedPath);
+			if (ObjClass)
+			{
+				LoadedObjectClasses.Add(ObjClass);
+			}
+		}
 
 		if (LoadedClass)
 		{
-			OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, ObjectClass });
+			OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, LoadedObjectClasses });
 		}
 	}
 }
 
-TSubclassOf<AAnomaly_Object_Base> UDataController::GetObjectByID(uint8 AnomalyID)
+TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(uint8 AnomalyID)
 {
-	for (auto& Pair : DataTable_Anomaly->GetRowMap())
+	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
+	for (const FAnomalyEntry& Entry : OriginAnomaly)
 	{
-		const FAnomalyData* Row = reinterpret_cast<const FAnomalyData*>(Pair.Value);
-		if (Row->AnomalyID == AnomalyID)
+		if (Entry.AnomalyID == AnomalyID)
 		{
-			UClass* LoadedClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *Row->ObjectPath);
-			return LoadedClass;
+			for (UClass* ObjClass : Entry.ObjectClasses)
+			{
+				ResultArray.Add(ObjClass);
+			}
+			break;
 		}
 	}
-	return nullptr;
+	return ResultArray;
 }
 
 void UDataController::RemoveClearedAnomaly()
