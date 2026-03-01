@@ -7,6 +7,12 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+
+class UStaticMeshComponent;
+class UNiagaraComponent;
+class UMaterialInstanceDynamic;
+class UTexture;
+
 #pragma region Declare
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
@@ -83,6 +89,50 @@ protected:
 	void Action_TurnOff();
 	void Action_Burn();
 	void Action_Elevator();
+
+#pragma endregion
+
+#pragma region Burn
+
+protected:
+	FTimerHandle BurnHandle;
+
+	float BurnDuration = 1.f;
+	float BurnCurrentTime = 0.f;
+
+	bool bIsBurning = false;
+
+	TWeakObjectPtr<UStaticMeshComponent> BurnMesh;
+	TWeakObjectPtr<UNiagaraComponent> BurnNiagara;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> BurnMID = nullptr;
+
+	FName Param_Alpha = TEXT("Alpha");
+	FName Param_EdgeColor = TEXT("Edge Color");
+	FName Param_DissolveTex = TEXT("Dissolve Texture");
+
+	FName NiagaraVar_Alpha = TEXT("Alpha");
+	FName NiagaraVar_EdgeColor = TEXT("EdgeColor");
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	TObjectPtr<UTexture> DissolveTexture = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	FLinearColor EdgeColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	float ColorBoost = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	bool bDestroyOwnerOnBurnFinished = true;
+
+protected:
+	void StartBurning(float Duration);
+	void BurnTick();
+	void FinishBurning();
+
+	void SetupBurnTargets();
 
 #pragma endregion
 
