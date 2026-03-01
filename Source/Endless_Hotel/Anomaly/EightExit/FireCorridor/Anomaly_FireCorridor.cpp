@@ -8,7 +8,23 @@
 AAnomaly_FireCorridor::AAnomaly_FireCorridor(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PlayerStartTransform.SetLocation(FVector(-950, 566, 2016));
+	PlayerStartTransform.SetLocation(FVector(-750.0, 570.0 ,2342.0));
+}
+
+#pragma endregion
+
+#pragma region Activity
+
+void AAnomaly_FireCorridor::SetAnomalyActivate()
+{
+	Super::SetAnomalyActivate();
+
+	switch (AnomalyName)
+	{
+	case EAnomalyName::FireCorridor:
+		ScheduleAnomaly();
+		break;
+	}
 }
 
 #pragma endregion
