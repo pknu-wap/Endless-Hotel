@@ -35,7 +35,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
 	TArray<AActor*> LinkedObjects;
 
-	TArray<AAnomaly_Object_Base*> TargetAnomalyObjects;
+	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
 
 #pragma endregion
 
