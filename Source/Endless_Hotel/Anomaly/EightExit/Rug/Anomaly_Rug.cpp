@@ -12,9 +12,9 @@ AAnomaly_Rug::AAnomaly_Rug()
 
 #pragma region Activity
 
-void AAnomaly_Rug::SetAnomalyActivate()
+void AAnomaly_Rug::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

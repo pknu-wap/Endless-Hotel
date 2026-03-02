@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/Shelf/Anomaly_Shelf.h"
@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Shelf::SetAnomalyActivate()
+void AAnomaly_Shelf::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

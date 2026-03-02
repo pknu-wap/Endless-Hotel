@@ -5,9 +5,9 @@
 #include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 #include <Kismet/GameplayStatics.h>
 
-void AAnomaly_ShelfDoll::SetAnomalyActivate()
+void AAnomaly_ShelfDoll::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

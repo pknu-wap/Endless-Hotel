@@ -23,9 +23,9 @@ void AAnomaly_Hair::BeginPlay()
 
 #pragma region Activity
 
-void AAnomaly_Hair::SetAnomalyActivate()
+void AAnomaly_Hair::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

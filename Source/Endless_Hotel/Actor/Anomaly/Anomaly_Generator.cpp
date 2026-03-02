@@ -106,7 +106,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	AnomalyObjectLinker();
 
 	// Start
-	Spawned->SetAnomalyActivate();
+	Spawned->SetAnomalyState();
 
 	// EventBroadCast
 	OnAnomalySpawned.Broadcast(Spawned);

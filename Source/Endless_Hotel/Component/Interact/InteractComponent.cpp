@@ -111,13 +111,23 @@ void UInteractComponent::Interact()
 
 	case EInteractType::Elevator:
 		Action_Elevator();
-		break;
+		return;
 	}
 
 	if (AdditionalAction)
 	{
 		AdditionalAction();
 	}
+
+	AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Owner);
+
+	if (AnomalyObject->CorrectInteractID == CurrentIndex)
+	{
+		AnomalyObject->bSolved = !AnomalyObject->bSolved;
+		return;
+	}
+
+	AnomalyObject->bSolved = false;
 }
 
 #pragma endregion

@@ -26,6 +26,9 @@ protected:
 #pragma region Anomaly
 
 public:
+	void SetSolvedFalse() { bSolved = false; }
+
+public:
 	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
@@ -58,6 +61,13 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UInteractComponent> Component_Interact;
+
+#pragma endregion
+
+#pragma region Verdict
+
+public:
+	bool bSolved = true;
 
 #pragma endregion
 

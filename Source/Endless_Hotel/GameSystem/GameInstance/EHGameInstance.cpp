@@ -2,7 +2,7 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/Enum/EnumConverter.h"
-#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "Actor/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameMode/EHGameMode.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"

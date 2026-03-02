@@ -18,7 +18,7 @@ public:
 
 #pragma region Acitvity
 public:
-	virtual void SetAnomalyActivate() override;
+	virtual void SetAnomalyState() override;
 #pragma endregion
 
 #pragma region GhostHand

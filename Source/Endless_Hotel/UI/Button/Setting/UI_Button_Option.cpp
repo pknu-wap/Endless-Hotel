@@ -5,6 +5,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "Player/Character/EHPlayer.h"
 #include "Type/Save/Type_Save.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
@@ -272,14 +273,18 @@ void UUI_Button_Option::SetOption_Shading()
 
 void UUI_Button_Option::SetOption_AnomalyOverlap()
 {
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+
 	switch (OptionInfo.Value)
 	{
 	case EOptionValue::On:
-		// 여기에 중복 제거 코드 (담당: 경원 김)
+		// 여기에 중복 제거 코드 (담당: 경원 김) -> 원래 여기가 중복 제거가 맞음? 반대 아님?
+		Sub->bIsAlreadyClear = false;
 		break;
 
 	case EOptionValue::Off:
 		// 여기에 중복 가능 코드 (담당: 경원 김)
+		Sub->bIsAlreadyClear = true;
 		break;
 	}
 }
