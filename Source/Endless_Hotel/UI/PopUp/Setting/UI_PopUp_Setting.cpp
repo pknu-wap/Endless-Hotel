@@ -8,6 +8,12 @@
 #include <Components/TextBlock.h>
 #include <GameFramework/GameUserSettings.h>
 
+#pragma region Declare
+
+FSettingHighlight UUI_PopUp_Setting::Highlight;
+
+#pragma endregion
+
 #pragma region Base
 
 void UUI_PopUp_Setting::NativeOnInitialized()
@@ -19,12 +25,33 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+
+	Highlight.AddDynamic(this, &ThisClass::HighlightButtons);
 }
 
 void UUI_PopUp_Setting::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	HighlightButtons();
+}
+
+void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (bRotateGear)
+	{
+		RotateGear(InDeltaTime);
+	}
+}
+
+#pragma endregion
+
+#pragma region Highlight
+
+void UUI_PopUp_Setting::HighlightButtons()
+{
 	Data_Setting = USaveManager::LoadSettingData();
 
 	UI_Screen->HighlightOptions();
@@ -36,16 +63,6 @@ void UUI_PopUp_Setting::NativeConstruct()
 	UI_System->HighlightOptions();
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-	Super::NativeTick(MyGeometry, InDeltaTime);
-
-	if (bRotateGear)
-	{
-		RotateGear(InDeltaTime);
-	}
 }
 
 #pragma endregion
