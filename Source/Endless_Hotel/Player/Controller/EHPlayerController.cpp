@@ -466,6 +466,11 @@ void AEHPlayerController::SetHeartbeatSound(AActor* Monster)
 
 void AEHPlayerController::StopHeartbeatSound()
 {
+	if (!CachedHeartbeatComp)
+	{
+		return;
+	}
+
 	CachedHeartbeatComp->Stop();
 }
 
