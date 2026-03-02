@@ -6,12 +6,6 @@
 
 #pragma region Base
 
-ANormal::ANormal(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
-{
-
-}
-
 void ANormal::BeginPlay()
 {
     Super::BeginPlay();

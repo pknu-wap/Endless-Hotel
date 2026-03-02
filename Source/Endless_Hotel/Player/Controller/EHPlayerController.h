@@ -240,6 +240,8 @@ public:
 public:
 	void SetHeartbeatSound(AActor* Monster);
 
+	void StopHeartbeatSound();
+
 protected:
 	void UpdateHeartbeatSound(float DeltaSeconds);
 

@@ -471,7 +471,7 @@ void AEHPlayerController::StopHeartbeatSound()
 
 void AEHPlayerController::UpdateHeartbeatSound(float DeltaSeconds)
 {
-	if (!CachedHeartbeatComp || !HeartbeatMonster.IsValid())
+	if (!CachedHeartbeatComp || !HeartbeatMonster.IsValid() || EHPlayer->bIsDead)
 	{
 		if (CachedHeartbeatComp && CachedHeartbeatComp->IsPlaying())
 		{
