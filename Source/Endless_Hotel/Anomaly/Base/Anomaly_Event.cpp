@@ -31,7 +31,7 @@ void AAnomaly_Event::BeginPlay()
 
 void AAnomaly_Event::StartAnomalyAction()
 {
-	for (auto* TargetActor : TargetAnomalyObjects)
+	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
 	{
 		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName)) 
 		{
