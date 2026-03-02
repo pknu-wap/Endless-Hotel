@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem.h"
-#include "GameSystem/Anomaly/Anomaly_Generator.h"
+#include "Actor/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Data/Anomaly/AnomalyData.h"
