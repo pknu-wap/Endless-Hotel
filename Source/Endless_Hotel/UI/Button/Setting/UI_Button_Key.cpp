@@ -6,6 +6,12 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/InputKeySelector.h>
 
+#pragma region Declare
+
+FKeyHighlight UUI_Button_Key::Highlight;
+
+#pragma endregion
+
 #pragma region Bind
 
 void UUI_Button_Key::BindEvents()
@@ -19,8 +25,32 @@ void UUI_Button_Key::BindEvents()
 		}
 	}
 
-	Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
-	Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
+	if (Selector)
+	{
+		Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
+		Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
+	}
+
+	OnClicked.RemoveDynamic(this, &ThisClass::Click_Button);
+	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
+
+	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
+	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);
+}
+
+#pragma endregion
+
+#pragma region Click
+
+void UUI_Button_Key::Click_Button()
+{
+	FSaveData_Key Data = FSaveData_Key();
+	USaveManager::SaveKeyData(Data);
+
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->SetKeyMapping(SettingInfo);
+
+	Highlight.Broadcast();
 }
 
 #pragma endregion
@@ -34,7 +64,7 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 	FSaveData_Key Data = USaveManager::LoadKeyData();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->SetKeyMapping(Data, SettingInfo);
+	PC->SetKeyMapping(SettingInfo);
 
 	switch (SettingInfo.Type)
 	{

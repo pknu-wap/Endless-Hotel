@@ -237,7 +237,7 @@ public:
 #pragma region Key
 
 public:
-	void SetKeyMapping(const struct FSaveData_Key& Data, struct FKeySettingInfo Info);
+	void SetKeyMapping(struct FKeySettingInfo Info);
 
 #pragma endregion
 

@@ -17,7 +17,8 @@ enum class EKeySettingType : uint8
 	Sit			UMETA(DisplayName = "Sit"),
 	Interact	UMETA(DisplayName = "Interact"),
 	Hide		UMETA(DisplayName = "Hide"),
-	Flash		UMETA(DisplayName = "Flash")
+	Flash		UMETA(DisplayName = "Flash"),
+	Reset		UMETA(DisplayName = "Reset")
 };
 
 USTRUCT(BlueprintType)

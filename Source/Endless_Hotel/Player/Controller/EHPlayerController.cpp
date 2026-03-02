@@ -5,6 +5,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
+#include "Type/Save/Type_Save.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 #include <InputMappingContext.h>
@@ -454,7 +455,7 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 
 #pragma region Key
 
-void AEHPlayerController::SetKeyMapping(const FSaveData_Key& Data, FKeySettingInfo Info)
+void AEHPlayerController::SetKeyMapping(FKeySettingInfo Info)
 {
 	IMC_Default->Modify();
 
@@ -499,6 +500,22 @@ void AEHPlayerController::SetKeyMapping(const FSaveData_Key& Data, FKeySettingIn
 	case EKeySettingType::Flash:
 		IMC_Default->UnmapAllKeysFromAction(IA_Light);
 		IMC_Default->MapKey(IA_Light, Info.Value);
+		break;
+
+	case EKeySettingType::Reset:
+		FSaveData_Key Data = FSaveData_Key();
+
+		IMC_Default->UnmapAllKeysFromAction(IA_Run);
+		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
+		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
+		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
+		IMC_Default->UnmapAllKeysFromAction(IA_Light);
+
+		IMC_Default->MapKey(IA_Run, Data.Run.Value);
+		IMC_Default->MapKey(IA_Crouch, Data.Sit.Value);
+		IMC_Default->MapKey(IA_Interact, Data.Interact.Value);
+		IMC_Default->MapKey(IA_FaceCover, Data.Hide.Value);
+		IMC_Default->MapKey(IA_Light, Data.Flash.Value);
 		break;
 	}
 }
