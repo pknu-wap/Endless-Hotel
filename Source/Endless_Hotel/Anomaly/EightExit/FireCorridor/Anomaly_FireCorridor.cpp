@@ -15,9 +15,9 @@ AAnomaly_FireCorridor::AAnomaly_FireCorridor(const FObjectInitializer& ObjectIni
 
 #pragma region Activity
 
-void AAnomaly_FireCorridor::SetAnomalyActivate()
+void AAnomaly_FireCorridor::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
