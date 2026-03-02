@@ -74,6 +74,8 @@ protected:
 
 public:
 	virtual void SetAnomalyState();
+
+	UFUNCTION()
 	virtual void DisableAnomaly() {}
 
 #pragma endregion
