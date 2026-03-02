@@ -2,6 +2,8 @@
 
 #include "Anomaly/Neapolitan/Maze/Anomaly_Maze.h"
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
+#include "Player/Controller/EHPlayerController.h"
+#include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -16,9 +18,9 @@ AAnomaly_Maze::AAnomaly_Maze(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Anomaly
 
-void AAnomaly_Maze::SetAnomalyActivate()
+void AAnomaly_Maze::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
@@ -30,12 +32,22 @@ void AAnomaly_Maze::SetAnomalyActivate()
 
 void AAnomaly_Maze::StartAnomalyAction()
 {
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Maze_Monster:
 		MazeMonster();
 		break;
 	}
+
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
+		{
+			PC->SetPlayerInputAble(true);
+			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
+		}), 1.5f, false);
 }
 
 #pragma endregion

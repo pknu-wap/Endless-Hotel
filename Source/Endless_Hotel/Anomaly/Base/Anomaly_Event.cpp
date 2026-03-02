@@ -34,11 +34,14 @@ void AAnomaly_Event::BeginPlay()
 
 void AAnomaly_Event::StartAnomalyAction()
 {
-	for (auto* FoundActor : LinkedObjects)
+	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
 	{
-		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyName)) return;
-		AnomalyAction(AnomalyObject);
+		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName)) 
+		{
+			continue;
+		}
+
+		AnomalyAction(TargetActor);
 	}
 }
 
@@ -56,9 +59,22 @@ void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 #pragma region Activity
 
-void AAnomaly_Event::SetAnomalyActivate()
+void AAnomaly_Event::SetAnomalyState()
 {
 	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
+	TargetAnomalyObjects.Empty();
+	for (auto* FoundActor : LinkedObjects)
+	{
+		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
+		
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyName)) 
+		{
+			continue;
+		}
+
+		AnomalyObject->SetSolvedFalse();
+		TargetAnomalyObjects.Add(AnomalyObject);
+	}
 }
 
 #pragma endregion

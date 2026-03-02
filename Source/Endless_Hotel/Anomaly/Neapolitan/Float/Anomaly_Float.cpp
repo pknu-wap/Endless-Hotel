@@ -6,9 +6,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Float::SetAnomalyActivate()
+void AAnomaly_Float::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

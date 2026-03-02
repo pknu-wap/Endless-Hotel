@@ -22,9 +22,9 @@ AAnomaly_GhostHand::AAnomaly_GhostHand(const FObjectInitializer& ObjectInitializ
 
 #pragma region Activity
 
-void AAnomaly_GhostHand::SetAnomalyActivate()
+void AAnomaly_GhostHand::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 	
 	switch (AnomalyName)
 	{

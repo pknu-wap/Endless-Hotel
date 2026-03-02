@@ -21,7 +21,7 @@ public:
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate() override;
+	virtual void SetAnomalyState() override;
 
 #pragma endregion
 

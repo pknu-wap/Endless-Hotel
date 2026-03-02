@@ -25,7 +25,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate() override;
+	virtual void SetAnomalyState() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")

@@ -88,9 +88,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 AnomalyCount = 0;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
-	TArray<uint8> AnomalyHistory;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 CurrentAnomalyID = -1;
 

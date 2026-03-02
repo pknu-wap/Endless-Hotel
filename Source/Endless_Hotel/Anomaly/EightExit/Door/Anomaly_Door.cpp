@@ -24,9 +24,9 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Door::SetAnomalyActivate()
+void AAnomaly_Door::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

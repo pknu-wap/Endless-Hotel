@@ -18,9 +18,9 @@ AAnomaly_Blur::AAnomaly_Blur(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Activity
 
-void AAnomaly_Blur::SetAnomalyActivate()
+void AAnomaly_Blur::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

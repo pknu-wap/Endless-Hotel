@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Clock::SetAnomalyActivate()
+void AAnomaly_Clock::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{

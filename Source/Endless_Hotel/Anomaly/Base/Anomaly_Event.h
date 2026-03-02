@@ -34,6 +34,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
 	TArray<AActor*> LinkedObjects;
 
+	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
+
 #pragma endregion
 
 #pragma region Anomaly
@@ -71,10 +73,7 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate();
-
-protected:
-	UFUNCTION()
+	virtual void SetAnomalyState();
 	virtual void DisableAnomaly() {}
 
 #pragma endregion
