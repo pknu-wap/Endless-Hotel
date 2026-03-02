@@ -7,6 +7,7 @@
 #include <Components/CapsuleComponent.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -25,6 +26,10 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
+
+	HeartbeatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartbeatAudioComponent"));
+	HeartbeatAudioComponent->SetupAttachment(RootComponent);
+	HeartbeatAudioComponent->bAutoActivate = false;
 
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
 
@@ -58,6 +63,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	if (PC)
 	{
 		PC->PlayDeathSequence();
+		PC->StopHeartbeatSound();
 	}
 
 	PlayAnimMontage(DeathAnim);

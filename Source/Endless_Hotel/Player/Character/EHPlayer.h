@@ -82,4 +82,15 @@ protected:
 
 #pragma endregion
 
+#pragma region Sound
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> HeartbeatAudioComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundBase> HeartbeatSound;
+
+#pragma endregion
+
 };

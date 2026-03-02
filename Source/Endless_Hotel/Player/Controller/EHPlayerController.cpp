@@ -12,6 +12,7 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/CapsuleComponent.h>
 #include <Components/SpotLightComponent.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -49,6 +50,7 @@ void AEHPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	CheckForInteractables();
+	UpdateHeartbeatSound(DeltaSeconds);
 }
 
 #pragma endregion 
@@ -446,6 +448,53 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
+}
+
+#pragma endregion
+
+#pragma region HeartBeatSound
+
+void AEHPlayerController::SetHeartbeatSound(AActor* Monster)
+{
+	HeartbeatMonster = Monster;
+
+	if (EHPlayer.IsValid() && !CachedHeartbeatComp)
+	{
+		CachedHeartbeatComp = EHPlayer->HeartbeatAudioComponent;
+	}
+}
+
+void AEHPlayerController::StopHeartbeatSound()
+{
+	CachedHeartbeatComp->Stop();
+}
+
+void AEHPlayerController::UpdateHeartbeatSound(float DeltaSeconds)
+{
+	if (!CachedHeartbeatComp || !HeartbeatMonster.IsValid())
+	{
+		if (CachedHeartbeatComp && CachedHeartbeatComp->IsPlaying())
+		{
+			CachedHeartbeatComp->Stop();
+		}
+		return;
+	}
+
+	float Distance = FVector::Dist(EHPlayer->GetActorLocation(), HeartbeatMonster->GetActorLocation());
+	float TargetVolume = FMath::GetMappedRangeValueClamped(FVector2D(MaxDistance, MinDistance), FVector2D(0.0f, 1.2f), Distance);
+	float TargetPitch = FMath::GetMappedRangeValueClamped(FVector2D(MaxDistance, MinDistance), FVector2D(1.0f, 2.0f), Distance);
+
+	CachedHeartbeatComp->SetVolumeMultiplier(TargetVolume);
+	CachedHeartbeatComp->SetPitchMultiplier(TargetPitch);
+
+	if (TargetVolume > 0.01f && !CachedHeartbeatComp->IsPlaying())
+	{
+		CachedHeartbeatComp->Play();
+	}
+	else if (TargetVolume <= 0.01f && CachedHeartbeatComp->IsPlaying())
+	{
+		StopHeartbeatSound();
+	}
 }
 
 #pragma endregion
