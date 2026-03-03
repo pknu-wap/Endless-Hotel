@@ -5,7 +5,6 @@
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <Anomaly_Event.generated.h>
 
 #pragma region Declare
@@ -91,7 +90,6 @@ public:
 	FTransform Transform_TriggerBox;
 
 #pragma endregion
-
 
 #pragma region StartType
 

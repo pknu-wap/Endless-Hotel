@@ -2,6 +2,7 @@
 
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
@@ -13,7 +14,6 @@
 AAnomaly_Event::AAnomaly_Event(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AnomalyID = -1;
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
 	TriggerBox->SetupAttachment(RootComponent);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -22,7 +22,10 @@ AAnomaly_Event::AAnomaly_Event(const FObjectInitializer& ObjectInitializer)
 void AAnomaly_Event::BeginPlay()
 {
 	Super::BeginPlay();
+
 	TriggerBox->SetWorldTransform(Transform_TriggerBox);
+
+	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion
@@ -136,4 +139,5 @@ void AAnomaly_Event::InteractSolveVerdict()
 	bIsSolved = bAllSolved;
 	Sub->SetIsAnomalySolved(bIsSolved);
 }
+
 #pragma endregion

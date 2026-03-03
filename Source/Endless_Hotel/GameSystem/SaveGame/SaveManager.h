@@ -24,6 +24,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Key
+
+public:
+	static FSaveData_Key LoadKeyData();
+	static void SaveKeyData(const FSaveData_Key& Data);
+
+protected:
+	UPROPERTY(SaveGame)
+	FSaveData_Key Data_Key;
+
+#pragma endregion
+
 #pragma region Clear
 
 public:
