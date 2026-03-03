@@ -6,7 +6,14 @@
 #include "Type/UI/Type_UI_Setting.h"
 #include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
 #include <UI_PopUp_Setting.generated.h>
+
+#pragma region Declare
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingHighlight);
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
@@ -19,6 +26,21 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+#pragma endregion
+
+#pragma region Delegate
+
+public:
+	static FSettingHighlight Highlight;
+
+#pragma endregion
+
+#pragma region Highlight
+
+protected:
+	UFUNCTION()
+	void HighlightButtons();
 
 #pragma endregion
 
@@ -40,6 +62,13 @@ public:
 	void SetHideBoxVisibility(ESlateVisibility Option);
 
 protected:
+	UFUNCTION()
+	void Click_Normal();
+
+	UFUNCTION()
+	void Click_Input();
+
+protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_PopUp_Option> UI_Screen;
 
@@ -50,7 +79,10 @@ protected:
 	TObjectPtr<class UUI_PopUp_Option> UI_Sound;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control;
+	TObjectPtr<class UUI_PopUp_Option> UI_Control_Normal;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UUI_PopUp_Option> UI_Control_Input;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_PopUp_Option> UI_Gameplay;
@@ -60,6 +92,12 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBorder> Border_HideBox;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Normal;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Input;
 
 #pragma endregion
 

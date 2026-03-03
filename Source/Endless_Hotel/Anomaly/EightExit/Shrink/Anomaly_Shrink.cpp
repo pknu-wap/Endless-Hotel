@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Shrink/Anomaly_Shrink.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
@@ -19,8 +18,6 @@ AAnomaly_Shrink::AAnomaly_Shrink(const FObjectInitializer& ObjectInitializer)
 void AAnomaly_Shrink::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RestorePlayer);
 
 	FOnTimelineFloat Update_Size;
 	Update_Size.BindUFunction(this, FName("ShrinkPlayer"));
@@ -54,6 +51,18 @@ void AAnomaly_Shrink::StartAnomalyAction()
 	Timeline_Shrink->PlayFromStart();
 }
 
+void AAnomaly_Shrink::DisableAnomaly()
+{
+	Timeline_Shrink->Stop();
+
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->bCanRun = true;
+	PC->bCanCrouch = true;
+
+	PlayerSM->SetRelativeScale3D(OriginalScale);
+	PlayerMC->MaxWalkSpeed = OriginalSpeed;
+}
+
 #pragma endregion
 
 #pragma region Shrink
@@ -66,22 +75,6 @@ void AAnomaly_Shrink::ShrinkPlayer(float Value)
 
 	PlayerSM->SetRelativeScale3D(OriginalScale * Value);
 	PlayerMC->MaxWalkSpeed = OriginalSpeed * Value;
-}
-
-#pragma endregion
-
-#pragma region Restore
-
-void AAnomaly_Shrink::RestorePlayer(bool bStart)
-{
-	Timeline_Shrink->Stop();
-
-	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->bCanRun = true;
-	PC->bCanCrouch = true;
-
-	PlayerSM->SetRelativeScale3D(OriginalScale);
-	PlayerMC->MaxWalkSpeed = OriginalSpeed;
 }
 
 #pragma endregion
