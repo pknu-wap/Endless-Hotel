@@ -7,6 +7,9 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
+#include <Components/StaticMeshComponent.h>
+#include <NiagaraComponent.h>
+#include <Materials/MaterialInstanceDynamic.h>
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -178,10 +181,10 @@ void UInteractComponent::Action_TurnOff()
 {
 	
 }
-
 void UInteractComponent::Action_Burn()
 {
-	// 불 태우기 (담당: 서은 심)
+	SetupBurnTargets();
+	StartBurning(BurnDuration);
 }
 
 void UInteractComponent::Action_Elevator()
@@ -189,4 +192,109 @@ void UInteractComponent::Action_Elevator()
 	Cast<AElevator_Button>(Owner)->InteractElevator();
 }
 
+#pragma endregion
+
+#pragma region Burn
+
+void UInteractComponent::SetupBurnTargets()
+{
+	if (!BurnMesh.IsValid())
+	{
+		TArray<UStaticMeshComponent*> Meshes;
+		Owner->GetComponents<UStaticMeshComponent>(OUT Meshes);
+
+		for (UStaticMeshComponent* M : Meshes)
+		{
+			if (M && M->ComponentHasTag(TEXT("BurnMesh")))
+			{
+				BurnMesh = M;
+				break;
+			}
+		}
+
+
+	}
+	if (!BurnNiagara.IsValid())
+	{
+		TArray<UNiagaraComponent*> Nias;
+		Owner->GetComponents<UNiagaraComponent>(OUT Nias);
+
+		for (UNiagaraComponent* N : Nias)
+		{
+			if (N && N->ComponentHasTag(TEXT("BurnNiagara")))
+			{
+				BurnNiagara = N;
+				break;
+			}
+
+		}
+	}
+	if (BurnMesh.IsValid())
+	{
+		if (!BurnMID)
+		{
+			BurnMID = BurnMesh->CreateAndSetMaterialInstanceDynamic(0);
+		}
+
+		if (BurnMID)
+		{
+			if (DissolveTexture)
+			{
+				BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
+			}
+			BurnMID->SetVectorParameterValue(Param_EdgeColor, EdgeColor * ColorBoost);
+			BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
+		}
+	}
+}
+
+void UInteractComponent::StartBurning(float Duration)
+{
+	bIsBurning = true;
+	BurnCurrentTime = 0.f;
+	BurnDuration = FMath::Max(0.01f, Duration);
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->Activate(true);
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &UInteractComponent::BurnTick, 0.02f, true);
+}
+
+void UInteractComponent::BurnTick()
+{
+	BurnCurrentTime += 0.02f;
+	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
+
+	if (BurnMID)
+	{
+		BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
+	}
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->SetVariableFloat(NiagaraVar_Alpha, Alpha);
+		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
+	}
+
+	if (Alpha >= 1.f)
+	{
+		FinishedBurning();
+	}
+}
+
+void UInteractComponent::FinishedBurning()
+{
+	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
+	bIsBurning = false;
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->Deactivate();
+	}
+
+	Owner->SetActorHiddenInGame(true);
+	Owner->SetActorEnableCollision(false);
+}
 #pragma endregion
