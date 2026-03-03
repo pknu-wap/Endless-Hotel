@@ -232,8 +232,6 @@ protected:
 public:
 	void SetPlayerInputAble(bool Able);
 
-#pragma endregion
-
 #pragma region HeartbeatSound
 
 public:
