@@ -32,9 +32,7 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	HeartbeatAudioComponent->bAutoActivate = false;
 
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
-
 }
-
 
 void AEHPlayer::BeginPlay()
 {
@@ -47,6 +45,7 @@ void AEHPlayer::BeginPlay()
 		Third_Mesh = Cast<USkeletalMeshComponent>(GetDefaultSubobjectByName(TEXT("Third")));
 	}
 }
+
 #pragma endregion
 
 #pragma region Death

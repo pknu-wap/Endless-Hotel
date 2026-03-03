@@ -39,6 +39,7 @@ public:
 
 protected:
 	virtual void StartAnomalyAction() override;
+	virtual void DisableAnomaly() override;
 
 #pragma endregion
 
@@ -57,14 +58,6 @@ protected:
 
 	FVector OriginalScale;
 	float OriginalSpeed;
-
-#pragma endregion
-
-#pragma region Restore
-
-protected:
-	UFUNCTION()
-	void RestorePlayer(bool bStart);
 
 #pragma endregion
 

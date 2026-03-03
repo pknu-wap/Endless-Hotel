@@ -4,8 +4,11 @@
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
+#include "Type/UI/Type_UI_Key.h"
+#include "Type/Save/Type_Save.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
+#include <InputMappingContext.h>
 #include <Camera/CameraComponent.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
@@ -499,6 +502,75 @@ void AEHPlayerController::UpdateHeartbeatSound(float DeltaSeconds)
 	else if (TargetVolume <= 0.01f && CachedHeartbeatComp->IsPlaying())
 	{
 		StopHeartbeatSound();
+	}
+}
+
+#pragma endregion
+
+#pragma region Key
+
+void AEHPlayerController::SetKeyMapping(FKeySettingInfo Info)
+{
+	IMC_Default->Modify();
+
+	switch (Info.Type)
+	{
+	case EKeySettingType::Up:
+		// 보류
+		break;
+
+	case EKeySettingType::Down:
+		// 보류
+		break;
+
+	case EKeySettingType::Left:
+		// 보류
+		break;
+
+	case EKeySettingType::Right:
+		// 보류
+		break;
+
+	case EKeySettingType::Run:
+		IMC_Default->UnmapAllKeysFromAction(IA_Run);
+		IMC_Default->MapKey(IA_Run, Info.Value);
+		break;
+
+	case EKeySettingType::Sit:
+		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
+		IMC_Default->MapKey(IA_Crouch, Info.Value);
+		break;
+
+	case EKeySettingType::Interact:
+		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
+		IMC_Default->MapKey(IA_Interact, Info.Value);
+		break;
+
+	case EKeySettingType::Hide:
+		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
+		IMC_Default->MapKey(IA_FaceCover, Info.Value);
+		break;
+
+	case EKeySettingType::Flash:
+		IMC_Default->UnmapAllKeysFromAction(IA_Light);
+		IMC_Default->MapKey(IA_Light, Info.Value);
+		break;
+
+	case EKeySettingType::Reset:
+		FSaveData_Key Data = FSaveData_Key();
+
+		IMC_Default->UnmapAllKeysFromAction(IA_Run);
+		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
+		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
+		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
+		IMC_Default->UnmapAllKeysFromAction(IA_Light);
+
+		IMC_Default->MapKey(IA_Run, Data.Run.Value);
+		IMC_Default->MapKey(IA_Crouch, Data.Sit.Value);
+		IMC_Default->MapKey(IA_Interact, Data.Interact.Value);
+		IMC_Default->MapKey(IA_FaceCover, Data.Hide.Value);
+		IMC_Default->MapKey(IA_Light, Data.Flash.Value);
+		break;
 	}
 }
 
