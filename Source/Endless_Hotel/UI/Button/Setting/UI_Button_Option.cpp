@@ -278,13 +278,11 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 	switch (OptionInfo.Value)
 	{
 	case EOptionValue::On:
-		// 여기에 중복 제거 코드 (담당: 경원 김) -> 원래 여기가 중복 제거가 맞음? 반대 아님?
-		Sub->bIsAlreadyClear = false;
+		Sub->bIsAlreadyClear = true;
 		break;
 
 	case EOptionValue::Off:
-		// 여기에 중복 가능 코드 (담당: 경원 김)
-		Sub->bIsAlreadyClear = true;
+		Sub->bIsAlreadyClear = false;
 		break;
 	}
 }
