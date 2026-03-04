@@ -36,4 +36,12 @@ protected:
 
 #pragma endregion
 
+#pragma region MazeDoll
+
+protected:
+	void MazeDoll();
+
+#pragma endregion
+
+
 };

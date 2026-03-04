@@ -3,6 +3,7 @@
 #include "Anomaly/Neapolitan/Maze/Anomaly_Maze.h"
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -27,6 +28,8 @@ void AAnomaly_Maze::SetAnomalyState()
 	case EAnomalyName::Maze_Monster:
 		ScheduleAnomaly();
 		break;
+	case EAnomalyName::Maze_Doll:
+		ScheduleAnomaly();
 	}
 }
 
@@ -36,6 +39,9 @@ void AAnomaly_Maze::StartAnomalyAction()
 	{
 	case EAnomalyName::Maze_Monster:
 		MazeMonster();
+		break;
+	case EAnomalyName::Maze_Doll:
+		MazeDoll();
 		break;
 	}
 }
@@ -57,6 +63,25 @@ void AAnomaly_Maze::MazeMonster()
 	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
 	{
 		MazeObject->StartMazeMonster();
+	}
+}
+
+#pragma endregion
+
+
+#pragma region MazeDoll
+
+void AAnomaly_Maze::MazeDoll()
+{
+	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
+	{
+		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName))
+		{
+			continue;
+		}
+
+		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->ActivateDoll_Show();
+		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->SetInteraction();
 	}
 }
 
