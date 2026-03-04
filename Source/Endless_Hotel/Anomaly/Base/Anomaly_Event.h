@@ -5,7 +5,6 @@
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <Anomaly_Event.generated.h>
 
 #pragma region Declare
@@ -34,6 +33,8 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
 	TArray<AActor*> LinkedObjects;
+
+	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
 
 #pragma endregion
 
@@ -72,7 +73,9 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate();
+	virtual void SetAnomalyState();
+
+	UFUNCTION()
 	virtual void DisableAnomaly() {}
 
 #pragma endregion
@@ -87,7 +90,6 @@ public:
 	FTransform Transform_TriggerBox;
 
 #pragma endregion
-
 
 #pragma region StartType
 

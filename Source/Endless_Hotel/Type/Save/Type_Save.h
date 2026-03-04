@@ -3,10 +3,11 @@
 #pragma once
 
 #include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_UI_Key.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
-USTRUCT(BlueprintType)
+USTRUCT()
 struct FSaveData_Setting
 {
 	GENERATED_BODY()
@@ -100,4 +101,38 @@ public:
 	// System
 	UPROPERTY(SaveGame)
 	EOptionValue Language = EOptionValue::Korean;
+};
+
+USTRUCT()
+struct FSaveData_Key
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Down = FKeySettingInfo(EKeySettingType::Up, EKeys::S);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Left = FKeySettingInfo(EKeySettingType::Up, EKeys::A);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Right = FKeySettingInfo(EKeySettingType::Up, EKeys::D);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Run = FKeySettingInfo(EKeySettingType::Up, EKeys::LeftShift);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Sit = FKeySettingInfo(EKeySettingType::Up, EKeys::SpaceBar);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Interact = FKeySettingInfo(EKeySettingType::Up, EKeys::E);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Hide = FKeySettingInfo(EKeySettingType::Up, EKeys::RightMouseButton);
+
+	UPROPERTY(SaveGame)
+	FKeySettingInfo Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
 };

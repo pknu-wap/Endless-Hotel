@@ -49,6 +49,24 @@ void UUI_Button_Setting::Click_Button()
 
 void UUI_Button_Setting::Highlight(FSettingCategory TargetInfo)
 {
+	if (bIsSideButton)
+	{
+		if (SettingInfo.Enum == TargetInfo.Enum)
+		{
+			SetColorAndOpacity(Color_Highlight);
+		}
+		else
+		{
+			SetColorAndOpacity(Color_Default);
+		}
+		return;
+	}
+
+	if (TargetInfo.Enum == ESettingCategory::Control_Input)
+	{
+		TargetInfo.Enum = ESettingCategory::Control_Normal;
+	}
+
 	FButtonStyle ButtonStyle = GetStyle();
 	ButtonStyle.Normal.TintColor = Color_Default;
 

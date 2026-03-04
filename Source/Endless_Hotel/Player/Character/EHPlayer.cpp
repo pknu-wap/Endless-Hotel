@@ -33,7 +33,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
-
 void AEHPlayer::BeginPlay()
 {
 	Super::BeginPlay();
@@ -45,6 +44,7 @@ void AEHPlayer::BeginPlay()
 		Third_Mesh = Cast<USkeletalMeshComponent>(GetDefaultSubobjectByName(TEXT("Third")));
 	}
 }
+
 #pragma endregion
 
 #pragma region Death

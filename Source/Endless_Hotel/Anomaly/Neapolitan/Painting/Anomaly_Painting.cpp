@@ -5,9 +5,9 @@
 
 #pragma region Activity
 
-void AAnomaly_Painting::SetAnomalyActivate()
+void AAnomaly_Painting::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
@@ -35,7 +35,7 @@ void AAnomaly_Painting::SetAnomalyActivate()
 				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
 				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
 			});
-		ScheduleAnomaly(0.01f);
+		ScheduleAnomaly();
 		break;
 
 	case EAnomalyName::Painting_Tilt:

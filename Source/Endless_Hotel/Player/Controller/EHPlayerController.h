@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
-#include "EHPlayerController.generated.h"
+#include <CoreMinimal.h>
+#include <GameFramework/PlayerController.h>
+#include <EHPlayerController.generated.h>
 
 class UInputMappingContext;
 class UInputAction;
@@ -31,7 +31,6 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-
 	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
@@ -232,6 +231,13 @@ protected:
 	
 public:
 	void SetPlayerInputAble(bool bAble);
+
+#pragma endregion
+
+#pragma region Key
+
+public:
+	void SetKeyMapping(struct FKeySettingInfo Info);
 
 #pragma endregion
 

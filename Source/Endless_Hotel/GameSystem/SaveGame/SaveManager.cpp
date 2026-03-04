@@ -31,6 +31,33 @@ void USaveManager::SaveSettingData(const FSaveData_Setting& Data)
 
 #pragma endregion
 
+#pragma region Key
+
+FSaveData_Key USaveManager::LoadKeyData()
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Key"), 0));
+	FSaveData_Key SaveData;
+
+	if (!SaveManager)
+	{
+		return SaveData;
+	}
+
+	SaveData = SaveManager->Data_Key;
+
+	return SaveData;
+}
+
+void USaveManager::SaveKeyData(const FSaveData_Key& Data)
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
+	SaveManager->Data_Key = Data;
+
+	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Key"), 0);
+}
+
+#pragma endregion
+
 #pragma region Clear
 
 bool USaveManager::LoadGameClearData()

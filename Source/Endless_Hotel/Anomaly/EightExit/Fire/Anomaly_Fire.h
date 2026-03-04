@@ -11,13 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
 #pragma region Reference
 
 protected:
@@ -29,7 +22,10 @@ protected:
 #pragma region Activity
 
 public:
-	virtual void SetAnomalyActivate() override;
+	virtual void SetAnomalyState() override;
+
+protected:
+	virtual void DisableAnomaly() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Activity")
@@ -52,6 +48,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Fire")
 	TArray<TObjectPtr<class UNiagaraSystem>> NS_Fires;
 
+	UPROPERTY()
+	TArray<TObjectPtr<class AAnomaly_Object_Fire>> SpawnedFires;
+
 	FTimerHandle FireHandle;
 
 	UPROPERTY(EditAnywhere, Category = "Fire")
@@ -69,17 +68,6 @@ protected:
 
 protected:
 	FTimerHandle SmokeHandle;
-
-#pragma endregion
-
-#pragma region Restore
-
-protected:
-	UFUNCTION()
-	void RemoveSmokeTimer(bool bStart);
-
-protected:
-	bool bIsRemoved = false;
 
 #pragma endregion
 

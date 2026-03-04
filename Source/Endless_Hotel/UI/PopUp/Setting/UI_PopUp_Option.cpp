@@ -5,6 +5,7 @@
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "UI/Button/Setting/UI_Button_Option.h"
 #include "UI/Slider/Setting/UI_Slider_Setting.h"
+#include "UI/Button/Setting/UI_Button_Key.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Blueprint/WidgetTree.h>
 
@@ -168,6 +169,12 @@ void UUI_PopUp_Option::HighlightOptions()
 			}
 
 			Target->Slide_Slider(TargetValue);
+		}
+
+		if (auto* Target = Cast<UUI_Button_Key>(Child))
+		{
+			Target->BindEvents();
+			Target->SetSavedOption();
 		}
 	}
 }

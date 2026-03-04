@@ -17,4 +17,13 @@ public:
 	AAnomaly_FireCorridor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 #pragma endregion
+
+
+#pragma region Anomaly
+
+public:
+	virtual void SetAnomalyState() override;
+
+#pragma endregion
+
 };

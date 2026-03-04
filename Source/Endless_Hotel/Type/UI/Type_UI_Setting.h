@@ -8,13 +8,14 @@
 UENUM(BlueprintType)
 enum class ESettingCategory : uint8
 {
-	None		UMETA(DisplayName = "None"),
-	Screen		UMETA(DisplayName = "Screen"),
-	Grapic		UMETA(DisplayName = "Grapic"),
-	Sound		UMETA(DisplayName = "Sound"),
-	Control		UMETA(DisplayName = "Control"),
-	Gameplay	UMETA(DisplayName = "Gameplay"),
-	System		UMETA(DisplayName = "System")
+	None			UMETA(DisplayName = "None"),
+	Screen			UMETA(DisplayName = "Screen"),
+	Grapic			UMETA(DisplayName = "Grapic"),
+	Sound			UMETA(DisplayName = "Sound"),
+	Control_Normal	UMETA(DisplayName = "Control_Normal"),
+	Control_Input	UMETA(DisplayName = "Control_Input"),
+	Gameplay		UMETA(DisplayName = "Gameplay"),
+	System			UMETA(DisplayName = "System")
 };
 
 USTRUCT(BlueprintType)

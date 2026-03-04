@@ -5,29 +5,14 @@
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/LevelStreamingDynamic.h>
 
-#pragma region Base
-
-void AAnomaly_Fire::BeginPlay()
-{
-	Super::BeginPlay();
-
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::RemoveSmokeTimer);
-
-	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->CrouchDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
-}
-
-#pragma endregion
-
 #pragma region Activity
 
-void AAnomaly_Fire::SetAnomalyActivate()
+void AAnomaly_Fire::SetAnomalyState()
 {
-	Super::SetAnomalyActivate();
+	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
@@ -51,12 +36,32 @@ void AAnomaly_Fire::SetAnomalyActivate()
 	}
 }
 
+void AAnomaly_Fire::DisableAnomaly()
+{
+	Super::DisableAnomaly();
+
+	EHPlayer->CrouchDelegate.RemoveDynamic(this, &ThisClass::SmokeTimer);
+
+	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
+	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
+
+	for (auto Target : SpawnedFires)
+	{
+		Target->Destroy();
+	}
+
+	SpawnedFires.Empty();
+}
+
 #pragma endregion
 
 #pragma region Fire
 
 void AAnomaly_Fire::SpawnFires()
 {
+	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	EHPlayer->CrouchDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
+
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
@@ -66,6 +71,8 @@ void AAnomaly_Fire::SpawnFires()
 
 			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator, Params);
 			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
+
+			SpawnedFires.Add(SpawnedFire);
 
 			if (!FireSpawnPositions.IsValidIndex(CurrentSpawnIndex))
 			{
@@ -80,11 +87,6 @@ void AAnomaly_Fire::SpawnFires()
 
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
-	if (bIsRemoved)
-	{
-		return;
-	}
-
 	if (bIsCrouch)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
@@ -95,16 +97,6 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 		{
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
 		}), 5, false);
-}
-
-#pragma endregion
-
-#pragma region Restore
-
-void AAnomaly_Fire::RemoveSmokeTimer(bool bStart)
-{
-	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
-	bIsRemoved = true;
 }
 
 #pragma endregion
