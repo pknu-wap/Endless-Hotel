@@ -21,7 +21,9 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Base::BeginPlay()
 {
 	Super::BeginPlay();
-	bSolved = true;
+
+    SaveOriginalTransform();
+
 	if (!Component_Interact->CanInteract())
 	{
 		Component_Widget->SetActive(false);
@@ -32,35 +34,51 @@ void AAnomaly_Object_Base::BeginPlay()
 
 #pragma region Restore
 
-void AAnomaly_Object_Base::RestoreObjectTransform()
+void AAnomaly_Object_Base::SaveOriginalTransform()
 {
-	if (GetActorTransform().Equals(OriginalTransform))
-	{
-		return;
-	}
+    OriginalTransform = GetActorTransform();
+}
 
-	constexpr float RestoreDuration = 2.5f;
-	constexpr float TimerInterval = 0.016f;
+void AAnomaly_Object_Base::StartRestoring(float Duration)
+{
+    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
 
-	GetWorld()->GetTimerManager().SetTimer(RestoreHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			CurrentTime += GetWorld()->GetDeltaSeconds();
+    RestoreDuration = FMath::Max(Duration, 0.01f);
+    RestoreCurrentTime = 0.f;
 
-			float Alpha = FMath::Clamp(CurrentTime / RestoreDuration, 0.f, 1.f);
+    GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &ThisClass::RestoreTick, 0.01f, true);
+}
 
-			FTransform CurrentTransform = GetActorTransform();
+void AAnomaly_Object_Base::RestoreTick()
+{
+    RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
+    float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
+    float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
 
-			FTransform TargetTransform;
-			TargetTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+    FTransform CurrentTransform = GetActorTransform();
+    FTransform NewTransform;
+    NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
+    SetActorTransform(NewTransform);
 
-			SetActorTransform(TargetTransform);
+    if (RawAlpha >= 1.0f)
+    {
+        FinishRestoring();
+    }
+}
 
-			if (Alpha >= 1)
-			{
-				SetActorTransform(OriginalTransform);
-				GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-			}
-		}), TimerInterval, true);
+void AAnomaly_Object_Base::FinishRestoring()
+{
+    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+
+    SetActorTransform(OriginalTransform);
+
+    if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(GetRootComponent()))
+    {
+        RootPrim->SetSimulatePhysics(false);
+    }
+
+    //완료 로직 넣기!
+    //bSolved = true;
 }
 
 #pragma endregion

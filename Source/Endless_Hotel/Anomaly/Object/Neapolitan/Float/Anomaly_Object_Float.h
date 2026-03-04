@@ -11,34 +11,34 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Float : public AAnomaly_Object_Neapolita
 {
     GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-    virtual void BeginPlay() override;
-
-#pragma endregion
-
-#pragma region Interact
-
-private:
-    UPROPERTY()
-    TArray<AActor*> AffectedActors;
-
-    TSet<AActor*> RestoredActors;
-
-    void CheckAllRestored();
-
-#pragma endregion
-
-#pragma region Floating
-
-public:
-    void SearchAndStart();
-
-    UFUNCTION()
-    void OnActorRestored(AActor* RestoredActor);
-
-#pragma endregion
+//#pragma region Base
+//
+//protected:
+//    virtual void BeginPlay() override;
+//
+//#pragma endregion
+//
+//#pragma region Interact
+//
+//private:
+//    UPROPERTY()
+//    TArray<AActor*> AffectedActors;
+//
+//    TSet<AActor*> RestoredActors;
+//
+//    void CheckAllRestored();
+//
+//#pragma endregion
+//
+//#pragma region Floating
+//
+//public:
+//    void SearchAndStart();
+//
+//    UFUNCTION()
+//    void OnActorRestored(AActor* RestoredActor);
+//
+//#pragma endregion
 
     
 

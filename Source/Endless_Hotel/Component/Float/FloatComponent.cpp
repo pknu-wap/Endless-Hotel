@@ -21,8 +21,6 @@ void UFloatComponent::BeginPlay()
 
     TargetMesh = Cast<UPrimitiveComponent>(Owner->GetRootComponent());
     bIsFloatStarted = false;
-
-    SaveOriginalTransform();
 }
 
 #pragma endregion
@@ -86,59 +84,6 @@ void UFloatComponent::FreezePhysics()
 
         TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
         TargetMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-    }
-}
-
-#pragma endregion
-
-#pragma region Restore
-
-void UFloatComponent::SaveOriginalTransform()
-{
-    OriginalTransform = Owner->GetActorTransform();
-}
-
-void UFloatComponent::StartRestoring(float Duration)
-{
-    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-
-    RestoreDuration = FMath::Max(Duration, 0.01f);
-    RestoreCurrentTime = 0.f;
-
-    GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &UFloatComponent::RestoreTick, 0.01f, true);
-}
-
-void UFloatComponent::RestoreTick()
-{
-    RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
-    float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
-    float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
-
-    FTransform CurrentTransform = Owner->GetActorTransform();
-    FTransform NewTransform;
-    NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
-    Owner->SetActorTransform(NewTransform);
-
-    if (RawAlpha >= 1.0f)
-    {
-        FinishRestoring();
-    }
-}
-
-void UFloatComponent::FinishRestoring()
-{
-    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-
-    Owner->SetActorTransform(OriginalTransform);
-
-    if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(Owner->GetRootComponent()))
-    {
-        RootPrim->SetSimulatePhysics(false);
-    }
-
-    if (OnRestored.IsBound())
-    {
-        OnRestored.Broadcast(Owner.Get());
     }
 }
 

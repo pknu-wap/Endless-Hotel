@@ -8,6 +8,7 @@
 #include <Camera/CameraComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -32,6 +33,9 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	HeartbeatAudioComponent->bAutoActivate = false;
 
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
+
+	bUseControllerRotationYaw = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void AEHPlayer::BeginPlay()
