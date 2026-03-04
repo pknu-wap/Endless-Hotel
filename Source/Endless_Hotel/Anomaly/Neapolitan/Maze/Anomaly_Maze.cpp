@@ -73,6 +73,16 @@ void AAnomaly_Maze::MazeMonster()
 
 void AAnomaly_Maze::MazeDoll()
 {
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	FTimerHandle DelayHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
+		{
+			PC->SetPlayerInputAble(true);
+			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
+		}), 1.5f, false);
+
 	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
 	{
 		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName))
