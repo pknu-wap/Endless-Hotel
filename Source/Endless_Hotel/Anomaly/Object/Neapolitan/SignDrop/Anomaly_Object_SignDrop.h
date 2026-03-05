@@ -26,27 +26,5 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sign")
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
-protected:
-	UFUNCTION()
-	void OnSignRestored();
-
 #pragma endregion 
-
-#pragma region Restore
-
-public:
-	void StartRestoring(float Duration = 2.5f);
-
-private:
-	void RestoreTick();
-	void FinishRestoring();
-	float RestoreDuration = 2.5f;
-	float RestoreCurrentTime = 0.f;
-
-public:
-	FTransform OriginalTransform;
-	FTransform StartTransform;
-	FTimerHandle RestoreHandle;
-
-#pragma endregion
 };

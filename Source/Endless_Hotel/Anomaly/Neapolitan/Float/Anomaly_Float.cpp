@@ -3,6 +3,8 @@
 
 #include "Anomaly/Neapolitan/Float/Anomaly_Float.h"
 #include "Anomaly/Object/Neapolitan/Float/Anomaly_Object_Float.h"
+#include "Component/Float/FloatComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Activity
 
@@ -15,7 +17,14 @@ void AAnomaly_Float::SetAnomalyState()
 	case EAnomalyName::Float:
 		AnomalyAction = ([this](AAnomaly_Object_Base* Float)
 			{
-				Cast<AAnomaly_Object_Float>(Float)->SearchAndStart();
+                for (auto* Obj : LinkedObjects)
+                {
+                    UFloatComponent* FloatComp = Obj->FindComponentByClass<UFloatComponent>();
+                    if (FloatComp)
+                    {
+                        FloatComp->StartFloating();
+                    }
+                }
 			});
 		ScheduleAnomaly(10);
 		break;
@@ -23,3 +32,5 @@ void AAnomaly_Float::SetAnomalyState()
 }
 
 #pragma endregion
+
+

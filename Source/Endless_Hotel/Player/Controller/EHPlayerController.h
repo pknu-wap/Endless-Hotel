@@ -230,7 +230,7 @@ protected:
 #pragma region SetInput
 	
 public:
-	void SetPlayerInputAble(bool Able);
+	void SetPlayerInputAble(bool bAble);
 
 #pragma endregion
 

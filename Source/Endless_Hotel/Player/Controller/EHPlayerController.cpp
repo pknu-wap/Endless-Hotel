@@ -36,6 +36,9 @@ void AEHPlayerController::BeginPlay()
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
 
+	PlayerCameraManager->ViewPitchMin = -70.0f;
+	PlayerCameraManager->ViewPitchMax = 70.0f;
+
 	FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
 	if (FlashLight)
 	{
@@ -149,24 +152,10 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 void AEHPlayerController::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookVector = Value.Get<FVector2D>();
-	if (!bIsCameraFixed)
+	if (!bIsCameraFixed && LookVector.SizeSquared() > 0.0f)
 	{
-		if (LookVector.SizeSquared() > 0.0f)
-		{
-			// Yaw (좌우)
-			AddYawInput(LookVector.X * LookSensitivity);
-
-			// Pitch (상하) - 카메라가 고정되지 않았을 때만
-
-			if (UCameraComponent* CameraComponent = GetPlayerCamera())
-			{
-				FRotator CurrentRotation = CameraComponent->GetRelativeRotation();
-				float NewPitch = CurrentRotation.Pitch + (LookVector.Y * LookSensitivity);
-				NewPitch = FMath::Clamp(NewPitch, -70.0f, 70.0f);
-
-				CameraComponent->SetRelativeRotation(FRotator(NewPitch, CurrentRotation.Yaw, CurrentRotation.Roll));
-			}
-		}
+		AddYawInput(LookVector.X * LookSensitivity);
+		AddPitchInput(LookVector.Y * LookSensitivity);
 	}
 }
 
