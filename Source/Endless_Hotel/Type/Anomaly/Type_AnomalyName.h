@@ -35,6 +35,7 @@ enum class EAnomalyName : uint8
 	Float				= 88	UMETA(DisplayName = "Float"),
 	Clock_Ringing		= 89	UMETA(DisplayName = "Clock_Ringing"),
 	MusicBox_Ringing	= 90	UMETA(DisplayName = "MusicBox_Ringing"),
+	Chair_Moving		= 91	UMETA(DisplayName = "Chair_Moving"),
 	Painting_Tilt		= 92	UMETA(DisplayName = "Painting_Tilt"),
 	Painting_Blur		= 95	UMETA(DisplayName = "Painting_Blur"),
 	Painting_Blood		= 96	UMETA(DisplayName = "Painting_Blood"),
