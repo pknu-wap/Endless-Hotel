@@ -7,13 +7,12 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+#pragma region Declare
 
 class UStaticMeshComponent;
 class UNiagaraComponent;
 class UMaterialInstanceDynamic;
 class UTexture;
-
-#pragma region Declare
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
 
@@ -60,6 +59,9 @@ public:
 	// 상호작용
 	void Interact();
 
+	// 현재 선택된 상호작용 정보 가져오는 함수
+	FInteractInfo GetSelectedInteraction();
+
 protected:
 	// 상호작용 UI를 보여주는 함수
 	void ShowDescriptionWidget(bool bIsShow);
@@ -102,6 +104,7 @@ protected:
 	void Action_Restore();
 	void Action_Rotate();
 	void Action_TurnOff();
+	void Action_Call();
 	void Action_Burn();
 	void Action_Elevator();
 

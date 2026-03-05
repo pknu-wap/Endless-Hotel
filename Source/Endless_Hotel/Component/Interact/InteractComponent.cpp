@@ -4,6 +4,7 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
+#include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
@@ -105,6 +106,10 @@ void UInteractComponent::Interact()
 		Action_TurnOff();
 		break;
 
+	case EInteractType::Call:
+		Action_Call();
+		break;
+
 	case EInteractType::Burn:
 		Action_Burn();
 		break;
@@ -128,6 +133,16 @@ void UInteractComponent::Interact()
 	}
 
 	AnomalyObject->bSolved = false;
+}
+
+FInteractInfo UInteractComponent::GetSelectedInteraction()
+{
+	if (List_Interact.IsEmpty())
+	{
+		return FInteractInfo();
+	}
+
+	return List_Interact[CurrentIndex];
 }
 
 #pragma endregion
@@ -167,6 +182,12 @@ void UInteractComponent::Action_TurnOff()
 {
 	
 }
+
+void UInteractComponent::Action_Call()
+{
+
+}
+
 void UInteractComponent::Action_Burn()
 {
 	SetupBurnTargets();
@@ -283,4 +304,5 @@ void UInteractComponent::FinishedBurning()
 	Owner->SetActorHiddenInGame(true);
 	Owner->SetActorEnableCollision(false);
 }
+
 #pragma endregion
