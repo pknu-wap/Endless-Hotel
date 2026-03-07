@@ -45,6 +45,9 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> SM_Receiver;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC;
 
 	UPROPERTY(EditAnywhere, Category = "Ringing")
@@ -56,7 +59,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ringing")
 	TObjectPtr<class UCurveFloat> CV_Ringing;
 
-	FTimerHandle MoveHandle;
+	FTimerHandle UpHandle;
+	FTimerHandle DownHandle;
 	FTimerHandle ShakeHandle;
 
 	bool bUp = true;
