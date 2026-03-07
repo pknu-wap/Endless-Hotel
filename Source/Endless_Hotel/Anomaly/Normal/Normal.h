@@ -19,9 +19,6 @@ class ENDLESS_HOTEL_API ANormal : public AAnomaly_Event
 	
 #pragma region Base
 
-public:
-	ANormal(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
 protected:
 	virtual void BeginPlay() override;
 #pragma endregion

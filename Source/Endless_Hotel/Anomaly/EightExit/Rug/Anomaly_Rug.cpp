@@ -1,5 +1,5 @@
 ﻿#include "Anomaly/EightExit/Rug/Anomaly_Rug.h"
-#include "Anomaly/Object/EightExit/Rug/Anomlay_Object_Rug.h"
+#include "Anomaly/Object/EightExit/Rug/Anomaly_Object_Rug.h"
 
 #pragma region Base
 
@@ -21,7 +21,7 @@ void AAnomaly_Rug::SetAnomalyState()
 	case EAnomalyName::Rug_Color:
 		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
 			{
-				Cast<AAnomlay_Object_Rug>(AnomalyObject)->ChangeRugColor();
+				Cast<AAnomaly_Object_Rug>(AnomalyObject)->ChangeRugColor();
 			});
 		ScheduleAnomaly();
 		break;

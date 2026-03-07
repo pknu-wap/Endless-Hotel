@@ -4,17 +4,17 @@
 
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
-#include <Anomlay_Object_Rug.generated.h>
+#include <Anomaly_Object_Rug.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomlay_Object_Rug : public AAnomaly_Object_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Object_Rug : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 	
 #pragma region Base
 
 public:
-	AAnomlay_Object_Rug(const FObjectInitializer& ObjectInitializer);
+	AAnomaly_Object_Rug(const FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMaterialInterface> ChangedMaterial;

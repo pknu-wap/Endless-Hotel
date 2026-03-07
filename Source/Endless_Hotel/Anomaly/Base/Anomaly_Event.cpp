@@ -129,7 +129,7 @@ void AAnomaly_Event::InteractSolveVerdict()
 			continue;
 		}
 
-		auto* AnomalyObject = Cast<AAnomaly_Object_Neapolitan>(FoundActor);
+		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		if (!AnomalyObject->bSolved)
 		{
 			bAllSolved = false;
