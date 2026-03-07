@@ -22,6 +22,7 @@ void AAnomaly_Object_Base::BeginPlay()
 {
 	Super::BeginPlay();
 
+    bSolved = true;
     SaveOriginalTransform();
 
 	if (!Component_Interact->CanInteract())
