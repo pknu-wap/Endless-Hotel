@@ -41,12 +41,9 @@ public:
 
 public:
 	void GetAnomalyEntries();
-
-	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(uint8 ObjectID);
-
-	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
-
 	void RemoveClearedAnomaly();
+	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(uint8 ObjectID);
+	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
 
 public:
 	UPROPERTY()

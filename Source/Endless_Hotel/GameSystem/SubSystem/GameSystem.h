@@ -105,6 +105,7 @@ public:
 
 public:
 	void InitializePool();
+	void ResetPool();
 
 #pragma endregion
 
@@ -116,7 +117,7 @@ public:
 
 public:
 	bool bIsClear = false;
-	bool bIsAlreadyClear = false;
+	bool bIsAnomalyRepeatable = false;
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
@@ -128,4 +129,5 @@ public:
 	int32 GlobalSelectedKeyIndex = 0;
 
 #pragma endregion
+
 };
