@@ -136,7 +136,7 @@ void UGameSystem::InitializePool()
 
 	ActIndex = 0;
 
-	if (bIsAnomalyRepeatable && DataC->LoadedAnomalySet.Num() > 0 && DataC->LoadedAnomalySet.Num() < AnomalyCount)
+	if (bIsAnomalyRepeatable && !DataC->LoadedAnomalySet.IsEmpty() && DataC->LoadedAnomalySet.Num() < AnomalyCount)
 	{
 		DataC->RemoveClearedAnomaly();
 	}

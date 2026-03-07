@@ -11,20 +11,14 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Rug : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-public:
-	AAnomaly_Object_Rug(const FObjectInitializer& ObjectInitializer);
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UMaterialInterface> ChangedMaterial;
-
-#pragma endregion
-
 #pragma region Color Change
 
 public:
 	void ChangeRugColor();
+
+public:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UMaterialInterface> ChangedMaterial;
 
 #pragma endregion
 
