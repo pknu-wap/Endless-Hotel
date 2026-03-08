@@ -53,7 +53,6 @@ void AAnomaly_Object_Clock::SetInteraction()
 	case EAnomalyName::Clock_Ringing:
 		Component_Interact->AdditionalAction = ([this]()
 			{
-				bSolved = !bSolved;
 				if (bInTime)
 				{
 					StopRinging();
