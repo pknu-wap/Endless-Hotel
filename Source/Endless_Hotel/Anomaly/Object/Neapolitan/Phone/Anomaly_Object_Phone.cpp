@@ -16,6 +16,7 @@ AAnomaly_Object_Phone::AAnomaly_Object_Phone(const FObjectInitializer& ObjectIni
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
 
+	Timeline_Move = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Move"));
 	Timeline_Ringing = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Ringing"));
 }
 
@@ -23,9 +24,9 @@ void AAnomaly_Object_Phone::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OriginalLocation = SM_Receiver->GetRelativeLocation();
-	UpLocation = OriginalLocation;
-	UpLocation.Z += MoveValue;
+	FOnTimelineFloat Update_Move;
+	Update_Move.BindUFunction(this, "UpdateMove");
+	Timeline_Move->AddInterpFloat(CV_Move, Update_Move);
 
 	FOnTimelineFloat Update_Ringing;
 	Update_Ringing.BindUFunction(this, "UpdateShake");
@@ -79,31 +80,15 @@ void AAnomaly_Object_Phone::RingingInteraction()
 
 void AAnomaly_Object_Phone::RingingPhone()
 {	
-	GetWorld()->GetTimerManager().SetTimer(UpHandle, this, &ThisClass::MovePhone, 1, false);
-	GetWorld()->GetTimerManager().SetTimer(ShakeHandle, this, &ThisClass::ShakePhone, 2, false);
-	GetWorld()->GetTimerManager().SetTimer(DownHandle, this, &ThisClass::MovePhone, 9, false);
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
+	GetWorld()->GetTimerManager().SetTimer(ShakeHandle, this, &ThisClass::ShakePhone, 1.5f, false);
 }
 
 void AAnomaly_Object_Phone::MovePhone()
 {
-	FVector Target = bUp ? UpLocation : OriginalLocation;
-
-	FVector Current = FMath::VInterpTo(SM_Receiver->GetRelativeLocation(), Target, GetWorld()->GetDeltaSeconds(), 1);
-	SM_Receiver->SetRelativeLocation(Current);
-
-	if (FMath::IsNearlyEqual(Current.Z, Target.Z))
-	{
-		bUp = !bUp;
-
-		GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-
-		return;
-	}
-
-	if (!bUp)
-	{
-		RingingPhone();
-	}
+	Timeline_Move->PlayFromStart();
 }
 
 void AAnomaly_Object_Phone::ShakePhone()
@@ -111,6 +96,13 @@ void AAnomaly_Object_Phone::ShakePhone()
 	AC->Play();
 
 	Timeline_Ringing->PlayFromStart();
+}
+
+void AAnomaly_Object_Phone::UpdateMove(float Value)
+{
+	FVector Target = SM_Receiver->GetRelativeLocation();
+	Target.Z = Value;
+	SM_Receiver->SetRelativeLocation(Target);
 }
 
 void AAnomaly_Object_Phone::UpdateShake(float Value)

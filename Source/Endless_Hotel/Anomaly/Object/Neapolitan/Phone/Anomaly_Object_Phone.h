@@ -41,6 +41,9 @@ protected:
 	void ShakePhone();
 
 	UFUNCTION()
+	void UpdateMove(float Value);
+
+	UFUNCTION()
 	void UpdateShake(float Value);
 
 protected:
@@ -53,23 +56,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Ringing")
 	TObjectPtr<class USoundWave> SW_Voice;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Move;
+
+	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline_Ringing;
+
+	UPROPERTY(EditAnywhere, Category = "Ringing")
+	TObjectPtr<class UCurveFloat> CV_Move;
 
 	UPROPERTY(EditAnywhere, Category = "Ringing")
 	TObjectPtr<class UCurveFloat> CV_Ringing;
 
-	FTimerHandle UpHandle;
-	FTimerHandle DownHandle;
+	FTimerHandle MoveHandle;
 	FTimerHandle ShakeHandle;
-
-	bool bUp = true;
-
-	FVector OriginalLocation;
-	FVector UpLocation;
-
-	UPROPERTY(EditAnywhere)
-	float MoveValue = 10;
 
 #pragma endregion
 
