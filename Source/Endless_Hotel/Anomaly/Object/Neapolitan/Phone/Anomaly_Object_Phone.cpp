@@ -79,8 +79,6 @@ void AAnomaly_Object_Phone::RingingInteraction()
 
 void AAnomaly_Object_Phone::RingingPhone()
 {
-	bRinging = true;
-
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
