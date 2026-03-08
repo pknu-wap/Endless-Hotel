@@ -12,6 +12,7 @@ enum class EInteractType : uint8
 	Restore		UMETA(DisplayName = "Restore"),
 	Rotate		UMETA(DisplayName = "Rotate"),
 	TurnOff		UMETA(DisplayName = "TurnOff"),
+	Call		UMETA(DisplayName = "Call"),
 	Burn		UMETA(DisplayName = "Burn"),
 	Elevator	UMETA(DisplayName = "Elevator")
 };

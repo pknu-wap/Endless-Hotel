@@ -7,13 +7,12 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+#pragma region Declare
 
 class UStaticMeshComponent;
 class UNiagaraComponent;
 class UMaterialInstanceDynamic;
 class UTexture;
-
-#pragma region Declare
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
 
@@ -52,13 +51,16 @@ public:
 	void ShowInteracting(bool bIsShow);
 
 	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없어야 하고, 한번이라도 상호작용 X 이어야 함 )
-	bool CanInteract();
+	bool CanInteract() { return !List_Interact.IsEmpty() && !bIsInteracted; }
 
 	// 현재 선택된 상호작용 번호 변경
 	void ChangeIndex(bool bUp);
 
 	// 상호작용
 	void Interact();
+
+	// 현재 선택된 상호작용 정보 가져오는 함수
+	FInteractInfo GetSelectedInteraction();
 
 protected:
 	// 상호작용 UI를 보여주는 함수
@@ -102,6 +104,7 @@ protected:
 	void Action_Restore();
 	void Action_Rotate();
 	void Action_TurnOff();
+	void Action_Call();
 	void Action_Burn();
 	void Action_Elevator();
 

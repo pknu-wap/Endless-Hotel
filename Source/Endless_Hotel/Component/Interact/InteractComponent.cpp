@@ -4,6 +4,7 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
+#include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
 #include "Player/Character/EHPlayer.h"
@@ -34,19 +35,6 @@ void UInteractComponent::ShowInteracting(bool bIsShow)
 	ShowInteractingHighlight(bIsShow);
 }
 
-bool UInteractComponent::CanInteract()
-{
-	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
-	{
-		if (!FloatComp->bIsFloatStarted || FloatComp->bIsFloating)
-		{
-			return false;
-		}
-	}
-
-	return !List_Interact.IsEmpty() && !bIsInteracted;
-}
-
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
 	if (!List_Interact.IsValidIndex(CurrentIndex))
@@ -56,13 +44,13 @@ void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 
 	if (!CanInteract())
 	{
-		bIsShow = false;
+		return;
 	}
 
 	if (UI_Interact.IsValid())
 	{
-		UI_Interact->ShowDescription(bIsShow);
 		UI_Interact->SetDescription(GetDescription());
+		UI_Interact->ShowDescription(bIsShow);
 	}
 }
 
@@ -87,6 +75,8 @@ void UInteractComponent::ChangeIndex(bool bUp)
 
 void UInteractComponent::Interact()
 {
+	ShowInteracting(false);
+
 	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
@@ -103,6 +93,10 @@ void UInteractComponent::Interact()
 
 	case EInteractType::TurnOff:
 		Action_TurnOff();
+		break;
+
+	case EInteractType::Call:
+		Action_Call();
 		break;
 
 	case EInteractType::Burn:
@@ -130,12 +124,27 @@ void UInteractComponent::Interact()
 	AnomalyObject->bSolved = false;
 }
 
+FInteractInfo UInteractComponent::GetSelectedInteraction()
+{
+	if (List_Interact.IsEmpty())
+	{
+		return FInteractInfo();
+	}
+
+	return List_Interact[CurrentIndex];
+}
+
 #pragma endregion
 
 #pragma region Hightight
 
 void UInteractComponent::ShowInteractingHighlight(bool bActive)
 {
+	if (!CanInteract())
+	{
+		return;
+	}
+
 	TArray<UMeshComponent*> Comps;
 	Owner->GetComponents<UMeshComponent>(OUT Comps);
 
@@ -167,6 +176,12 @@ void UInteractComponent::Action_TurnOff()
 {
 	
 }
+
+void UInteractComponent::Action_Call()
+{
+
+}
+
 void UInteractComponent::Action_Burn()
 {
 	SetupBurnTargets();
@@ -283,4 +298,5 @@ void UInteractComponent::FinishedBurning()
 	Owner->SetActorHiddenInGame(true);
 	Owner->SetActorEnableCollision(false);
 }
+
 #pragma endregion
