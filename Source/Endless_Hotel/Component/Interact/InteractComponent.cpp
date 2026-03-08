@@ -35,19 +35,6 @@ void UInteractComponent::ShowInteracting(bool bIsShow)
 	ShowInteractingHighlight(bIsShow);
 }
 
-bool UInteractComponent::CanInteract()
-{
-	if (auto* FloatComp = Owner->FindComponentByClass<UFloatComponent>())
-	{
-		if (!FloatComp->bIsFloatStarted || FloatComp->bIsFloating)
-		{
-			return false;
-		}
-	}
-
-	return !List_Interact.IsEmpty() && !bIsInteracted;
-}
-
 void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 {
 	if (!List_Interact.IsValidIndex(CurrentIndex))
@@ -57,13 +44,13 @@ void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 
 	if (!CanInteract())
 	{
-		bIsShow = false;
+		return;
 	}
 
 	if (UI_Interact.IsValid())
 	{
-		UI_Interact->ShowDescription(bIsShow);
 		UI_Interact->SetDescription(GetDescription());
+		UI_Interact->ShowDescription(bIsShow);
 	}
 }
 
@@ -88,6 +75,8 @@ void UInteractComponent::ChangeIndex(bool bUp)
 
 void UInteractComponent::Interact()
 {
+	ShowInteracting(false);
+
 	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
@@ -151,6 +140,11 @@ FInteractInfo UInteractComponent::GetSelectedInteraction()
 
 void UInteractComponent::ShowInteractingHighlight(bool bActive)
 {
+	if (!CanInteract())
+	{
+		return;
+	}
+
 	TArray<UMeshComponent*> Comps;
 	Owner->GetComponents<UMeshComponent>(OUT Comps);
 

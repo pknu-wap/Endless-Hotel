@@ -51,7 +51,7 @@ public:
 	void ShowInteracting(bool bIsShow);
 
 	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없어야 하고, 한번이라도 상호작용 X 이어야 함 )
-	bool CanInteract();
+	bool CanInteract() { return !List_Interact.IsEmpty() && !bIsInteracted; }
 
 	// 현재 선택된 상호작용 번호 변경
 	void ChangeIndex(bool bUp);

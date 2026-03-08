@@ -51,27 +51,26 @@ void AAnomaly_Object_Phone::SetInteraction()
 
 void AAnomaly_Object_Phone::RingingInteraction()
 {
-	AC->Stop();
+	Component_Interact->AdditionalAction = ([this]()
+		{
+			GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+			Timeline_Move->Stop();
+			Timeline_Ringing->Stop();
 
-	switch (Component_Interact->GetSelectedInteraction().InteractType)
-	{
-	case EInteractType::TurnOff:
-		Component_Interact->AdditionalAction = ([this]()
+			AC->Stop();
+
+			switch (Component_Interact->GetSelectedInteraction().InteractType)
 			{
-				// 예시로 남겨둠
-			});
-		break;
+			case EInteractType::TurnOff:
+				break;
 
-	case EInteractType::Call:
-		Component_Interact->AdditionalAction = ([this]()
-			{
+			case EInteractType::Call:
 				AC->SetSound(SW_Voice);
 				AC->Play();
-			});
-		break;
-	}
+				break;
+			}
+		});
 }
 
 #pragma endregion
@@ -79,7 +78,9 @@ void AAnomaly_Object_Phone::RingingInteraction()
 #pragma region Ringing
 
 void AAnomaly_Object_Phone::RingingPhone()
-{	
+{
+	bRinging = true;
+
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
