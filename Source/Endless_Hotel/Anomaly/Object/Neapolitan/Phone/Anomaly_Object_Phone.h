@@ -71,6 +71,8 @@ protected:
 	FTimerHandle MoveHandle;
 	FTimerHandle ShakeHandle;
 
+	FTransform OriginalTrans;
+
 #pragma endregion
 
 };

@@ -24,6 +24,8 @@ void AAnomaly_Object_Phone::BeginPlay()
 {
 	Super::BeginPlay();
 
+	OriginalTrans = SM_Receiver->GetRelativeTransform();
+
 	FOnTimelineFloat Update_Move;
 	Update_Move.BindUFunction(this, "UpdateMove");
 	Timeline_Move->AddInterpFloat(CV_Move, Update_Move);
@@ -53,6 +55,8 @@ void AAnomaly_Object_Phone::RingingInteraction()
 {
 	Component_Interact->AdditionalAction = ([this]()
 		{
+			SM_Receiver->SetRelativeTransform(OriginalTrans);
+
 			GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 
 			Timeline_Move->Stop();
