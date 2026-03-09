@@ -4,17 +4,6 @@
 #include "Anomaly/Object/Neapolitan/Chair/Anomaly_Object_Chair.h"
 #include <Components/StaticMeshComponent.h>
 
-#pragma region Base
-
-AAnomaly_Object_Chair::AAnomaly_Object_Chair(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	SM_Chair = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Chair"));
-	SM_Chair->SetupAttachment(Object);
-}
-
-#pragma endregion
-
 #pragma region Chair
 
 void AAnomaly_Object_Chair::ChairMoving()

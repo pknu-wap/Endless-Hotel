@@ -10,23 +10,12 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Chair : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
-	
-#pragma region Base
-
-public:
-	AAnomaly_Object_Chair(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
 
 #pragma region Chair
 
 public:
 	UFUNCTION()
 	void ChairMoving();
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> SM_Chair;
 
 #pragma endregion
 
