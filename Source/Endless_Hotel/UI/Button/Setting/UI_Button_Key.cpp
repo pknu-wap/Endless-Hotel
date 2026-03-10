@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Setting/UI_Button_Key.h"
 #include "Player/Controller/EHPlayerController.h"
@@ -104,8 +104,59 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 		Data.Flash = SettingInfo;
 		break;
 	}
-
+	
 	USaveManager::SaveKeyData(Data);
+
+	ConvertLongText(SelectedChord);
+}
+
+void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
+{
+	FKey Key = SelectedChord.Key;
+	FText Target = Selector->GetNoKeySpecifiedText();
+
+	if (Key == EKeys::LeftShift)
+	{
+		Target = FText::FromString(TEXT("LS"));
+	}
+	else if (Key == EKeys::RightShift)
+	{
+		Target = FText::FromString(TEXT("RS"));
+	}
+	else if (Key == EKeys::LeftControl)
+	{
+		Target = FText::FromString(TEXT("LC"));
+	}
+	else if (Key == EKeys::RightControl)
+	{
+		Target = FText::FromString(TEXT("RC"));
+	}
+	else if (Key == EKeys::RightShift)
+	{
+		Target = FText::FromString(TEXT("RS"));
+	}
+	else if (Key == EKeys::LeftAlt)
+	{
+		Target = FText::FromString(TEXT("LA"));
+	}
+	else if (Key == EKeys::RightAlt)
+	{
+		Target = FText::FromString(TEXT("RA"));
+	}
+	else if (Key == EKeys::LeftMouseButton)
+	{
+		Target = FText::FromString(TEXT("LMB"));
+	}
+	else if (Key == EKeys::RightMouseButton)
+	{
+		Target = FText::FromString(TEXT("RMB"));
+	}
+	else if (Key == EKeys::MiddleMouseButton)
+	{
+		Target = FText::FromString(TEXT("MMB"));
+	}
+
+	Selector->SetNoKeySpecifiedText(Target);
 }
 
 #pragma endregion

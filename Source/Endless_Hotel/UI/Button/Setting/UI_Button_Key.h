@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -47,6 +47,8 @@ protected:
 protected:
 	UFUNCTION()
 	void SelectedKeyValue(FInputChord SelectedChord);
+
+	void ConvertLongText(FInputChord SelectedChord);
 
 protected:
 	UPROPERTY()
