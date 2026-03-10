@@ -4,18 +4,22 @@
 
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Object_Chair.generated.h>
+#include <Anomaly_Object_Cart.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Chair : public AAnomaly_Object_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Object_Cart : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
-#pragma region Chair
+#pragma region Cart
 
 public:
 	UFUNCTION()
-	void ChairMoving();
+	void CartMoving();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<USoundBase> Sound_Move = nullptr;
 
 #pragma endregion
 
@@ -24,13 +28,13 @@ public:
 protected:
 	FTimerHandle MoveHandle;
 
-	float Duration = 0.6f;
+	float Duration = 6.f;
 	float CurrentTime = 0.f;
 
-	UPROPERTY(EditAnywhere, Category = "Chair")
+	UPROPERTY(EditAnywhere, Category = "Cart")
 	float RotateYawDelta = 90.f;
 
-	UPROPERTY(EditAnywhere, Category = "Chair")
+	UPROPERTY(EditAnywhere, Category = "Cart")
 	float MoveDistance = 120.f;
 
 	FVector StartLocation = FVector::ZeroVector;

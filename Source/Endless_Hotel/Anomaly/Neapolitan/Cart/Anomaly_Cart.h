@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
-#include "Anomaly_Chair.generated.h"
+#include "Anomaly_Cart.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Chair : public AAnomaly_Event_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Cart : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 
