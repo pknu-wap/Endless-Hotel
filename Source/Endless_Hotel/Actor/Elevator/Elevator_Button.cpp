@@ -55,8 +55,17 @@ void AElevator_Button::MoveToButtonPlayer()
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!Player) return;
 
+    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+    PC->SetPlayerInputAble(false);
+    PC->SetIgnoreLookInput(true);
+
+    FVector ButtonLocation = GetActorLocation();
     FVector ButtonForward = GetActorForwardVector();
-    FVector TargetLocation = GetActorLocation() + (ButtonForward * PlayerToElevatorDistance);
+    FVector ButtonRight = GetActorRightVector();
+
+    FVector TargetLocation = ButtonLocation
+        + (ButtonForward * PlayerToElevatorDistance)
+        + (ButtonRight * PlayerToElevatorSideOffset);
     TargetLocation.Z = Player->GetActorLocation().Z;
 
     FRotator TargetRotation = (-ButtonForward).Rotation();
@@ -110,9 +119,14 @@ void AElevator_Button::OnMoveCompleted()
             }
 
             EHPC->OnEVButtonPressCompleted();
+            EHPC->SetIgnoreLookInput(false);
 
         }), 2.0f, false);
 }
+
+#pragma endregion
+
+#pragma region ButtonAnim
 
 void AElevator_Button::PlayButtonPressAnimation()
 {

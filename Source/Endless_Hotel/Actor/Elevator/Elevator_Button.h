@@ -58,6 +58,9 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Interact")
     float PlayerToElevatorDistance = 50.0f;
 
+    UPROPERTY(EditAnywhere, Category = "Interact")
+    float PlayerToElevatorSideOffset = 0.0f;
+
     void MoveToButtonPlayer();
 
     UFUNCTION()

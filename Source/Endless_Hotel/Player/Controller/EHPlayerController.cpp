@@ -415,6 +415,11 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 		return;
 	}
 
+	if (bIsFaceCovering)
+	{
+		return;
+	}
+
 	CachedInteractComp->Interact();
 }
 
