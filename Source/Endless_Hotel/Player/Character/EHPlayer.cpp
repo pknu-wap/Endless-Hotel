@@ -59,6 +59,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	if (bIsDead) return;
 
 	bIsDead = true;
+	Cast <AEHPlayerController> (GetController())->SetPlayerInputAble(false);
 
 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
 
@@ -108,8 +109,9 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			SpringArm->bUsePawnControlRotation = true;
 			SpringArm->bEnableCameraRotationLag = false;
 
-			Cast<AEHPlayerController>(GetController())->RevivePlayer();
 			bIsDead = false;
+			Cast<AEHPlayerController>(GetController())->RevivePlayer();
+			
 			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
 		}), AnimLength + 5, false);
