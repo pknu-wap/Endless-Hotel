@@ -31,7 +31,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	AnomalyCount = 0;
 	ActIndex = 0;
 
-	bIsAlreadyClear = USaveManager::LoadGameClearData();
+	//bIsAlreadyClear = USaveManager::LoadGameClearData();
 	if (bIsAlreadyClear)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
@@ -73,7 +73,7 @@ void UGameSystem::ApplyVerdict()
 	{
 		SubFloor();
 
-		if (bIsAlreadyClear)
+		if (bIsAlreadyClear)	// 회의 이후 조건 추가 및 수정 예정
 		{
 			DataC->LoadedAnomalySet.Add(CurrentAnomalyID);
 			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
@@ -139,7 +139,7 @@ void UGameSystem::InitializePool()
 
 	ActIndex = 0;
 
-	if (bIsAlreadyClear && DataC->LoadedAnomalySet.Num() > 0)
+	if (bIsAlreadyClear && DataC->LoadedAnomalySet.Num() > 0)	// 회의 이후 조건 추가 및 수정 예정
 	{
 		DataC->RemoveClearedAnomaly();
 	}

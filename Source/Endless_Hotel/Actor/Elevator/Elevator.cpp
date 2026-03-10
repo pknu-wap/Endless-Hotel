@@ -121,6 +121,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
     bIsPlayerInside = true;
     ElevatorLight->SetIntensity(LightOnIntensity);
 
+    SetPlayerInputEnabled(false);
     RotatePlayer();
     TakePlayer();
 
@@ -164,7 +165,9 @@ void AElevator::MoveDoors(bool bIsOpening)
     CurrentState = EElevatorState::DoorMoving;
     bIsDoorOpened = bIsOpening;
     
-    if(bIsPlayerInside)
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+    if(InsideTrigger->IsOverlappingActor(Player) && bIsPlayerInside)
     {
         SetPlayerInputEnabled(false);
     }
@@ -271,6 +274,7 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 
 void AElevator::RotatePlayer()
 {
+    SetPlayerInputEnabled(false);
     GetWorld()->GetTimerManager().SetTimer(RotateHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {
         SmoothRotate(RotateAngle);
         }), 0.01f, true);
@@ -278,6 +282,7 @@ void AElevator::RotatePlayer()
 
 void AElevator::SmoothRotate(FRotator TargetRotation)
 {
+    SetPlayerInputEnabled(false);
     if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
     {
         if (AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController()))
@@ -297,10 +302,10 @@ void AElevator::SmoothRotate(FRotator TargetRotation)
 
 void AElevator::TakePlayer()
 {
+    SetPlayerInputEnabled(false);
     if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
     {
         Player->AttachToComponent(Car, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-        SetPlayerInputEnabled(false);
     }
 }
 

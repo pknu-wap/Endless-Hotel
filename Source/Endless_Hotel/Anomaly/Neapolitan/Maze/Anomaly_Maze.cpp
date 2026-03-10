@@ -3,6 +3,7 @@
 #include "Anomaly/Neapolitan/Maze/Anomaly_Maze.h"
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -27,27 +28,22 @@ void AAnomaly_Maze::SetAnomalyState()
 	case EAnomalyName::Maze_Monster:
 		ScheduleAnomaly();
 		break;
+	case EAnomalyName::Maze_Doll:
+		ScheduleAnomaly();
 	}
 }
 
 void AAnomaly_Maze::StartAnomalyAction()
 {
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Maze_Monster:
 		MazeMonster();
 		break;
+	case EAnomalyName::Maze_Doll:
+		MazeDoll();
+		break;
 	}
-
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
-		{
-			PC->SetPlayerInputAble(true);
-			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
-		}), 1.5f, false);
 }
 
 #pragma endregion
@@ -67,6 +63,35 @@ void AAnomaly_Maze::MazeMonster()
 	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
 	{
 		MazeObject->StartMazeMonster();
+	}
+}
+
+#pragma endregion
+
+
+#pragma region MazeDoll
+
+void AAnomaly_Maze::MazeDoll()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	FTimerHandle DelayHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
+		{
+			PC->SetPlayerInputAble(true);
+			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
+		}), 1.5f, false);
+
+	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
+	{
+		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName))
+		{
+			continue;
+		}
+
+		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->ActivateDoll_Show();
+		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->SetInteraction();
 	}
 }
 

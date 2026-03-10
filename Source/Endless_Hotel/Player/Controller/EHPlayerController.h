@@ -232,6 +232,29 @@ protected:
 public:
 	void SetPlayerInputAble(bool bAble);
 
+#pragma region HeartbeatSound
+
+public:
+	void SetHeartbeatSound(AActor* Monster);
+
+	void StopHeartbeatSound();
+
+protected:
+	void UpdateHeartbeatSound(float DeltaSeconds);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> CachedHeartbeatComp;
+
+	UPROPERTY(EditAnywhere, Category = "HeartbeatSound")
+	TWeakObjectPtr<class AActor> HeartbeatMonster;
+
+	UPROPERTY(EditAnywhere, Category = "HeartbeatSound")
+	float MaxDistance = 2000.0f;
+
+	UPROPERTY(EditAnywhere, Category = "HeartbeatSound")
+	float MinDistance = 300.0f;
+
 #pragma endregion
 
 #pragma region Key

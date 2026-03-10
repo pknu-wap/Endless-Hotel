@@ -61,8 +61,9 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	// Out of Range Check
 	if (!(DataC->ActAnomaly).IsValidIndex(Index))
 	{
-		if (DataC->ActAnomaly.Num() == 0)
+		if (DataC->ActAnomaly.IsEmpty())
 		{
+			// CurrentLevel->GetLoadedLevel() 추가 예정
 			return nullptr;
 		}
 		Index = 0;
