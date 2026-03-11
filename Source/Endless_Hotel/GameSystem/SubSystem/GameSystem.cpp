@@ -28,11 +28,10 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	}
 
 	Floor = 9;
-	AnomalyCount = 0;
 	ActIndex = 0;
 
-	//bIsAlreadyClear = USaveManager::LoadGameClearData();
-	if (bIsAlreadyClear)
+	bIsClear = USaveManager::LoadGameClearData();
+	if (bIsClear && bIsAnomalyRepeatable)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
 		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
@@ -73,13 +72,11 @@ void UGameSystem::ApplyVerdict()
 	{
 		SubFloor();
 
-		if (bIsAlreadyClear)	// 회의 이후 조건 추가 및 수정 예정
+		if (bIsAnomalyRepeatable)
 		{
 			DataC->LoadedAnomalySet.Add(CurrentAnomalyID);
 			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
-
-		AnomalyCount++;
 	}
 	else 
 	{ 
@@ -134,12 +131,12 @@ void UGameSystem::InitializePool()
 {
 	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	
+	AnomalyCount = DataC->GetOriginAnomaly().Num();
 	DataC->ActAnomaly = DataC->GetOriginAnomaly();
 
 	ActIndex = 0;
 
-	if (bIsAlreadyClear && DataC->LoadedAnomalySet.Num() > 0)	// 회의 이후 조건 추가 및 수정 예정
+	if (bIsAnomalyRepeatable && !DataC->LoadedAnomalySet.IsEmpty() && DataC->LoadedAnomalySet.Num() < AnomalyCount)
 	{
 		DataC->RemoveClearedAnomaly();
 	}
@@ -159,6 +156,13 @@ void UGameSystem::InitializePool()
 
 	// Reset Index
 	ActIndex = 0;
+}
+
+void UGameSystem::ResetPool()
+{
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	AnomalyCount = DataC->GetOriginAnomaly().Num();
+	DataC->ActAnomaly = DataC->GetOriginAnomaly();
 }
 
 #pragma endregion
