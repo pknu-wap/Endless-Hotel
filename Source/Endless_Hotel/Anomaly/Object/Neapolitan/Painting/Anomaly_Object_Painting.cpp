@@ -123,6 +123,8 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 void AAnomaly_Object_Painting::InteractRotate()
 {
+	GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
+
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;
 	InteractedMoveStep(0);

@@ -12,11 +12,11 @@ AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	TriggerBox_Open = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Open"));
-	TriggerBox_Open->SetupAttachment(RootComponent);
+	TriggerBox_Open->SetupAttachment(TriggerBox);
 	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TriggerBox_Close = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Close"));
-	TriggerBox_Close->SetupAttachment(RootComponent);
+	TriggerBox_Close->SetupAttachment(TriggerBox);
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
