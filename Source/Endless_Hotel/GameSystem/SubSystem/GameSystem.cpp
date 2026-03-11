@@ -9,6 +9,9 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
+#include "Player/Controller/EHPlayerController.h"
+#include <GameFramework/Character.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -80,6 +83,9 @@ void UGameSystem::ApplyVerdict()
 	}
 	else 
 	{ 
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+		PC->SetPlayerInputAble(true);
 		ResetFloor();
 	}
 	bIsAnomalySolved = false;
