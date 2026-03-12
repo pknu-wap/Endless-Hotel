@@ -198,7 +198,7 @@ protected:
 
 #pragma region State_Crouch
 
-protected:
+public:
 	void OnCrouchStarted();
 	void OnCrouchCompleted();
 

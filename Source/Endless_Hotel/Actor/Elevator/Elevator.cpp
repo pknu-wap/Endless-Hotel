@@ -269,6 +269,7 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 
+    PC->OnCrouchCompleted();
     PC->SetPlayerInputAble(bEnable);
 }
 

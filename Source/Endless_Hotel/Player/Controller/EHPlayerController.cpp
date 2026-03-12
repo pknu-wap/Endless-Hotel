@@ -273,7 +273,11 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 	if (bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
-		PlayerCameraComponent->SetRelativeRotation(FRotator(-25.f, 0.f, 0.f));
+
+		FRotator CurrentRotation = GetControlRotation();
+		CurrentRotation.Pitch = -25.f;
+		SetControlRotation(CurrentRotation);
+
 		bIsFaceCoverTransitioning = false;
 	}
 }
@@ -356,17 +360,14 @@ void AEHPlayerController::PlayDeathSequence()
 	if (!EHPlayer.IsValid()) return;
 
 	bIsPlayerDead = true;
-	bIsCameraFixed = true;
-	bCanMove = false;
+	SetPlayerInputAble(false);
 }
 
 void AEHPlayerController::RevivePlayer()
 {
 	bIsPlayerDead = false;
-	bIsCameraFixed = false;
-	bCanMove = true;
+	SetPlayerInputAble(true);
 }
-
 #pragma endregion
 
 #pragma region Interact
@@ -410,6 +411,11 @@ void AEHPlayerController::CheckForInteractables()
 void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 {
 	if (!CachedInteractComp.Get() || !CachedInteractComp->CanInteract())
+	{
+		return;
+	}
+
+	if (bIsFaceCovering)
 	{
 		return;
 	}

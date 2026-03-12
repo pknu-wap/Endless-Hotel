@@ -16,7 +16,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 	
-	if (TargetClasses.Num() == 0)
+	if (TargetClasses.IsEmpty())
 	{
 		return;
 	}
@@ -61,11 +61,6 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	// Out of Range Check
 	if (!(DataC->ActAnomaly).IsValidIndex(Index))
 	{
-		if (DataC->ActAnomaly.IsEmpty())
-		{
-			// CurrentLevel->GetLoadedLevel() 추가 예정
-			return nullptr;
-		}
 		Index = 0;
 		Sub->InitializePool();
 		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
@@ -140,4 +135,5 @@ AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 
 	return Spawned;
 }
+
 #pragma endregion
