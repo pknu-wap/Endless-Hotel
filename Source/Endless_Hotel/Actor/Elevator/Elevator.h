@@ -229,4 +229,18 @@ public:
 
 #pragma endregion
 
+#pragma region Reset
+
+    void EnableFloor();
+
+#pragma endregion
+
+
+#pragma region Anomaly
+
+public:
+    void DisableFloor();
+
+#pragma endregion
+
 };

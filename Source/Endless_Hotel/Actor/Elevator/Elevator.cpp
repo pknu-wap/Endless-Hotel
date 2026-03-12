@@ -74,6 +74,8 @@ void AElevator::BeginPlay()
     bIsDoorOpened = false;
     bIsDoorMoving = false;
 
+    EnableFloor();  // 임시
+
     if (DoorCurve)
     {
         FOnTimelineFloat UpdateFunc;
@@ -335,6 +337,27 @@ void AElevator::NotifySubsystemElevatorChoice()
         Sub->ApplyVerdict();
         bChoiceSentThisRide = true;
     }
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void AElevator::EnableFloor() // 임시
+{
+    Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    Floor->SetVisibility(true);
+}
+
+#pragma endregion
+
+
+#pragma region Anomaly
+
+void AElevator::DisableFloor()
+{
+    Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Floor->SetVisibility(false);
 }
 
 #pragma endregion
