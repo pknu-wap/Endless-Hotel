@@ -4,6 +4,7 @@
 #include "UI/World/Interact/UI_Interact.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
+#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Float/FloatComponent.h"
@@ -103,6 +104,10 @@ void UInteractComponent::Interact()
 		Action_Burn();
 		break;
 
+	case EInteractType::DoorOpen:
+		Action_DoorOpen();
+		break;
+
 	case EInteractType::Elevator:
 		Action_Elevator();
 		return;
@@ -191,6 +196,11 @@ void UInteractComponent::Action_Burn()
 void UInteractComponent::Action_Elevator()
 {
 	Cast<AElevator_Button>(Owner)->InteractElevator();
+}
+
+void UInteractComponent::Action_DoorOpen()
+{
+	Cast<AAnomaly_Object_Door>(Owner)->MoveToHandlePlayer();
 }
 
 #pragma endregion

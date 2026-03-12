@@ -6,9 +6,6 @@
 #include "Animation/AnimInstance.h"
 #include "EHPlayerAnimInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API UEHPlayerAnimInstance : public UAnimInstance
 {
@@ -64,6 +61,12 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsButtonPressingState = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+    bool bIsDoorOpeningState = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+    bool bIsDoorPushingState = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsPlayerDead = false;
