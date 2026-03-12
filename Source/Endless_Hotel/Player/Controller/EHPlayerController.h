@@ -260,7 +260,11 @@ protected:
 #pragma region Key
 
 public:
-	void SetKeyMapping(struct FKeySettingInfo Info);
+	void SetKeyMapping(struct FKeySettingInfo NewInfo, FKey OldKey);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UInputMappingContext> IMC_Backup;
 
 #pragma endregion
 
