@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
+#include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <GameFramework/Actor.h>
@@ -9,15 +9,13 @@
 
 #pragma region Base
 
-AAnomaly_Object_ShelfDoll::AAnomaly_Object_ShelfDoll(const FObjectInitializer& ObjectInitializer)
+AAnomaly_Object_Doll::AAnomaly_Object_Doll(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	SM_Doll = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Doll"));
-	SM_Doll->SetupAttachment(RootComponent);
-	SM_Doll->SetVisibility(false);
+	Object->SetVisibility(false);
 
 	Niagara_Fire = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Fire"));
-	Niagara_Fire->SetupAttachment(SM_Doll);
+	Niagara_Fire->SetupAttachment(Object);
 	Niagara_Fire->SetAutoActivate(false);
 
 	bSolved = false;
@@ -27,17 +25,17 @@ AAnomaly_Object_ShelfDoll::AAnomaly_Object_ShelfDoll(const FObjectInitializer& O
 
 #pragma region Doll
 
-void AAnomaly_Object_ShelfDoll::ActivateDoll_Show()
+void AAnomaly_Object_Doll::ActivateDoll_Show()
 {
-	SM_Doll->SetVisibility(true);
-	SM_Doll->SetHiddenInGame(false);
+	Object->SetVisibility(true);
+	Object->SetHiddenInGame(false);
 }
 
 #pragma endregion
 
 #pragma region Interact
 
-void AAnomaly_Object_ShelfDoll::SetInteraction()
+void AAnomaly_Object_Doll::SetInteraction()
 {
 	Component_Interact->AdditionalAction = ([this]()
 		{
@@ -45,13 +43,13 @@ void AAnomaly_Object_ShelfDoll::SetInteraction()
 		});
 }
 
-void AAnomaly_Object_ShelfDoll::InteractFire()
+void AAnomaly_Object_Doll::InteractFire()
 {
 	InteractedMoveStep(0);
 	bSolved = !bSolved;
 }
 
-void AAnomaly_Object_ShelfDoll::InteractedMoveStep(int32 step)
+void AAnomaly_Object_Doll::InteractedMoveStep(int32 step)
 {
 	FTimerHandle InteractHandle;
 	GetWorld()->GetTimerManager().SetTimer(InteractHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

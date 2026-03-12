@@ -4,25 +4,22 @@
 
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Object_ShelfDoll.generated.h>
+#include <Anomaly_Object_Doll.generated.h>
 
 class UStaticMeshComponent;
 class AActor;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Object_Doll : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
 #pragma region Base
 public:
-	AAnomaly_Object_ShelfDoll(const FObjectInitializer& ObjectInitializer);
+	AAnomaly_Object_Doll(const FObjectInitializer& ObjectInitializer);
 #pragma endregion
 
 #pragma region Doll
-protected:
-	UPROPERTY(EditAnywhere, Category = "ShelfDoll|Doll")
-	TObjectPtr<UStaticMeshComponent> SM_Doll;
 
 public:
 	void ActivateDoll_Show();

@@ -4,10 +4,10 @@
 
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_ShelfDoll.generated.h>
+#include <Anomaly_Doll.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_ShelfDoll : public AAnomaly_Event_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Doll : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 

@@ -1,11 +1,11 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 
-#include "Anomaly/Neapolitan/ShelfDoll/Anomaly_ShelfDoll.h"
-#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
+#include "Anomaly/Neapolitan/Doll/Anomaly_Doll.h"
+#include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include <Kismet/GameplayStatics.h>
 
-void AAnomaly_ShelfDoll::SetAnomalyState()
+void AAnomaly_Doll::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
@@ -14,7 +14,7 @@ void AAnomaly_ShelfDoll::SetAnomalyState()
 	case EAnomalyName::Shelf_Doll:
 		AnomalyAction = ([](AAnomaly_Object_Base* Object)
 			{
-				if (auto* Doll = Cast<AAnomaly_Object_ShelfDoll>(Object))
+				if (auto* Doll = Cast<AAnomaly_Object_Doll>(Object))
 				{
 					Doll->ActivateDoll_Show();
 					Doll->SetInteraction();
