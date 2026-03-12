@@ -32,7 +32,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
 
 	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
-	if (!Player || Player->bIsDead) return EBTNodeResult::Failed;
+	if (Player && !Player->bIsDead) return EBTNodeResult::Failed;
 
 	Player->DieDelegate.Broadcast(EDeathReason::Attack);
 
