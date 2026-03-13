@@ -38,6 +38,8 @@ void AEHPlayerController::BeginPlay()
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
 
+	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
+
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
@@ -260,20 +262,6 @@ void AEHPlayerController::OnFaceCoverStarted()
 	bIsCameraFixed = true;
 	bCanMove = false;
 
-	// SpringArm & Camera 초기화
-	if (!SpringArm)
-	{
-		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-	}
-
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	if (!SpringArm || !PlayerCameraComponent) return;
-
-
 	if (bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
@@ -299,18 +287,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	bIsFaceCovering = false;
 	bIsCameraFixed = false;
 	bCanMove = true;
-
-	if (!SpringArm)
-	{
-		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-	}
-
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	if (!SpringArm || !PlayerCameraComponent) return;
 
 	if (!bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
@@ -371,6 +347,44 @@ void AEHPlayerController::RevivePlayer()
 	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
 }
+#pragma endregion
+
+#pragma region State_FirstDoorOpen
+
+void AEHPlayerController::OnFirstDoorOpenStarted()
+{
+	bIsPlayerDoorOpening = true;
+	SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+
+	FRotator CurrentRotation = GetControlRotation();
+	CurrentRotation.Pitch = -25.f;
+	SetControlRotation(CurrentRotation);
+
+	SetPlayerInputAble(false);
+}
+
+void AEHPlayerController::OnFirstDoorOpenCompleted()
+{
+	bIsPlayerDoorOpening = false;
+	SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+
+	SetPlayerInputAble(true);
+}
+
+void AEHPlayerController::OnPushDoorStarted()
+{
+	bIsPlayerPushingDoor = true;
+
+	SetPlayerInputAble(false);
+}
+
+void AEHPlayerController::OnPushDoorCompleted()
+{
+	bIsPlayerPushingDoor = false;
+
+	SetPlayerInputAble(true);
+}
+
 #pragma endregion
 
 #pragma region Interact

@@ -167,12 +167,16 @@ public:
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 	bool bIsButtonPressing = false;
+	bool bIsPlayerDoorOpening = false;
+	bool bIsPlayerPushingDoor = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }
 	bool GetIsCrouching() const { return bIsCrouching; }
 	bool GetIsFaceCovering() const { return bIsFaceCovering; }
 	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
+	bool GetIsPlayerDoorOpening() const { return bIsPlayerDoorOpening; }
+	bool GetIsPlayerPushingDoor() const { return bIsPlayerPushingDoor; }
 
 #pragma endregion
 
@@ -227,10 +231,24 @@ protected:
 
 #pragma endregion
 
+#pragma region State_FirstDoorOpen
+
+public:
+	void OnFirstDoorOpenStarted();
+	void OnFirstDoorOpenCompleted();
+
+public:
+	void OnPushDoorStarted();
+	void OnPushDoorCompleted();
+
+#pragma endregion
+
 #pragma region SetInput
 	
 public:
 	void SetPlayerInputAble(bool bAble);
+
+#pragma endregion
 
 #pragma region HeartbeatSound
 

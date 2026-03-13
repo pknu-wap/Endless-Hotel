@@ -47,6 +47,8 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
             bIsCrouchingState = EHPC->GetIsCrouching();
             bIsFaceCoveringState = EHPC->GetIsFaceCovering();
             bIsButtonPressingState = EHPC->GetIsButtonPressingCovering();
+            bIsDoorOpeningState = EHPC->GetIsPlayerDoorOpening();
+            bIsDoorPushingState = EHPC->GetIsPlayerPushingDoor();
             bIsPlayerDead = EHPC->GetIsPlayerDead();
         }
     }
