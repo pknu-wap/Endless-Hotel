@@ -107,6 +107,7 @@ protected:
 	void Action_Call();
 	void Action_Burn();
 	void Action_Elevator();
+	void Action_DoorOpen();
 
 #pragma endregion
 
