@@ -4,6 +4,7 @@
 #include "Character/AI/BaseAIAnimInstance.h"
 #include "Player/Character/EHPlayer.h"
 #include "Character/AI/MazeMonster/MazeMonsterController.h"
+#include "Character/AI/MazeMonster/MazeMonster.h"
 #include <AIController.h>
 #include <GameFramework/Character.h>
 #include <BehaviorTree/BlackboardComponent.h>
@@ -25,6 +26,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	APawn* AIPawn = AIController->GetPawn();
+	AMazeMonster* MazeMonster = Cast<AMazeMonster>(AIPawn);
 	ACharacter* Character = Cast<ACharacter>(AIPawn);
 	UBaseAIAnimInstance* AnimInst = Cast<UBaseAIAnimInstance>(Character->GetMesh()->GetAnimInstance());
 	AnimInst->State = EAIAnimState::Attacking;
@@ -34,9 +36,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
 
 	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
-	if (Player && !Player->bIsDead) return EBTNodeResult::Failed;
-
-	Player->DieDelegate.Broadcast(EDeathReason::Attack);
+	if (!Player || MazeMonster->bIsAttacked) return EBTNodeResult::Failed;
 
 	return EBTNodeResult::Succeeded;
 }

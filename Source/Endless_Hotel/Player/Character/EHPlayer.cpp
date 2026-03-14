@@ -109,7 +109,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			SpringArm->bUsePawnControlRotation = true;
 			SpringArm->bEnableCameraRotationLag = false;
 
-			//bIsDead = false;	// 일단 임시로 주석처리
+			bIsDead = false;
 			Cast<AEHPlayerController>(GetController())->RevivePlayer();
 			
 			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
