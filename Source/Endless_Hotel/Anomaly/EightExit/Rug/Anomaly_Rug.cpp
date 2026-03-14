@@ -1,4 +1,6 @@
-﻿#include "Anomaly/EightExit/Rug/Anomaly_Rug.h"
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#include "Anomaly/EightExit/Rug/Anomaly_Rug.h"
 #include "Anomaly/Object/EightExit/Rug/Anomaly_Object_Rug.h"
 
 #pragma region Base

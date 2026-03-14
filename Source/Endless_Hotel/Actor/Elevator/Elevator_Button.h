@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>

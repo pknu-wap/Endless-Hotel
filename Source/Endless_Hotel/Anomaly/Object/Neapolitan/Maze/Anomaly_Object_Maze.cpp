@@ -36,6 +36,7 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 void AAnomaly_Object_Maze::StartAI()
 {
 	MazeMonster->ActivateMob();
+	MazeMonster->bIsAttacked = false;
 }
 
 #pragma endregion

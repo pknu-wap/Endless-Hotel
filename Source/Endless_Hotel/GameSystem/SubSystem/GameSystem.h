@@ -105,7 +105,6 @@ public:
 
 public:
 	void InitializePool();
-	void ResetPool();
 
 #pragma endregion
 
