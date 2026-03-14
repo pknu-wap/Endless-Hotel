@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
 
 #include "Actor/EHActor.h"
 #include <CoreMinimal.h>
@@ -226,6 +228,20 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Position|Elevator")
     FVector EndPos;
+
+#pragma endregion
+
+#pragma region Reset
+
+    void EnableFloor();
+
+#pragma endregion
+
+
+#pragma region Anomaly
+
+public:
+    void DisableFloor();
 
 #pragma endregion
 

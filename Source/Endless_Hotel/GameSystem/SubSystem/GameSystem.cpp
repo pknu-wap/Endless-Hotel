@@ -34,6 +34,9 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	ActIndex = 0;
 
 	bIsClear = USaveManager::LoadGameClearData();
+	FSaveData_Setting Data_Setting = USaveManager::LoadSettingData();
+	bIsAnomalyRepeatable = Data_Setting.Overlap == EOptionValue::On ? true : false;
+
 	if (bIsClear && bIsAnomalyRepeatable)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
@@ -162,13 +165,6 @@ void UGameSystem::InitializePool()
 
 	// Reset Index
 	ActIndex = 0;
-}
-
-void UGameSystem::ResetPool()
-{
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	AnomalyCount = DataC->GetOriginAnomaly().Num();
-	DataC->ActAnomaly = DataC->GetOriginAnomaly();
 }
 
 #pragma endregion
