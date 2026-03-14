@@ -1,4 +1,4 @@
-﻿// Anomaly_Generator.cpp
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly_Generator.h"
 #include "Anomaly/Base/Anomaly_Event.h"

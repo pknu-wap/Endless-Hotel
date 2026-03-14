@@ -1,4 +1,6 @@
-﻿#include "Elevator.h"
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Character/EHPlayer.h"
