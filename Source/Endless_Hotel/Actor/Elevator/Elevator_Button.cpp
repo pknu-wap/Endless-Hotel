@@ -47,7 +47,7 @@ void AElevator_Button::BeginPlay()
 
 #pragma region Interact
 
-void AElevator_Button::InteractElevator()
+void AElevator_Button::Interact_Implementation()
 {
     MoveToButtonPlayer();
 }

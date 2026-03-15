@@ -39,7 +39,7 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 			if (AnomalyObject)
 			{
 				AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-				AnomalyObject->SetInteraction();
+				AnomalyObject->SetAnomalyName();
 
 				CurrentAnomaly->LinkedObjects.Add(FoundActor);
 			}

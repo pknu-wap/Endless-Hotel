@@ -15,22 +15,27 @@ class ENDLESS_HOTEL_API AAnomaly_Object_ShelfDoll : public AAnomaly_Object_Neapo
 	GENERATED_BODY()
 
 #pragma region Base
+
 public:
 	AAnomaly_Object_ShelfDoll(const FObjectInitializer& ObjectInitializer);
+
 #pragma endregion
 
 #pragma region Doll
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "ShelfDoll|Doll")
 	TObjectPtr<UStaticMeshComponent> SM_Doll;
 
 public:
 	void ActivateDoll_Show();
+
 #pragma endregion
 
 #pragma region Interact
+
 public:
-	virtual void SetInteraction() override;
+	virtual void Interact_Implementation() override;
 
 protected:
 	void InteractFire();

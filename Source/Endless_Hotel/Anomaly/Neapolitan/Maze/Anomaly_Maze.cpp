@@ -91,7 +91,6 @@ void AAnomaly_Maze::MazeDoll()
 		}
 
 		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->ActivateDoll_Show();
-		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->SetInteraction();
 	}
 }
 

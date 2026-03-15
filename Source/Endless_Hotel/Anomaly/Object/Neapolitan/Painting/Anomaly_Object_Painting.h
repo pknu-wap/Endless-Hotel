@@ -59,7 +59,6 @@ protected:
 
 #pragma endregion
 
-
 #pragma region Blur
 
 public:
@@ -90,9 +89,11 @@ protected:
 #pragma region Interact
 
 public:
-	void InteractRotate();
+	virtual void Interact_Implementation() override;
 
 protected:
+	void InteractRotate();
+
 	UFUNCTION()
 	void InteractedMoveStep(int32 step);
 

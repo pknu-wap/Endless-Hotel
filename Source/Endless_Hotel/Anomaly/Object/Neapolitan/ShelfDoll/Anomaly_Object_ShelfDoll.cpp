@@ -1,10 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
-#include <GameFramework/Actor.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -37,12 +35,18 @@ void AAnomaly_Object_ShelfDoll::ActivateDoll_Show()
 
 #pragma region Interact
 
-void AAnomaly_Object_ShelfDoll::SetInteraction()
+void AAnomaly_Object_ShelfDoll::Interact_Implementation()
 {
-	Component_Interact->AdditionalAction = ([this]()
-		{
-			InteractFire();
-		});
+	Super::Interact_Implementation();
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::Burn:
+		InteractFire();
+		break;
+	}
 }
 
 void AAnomaly_Object_ShelfDoll::InteractFire()

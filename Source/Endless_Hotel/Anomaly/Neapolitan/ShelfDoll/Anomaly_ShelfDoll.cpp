@@ -17,7 +17,6 @@ void AAnomaly_ShelfDoll::SetAnomalyState()
 				if (auto* Doll = Cast<AAnomaly_Object_ShelfDoll>(Object))
 				{
 					Doll->ActivateDoll_Show();
-					Doll->SetInteraction();
 				}
 			});
 		ScheduleAnomaly();
