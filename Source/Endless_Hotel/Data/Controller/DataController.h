@@ -42,6 +42,7 @@ public:
 public:
 	void GetAnomalyEntries();
 	void RemoveClearedAnomaly();
+	void ResetClearedAnomaly();
 	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(uint8 ObjectID);
 	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
 

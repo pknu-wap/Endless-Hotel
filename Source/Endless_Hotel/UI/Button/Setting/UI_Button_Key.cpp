@@ -6,12 +6,6 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/InputKeySelector.h>
 
-#pragma region Declare
-
-FKeyHighlight UUI_Button_Key::Highlight;
-
-#pragma endregion
-
 #pragma region Bind
 
 void UUI_Button_Key::BindEvents()
@@ -30,27 +24,6 @@ void UUI_Button_Key::BindEvents()
 		Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
 		Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
 	}
-
-	OnClicked.RemoveDynamic(this, &ThisClass::Click_Button);
-	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
-
-	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
-	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);
-}
-
-#pragma endregion
-
-#pragma region Click
-
-void UUI_Button_Key::Click_Button()
-{
-	FSaveData_Key Data = FSaveData_Key();
-	USaveManager::SaveKeyData(Data);
-
-	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->SetKeyMapping(SettingInfo);
-
-	Highlight.Broadcast();
 }
 
 #pragma endregion
@@ -64,43 +37,51 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 	FSaveData_Key Data = USaveManager::LoadKeyData();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->SetKeyMapping(SettingInfo);
 
 	switch (SettingInfo.Type)
 	{
 	case EKeySettingType::Up:
+		PC->SetKeyMapping(SettingInfo, Data.Up.Value);
 		Data.Up = SettingInfo;
 		break;
 
 	case EKeySettingType::Down:
+		PC->SetKeyMapping(SettingInfo, Data.Down.Value);
 		Data.Down = SettingInfo;
 		break;
 
 	case EKeySettingType::Left:
+		PC->SetKeyMapping(SettingInfo, Data.Left.Value);
 		Data.Left = SettingInfo;
 		break;
 
 	case EKeySettingType::Right:
+		PC->SetKeyMapping(SettingInfo, Data.Right.Value);
 		Data.Right = SettingInfo;
 		break;
 
 	case EKeySettingType::Run:
+		PC->SetKeyMapping(SettingInfo, Data.Run.Value);
 		Data.Run = SettingInfo;
 		break;
 
 	case EKeySettingType::Sit:
+		PC->SetKeyMapping(SettingInfo, Data.Sit.Value);
 		Data.Sit = SettingInfo;
 		break;
 
 	case EKeySettingType::Interact:
+		PC->SetKeyMapping(SettingInfo, Data.Interact.Value);
 		Data.Interact = SettingInfo;
 		break;
 
 	case EKeySettingType::Hide:
+		PC->SetKeyMapping(SettingInfo, Data.Hide.Value);
 		Data.Hide = SettingInfo;
 		break;
 
 	case EKeySettingType::Flash:
+		PC->SetKeyMapping(SettingInfo, Data.Flash.Value);
 		Data.Flash = SettingInfo;
 		break;
 	}

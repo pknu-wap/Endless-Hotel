@@ -6,6 +6,7 @@
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
 #include "Type/Save/Type_Save.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 #include <InputMappingContext.h>
@@ -37,6 +38,8 @@ void AEHPlayerController::BeginPlay()
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
 
+	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
+
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
@@ -50,6 +53,8 @@ void AEHPlayerController::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
+
+	IMC_Backup = IMC_Default;
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
@@ -257,20 +262,6 @@ void AEHPlayerController::OnFaceCoverStarted()
 	bIsCameraFixed = true;
 	bCanMove = false;
 
-	// SpringArm & Camera 초기화
-	if (!SpringArm)
-	{
-		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-	}
-
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	if (!SpringArm || !PlayerCameraComponent) return;
-
-
 	if (bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
@@ -296,18 +287,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	bIsFaceCovering = false;
 	bIsCameraFixed = false;
 	bCanMove = true;
-
-	if (!SpringArm)
-	{
-		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-	}
-
-	if (!PlayerCameraComponent)
-	{
-		PlayerCameraComponent = EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-
-	if (!SpringArm || !PlayerCameraComponent) return;
 
 	if (!bIsFaceCovering) {
 		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
@@ -368,6 +347,44 @@ void AEHPlayerController::RevivePlayer()
 	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
 }
+#pragma endregion
+
+#pragma region State_FirstDoorOpen
+
+void AEHPlayerController::OnFirstDoorOpenStarted()
+{
+	bIsPlayerDoorOpening = true;
+	SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+
+	FRotator CurrentRotation = GetControlRotation();
+	CurrentRotation.Pitch = -25.f;
+	SetControlRotation(CurrentRotation);
+
+	SetPlayerInputAble(false);
+}
+
+void AEHPlayerController::OnFirstDoorOpenCompleted()
+{
+	bIsPlayerDoorOpening = false;
+	SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+
+	SetPlayerInputAble(true);
+}
+
+void AEHPlayerController::OnPushDoorStarted()
+{
+	bIsPlayerPushingDoor = true;
+
+	SetPlayerInputAble(false);
+}
+
+void AEHPlayerController::OnPushDoorCompleted()
+{
+	bIsPlayerPushingDoor = false;
+
+	SetPlayerInputAble(true);
+}
+
 #pragma endregion
 
 #pragma region Interact
@@ -504,69 +521,71 @@ void AEHPlayerController::UpdateHeartbeatSound(float DeltaSeconds)
 
 #pragma region Key
 
-void AEHPlayerController::SetKeyMapping(FKeySettingInfo Info)
+void AEHPlayerController::SetKeyMapping(FKeySettingInfo NewInfo, FKey OldKey)
 {
 	IMC_Default->Modify();
 
-	switch (Info.Type)
+	UInputAction* IA_Target = nullptr;
+	TArray<UInputModifier*> SaveModifiers;
+
+	auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+
+	switch (NewInfo.Type)
 	{
 	case EKeySettingType::Up:
-		// 보류
-		break;
-
 	case EKeySettingType::Down:
-		// 보류
-		break;
-
 	case EKeySettingType::Left:
-		// 보류
-		break;
-
 	case EKeySettingType::Right:
-		// 보류
+		IA_Target = IA_Move;
 		break;
 
 	case EKeySettingType::Run:
-		IMC_Default->UnmapAllKeysFromAction(IA_Run);
-		IMC_Default->MapKey(IA_Run, Info.Value);
+		IA_Target = IA_Run;
 		break;
 
 	case EKeySettingType::Sit:
-		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
-		IMC_Default->MapKey(IA_Crouch, Info.Value);
+		IA_Target = IA_Crouch;
 		break;
 
 	case EKeySettingType::Interact:
-		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
-		IMC_Default->MapKey(IA_Interact, Info.Value);
+		IA_Target = IA_Interact;
 		break;
 
 	case EKeySettingType::Hide:
-		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
-		IMC_Default->MapKey(IA_FaceCover, Info.Value);
+		IA_Target = IA_FaceCover;
 		break;
 
 	case EKeySettingType::Flash:
-		IMC_Default->UnmapAllKeysFromAction(IA_Light);
-		IMC_Default->MapKey(IA_Light, Info.Value);
+		IA_Target = IA_Light;
 		break;
 
 	case EKeySettingType::Reset:
-		FSaveData_Key Data = FSaveData_Key();
+		IMC_Default->UnmapAll();
 
-		IMC_Default->UnmapAllKeysFromAction(IA_Run);
-		IMC_Default->UnmapAllKeysFromAction(IA_Crouch);
-		IMC_Default->UnmapAllKeysFromAction(IA_Interact);
-		IMC_Default->UnmapAllKeysFromAction(IA_FaceCover);
-		IMC_Default->UnmapAllKeysFromAction(IA_Light);
+		for (const auto& Mapping : IMC_Backup->GetMappings())
+		{
+			auto& NewMap = IMC_Default->MapKey(Mapping.Action, Mapping.Key);
+			NewMap.Modifiers = Mapping.Modifiers;
+		}
 
-		IMC_Default->MapKey(IA_Run, Data.Run.Value);
-		IMC_Default->MapKey(IA_Crouch, Data.Sit.Value);
-		IMC_Default->MapKey(IA_Interact, Data.Interact.Value);
-		IMC_Default->MapKey(IA_FaceCover, Data.Hide.Value);
-		IMC_Default->MapKey(IA_Light, Data.Flash.Value);
-		break;
+		Subsystem->RequestRebuildControlMappings();
+		return;
 	}
+
+	for (const auto& Mapping : IMC_Default->GetMappings())
+	{
+		if (Mapping.Action == IA_Target && Mapping.Key == OldKey)
+		{
+			SaveModifiers = Mapping.Modifiers;
+			break;
+		}
+	}
+
+	IMC_Default->UnmapKey(IA_Target, OldKey);
+	auto& Mapping = IMC_Default->MapKey(IA_Target, NewInfo.Value);
+	Mapping.Modifiers = SaveModifiers;
+
+	Subsystem->RequestRebuildControlMappings();
 }
 
 #pragma endregion

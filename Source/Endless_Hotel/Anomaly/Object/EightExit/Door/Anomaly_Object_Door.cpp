@@ -1,11 +1,14 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
+#include "Player/Controller/EHPlayerController.h"
+#include "Component/Interact/InteractComponent.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetSystemLibrary.h>
 #include <GameFramework/Character.h>
 
 #pragma region Base
@@ -28,11 +31,24 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);
 	AC_DoorMove->bAutoActivate = false;
+
+	ExitTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("ExitTrigger"));
+	ExitTrigger->SetupAttachment(GetRootComponent());
+
+	ExitTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ExitTrigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+
+	ExitTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ExitTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	ExitTrigger->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 }
 
 void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ExitTrigger->OnComponentEndOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnExitTriggerEndOverlap);
 
 	Door_Origin = GetActorLocation();
 	Handle_Origin = Mesh_Handle->GetRelativeLocation();
@@ -213,4 +229,158 @@ void AAnomaly_Object_Door::UpdateRotate()
 	}
 }
 
+#pragma endregion
+
+#pragma region FirstDoorOpen
+
+void AAnomaly_Object_Door::MoveToHandlePlayer()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (!Player) return;
+
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	PC->SetPlayerInputAble(false);
+	PC->SetIgnoreLookInput(true);
+
+	FTransform WorldTarget = TargetPlayerTransform;
+
+	FVector TargetLocation = WorldTarget.GetLocation();
+	FRotator TargetRotation = WorldTarget.Rotator();
+
+	TargetLocation.Z = Player->GetActorLocation().Z;
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
+	LatentInfo.UUID = __LINE__;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(
+		Player->GetRootComponent(),
+		TargetLocation,
+		TargetRotation,
+		true, true, 0.5f, false,
+		EMoveComponentAction::Move,
+		LatentInfo
+	);
+}
+
+void AAnomaly_Object_Door::OnMoveCompleted()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
+
+	EHPC->SetControlRotation(Player->GetActorRotation());
+	EHPC->OnFirstDoorOpenStarted();
+
+	FTimerHandle DoorOpenHandle;
+	GetWorld()->GetTimerManager().SetTimer(DoorOpenHandle, FTimerDelegate::CreateWeakLambda(this, [this, EHPC, Player]()
+		{
+			EHPC->OnFirstDoorOpenCompleted();
+			OnPushMoveStarted();
+		}), 2.0f, false);
+}
+
+void AAnomaly_Object_Door::OnPushMoveStarted()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
+
+	FVector TargetLocation = PushPlayerTransform.GetLocation();
+	FRotator TargetRotation = PushPlayerTransform.Rotator();
+	EHPC->SetControlRotation(TargetRotation);
+
+	TargetLocation.Z = Player->GetActorLocation().Z;
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("OnPushMoveCompleted");
+	LatentInfo.UUID = __LINE__ + 100;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(
+		Player->GetRootComponent(),
+		TargetLocation,
+		TargetRotation,
+		true, true, 0.5f, false,
+		EMoveComponentAction::Move,
+		LatentInfo
+	);
+}
+
+void AAnomaly_Object_Door::OnPushMoveCompleted()
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
+
+	EHPC->OnPushDoorStarted();
+	DoorRotateStarted();
+
+	FTimerHandle DoorPushHandle;
+	GetWorld()->GetTimerManager().SetTimer(DoorPushHandle, FTimerDelegate::CreateWeakLambda(this, [this, EHPC, Player]()
+		{
+			Player->SetActorLocation(PushPlayerTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+
+			EHPC->OnPushDoorCompleted();
+			EHPC->SetIgnoreLookInput(false);
+		}), 1.0f, false);
+}
+
+void AAnomaly_Object_Door::DoorRotateStarted()
+{
+	FVector TargetLocation = DoorOpenTransform.GetLocation();
+	FRotator TargetRotation = DoorOpenTransform.Rotator();
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("DoorRotateCompleted");
+	LatentInfo.UUID = __LINE__ + 200;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(
+		GetRootComponent(),
+		TargetLocation,
+		TargetRotation,
+		true, true, RotationSpeed, false,
+		EMoveComponentAction::Move,
+		LatentInfo
+	);
+}
+
+void AAnomaly_Object_Door::DoorRotateCompleted()
+{
+	bIsDoorOpened = true;
+}
+
+void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (OtherActor == Player && bIsDoorOpened)
+	{
+		CloseFirstDoor();
+	}
+}
+
+void AAnomaly_Object_Door::CloseFirstDoor()
+{
+	bIsDoorOpened = false;
+
+	FVector InitialLocation = DoorInitialTransform.GetLocation();
+	FRotator InitialRotation = DoorInitialTransform.Rotator();
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("OnDoorClosed");
+	LatentInfo.UUID = __LINE__ + 300;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(
+		GetRootComponent(),
+		InitialLocation,
+		InitialRotation,
+		true, true, RotationSpeed, false,
+		EMoveComponentAction::Move,
+		LatentInfo
+	);
+}
 #pragma endregion

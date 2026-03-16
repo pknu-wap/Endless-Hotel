@@ -79,4 +79,9 @@ void UDataController::RemoveClearedAnomaly()
 		});
 }
 
+void UDataController::ResetClearedAnomaly()
+{
+	LoadedAnomalySet.Empty();
+}
+
 #pragma endregion

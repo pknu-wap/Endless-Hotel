@@ -28,4 +28,12 @@ public:
 	uint8 CurrentIndex;
 
 #pragma endregion
+
+#pragma region Attack
+
+public:
+	bool bIsAttacked = false;
+
+#pragma endregion
+
 };
