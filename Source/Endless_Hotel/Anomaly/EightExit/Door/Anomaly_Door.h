@@ -39,14 +39,10 @@ protected:
 	
 protected:
 	UFUNCTION()
-	void OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnTriggerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-protected:
-	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
-	TObjectPtr<UBoxComponent> TriggerBox_Open;
 
 	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
 	TObjectPtr<UBoxComponent> TriggerBox_Close;
