@@ -34,7 +34,7 @@ void AAnomaly_Object_Doll::ActivateDoll_Show()
 
 #pragma region Interact
 
-void AAnomaly_Object_ShelfDoll::Interact_Implementation()
+void AAnomaly_Object_Doll::Interact_Implementation()
 {
 	Super::Interact_Implementation();
 
