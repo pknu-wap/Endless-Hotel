@@ -33,6 +33,31 @@ void AAnomaly_Object_Base::BeginPlay()
 
 #pragma endregion
 
+#pragma region Interact
+
+void AAnomaly_Object_Base::Interact_Implementation()
+{
+    // 해결 처리 로직은 경원 킴에게 맡김
+    /*if (AnomalyObject->CorrectInteractID == CurrentIndex)
+    {
+        AnomalyObject->bSolved = !AnomalyObject->bSolved;
+        return;
+    }*/
+
+    //bSolved = false;
+
+    FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+    switch (Info.InteractType)
+    {
+    case EInteractType::Restore:
+        StartRestoring();
+        break;
+    }
+}
+
+#pragma endregion
+
 #pragma region Restore
 
 void AAnomaly_Object_Base::SaveOriginalTransform()
@@ -77,9 +102,6 @@ void AAnomaly_Object_Base::FinishRestoring()
     {
         RootPrim->SetSimulatePhysics(false);
     }
-
-    //완료 로직 넣기!
-    //bSolved = true;
 }
 
 #pragma endregion

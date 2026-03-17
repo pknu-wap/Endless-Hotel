@@ -17,7 +17,6 @@ void AAnomaly_Doll::SetAnomalyState()
 				if (auto* Doll = Cast<AAnomaly_Object_Doll>(Object))
 				{
 					Doll->ActivateDoll_Show();
-					Doll->SetInteraction();
 				}
 			});
 		ScheduleAnomaly();

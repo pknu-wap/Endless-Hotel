@@ -14,8 +14,6 @@ class UNiagaraComponent;
 class UMaterialInstanceDynamic;
 class UTexture;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRestoredSignature, AActor*, RestoredActor);
-
 #pragma endregion
 
 UCLASS(ClassGroup = (Custom))
@@ -33,12 +31,6 @@ protected:
 #pragma region Reference
 
 protected:
-	UPROPERTY()
-	TWeakObjectPtr<class AEHPlayer> Player;
-
-	UPROPERTY()
-	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
-
 	UPROPERTY()
 	TWeakObjectPtr<class UUI_Interact> UI_Interact;
 
@@ -60,7 +52,7 @@ public:
 	void Interact();
 
 	// 현재 선택된 상호작용 정보 가져오는 함수
-	FInteractInfo GetSelectedInteraction();
+	FInteractInfo GetSelectedInteractInfo();
 
 protected:
 	// 상호작용 UI를 보여주는 함수
@@ -68,10 +60,6 @@ protected:
 
 	// 현재 선택된 상호작용의 설명 텍스트 값 리턴
 	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
-
-public:
-	// 추가적으로 처리해야 하는 기능들을 여기에 집어넣기
-	TFunction<void()> AdditionalAction;
 
 protected:
 	// 해당 물체에 할 수 있는 상호작용 리스트 ( 에디터에서 추가 )
@@ -81,7 +69,7 @@ protected:
 	// 현재 선택된 상호작용 번호
 	int8 CurrentIndex = 0;
 
-	// 해당 물체를 상호작용 했는지 여부
+	// 해당 물체를 한번이라도 상호작용 했는지 여부
 	bool bIsInteracted = false;
 
 #pragma endregion
@@ -101,13 +89,7 @@ protected:
 #pragma region Action
 
 protected:
-	void Action_Restore();
-	void Action_Rotate();
-	void Action_TurnOff();
-	void Action_Call();
 	void Action_Burn();
-	void Action_Elevator();
-	void Action_DoorOpen();
 
 #pragma endregion
 
@@ -159,20 +141,6 @@ protected:
 	void StartBurning(float Duration);
 	void BurnTick();
 	void FinishedBurning();
-
-#pragma endregion
-
-#pragma region Restore
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Restore")
-	TSubclassOf<AActor> FloatActorClass;
-
-	UPROPERTY(EditAnywhere, Category = "Restore")
-	TSubclassOf<AActor> SignActorClass;
-
-	UPROPERTY(BlueprintAssignable, Category = "Events")
-	FOnRestoredSignature OnRestored;
 
 #pragma endregion
 

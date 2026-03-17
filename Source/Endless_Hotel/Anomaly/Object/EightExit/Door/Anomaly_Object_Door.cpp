@@ -231,6 +231,22 @@ void AAnomaly_Object_Door::UpdateRotate()
 
 #pragma endregion
 
+#pragma region Interact
+
+void AAnomaly_Object_Door::Interact_Implementation()
+{
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::DoorOpen:
+		MoveToHandlePlayer();
+		break;
+	}
+}
+
+#pragma endregion
+
 #pragma region FirstDoorOpen
 
 void AAnomaly_Object_Door::MoveToHandlePlayer()
