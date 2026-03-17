@@ -112,6 +112,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Start")
 	FTransform PlayerStartTransform = FTransform(FRotator(0, 180, 0), FVector(-750, 570, 997), FVector(0.75f, 0.75f, 0.75f));
 
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	FName TargetElevatorID = "HotelElevator";
+
 #pragma endregion
 
 };

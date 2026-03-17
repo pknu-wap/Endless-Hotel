@@ -29,7 +29,7 @@ void AAnomaly_Elevator::SetAnomalyState()
     switch (AnomalyName)
     {
     case EAnomalyName::ElevatorNoFloor:
-        TargetElevator->DisableFloor();
+        /*TargetElevator->DisableFloor();*/
         ScheduleAnomaly();
         break;
     }
