@@ -115,3 +115,30 @@ void USaveManager::SaveClearedAnomalyID(uint8 AnomalyID)
 }
 
 #pragma endregion
+
+#pragma region Tutorial
+
+FSaveData_Tutorial USaveManager::LoadTutorialData()
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(TEXT("Save_Tutorial"), 0));
+	FSaveData_Tutorial SaveData;
+
+	if (!SaveManager)
+	{
+		return SaveData;
+	}
+
+	SaveData = SaveManager->Data_Tutorial;
+
+	return SaveData;
+}
+
+void USaveManager::SaveTutorialData(const FSaveData_Tutorial& Data)
+{
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass()));
+	SaveManager->Data_Tutorial = Data;
+
+	UGameplayStatics::SaveGameToSlot(SaveManager, TEXT("Save_Tutorial"), 0);
+}
+
+#pragma endregion

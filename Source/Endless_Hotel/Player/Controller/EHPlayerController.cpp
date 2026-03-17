@@ -319,7 +319,10 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 
 void AEHPlayerController::TurnPlayerHandLight()
 {
-	if (!bCanMove) {
+	bHasFlash = USaveManager::LoadTutorialData().bHasFlash;
+
+	if (!bCanMove || !bHasFlash)
+	{
 		return;
 	}
 

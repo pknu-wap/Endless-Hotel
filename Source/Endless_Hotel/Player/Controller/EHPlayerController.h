@@ -169,6 +169,7 @@ public:
 	bool bIsButtonPressing = false;
 	bool bIsPlayerDoorOpening = false;
 	bool bIsPlayerPushingDoor = false;
+	bool bHasFlash = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }

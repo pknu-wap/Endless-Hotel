@@ -61,4 +61,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Tutorial
+
+public:
+	static FSaveData_Tutorial LoadTutorialData();
+	static void SaveTutorialData(const FSaveData_Tutorial& Data);
+
+protected:
+	UPROPERTY(SaveGame)
+	FSaveData_Tutorial Data_Tutorial;
+
+#pragma endregion
+
 };
