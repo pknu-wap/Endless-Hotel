@@ -54,6 +54,9 @@ public:
 	// 현재 선택된 상호작용 정보 가져오는 함수
 	FInteractInfo GetSelectedInteractInfo();
 
+	// 상호작용을 다시 할 수 있게 해주는 함수
+	void RestoreInteract() { bIsInteracted = false; }
+
 protected:
 	// 상호작용 UI를 보여주는 함수
 	void ShowDescriptionWidget(bool bIsShow);
