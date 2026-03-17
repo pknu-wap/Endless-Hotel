@@ -146,6 +146,8 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
         return;
     }
 
+    InsideTrigger->SetBoxExtent(FVector(40.0f, 40.0f, 120.0f));
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     bIsPlayerInside = false;
     bIsOpening = false;
     FTimerHandle StartDelayHandle;
@@ -214,7 +216,11 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     LatentInfo.UUID = __LINE__;
     LatentInfo.Linkage = 0;
 
-    if (!bIsStart)
+    if (bIsStart)
+    {
+        InsideTrigger->SetBoxExtent(FVector(80.f, 80.0f, 120.0f));
+    }
+    else
     {
         ElevatorDelegate.Broadcast(false);
         FTimerHandle StartDelayHandle;
@@ -289,6 +295,7 @@ void AElevator::OnButtonClicked()
 {
     bIsOpening = true;
     ElevatorLight->SetIntensity(LightOnIntensity);
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     MoveDoors();
 }
 
