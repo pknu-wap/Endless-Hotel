@@ -52,6 +52,10 @@ protected:
 #pragma region Interact
 
 public:
+	UPROPERTY(EditAnyWhere)
+	EInteractType CorrectInteractType = EInteractType::None;
+
+public:
 	virtual void Interact_Implementation() override;
 
 protected:

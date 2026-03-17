@@ -14,6 +14,7 @@ void AAnomaly_Clock::SetAnomalyState()
 	case EAnomalyName::Clock_Ringing:
 		AnomalyAction = ([](AAnomaly_Object_Base* Clock)
 			{
+				Clock->CorrectInteractType = EInteractType::TurnOff;
 				Cast<AAnomaly_Object_Clock>(Clock)->RingingClock();
 			});
 		ScheduleAnomaly(20);

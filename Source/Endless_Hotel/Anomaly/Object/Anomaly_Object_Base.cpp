@@ -37,16 +37,16 @@ void AAnomaly_Object_Base::BeginPlay()
 
 void AAnomaly_Object_Base::Interact_Implementation()
 {
-    // 해결 처리 로직은 경원 킴에게 맡김
-    /*if (AnomalyObject->CorrectInteractID == CurrentIndex)
-    {
-        AnomalyObject->bSolved = !AnomalyObject->bSolved;
-        return;
-    }*/
-
-    //bSolved = false;
-
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+    if (Info.InteractType == CorrectInteractType)
+    {
+        bSolved = !bSolved;
+    }
+    else
+    {
+        bSolved = false;
+    }
 
     switch (Info.InteractType)
     {

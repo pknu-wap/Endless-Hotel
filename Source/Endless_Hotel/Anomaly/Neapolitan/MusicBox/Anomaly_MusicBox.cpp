@@ -9,16 +9,19 @@ void AAnomaly_MusicBox::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
-	{
-	case EAnomalyName::MusicBox_Ringing:
-		AnomalyAction = ([](AAnomaly_Object_Base* MusicBox)
+	AnomalyAction = ([this](AAnomaly_Object_Base* MusicBox)
+		{
+			auto* MusicBoxObject = Cast<AAnomaly_Object_MusicBox>(MusicBox);
+			MusicBoxObject->CorrectInteractType = EInteractType::TurnOff;
+
+			switch (AnomalyName)
 			{
-				Cast<AAnomaly_Object_MusicBox>(MusicBox)->PlayMusicBox();
-			});
-		ScheduleAnomaly(10);
-		break;
-	}
+			case EAnomalyName::MusicBox_Ringing:
+				MusicBoxObject->PlayMusicBox();
+				ScheduleAnomaly(10);
+				break;
+			}
+		});
 }
 
 #pragma endregion

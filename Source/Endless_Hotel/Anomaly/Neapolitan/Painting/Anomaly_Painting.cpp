@@ -12,6 +12,7 @@ void AAnomaly_Painting::SetAnomalyState()
 	AnomalyAction = ([this](AAnomaly_Object_Base* Portrait)
 		{
 			auto* PortraitObject = Cast<AAnomaly_Object_Painting>(Portrait);
+			PortraitObject->CorrectInteractType = EInteractType::Rotate;
 
 			switch (AnomalyName)
 			{
