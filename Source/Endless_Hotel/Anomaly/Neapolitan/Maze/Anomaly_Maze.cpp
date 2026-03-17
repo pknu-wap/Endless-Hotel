@@ -3,7 +3,7 @@
 #include "Anomaly/Neapolitan/Maze/Anomaly_Maze.h"
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
+#include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 

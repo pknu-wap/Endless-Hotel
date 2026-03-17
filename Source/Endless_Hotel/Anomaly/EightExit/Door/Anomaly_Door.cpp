@@ -11,12 +11,10 @@
 AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	TriggerBox_Open = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Open"));
-	TriggerBox_Open->SetupAttachment(TriggerBox);
-	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	TriggerBox_Close = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox_Close"));
-	TriggerBox_Close->SetupAttachment(TriggerBox);
+	TriggerBox_Close->SetupAttachment(RootComponent);
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
@@ -62,31 +60,38 @@ void AAnomaly_Door::SetupDoorTrigger()
 			break;
 		}
 	}
-	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	TriggerBox_Open->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	TriggerBox_Open->SetWorldLocation(FVector(-2681.0, 573.0, 600.0));
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
+	TriggerBox->SetWorldLocation(FVector(-2681.0, 573.0, 600.0));
 
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox_Close->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	TriggerBox_Close->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 	TriggerBox_Close->SetWorldLocation(FVector(-1398.0, 573.0, 600.0));
 
-	TriggerBox_Open->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_OpenBeginOverlap);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBoxBeginOverlap);
 	TriggerBox_Close->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_CloseBeginOverlap);
 }
 
-void AAnomaly_Door::OnTriggerBox_OpenBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAnomaly_Door::OnTriggerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	TriggerTargetDoor->OpenDoor();
 
-	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 
 void AAnomaly_Door::OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	if (OtherActor != Player)
+	{
+		return;
+	}
 	TriggerTargetDoor->CloseDoor();
 
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	TriggerBox_Open->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 #pragma endregion
