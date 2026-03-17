@@ -5,11 +5,12 @@
 #include "Actor/EHActor.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
+#include "Interface/Interact/Interactable.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Base.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor
+class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AEHActor, public IInteractable
 {
 	GENERATED_BODY()
 
@@ -27,6 +28,7 @@ protected:
 
 public:
 	void SetSolvedFalse() { bSolved = false; }
+	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
 
 public:
 	uint8 AnomalyID;
@@ -50,10 +52,7 @@ protected:
 #pragma region Interact
 
 public:
-	virtual void SetInteraction() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
-
-public:
-	uint8 CorrectInteractID;
+	virtual void Interact_Implementation() override;
 
 protected:
 	UPROPERTY(EditAnywhere)

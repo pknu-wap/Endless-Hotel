@@ -139,9 +139,16 @@ protected:
 
 #pragma endregion
 	
-#pragma region FirstDoorOpen
+#pragma region Interact
 
 public:
+	virtual void Interact_Implementation() override;
+
+#pragma endregion
+
+#pragma region FirstDoorOpen
+
+protected:
 	void MoveToHandlePlayer();
 
 	UFUNCTION()
@@ -154,11 +161,11 @@ public:
 	void OnPushMoveCompleted();
 
 protected:
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
-		FTransform TargetPlayerTransform;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	FTransform TargetPlayerTransform;
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
-		FTransform PushPlayerTransform;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	FTransform PushPlayerTransform;
 
 protected:
 	UFUNCTION()
