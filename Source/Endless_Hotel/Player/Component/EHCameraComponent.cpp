@@ -7,6 +7,8 @@
 #include "Actor/Elevator/Elevator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Type/Level/Type_Level.h"
+#include <EngineUtils.h>
+#include <Engine/PostProcessVolume.h>
 
 #pragma region Base
 
@@ -42,13 +44,11 @@ void UEHCameraComponent::FindPPV()
 {
 	PostProcessVolume = nullptr;
 
-	for (auto* PPV : GetWorld()->PostProcessVolumes)
+	for (TActorIterator<APostProcessVolume> It(GetWorld()); It; ++It)
 	{
-		auto Props = PPV->GetProperties();
-		if (Props.bIsUnbound)
+		if (It->ActorHasTag(TEXT("Eye")))
 		{
-			PostProcessVolume = Cast<APostProcessVolume>(PPV);
-			break;
+			PostProcessVolume = *It;
 		}
 	}
 }
@@ -56,34 +56,6 @@ void UEHCameraComponent::FindPPV()
 #pragma endregion
 
 #pragma region Eye Effect
-
-void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
-{
-	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
-
-	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
-	SoundCon->FadeSFXSound(bIsOpen);
-
-	EndEyeEffect();
-
-	float RemoveDuration = 0.f;
-
-	if (bIsOpen)
-	{
-		UI_InGame->EyeEffectBlur(true);
-		TL_EyeEffect.PlayFromStart();
-		RemoveDuration = 5.f;
-	}
-	else
-	{
-		UI_InGame->EyeEffectBlur(false);
-		TL_EyeEffect.ReverseFromEnd();
-		RemoveDuration = 5.f;
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(RemoveHandle, this, &ThisClass::EndEyeEffect, RemoveDuration, false);
-}
 
 void UEHCameraComponent::SettingEyeEffect()
 {
@@ -95,6 +67,30 @@ void UEHCameraComponent::SettingEyeEffect()
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
 	TL_EyeEffect.AddInterpFloat(Curve_EyeOpen.Get(), Update_Open);
+}
+
+void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
+{
+	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
+
+	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(bIsOpen);
+
+	constexpr float RemoveDuration = 5.f;
+
+	if (bIsOpen)
+	{
+		UI_InGame->EyeEffectBlur(true);
+		TL_EyeEffect.PlayFromStart();
+	}
+	else
+	{
+		UI_InGame->EyeEffectBlur(false);
+		TL_EyeEffect.ReverseFromEnd();
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(RemoveHandle, this, &ThisClass::EndEyeEffect, RemoveDuration, false);
 }
 
 void UEHCameraComponent::ApplyEyeEffect(float Value)
@@ -116,31 +112,9 @@ void UEHCameraComponent::LevelShownCompleted()
 	switch (UEHGameInstance::CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		LoadASyncCurveFloat();
-		break;
-
-	case ELevelType::MainMenu:
-		EndEyeEffect();
-		GetWorld()->GetTimerManager().ClearTimer(RemoveHandle);
+		StartEyeEffect(true);
 		break;
 	}
-}
-
-#pragma endregion
-
-#pragma region ASync
-
-void UEHCameraComponent::LoadASyncCurveFloat()
-{
-	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->StreamableManager.RequestAsyncLoad(Curve_EyeOpen.ToSoftObjectPath(), FStreamableDelegate::CreateUObject(this, &ThisClass::LoadedCurveFloat, Curve_EyeOpen));
-}
-
-void UEHCameraComponent::LoadedCurveFloat(TSoftObjectPtr<UCurveFloat> Curve)
-{
-	Curve_EyeOpen = Curve.Get();
-
-	StartEyeEffect(true);
 }
 
 #pragma endregion
