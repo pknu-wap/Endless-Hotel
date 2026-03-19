@@ -49,6 +49,7 @@ void UEHCameraComponent::FindPPV()
 		if (It->ActorHasTag(TEXT("Eye")))
 		{
 			PostProcessVolume = *It;
+			break;
 		}
 	}
 }
@@ -67,14 +68,19 @@ void UEHCameraComponent::SettingEyeEffect()
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("ApplyEyeEffect"));
 	TL_EyeEffect.AddInterpFloat(Curve_EyeOpen.Get(), Update_Open);
+
+	TL_EyeEffect.SetLooping(false);
 }
 
 void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 {
-	UUI_Controller* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UWorld* World = GetWorld();
+	UGameInstance* GameInstance = World->GetGameInstance();
+
+	UUI_Controller* UICon = GameInstance->GetSubsystem<UUI_Controller>();
 	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
 
-	USoundController* SoundCon = GetWorld()->GetGameInstance()->GetSubsystem<USoundController>();
+	USoundController* SoundCon = GameInstance->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
 
 	constexpr float RemoveDuration = 5.f;
@@ -90,7 +96,14 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 		TL_EyeEffect.ReverseFromEnd();
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(RemoveHandle, this, &ThisClass::EndEyeEffect, RemoveDuration, false);
+	FTimerManager& TimerManager = World->GetTimerManager();
+
+	if (TimerManager.IsTimerActive(RemoveHandle))
+	{
+		TimerManager.ClearTimer(RemoveHandle);
+	}
+
+	TimerManager.SetTimer(RemoveHandle, this, &ThisClass::EndEyeEffect, RemoveDuration, false);
 }
 
 void UEHCameraComponent::ApplyEyeEffect(float Value)
