@@ -4,7 +4,6 @@
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
-#include <GameFramework/Actor.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -35,12 +34,18 @@ void AAnomaly_Object_Doll::ActivateDoll_Show()
 
 #pragma region Interact
 
-void AAnomaly_Object_Doll::SetInteraction()
+void AAnomaly_Object_Doll::Interact_Implementation()
 {
-	Component_Interact->AdditionalAction = ([this]()
-		{
-			InteractFire();
-		});
+	Super::Interact_Implementation();
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::Burn:
+		InteractFire();
+		break;
+	}
 }
 
 void AAnomaly_Object_Doll::InteractFire()

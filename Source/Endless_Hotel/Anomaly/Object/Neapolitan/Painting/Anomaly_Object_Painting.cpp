@@ -37,7 +37,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
-	CorrectInteractID = 0;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
 
@@ -69,7 +68,6 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	CorrectInteractID = 0;
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
@@ -83,7 +81,6 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
-	CorrectInteractID = 0;
 	Object->SetMaterial(1, BlurMaterial);
 }
 
@@ -120,6 +117,20 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
+
+void AAnomaly_Object_Painting::Interact_Implementation()
+{
+	Super::Interact_Implementation();
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::Rotate:
+		InteractRotate();
+		break;
+	}
+}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {

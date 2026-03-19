@@ -24,9 +24,7 @@ protected:
 #pragma region Interact
 
 protected:
-	virtual void SetInteraction() override;
-
-	void RingingInteraction();
+	virtual void Interact_Implementation() override;
 
 #pragma endregion
 

@@ -2,18 +2,11 @@
 
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
-#include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
-#include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
-#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
-#include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
-#include "Actor/Elevator/Elevator_Button.h"
-#include "Component/Float/FloatComponent.h"
-#include "Player/Character/EHPlayer.h"
-#include <Components/StaticMeshComponent.h>
+#include "Interface/Interact/Interactable.h"
 #include <NiagaraComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
+#include <Components/StaticMeshComponent.h>
 #include <Components/WidgetComponent.h>
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -21,8 +14,7 @@ void UInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
+	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
 }
 
@@ -82,54 +74,10 @@ void UInteractComponent::Interact()
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
 
-	switch (InteractInfo.InteractType)
-	{
-	case EInteractType::Restore:
-		Action_Restore();
-		break;
-
-	case EInteractType::Rotate:
-		Action_Rotate();
-		break;
-
-	case EInteractType::TurnOff:
-		Action_TurnOff();
-		break;
-
-	case EInteractType::Call:
-		Action_Call();
-		break;
-
-	case EInteractType::Burn:
-		Action_Burn();
-		break;
-
-	case EInteractType::DoorOpen:
-		Action_DoorOpen();
-		break;
-
-	case EInteractType::Elevator:
-		Action_Elevator();
-		return;
-	}
-
-	if (AdditionalAction)
-	{
-		AdditionalAction();
-	}
-
-	AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Owner);
-
-	if (AnomalyObject->CorrectInteractID == CurrentIndex)
-	{
-		AnomalyObject->bSolved = !AnomalyObject->bSolved;
-		return;
-	}
-
-	AnomalyObject->bSolved = false;
+	IInteractable::Execute_Interact(Owner.Get());
 }
 
-FInteractInfo UInteractComponent::GetSelectedInteraction()
+FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 {
 	if (List_Interact.IsEmpty())
 	{
@@ -167,40 +115,10 @@ void UInteractComponent::ShowInteractingHighlight(bool bActive)
 
 #pragma region Action
 
-void UInteractComponent::Action_Restore()
-{
-	Cast<AAnomaly_Object_Base>(Owner)->StartRestoring(2.5);
-}
-
-void UInteractComponent::Action_Rotate()
-{
-	Cast<AAnomaly_Object_Painting>(Owner)->InteractRotate();
-}
-
-void UInteractComponent::Action_TurnOff()
-{
-	
-}
-
-void UInteractComponent::Action_Call()
-{
-
-}
-
 void UInteractComponent::Action_Burn()
 {
 	SetupBurnTargets();
 	StartBurning(BurnDuration);
-}
-
-void UInteractComponent::Action_Elevator()
-{
-	Cast<AElevator_Button>(Owner)->InteractElevator();
-}
-
-void UInteractComponent::Action_DoorOpen()
-{
-	Cast<AAnomaly_Object_Door>(Owner)->MoveToHandlePlayer();
 }
 
 #pragma endregion

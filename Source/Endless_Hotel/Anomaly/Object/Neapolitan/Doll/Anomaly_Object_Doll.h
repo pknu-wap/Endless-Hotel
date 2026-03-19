@@ -15,19 +15,23 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Doll : public AAnomaly_Object_Neapolitan
 	GENERATED_BODY()
 
 #pragma region Base
+
 public:
 	AAnomaly_Object_Doll(const FObjectInitializer& ObjectInitializer);
+	
 #pragma endregion
 
 #pragma region Doll
 
 public:
 	void ActivateDoll_Show();
+
 #pragma endregion
 
 #pragma region Interact
+
 public:
-	virtual void SetInteraction() override;
+	virtual void Interact_Implementation() override;
 
 protected:
 	void InteractFire();

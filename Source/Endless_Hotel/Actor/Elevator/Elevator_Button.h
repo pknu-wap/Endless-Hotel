@@ -3,13 +3,14 @@
 #pragma once
 
 #include "Actor/EHActor.h"
+#include "Interface/Interact/Interactable.h"
 #include <CoreMinimal.h>
 #include <Elevator_Button.generated.h>
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnElevatorButtonPressed);
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator_Button : public AEHActor
+class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
 {
     GENERATED_BODY()
 
@@ -23,6 +24,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region Button
@@ -48,7 +50,7 @@ public:
 #pragma region Interact
 
 public:
-    void InteractElevator();
+    virtual void Interact_Implementation() override;
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Interact")

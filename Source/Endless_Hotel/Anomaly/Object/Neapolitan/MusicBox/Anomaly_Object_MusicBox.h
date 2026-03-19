@@ -33,7 +33,6 @@ protected:
 
 #pragma endregion
 
-
 #pragma region PlayMusicBox
 
 public:
@@ -57,8 +56,7 @@ protected:
 #pragma region Interact
 
 protected:
-	virtual void SetInteraction() override;
-
+	virtual void Interact_Implementation() override;
 	void StopMusicBox();
 
 public:
