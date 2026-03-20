@@ -440,7 +440,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 		return;
 	}
 
-	CachedInteractComp->Interact();
+	CachedInteractComp->Interact(EHPlayer.Get());
 }
 
 void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)

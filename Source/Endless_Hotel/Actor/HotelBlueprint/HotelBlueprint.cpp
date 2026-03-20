@@ -23,7 +23,7 @@ AHotelBlueprint::AHotelBlueprint(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Interact
 
-void AHotelBlueprint::Interact_Implementation()
+void AHotelBlueprint::Interact_Implementation(AEHCharacter* Interacter)
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_HotelBlueprint_Class);

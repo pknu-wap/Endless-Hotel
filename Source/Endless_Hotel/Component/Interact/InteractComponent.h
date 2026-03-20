@@ -49,7 +49,7 @@ public:
 	void ChangeIndex(bool bUp);
 
 	// 상호작용
-	void Interact();
+	void Interact(class AEHCharacter* Interacter);
 
 	// 현재 선택된 상호작용 정보 가져오는 함수
 	FInteractInfo GetSelectedInteractInfo();

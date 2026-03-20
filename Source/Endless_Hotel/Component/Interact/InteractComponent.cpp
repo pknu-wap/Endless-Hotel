@@ -66,7 +66,7 @@ void UInteractComponent::ChangeIndex(bool bUp)
 	}
 }
 
-void UInteractComponent::Interact()
+void UInteractComponent::Interact(AEHCharacter* Interacter)
 {
 	ShowInteracting(false);
 
@@ -74,7 +74,7 @@ void UInteractComponent::Interact()
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
 
-	IInteractable::Execute_Interact(Owner.Get());
+	IInteractable::Execute_Interact(Owner.Get(), Interacter);
 }
 
 FInteractInfo UInteractComponent::GetSelectedInteractInfo()

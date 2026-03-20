@@ -33,7 +33,7 @@ protected:
 #pragma region Interact
 
 public:
-	virtual void Interact_Implementation() override;
+	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -41,6 +41,23 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UInteractComponent> Component_Interact;
+
+#pragma endregion
+
+#pragma region Data
+
+protected:
+	void SaveTutorialData();
+
+#pragma endregion
+
+#pragma region Move
+
+protected:
+	void MoveToPlayerCamera(AEHCharacter* Interacter);
+
+	UFUNCTION()
+	void OnMoveCompleted();
 
 #pragma endregion
 
