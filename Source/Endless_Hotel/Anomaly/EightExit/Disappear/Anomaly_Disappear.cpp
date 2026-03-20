@@ -14,10 +14,7 @@ void AAnomaly_Disappear::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Disappear:
-		AnomalyAction = ([](AAnomaly_Object_Base* Object)
-			{
-				Cast<AAnomaly_Object_Disappear>(Object)->StartDisappear();
-			});
+		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Disappear::StartDisappear);
 		ScheduleAnomaly();
 		break;
 	}

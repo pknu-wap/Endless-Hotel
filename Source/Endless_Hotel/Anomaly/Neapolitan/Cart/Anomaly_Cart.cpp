@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Neapolitan/Cart/Anomaly_Cart.h"
@@ -13,10 +13,7 @@ void AAnomaly_Cart::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Cart_Moving:
-		AnomalyAction = ([](AAnomaly_Object_Base* Cart)
-			{
-				Cast<AAnomaly_Object_Cart>(Cart)->CartMoving();
-			});
+		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Cart::CartMoving);	//이건 상호작용 뭐임? 복구?
 		ScheduleAnomaly(20);
 		break;
 	}

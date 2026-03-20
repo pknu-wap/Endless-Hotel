@@ -12,10 +12,7 @@ void AAnomaly_Event_Phone::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Phone_Ringing:
-		AnomalyAction = ([](AAnomaly_Object_Base* Phone)
-			{
-				Cast<AAnomaly_Object_Phone>(Phone)->RingingPhone();
-			});
+		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Phone::RingingPhone);
 		ScheduleAnomaly(30);
 		break;
 	}

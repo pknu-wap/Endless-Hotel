@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
+#include "Type/Interact/Type_Interact.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Event.generated.h>
 
@@ -114,6 +115,24 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	FName TargetElevatorID = "HotelElevator";
+
+#pragma endregion
+
+#pragma region Templete
+
+protected:
+	template<typename ObjectType>
+	TFunction<void(AAnomaly_Object_Base*)> MakeAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
+	{
+		return [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
+			{
+				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
+				{
+					TargetObj->CorrectInteractType = Interaction;
+					(TargetObj->*SelectedFunc)();
+				}
+			};
+	}
 
 #pragma endregion
 
