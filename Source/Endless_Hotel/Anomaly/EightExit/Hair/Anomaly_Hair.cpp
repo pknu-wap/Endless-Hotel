@@ -30,10 +30,7 @@ void AAnomaly_Hair::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Hair:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-			{
-				Cast<AAnomaly_Object_Hair>(AnomalyObject)->StartHair();
-			});
+		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Hair::StartHair);
 		break;
 	}
 	ActiveTrigger();
