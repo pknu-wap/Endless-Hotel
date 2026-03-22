@@ -35,7 +35,7 @@ void AAnomaly_Object_Base::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Base::Interact_Implementation()
+void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     // 해결 처리 로직은 경원 킴에게 맡김
     /*if (AnomalyObject->CorrectInteractID == CurrentIndex)

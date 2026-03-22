@@ -136,3 +136,16 @@ public:
 	UPROPERTY(SaveGame)
 	FKeySettingInfo Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
 };
+
+USTRUCT()
+struct FSaveData_Tutorial
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(SaveGame)
+	bool bIsFirstPlay = true;
+
+	UPROPERTY(SaveGame)
+	bool bHasFlash = false;
+};

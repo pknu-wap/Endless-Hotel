@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Component/EHComponent.h"
-#include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
 #include <Components/TimelineComponent.h>
 #include <EHCameraComponent.generated.h>
@@ -54,7 +53,7 @@ protected:
 	FTimeline TL_EyeEffect;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
-	TSoftObjectPtr<UCurveFloat> Curve_EyeOpen;
+	TObjectPtr<UCurveFloat> Curve_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> Mat_EyeEffect;
@@ -71,14 +70,6 @@ protected:
 protected:
 	UFUNCTION()
 	void LevelShownCompleted();
-
-#pragma endregion
-
-#pragma region ASync
-
-protected:
-	void LoadASyncCurveFloat();
-	void LoadedCurveFloat(TSoftObjectPtr<UCurveFloat> Curve);
 
 #pragma endregion
 
