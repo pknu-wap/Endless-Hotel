@@ -29,7 +29,7 @@ void AAnomaly_Twin::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Twin:
-		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Twin::TwinReveal);
+		SetupAnomalyAction(&AAnomaly_Object_Twin::TwinReveal);
 		break;
 	}
 	ActiveTrigger();

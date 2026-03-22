@@ -29,7 +29,7 @@ void AAnomaly_SignDrop::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::SignDrop:
-		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_SignDrop::ExecuteSignDrop);
+		SetupAnomalyAction(&AAnomaly_Object_SignDrop::ExecuteSignDrop);
 		break;
 	}
 	ActiveTrigger();

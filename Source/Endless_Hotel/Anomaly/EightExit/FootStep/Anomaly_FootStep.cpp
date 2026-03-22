@@ -11,7 +11,7 @@ void AAnomaly_FootStep::SetAnomalyState()
 
     switch (AnomalyName) {
     case EAnomalyName::FootStep:
-        AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_FootStep::ChangeFootStep);
+        SetupAnomalyAction(&AAnomaly_Object_FootStep::ChangeFootStep);
         ScheduleAnomaly(10);
         break;
     }

@@ -30,7 +30,7 @@ void AAnomaly_Hair::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Hair:
-		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Hair::StartHair);
+		SetupAnomalyAction(&AAnomaly_Object_Hair::StartHair);
 		break;
 	}
 	ActiveTrigger();

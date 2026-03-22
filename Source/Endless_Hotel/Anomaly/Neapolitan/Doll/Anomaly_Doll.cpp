@@ -12,7 +12,7 @@ void AAnomaly_Doll::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Doll:
-		AnomalyAction = MakeAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show);
+		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show);
 		ScheduleAnomaly();
 		break;
 	}

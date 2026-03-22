@@ -122,9 +122,9 @@ public:
 
 protected:
 	template<typename ObjectType>
-	TFunction<void(AAnomaly_Object_Base*)> MakeAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
 	{
-		return [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
+		AnomalyAction = [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
