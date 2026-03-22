@@ -233,7 +233,7 @@ void AAnomaly_Object_Door::UpdateRotate()
 
 #pragma region Interact
 
-void AAnomaly_Object_Door::Interact_Implementation()
+void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 {
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

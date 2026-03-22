@@ -39,9 +39,9 @@ void AAnomaly_Object_Phone::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Phone::Interact_Implementation()
+void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation();
+	Super::Interact_Implementation(Interacter);
 
 	SM_Receiver->SetRelativeTransform(OriginalTrans);
 

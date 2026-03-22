@@ -34,9 +34,9 @@ void AAnomaly_Object_Doll::ActivateDoll_Show()
 
 #pragma region Interact
 
-void AAnomaly_Object_Doll::Interact_Implementation()
+void AAnomaly_Object_Doll::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation();
+	Super::Interact_Implementation(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

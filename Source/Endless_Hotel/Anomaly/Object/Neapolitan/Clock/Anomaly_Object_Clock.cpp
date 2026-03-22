@@ -44,9 +44,9 @@ void AAnomaly_Object_Clock::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Clock::Interact_Implementation()
+void AAnomaly_Object_Clock::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation();
+	Super::Interact_Implementation(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
