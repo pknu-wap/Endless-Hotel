@@ -9,32 +9,25 @@ void AAnomaly_Painting::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	AnomalyAction = ([this](AAnomaly_Object_Base* Portrait)
-		{
-			auto* PortraitObject = Cast<AAnomaly_Object_Painting>(Portrait);
-
-			switch (AnomalyName)
-			{
-			case EAnomalyName::Painting_Eye:
-				PortraitObject->EyeFollowing();
-				ActiveTrigger();
-				break;
-			case EAnomalyName::Painting_Blood:
-				PortraitObject->BloodDropping();
-				ActiveTrigger();
-				break;
-
-			case EAnomalyName::Painting_Blur:
-				PortraitObject->BlurPaint();
-				ScheduleAnomaly();
-				break;
-
-			case EAnomalyName::Painting_Tilt:
-				PortraitObject->FrameTilt();
-				ScheduleAnomaly(10.0f);
-				break;
-			}
-		});
+	switch (AnomalyName)
+	{
+	case EAnomalyName::Painting_Eye:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, EInteractType::Rotate);
+		ActiveTrigger();
+		break;
+	case EAnomalyName::Painting_Blood:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BloodDropping, EInteractType::Rotate);
+		ActiveTrigger();
+		break;
+	case EAnomalyName::Painting_Blur:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BlurPaint, EInteractType::Rotate);
+		ScheduleAnomaly();
+		break;
+	case EAnomalyName::Painting_Tilt:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, EInteractType::Rotate);
+		ScheduleAnomaly(10.0f);
+		break;
+	}
 }
 
 #pragma endregion
