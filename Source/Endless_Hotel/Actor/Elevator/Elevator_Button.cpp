@@ -47,7 +47,7 @@ void AElevator_Button::BeginPlay()
 
 #pragma region Interact
 
-void AElevator_Button::Interact_Implementation()
+void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
 {
     MoveToButtonPlayer();
 }

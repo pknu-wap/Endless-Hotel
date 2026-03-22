@@ -61,9 +61,9 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma region Interact
 
-void AAnomaly_Object_MusicBox::Interact_Implementation()
+void AAnomaly_Object_MusicBox::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation();
+	Super::Interact_Implementation(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

@@ -21,13 +21,6 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-#pragma region ASync
-
-public:
-	FStreamableManager StreamableManager;
-
-#pragma endregion
-
 #pragma region Level
 
 public:

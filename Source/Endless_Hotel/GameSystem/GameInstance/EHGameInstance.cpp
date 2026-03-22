@@ -35,7 +35,6 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	}
 
 	FString TargetLevelPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<ELevelType>(LevelName));
-	//FName TargetLevelName = FName(*TargetLevelPath);
 
 	bool bSuccess = false;
 	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
@@ -166,6 +165,7 @@ void UEHGameInstance::RelocatePlayer()
 		Player->SetActorTransform(DefaultTransform);
 		return;
 	}
+
 	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
 	Player->SetActorTransform(AnomalyTransform);
 }

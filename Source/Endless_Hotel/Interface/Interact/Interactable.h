@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Character/Character/EHCharacter.h"
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
 #include <Interactable.generated.h>
@@ -18,5 +19,5 @@ class ENDLESS_HOTEL_API IInteractable
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void Interact();
+	void Interact(AEHCharacter* Interacter);
 };

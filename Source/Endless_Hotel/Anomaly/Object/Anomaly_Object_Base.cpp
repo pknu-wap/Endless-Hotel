@@ -35,7 +35,7 @@ void AAnomaly_Object_Base::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Base::Interact_Implementation()
+void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
