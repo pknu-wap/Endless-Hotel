@@ -19,6 +19,17 @@ public:
 
 #pragma endregion
 
+#pragma region Reference
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class AEHCharacter> Player;
+
+	UPROPERTY()
+	TWeakObjectPtr<class USpringArmComponent> Comp_SpringArm;
+
+#pragma endregion
+
 #pragma region HotelBlueprint
 
 protected:
@@ -46,6 +57,28 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	TSubclassOf<class UUI_Base> UI_HotelBlueprint_Class;
+
+#pragma endregion
+
+#pragma region Move
+
+public:
+	void RestoreCamera();
+
+protected:
+	void MoveToBlueprint(AEHCharacter* Interacter);
+
+	UFUNCTION()
+	void OnMoveCompleted();
+
+	UFUNCTION()
+	void OnRestoreCompleted();
+
+protected:
+	FVector OriginalLoc;
+	FRotator OriginalRot;
+
+	FVector AdjustOffset;
 
 #pragma endregion
 
