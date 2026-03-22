@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
+#include "Type/Interact/Type_Interact.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Event.generated.h>
 
@@ -111,6 +112,27 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, Category = "Start")
 	FTransform PlayerStartTransform = FTransform(FRotator(0, 180, 0), FVector(-750, 570, 997), FVector(0.75f, 0.75f, 0.75f));
+
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	FName TargetElevatorID = "HotelElevator";
+
+#pragma endregion
+
+#pragma region Templete
+
+protected:
+	template<typename ObjectType>
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
+	{
+		AnomalyAction = [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
+			{
+				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
+				{
+					TargetObj->CorrectInteractType = Interaction;
+					(TargetObj->*SelectedFunc)();
+				}
+			};
+	}
 
 #pragma endregion
 

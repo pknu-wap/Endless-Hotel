@@ -12,13 +12,7 @@ void AAnomaly_Doll::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Doll:
-		AnomalyAction = ([](AAnomaly_Object_Base* Object)
-			{
-				if (auto* Doll = Cast<AAnomaly_Object_Doll>(Object))
-				{
-					Doll->ActivateDoll_Show();
-				}
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show);
 		ScheduleAnomaly();
 		break;
 	}
