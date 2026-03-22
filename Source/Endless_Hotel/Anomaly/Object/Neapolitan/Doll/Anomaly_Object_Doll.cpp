@@ -5,6 +5,7 @@
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <Materials/MaterialInstanceDynamic.h>
 
 #pragma region Base
 
@@ -42,23 +43,89 @@ void AAnomaly_Object_Doll::Interact_Implementation(AEHCharacter* Interacter)
 
 	switch (Info.InteractType)
 	{
-	case EInteractType::Burn:
-		InteractFire();
-		break;
+		case EInteractType::Burn:
+			SetupBurnTargets();
+			StartBurning(BurnDuration);
+			break;
 	}
 }
 
-void AAnomaly_Object_Doll::InteractFire()
+#pragma endregion
+
+#pragma region Burn
+
+void AAnomaly_Object_Doll::SetupBurnTargets()
 {
-	InteractedMoveStep(0);
-	bSolved = !bSolved;
+	BurnMesh = Object;
+	BurnNiagara = Niagara_Fire;
+
+	if (BurnMesh.IsValid() && !BurnMID)
+	{
+		BurnMID = BurnMesh->CreateDynamicMaterialInstance(0);
+
+		if(BurnMID)
+		{
+			BurnMesh->SetMaterial(0, BurnMID);
+
+			BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
+			BurnMID->SetVectorParameterValue(Param_EdgeColor, EdgeColor * ColorBoost);
+		}
+
+		if (DissolveTexture)
+		{
+			BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
+		}
+	}
 }
 
-void AAnomaly_Object_Doll::InteractedMoveStep(int32 step)
+void AAnomaly_Object_Doll::StartBurning(float Duration)
 {
-	FTimerHandle InteractHandle;
-	GetWorld()->GetTimerManager().SetTimer(InteractHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			Niagara_Fire->SetActive(true, true);
-		}), 1.f, false);
+	if (bIsBurning)
+	{
+		return;
+	}
+	
+	bIsBurning = true;
+	BurnCurrentTime = 0.f;
+	BurnDuration = Duration;
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->SetFloatParameter(NiagaraVar_Alpha, 0.f);
+		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
+		BurnNiagara->Activate();
+	}
+	
+	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &ThisClass::BurnTick, 0.02f, true);
 }
+
+void AAnomaly_Object_Doll::BurnTick()
+{
+	if (!bIsBurning || !BurnMID)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
+		return;
+	}
+
+	BurnCurrentTime += 0.02f;
+	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
+	BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->SetFloatParameter(NiagaraVar_Alpha, Alpha);
+	}
+
+	if (Alpha >= 1.f)
+	{
+		FinishBurning();
+	}
+}
+
+void AAnomaly_Object_Doll::FinishBurning()
+{
+	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
+	bIsBurning = false;
+	Destroy();
+}
+#pragma endregion
