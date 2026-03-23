@@ -3,24 +3,11 @@
 #include "Actor/Lighter/Lighter.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Controller/EHPlayerController.h"
-#include <Components/WidgetComponent.h>
 #include <Camera/CameraComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
-
-ALighter::ALighter(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	SM_Lighter = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Lighter"));
-	SetRootComponent(SM_Lighter);
-
-	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component_Widget"));
-	Component_Widget->SetupAttachment(RootComponent);
-
-	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
-}
 
 void ALighter::BeginPlay()
 {
