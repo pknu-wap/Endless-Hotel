@@ -4,7 +4,7 @@
 #include "Anomaly/Object/EightExit/Light/Anomaly_Object_Light.h"
 #include <Components/AudioComponent.h>
 #include <Components/DecalComponent.h>
-#include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
 
 #pragma region Base
 
@@ -60,13 +60,9 @@ void AAnomaly_Object_HandPrint::ShowHandPrint()
 
 void AAnomaly_Object_HandPrint::TurnOffLights()
 {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
-
-	for (auto* FoundActor : FoundActors)
+	for (TActorIterator<AAnomaly_Object_Light> Iter(GetWorld()); Iter; ++Iter)
 	{
-		auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
-		Light->TurnLight(false);
+		Iter->TurnLight(false);
 	}
 }
 
