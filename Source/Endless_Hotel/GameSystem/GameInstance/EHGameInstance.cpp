@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Anomaly/Base/Anomaly_Event.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>

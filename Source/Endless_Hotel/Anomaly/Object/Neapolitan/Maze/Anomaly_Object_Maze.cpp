@@ -45,8 +45,6 @@ void AAnomaly_Object_Maze::StartAI()
 
 void AAnomaly_Object_Maze::SetElevatorPos()
 {
-	Elevator->MapPos = ElevatorPoint.Location;
-	Elevator->EndPos = ElevatorPoint.Location + FVector(0, 0, -300);
 	Elevator->SetActorLocation(ElevatorPoint.Location);
 	Elevator->SetActorRotation(ElevatorPoint.Rotation);
 }

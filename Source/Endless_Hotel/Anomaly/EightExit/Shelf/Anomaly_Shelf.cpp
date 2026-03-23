@@ -13,10 +13,7 @@ void AAnomaly_Shelf::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Plant_Change:
-		AnomalyAction = ([](AAnomaly_Object_Base* Object)
-			{
-				Cast<AAnomaly_Object_Shelf>(Object)->StartChange();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Shelf::StartChange);
 		ScheduleAnomaly();
 		break;
 	}
@@ -24,10 +21,7 @@ void AAnomaly_Shelf::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Shelf_Book:
-		AnomalyAction = ([](AAnomaly_Object_Base* Object)
-			{
-				Cast<AAnomaly_Object_Shelf>(Object)->FallSound();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Shelf::FallSound);
 		ActiveTrigger();
 		break;
 	}

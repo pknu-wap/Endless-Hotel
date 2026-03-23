@@ -12,10 +12,7 @@ void AAnomaly_MusicBox::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::MusicBox_Ringing:
-		AnomalyAction = ([](AAnomaly_Object_Base* MusicBox)
-			{
-				Cast<AAnomaly_Object_MusicBox>(MusicBox)->PlayMusicBox();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_MusicBox::PlayMusicBox, EInteractType::TurnOff);
 		ScheduleAnomaly(10);
 		break;
 	}

@@ -24,7 +24,6 @@ void AAnomaly_Event::BeginPlay()
 	Super::BeginPlay();
 
 	TriggerBox->SetWorldTransform(Transform_TriggerBox);
-
 	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
@@ -115,7 +114,6 @@ void AAnomaly_Event::ScheduleAnomaly(float delay)
 
 void AAnomaly_Event::InteractSolveVerdict()
 {
-	//상호작용 기반 해결여부
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	bool bAllSolved = true;
 

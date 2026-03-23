@@ -38,6 +38,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
 	if (!Player || MazeMonster->bIsAttacked) return EBTNodeResult::Failed;
 
+	Player->DieDelegate.Broadcast(EDeathReason::Attack);
 	return EBTNodeResult::Succeeded;
 }
 
