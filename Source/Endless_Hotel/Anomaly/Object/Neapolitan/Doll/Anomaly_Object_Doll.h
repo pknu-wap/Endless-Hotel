@@ -34,15 +34,48 @@ public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
 protected:
-	void InteractFire();
-
-	UFUNCTION()
-	void InteractedMoveStep(int32 step);
-
-protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
 
 #pragma endregion
 
+#pragma region Burn
+
+protected:
+	FTimerHandle BurnHandle;
+
+	float BurnDuration = 4.f;
+	float BurnCurrentTime = 0.f;
+
+	bool bIsBurning = false;
+
+	TWeakObjectPtr<UStaticMeshComponent> BurnMesh;
+	TWeakObjectPtr<UNiagaraComponent> BurnNiagara;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> BurnMID = nullptr;
+
+	FName Param_Alpha = TEXT("Alpha");
+	FName Param_EdgeColor = TEXT("Edge Color");
+	FName Param_DissolveTex = TEXT("Dissolve Texture");
+
+	FName NiagaraVar_Alpha = TEXT("Alpha");
+	FName NiagaraVar_EdgeColor = TEXT("EdgeColor");
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	TObjectPtr<UTexture> DissolveTexture = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	FLinearColor EdgeColor = FLinearColor::White;
+
+	UPROPERTY(EditAnywhere, Category = "Burn")
+	float ColorBoost = 1.f;
+
+protected:
+	void SetupBurnTargets();
+	void StartBurning(float Duration);
+	void BurnTick();
+	void FinishBurning();
+
+#pragma endregion
 };
