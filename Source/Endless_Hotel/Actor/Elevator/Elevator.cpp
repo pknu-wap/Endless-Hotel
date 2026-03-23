@@ -171,6 +171,7 @@ void AElevator::MoveDoors()
     }
 
     bIsDoorOpened = bIsOpening;
+    Elevator_AC->Stop();
     Door_AC->Play();
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
