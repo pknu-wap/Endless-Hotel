@@ -9,7 +9,36 @@
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
 
-#pragma region AnomalyObjectLinker
+#pragma region AnomalyObject
+
+void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params)
+{
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(AnomalyID);
+
+	if (TargetClasses.IsEmpty())
+	{
+		return;
+	}
+
+	for (auto& ObjClass : TargetClasses)
+	{
+		if (!ObjClass)
+		{
+			continue;
+		}
+
+		auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(ObjClass, SpawnTransform, Params);
+
+		if (NewObj)
+		{
+			NewObj->AnomalyID = AnomalyID;
+			NewObj->SetAnomalyName();
+
+			CurrentAnomaly->LinkedObjects.Add(NewObj);
+		}
+	}
+}
 
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
@@ -93,16 +122,25 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
 	CurrentAnomaly = Spawned;
 
-	AnomalyObjectLinker();
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+
+	if (Spawned->bIsRuntimeSpawned)
+	{
+		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, CurrentAnomaly->ObjectTransform, Params);
+	}
+	else
+	{
+		AnomalyObjectLinker();
+	}
 
 	// Start
-	Spawned->SetAnomalyState();
+	CurrentAnomaly->SetAnomalyState();
 
 	// EventBroadCast
-	OnAnomalySpawned.Broadcast(Spawned);
-	Sub->CurrentAnomalyID = Spawned->AnomalyID;
-	Sub->CurrentAnomaly = Spawned;
-	return Spawned;
+	OnAnomalySpawned.Broadcast(CurrentAnomaly);
+	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyID;
+	Sub->CurrentAnomaly = CurrentAnomaly;
+	return CurrentAnomaly;
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
