@@ -6,6 +6,8 @@
 #include <Camera/CameraComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
+#include <Engine/PostProcessVolume.h>
 
 #pragma region Base
 
@@ -27,6 +29,7 @@ void ALighter::BeginPlay()
 void ALighter::Interact_Implementation(AEHCharacter* Interacter)
 {
 	SaveTutorialData();
+	BlurBackground(true);
 	MoveToPlayerCamera(Interacter);
 }
 
@@ -79,8 +82,47 @@ void ALighter::OnMoveCompleted()
 			auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 			PC->SetPlayerInputAble(true);
 
+			BlurBackground(false);
+
 			Destroy();
 		}), 2, false);
+}
+
+#pragma endregion
+
+#pragma region Blur
+
+void ALighter::BlurBackground(bool bActive)
+{
+	APostProcessVolume* PPV = nullptr;
+
+	for (TActorIterator<APostProcessVolume> Iter(GetWorld()); Iter; ++Iter)
+	{
+		if (Iter->ActorHasTag(TEXT("Highlight")))
+		{
+			PPV = *Iter;
+			break;
+		}
+	}
+
+	auto& Array_PPV = PPV->Settings.WeightedBlendables.Array;
+
+	if (bActive)
+	{
+		DynMat_Blur = UMaterialInstanceDynamic::Create(Mat_Blur, this);
+
+		Array_PPV.Add(FWeightedBlendable(1, DynMat_Blur));
+	}
+	else
+	{
+		for (int32 i = Array_PPV.Num() - 1; i >= 0; --i)
+		{
+			if (Array_PPV[i].Object == DynMat_Blur)
+			{
+				Array_PPV.RemoveAt(i);
+			}
+		}
+	}
 }
 
 #pragma endregion

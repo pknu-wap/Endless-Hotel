@@ -42,4 +42,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Blur
+
+protected:
+	void BlurBackground(bool bActive);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Blur")
+	TObjectPtr<class UMaterial> Mat_Blur;
+
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> DynMat_Blur;
+
+#pragma endregion
+
 };
