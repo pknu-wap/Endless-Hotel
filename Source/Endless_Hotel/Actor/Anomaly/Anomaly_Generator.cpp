@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
 #include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
 
 #pragma region AnomalyObjectLinker
 
@@ -21,28 +22,21 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 		return;
 	}
 
-	for (TSubclassOf<AAnomaly_Object_Base> TargetClass : TargetClasses)
+	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
 	{
-		if (!TargetClass) continue;
+		auto* AnomalyObject = *Iter;
 
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, FoundActors);
-
-		for (auto* FoundActor : FoundActors)
+		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
 		{
-			if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
-			{
-				continue;
-			}
+			continue;
+		}
 
-			auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-			if (AnomalyObject)
-			{
-				AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-				AnomalyObject->SetAnomalyName();
+		if (TargetClasses.Contains(AnomalyObject->GetClass()))
+		{
+			AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+			AnomalyObject->SetAnomalyName();
 
-				CurrentAnomaly->LinkedObjects.Add(FoundActor);
-			}
+			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 		}
 	}
 }

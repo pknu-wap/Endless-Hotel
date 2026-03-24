@@ -12,6 +12,7 @@
 #include <TimerManager.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
+#include <EngineUtils.h>
 
 #pragma region Base
 
@@ -232,30 +233,22 @@ void AAnomaly_Object_Ghost::FinishSequence()
 
 void AAnomaly_Object_Ghost::TurnOffLights()
 {
-    TArray<AActor*> FoundActors;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
-
-    for (auto* FoundActor : FoundActors)
+    for (TActorIterator<AAnomaly_Object_Light> Iter(GetWorld()); Iter; ++Iter)
     {
-        auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
+        auto* Light = *Iter;
         Light->TurnLight(false);
     }
-
     AC->Sound = Sound_Off;
     AC->Play();
 }
 
 void AAnomaly_Object_Ghost::TurnOnLights()
 {
-    TArray<AActor*> FoundActors;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Light::StaticClass(), OUT FoundActors);
-
-    for (auto* FoundActor : FoundActors)
+    for (TActorIterator<AAnomaly_Object_Light> Iter(GetWorld()); Iter; ++Iter)
     {
-        auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
+        auto* Light = *Iter;
         Light->TurnLight(true);
     }
-
     AC->Sound = Sound_On;
     AC->Play();
 }
