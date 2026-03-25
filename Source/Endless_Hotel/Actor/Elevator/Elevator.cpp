@@ -315,3 +315,13 @@ void AElevator::NotifySubsystem()
 }
 
 #pragma endregion
+
+#pragma region ElevatorFloor
+
+void AElevator::DisableElevatorFloor()
+{
+    Floor->SetVisibility(false);
+    Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+#pragma endregion
