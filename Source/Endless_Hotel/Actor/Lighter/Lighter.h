@@ -2,31 +2,19 @@
 
 #pragma once
 
-#include "Actor/EHActor.h"
-#include "Interface/Interact/Interactable.h"
+#include "Actor/Interact/InteractBase.h"
 #include <CoreMinimal.h>
 #include <Lighter.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API ALighter : public AEHActor, public IInteractable
+class ENDLESS_HOTEL_API ALighter : public AInteractBase
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
-public:
-	ALighter(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	virtual void BeginPlay() override;
-
-#pragma endregion
-
-#pragma region Lighter
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStaticMeshComponent> SM_Lighter;
 
 #pragma endregion
 
@@ -34,13 +22,6 @@ protected:
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> Component_Widget;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UInteractComponent> Component_Interact;
 
 #pragma endregion
 
@@ -58,6 +39,20 @@ protected:
 
 	UFUNCTION()
 	void OnMoveCompleted();
+
+#pragma endregion
+
+#pragma region Blur
+
+protected:
+	void BlurBackground(bool bActive);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Blur")
+	TObjectPtr<class UMaterial> Mat_Blur;
+
+	UPROPERTY()
+	TObjectPtr<class UMaterialInstanceDynamic> DynMat_Blur;
 
 #pragma endregion
 

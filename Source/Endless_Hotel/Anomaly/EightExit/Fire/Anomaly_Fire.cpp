@@ -40,7 +40,10 @@ void AAnomaly_Fire::DisableAnomaly()
 {
 	Super::DisableAnomaly();
 
-	EHPlayer->CrouchDelegate.RemoveDynamic(this, &ThisClass::SmokeTimer);
+	if (IsValid(EHPlayer.Get()))
+	{
+		EHPlayer->CrouchDelegate.RemoveDynamic(this, &ThisClass::SmokeTimer);
+	}
 
 	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
 	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
