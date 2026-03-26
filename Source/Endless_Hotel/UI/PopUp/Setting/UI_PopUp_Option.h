@@ -22,7 +22,7 @@ protected:
 
 #pragma region Input
 
-public:
+protected:
 	virtual void Input_ESC() override {}
 
 #pragma endregion
