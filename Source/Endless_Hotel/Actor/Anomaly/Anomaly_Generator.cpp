@@ -6,7 +6,6 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
-#include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
 
 #pragma region AnomalyObject
