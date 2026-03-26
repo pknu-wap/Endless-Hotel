@@ -6,6 +6,12 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/InputKeySelector.h>
 
+#pragma region Declare
+
+FKeyHighlight UUI_Button_Key::Highlight;
+
+#pragma endregion
+
 #pragma region Bind
 
 void UUI_Button_Key::BindEvents()
@@ -24,6 +30,27 @@ void UUI_Button_Key::BindEvents()
 		Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
 		Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
 	}
+
+	OnClicked.RemoveDynamic(this, &ThisClass::ResetInputButtons);
+	OnClicked.AddDynamic(this, &ThisClass::ResetInputButtons);
+
+	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
+	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void UUI_Button_Key::ResetInputButtons()
+{
+	FSaveData_Key Data = FSaveData_Key();
+	USaveManager::SaveKeyData(Data);
+
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->SetKeyMapping(SettingInfo, FKey());
+
+	Highlight.Broadcast();
 }
 
 #pragma endregion
