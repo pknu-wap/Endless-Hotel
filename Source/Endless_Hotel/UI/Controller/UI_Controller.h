@@ -20,7 +20,7 @@ public:
 	void ClearAllWidget();
 
 public:
-	class UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
+	class UUI_Base* GetCurrentHUDWidget() { return PopUpWidgets[0]; }
 	class UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
 
 protected:

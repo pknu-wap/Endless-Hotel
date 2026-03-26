@@ -42,7 +42,7 @@ void AAnomaly_Blur::StartAnomalyAction()
 void AAnomaly_Blur::ShowBlurWiget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_Base* BlurWidget = UICon->GetCurrentBaseWidget();
+	UUI_Base* BlurWidget = UICon->GetCurrentHUDWidget();
 	Cast<UUI_HUD_InGame>(BlurWidget)->AnomalyBlur();
 
 	AC->Sound = Sound_Blur;
