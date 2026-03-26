@@ -8,6 +8,7 @@
 #include <Engine/GameInstance.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
+#include <EngineUtils.h>
 
 #pragma region Base
 
@@ -117,17 +118,13 @@ void AAnomaly_Event::InteractSolveVerdict()
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	bool bAllSolved = true;
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Neapolitan::StaticClass(), FoundActors);
-
-	for (auto* FoundActor : FoundActors)
+	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
 	{
-		if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
+		auto* AnomalyObject = *Iter;
+		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
 		{
 			continue;
 		}
-
-		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		if (!AnomalyObject->bSolved)
 		{
 			bAllSolved = false;

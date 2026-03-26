@@ -221,4 +221,12 @@ public:
 
 #pragma endregion
 
+#pragma region ElevatorFloor
+
+public:
+    void DisableElevatorFloor();
+
+#pragma endregion
+
+
 };
