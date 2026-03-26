@@ -36,7 +36,7 @@ protected:
 
 #pragma endregion
 
-#pragma region Adjust
+#pragma region ZOrder
 
 protected:
 	void AdjustZOrder(bool bUp);

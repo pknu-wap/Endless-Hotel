@@ -14,6 +14,9 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 
 	switch (CreatedWidget->WidgetType)
 	{
+	case EWidgetType::None:
+		return CreatedWidget;
+
 	case EWidgetType::HUD:
 		ClearAllWidget();
 		break;
@@ -21,11 +24,6 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		break;
-
-	case EWidgetType::Cover:
-		CreatedWidget->AddToViewport(100);
-		PopUpWidgets.Add(CreatedWidget);
-		return CreatedWidget;
 	}
 
 	CreatedWidget->AddToViewport(Widget_ZOrder);
@@ -46,17 +44,13 @@ void UUI_Controller::CloseWidget()
 
 	switch (PopUpWidgets.Top()->WidgetType)
 	{
+	case EWidgetType::None:
 	case EWidgetType::HUD:
 		return;
 
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		break;
-
-	case EWidgetType::Cover:
-		PopUpWidgets.Top()->RemoveFromViewport();
-		PopUpWidgets.Pop();
-		return;
 	}
 
 	AdjustZOrder(false);
@@ -84,7 +78,7 @@ void UUI_Controller::ClearAllWidget()
 
 void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 
 	switch (InputMode)
 	{
@@ -115,17 +109,12 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 
 #pragma endregion
 
-#pragma region Adjust
+#pragma region ZOrder
 
 void UUI_Controller::AdjustZOrder(bool bUp)
 {
-	if (bUp)
-	{
-		Widget_ZOrder = FMath::Clamp(Widget_ZOrder + 1, Min_ZOrder, Max_ZOrder);
-		return;
-	}
-
-	Widget_ZOrder = FMath::Clamp(Widget_ZOrder - 1, Min_ZOrder, Max_ZOrder);
+	int32 Value = bUp ? 1 : -1;
+	Widget_ZOrder = FMath::Clamp(Widget_ZOrder + Value, Min_ZOrder, Max_ZOrder);
 }
 
 #pragma endregion
