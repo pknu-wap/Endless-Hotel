@@ -21,8 +21,10 @@ class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
 {
 	GENERATED_BODY()
 
-#pragma region Linker
+#pragma region Object
 
+private:
+	void SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params);
 	void AnomalyObjectLinker();
 
 #pragma endregion
@@ -49,7 +51,6 @@ public:
 
 public:
 	AAnomaly_Event* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
-
 	AAnomaly_Event* SpawnNormal(ULevel* SpawnLevel);
 
 protected:

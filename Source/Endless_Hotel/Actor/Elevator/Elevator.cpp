@@ -171,6 +171,7 @@ void AElevator::MoveDoors()
     }
 
     bIsDoorOpened = bIsOpening;
+    Elevator_AC->Stop();
     Door_AC->Play();
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
@@ -311,6 +312,16 @@ void AElevator::NotifySubsystem()
         Sub->TryInteractSolveVerdict();
         Sub->ApplyVerdict();
     }
+}
+
+#pragma endregion
+
+#pragma region ElevatorFloor
+
+void AElevator::DisableElevatorFloor()
+{
+    Floor->SetVisibility(false);
+    Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion

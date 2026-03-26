@@ -51,6 +51,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyName AnomalyName;
 
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	bool bIsRuntimeSpawned = false;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	FTransform ObjectTransform = FTransform(FRotator::ZeroRotator, FVector::ZeroVector, FVector(1, 1, 1));
+
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
 

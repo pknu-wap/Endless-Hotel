@@ -20,6 +20,10 @@ protected:
 
 #pragma region Elevator
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+	FName TargetAnomalyElevatorID;
+
 private:
 	TWeakObjectPtr<class AElevator> TargetElevator;
 
