@@ -44,11 +44,11 @@ void UEHCameraComponent::FindPPV()
 {
 	PostProcessVolume = nullptr;
 
-	for (TActorIterator<APostProcessVolume> It(GetWorld()); It; ++It)
+	for (TActorIterator<APostProcessVolume> Iter(GetWorld()); Iter; ++Iter)
 	{
-		if (It->ActorHasTag(TEXT("Eye")))
+		if (Iter->ActorHasTag(TEXT("Eye")))
 		{
-			PostProcessVolume = *It;
+			PostProcessVolume = *Iter;
 			break;
 		}
 	}

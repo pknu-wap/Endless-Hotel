@@ -3,9 +3,6 @@
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
-#include <NiagaraComponent.h>
-#include <Materials/MaterialInstanceDynamic.h>
-#include <Components/StaticMeshComponent.h>
 #include <Components/WidgetComponent.h>
 
 #pragma region Base

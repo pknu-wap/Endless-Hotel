@@ -7,15 +7,6 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
-#pragma region Declare
-
-class UStaticMeshComponent;
-class UNiagaraComponent;
-class UMaterialInstanceDynamic;
-class UTexture;
-
-#pragma endregion
-
 UCLASS(ClassGroup = (Custom))
 class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 {
@@ -86,13 +77,6 @@ protected:
 protected:
 	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
 	const FName HighlightTag = TEXT("Highlight");
-
-#pragma endregion
-
-#pragma region Action
-
-protected:
-	void Action_Burn();
 
 #pragma endregion
 

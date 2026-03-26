@@ -5,19 +5,6 @@
 
 #pragma region Base
 
-AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
-	SetRootComponent(Object);
-
-	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
-	Component_Widget->SetupAttachment(RootComponent);
-	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
-
-	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
-}
-
 void AAnomaly_Object_Base::BeginPlay()
 {
 	Super::BeginPlay();

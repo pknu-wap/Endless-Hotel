@@ -2,15 +2,14 @@
 
 #pragma once
 
-#include "Actor/EHActor.h"
-#include "Interface/Interact/Interactable.h"
+#include "Actor/Interact/InteractBase.h"
 #include <CoreMinimal.h>
 #include <Elevator_Button.generated.h>
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnElevatorButtonPressed);
 
 UCLASS()
-class ENDLESS_HOTEL_API AElevator_Button : public AEHActor, public IInteractable
+class ENDLESS_HOTEL_API AElevator_Button : public AInteractBase
 {
     GENERATED_BODY()
 
@@ -31,9 +30,6 @@ protected:
 
 public:
     UPROPERTY(VisibleAnywhere, Category = "Button")
-    TObjectPtr<UStaticMeshComponent> Pannel;
-
-    UPROPERTY(VisibleAnywhere, Category = "Button")
     TObjectPtr<UStaticMeshComponent> Up_Button;
 
     UPROPERTY(VisibleAnywhere, Category = "Button")
@@ -53,12 +49,6 @@ public:
     virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "Interact")
-    TObjectPtr<class UWidgetComponent> Component_Widget;
-
-    UPROPERTY(VisibleAnywhere, Category = "Interact")
-    TObjectPtr<class UInteractComponent> Component_Interact;
-
     UPROPERTY(EditAnywhere, Category = "Interact")
     float PlayerToElevatorDistance = 50.0f;
 
@@ -93,4 +83,5 @@ protected:
     FVector DownButtonRingDefaultLocation;
 
 #pragma endregion
+
 };
