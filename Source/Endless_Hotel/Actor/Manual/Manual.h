@@ -4,17 +4,17 @@
 
 #include "Actor/Interact/InteractBase.h"
 #include <CoreMinimal.h>
-#include <HotelBlueprint.generated.h>
+#include <Manual.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AHotelBlueprint : public AInteractBase
+class ENDLESS_HOTEL_API AManual : public AInteractBase
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 public:
-	AHotelBlueprint(const FObjectInitializer& ObjectInitializer);
+	AManual(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion
 

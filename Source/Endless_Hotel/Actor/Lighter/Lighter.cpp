@@ -28,9 +28,18 @@ void ALighter::BeginPlay()
 
 void ALighter::Interact_Implementation(AEHCharacter* Interacter)
 {
-	SaveTutorialData();
-	BlurBackground(true);
-	MoveToPlayerCamera(Interacter);
+	Super::Interact_Implementation(Interacter);
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::Pick:
+		SaveTutorialData();
+		BlurBackground(true);
+		MoveToPlayerCamera(Interacter);
+		break;
+	}
 }
 
 #pragma endregion

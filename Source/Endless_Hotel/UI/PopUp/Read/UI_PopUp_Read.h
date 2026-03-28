@@ -4,10 +4,10 @@
 
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include <CoreMinimal.h>
-#include <UI_PopUp_HotelBlueprint.generated.h>
+#include <UI_PopUp_Read.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_PopUp_HotelBlueprint : public UUI_PopUp_Base
+class ENDLESS_HOTEL_API UUI_PopUp_Read : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 	
@@ -18,14 +18,14 @@ protected:
 
 #pragma endregion
 
-#pragma region HotelBlueprint
+#pragma region Target
 
 public:
-	void SetHotelBlueprint(class AHotelBlueprint* HB) { HotelBlueprint = HB; }
+	void SetTarget(AActor* Target) { TargetObject = Target; }
 
 protected:
 	UPROPERTY()
-	TWeakObjectPtr<class AHotelBlueprint> HotelBlueprint;
+	TWeakObjectPtr<AActor> TargetObject;
 
 #pragma endregion
 
