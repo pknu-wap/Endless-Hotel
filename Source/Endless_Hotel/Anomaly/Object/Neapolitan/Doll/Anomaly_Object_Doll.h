@@ -66,7 +66,7 @@ protected:
 	TObjectPtr<UTexture> DissolveTexture = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
-	FLinearColor EdgeColor = FLinearColor::White;
+	FLinearColor EdgeColor = FLinearColor::White; 
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
 	float ColorBoost = 1.f;
