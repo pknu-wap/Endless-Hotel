@@ -52,6 +52,10 @@ private:
 	UFUNCTION()
 	void OnRestoreCompleted();
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "Move")
+	FRotator RotOffset = FRotator::ZeroRotator;
+
 private:
 	FVector OriginalLoc;
 	FRotator OriginalRot;

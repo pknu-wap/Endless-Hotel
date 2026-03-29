@@ -65,7 +65,7 @@ void UReadComponent::MoveCameraToTarget(AEHCharacter* Interacter, AActor* Target
 	LatentInfo.Linkage = 0;
 	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
 
-	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation, TargetRotation, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
 }
 
 void UReadComponent::RestoreCamera()
