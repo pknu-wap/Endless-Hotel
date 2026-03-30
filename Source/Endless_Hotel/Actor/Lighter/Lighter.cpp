@@ -15,7 +15,7 @@ void ALighter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (USaveManager::LoadTutorialData().bHasFlash)
+	if (USaveManager::LoadData_Tutorial().bHasFlash)
 	{
 		Destroy();
 		return;
@@ -48,9 +48,9 @@ void ALighter::Interact_Implementation(AEHCharacter* Interacter)
 
 void ALighter::SaveTutorialData()
 {
-	FSaveData_Tutorial Data = USaveManager::LoadTutorialData();
+	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
 	Data.bHasFlash = true;
-	USaveManager::SaveTutorialData(Data);
+	USaveManager::SaveData_Tutorial(Data);
 }
 
 #pragma endregion

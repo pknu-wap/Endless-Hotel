@@ -44,8 +44,7 @@ void UUI_Button_Key::BindEvents()
 
 void UUI_Button_Key::ResetInputButtons()
 {
-	FSaveData_Key Data = FSaveData_Key();
-	USaveManager::SaveKeyData(Data);
+	USaveManager::DeleteData_Key();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PC->SetKeyMapping(SettingInfo, FKey());
@@ -61,7 +60,7 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 {
 	SettingInfo.Value = SelectedChord.Key;
 
-	FSaveData_Key Data = USaveManager::LoadKeyData();
+	FSaveData_Key Data = USaveManager::LoadData_Key();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
@@ -113,7 +112,7 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 		break;
 	}
 	
-	USaveManager::SaveKeyData(Data);
+	USaveManager::SaveData_Key(Data);
 
 	ConvertLongText(SelectedChord);
 }
@@ -173,7 +172,7 @@ void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
 
 void UUI_Button_Key::SetSavedOption()
 {
-	FSaveData_Key Data = USaveManager::LoadKeyData();
+	FSaveData_Key Data = USaveManager::LoadData_Key();
 	
 	switch (SettingInfo.Type)
 	{

@@ -15,7 +15,7 @@ static ReturnType Load##TargetData() \
 { \
 	FString SlotName = TEXT(#TargetData); \
 	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(SlotName, 0)); \
-	ReturnType SaveData; \
+	ReturnType SaveData{}; \
 	if (!SaveManager) \
 	{ \
 		return SaveData; \

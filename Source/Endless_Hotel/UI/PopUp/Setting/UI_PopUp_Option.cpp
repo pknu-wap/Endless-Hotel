@@ -44,7 +44,7 @@ void UUI_PopUp_Option::NativeConstruct()
 
 void UUI_PopUp_Option::HighlightOptions()
 {
-	FSaveData_Setting Data = USaveManager::LoadSettingData();
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
 
 	TArray<UWidget*> Widgets;

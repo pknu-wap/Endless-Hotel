@@ -36,7 +36,7 @@ void UUI_PopUp_Reset::Click_Yes()
 		break;
 	}
 
-	USaveManager::SaveSettingData(FSaveData_Setting());
+	USaveManager::DeleteData_Setting();
 
 	UUI_PopUp_Setting::Highlight.Broadcast();
 
