@@ -13,7 +13,7 @@ class UEnhancedInputComponent;
 class USpringArmComponent;
 class ACharacter;
 class AEHPlayer;
-class USpotLightComponent;
+class UPointLightComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -151,7 +151,7 @@ protected:
 	UCameraComponent* GetPlayerCamera() const;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<class USpotLightComponent> FlashLight;
+	TObjectPtr<class UPointLightComponent> HandLight;
 
 #pragma endregion
 

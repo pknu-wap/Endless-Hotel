@@ -9,6 +9,7 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
+#include <Components/PointLightComponent.h>
 
 #pragma region Base
 
@@ -25,6 +26,7 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	SpringArm->TargetArmLength = 20.0f;
 	SpringArm->bUsePawnControlRotation = true;
 
+	HandLight= CreateDefaultSubobject<UPointLightComponent>(TEXT("HandLight"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 

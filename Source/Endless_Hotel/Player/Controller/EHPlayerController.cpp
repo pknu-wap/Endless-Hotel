@@ -15,7 +15,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/CapsuleComponent.h>
-#include <Components/SpotLightComponent.h>
+#include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -43,10 +43,10 @@ void AEHPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
-	FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
-	if (FlashLight)
+	HandLight = EHPlayer->FindComponentByClass<UPointLightComponent>();
+	if (HandLight)
 	{
-		FlashLight->SetVisibility(false);
+		HandLight->SetVisibility(false);
 	}
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
@@ -323,11 +323,17 @@ void AEHPlayerController::TurnPlayerHandLight()
 		return;
 	}
 
-	if (!FlashLight)
+	if (!HandLight)
 	{
-		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+		HandLight= EHPlayer->FindComponentByClass<UPointLightComponent>();
 	}
-	FlashLight->SetVisibility(!FlashLight->IsVisible());
+	HandLight->SetVisibility(!HandLight->IsVisible());
+
+	if (HandLight)
+	{
+		bool bNewVisibility = !HandLight->IsVisible();
+		HandLight->SetVisibility(bNewVisibility);
+	}
 }
 
 #pragma endregion
@@ -336,8 +342,9 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 void AEHPlayerController::PlayDeathSequence()
 {
-	if (!EHPlayer.IsValid()) return;
-
+	if (!EHPlayer.IsValid()) {
+		return;
+	}
 	bIsPlayerDead = true;
 	SetPlayerInputAble(false);
 }
