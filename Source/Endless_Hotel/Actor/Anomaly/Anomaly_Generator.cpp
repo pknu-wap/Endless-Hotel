@@ -88,6 +88,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("[GameSystem] RemainAnomaly: %d"), DataC->GetRemainingAnomalyCounts());
 	TSoftClassPtr<AAnomaly_Event> SoftAnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
 	UClass* AnomalyClass = SoftAnomalyClass.LoadSynchronous();
 
