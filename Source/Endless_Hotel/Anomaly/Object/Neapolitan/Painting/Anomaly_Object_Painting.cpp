@@ -90,12 +90,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	if (!RootComponent)
-	{
-		return;
-	}
-
-	CurrentTilt = GetActorRotation().Roll;
+	CurrentTilt = Object->GetRelativeRotation().Roll;
 
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())
@@ -106,10 +101,11 @@ void AAnomaly_Object_Painting::FrameTilt()
 	{
 		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 1.f);
 			
-		FRotator NewRot = GetActorRotation();
+		FRotator NewRot = Object->GetRelativeRotation();
 		NewRot.Roll = CurrentTilt;
 
-		SetActorRotation(NewRot);
+		Object->SetRelativeRotation(NewRot);
+
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
