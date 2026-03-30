@@ -84,4 +84,9 @@ void UDataController::ResetClearedAnomaly()
 	LoadedAnomalySet.Empty();
 }
 
+uint8 UDataController::GetRemainingAnomalyCounts()
+{
+	return OriginAnomaly.Num() - LoadedAnomalySet.Num();
+}
+
 #pragma endregion
