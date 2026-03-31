@@ -324,7 +324,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 		return;
 	}
 
-	UPointLightComponent* Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
+	auto Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
 
 	if (Lighter)
 	{

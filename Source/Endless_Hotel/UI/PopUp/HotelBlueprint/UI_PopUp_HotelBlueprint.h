@@ -21,7 +21,7 @@ protected:
 #pragma region HotelBlueprint
 
 public:
-	void SetHotelBlueprint(class AHotelBlueprint* HB);
+	void SetHotelBlueprint(class AHotelBlueprint* HB) { HotelBlueprint = HB; }
 
 protected:
 	UPROPERTY()
