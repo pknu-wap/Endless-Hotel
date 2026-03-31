@@ -9,7 +9,7 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
-#include "Components/PointLightComponent.h"
+#include <Components/PointLightComponent.h>
 
 #pragma region Base
 
