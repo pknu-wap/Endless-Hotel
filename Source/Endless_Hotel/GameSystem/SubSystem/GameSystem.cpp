@@ -35,17 +35,17 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	bIsClear = USaveManager::LoadGameClearData();
 	FSaveData_Setting Data_Setting = USaveManager::LoadSettingData();
-	bIsAnomalyRepeatable = Data_Setting.Overlap == EOptionValue::On ? true : false;
+	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
-	if (bIsClear && bIsAnomalyRepeatable)
+	if (bIsClear && bExceptClearedAnomaly)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
 		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
-		DataC->LoadedAnomalySet.Reset();
+		DataC->ClearedAnomalySet.Reset();
 		for (uint8 ID : LoadedHistory)
 		{
-			DataC->LoadedAnomalySet.Add(ID);
+			DataC->ClearedAnomalySet.Add(ID);
 		}
 	}
 
@@ -78,9 +78,9 @@ void UGameSystem::ApplyVerdict()
 	{
 		SubFloor();
 
-		if (bIsAnomalyRepeatable)
+		if (bExceptClearedAnomaly)
 		{
-			DataC->LoadedAnomalySet.Add(CurrentAnomalyID);
+			DataC->ClearedAnomalySet.Add(CurrentAnomalyID);
 			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
 		}
 	}
@@ -145,7 +145,7 @@ void UGameSystem::InitializePool()
 
 	ActIndex = 0;
 
-	if (bIsAnomalyRepeatable && !DataC->LoadedAnomalySet.IsEmpty() && DataC->LoadedAnomalySet.Num() < AnomalyCount)
+	if (bExceptClearedAnomaly && !DataC->ClearedAnomalySet.IsEmpty() && DataC->ClearedAnomalySet.Num() < AnomalyCount)
 	{
 		DataC->RemoveClearedAnomaly();
 	}

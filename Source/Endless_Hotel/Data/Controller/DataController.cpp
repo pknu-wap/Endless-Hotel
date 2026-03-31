@@ -75,18 +75,18 @@ void UDataController::RemoveClearedAnomaly()
 {
 	ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
 		{
-			return LoadedAnomalySet.Contains(Entry.AnomalyID);
+			return ClearedAnomalySet.Contains(Entry.AnomalyID);
 		});
 }
 
 void UDataController::ResetClearedAnomaly()
 {
-	LoadedAnomalySet.Empty();
+	ClearedAnomalySet.Empty();
 }
 
 uint8 UDataController::GetRemainingAnomalyCounts()
 {
-	return OriginAnomaly.Num() - LoadedAnomalySet.Num();
+	return OriginAnomaly.Num() - ClearedAnomalySet.Num();
 }
 
 #pragma endregion
