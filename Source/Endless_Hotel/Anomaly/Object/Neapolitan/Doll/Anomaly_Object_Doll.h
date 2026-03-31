@@ -37,6 +37,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
 
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> Sound_Doll_Fire;
+
 #pragma endregion
 
 #pragma region Burn
@@ -44,7 +50,7 @@ protected:
 protected:
 	FTimerHandle BurnHandle;
 
-	float BurnDuration = 4.f;
+	float BurnDuration = 5.f;
 	float BurnCurrentTime = 0.f;
 
 	bool bIsBurning = false;
