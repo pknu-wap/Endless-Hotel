@@ -11,5 +11,10 @@ void UUI_PopUp_HotelBlueprint::Input_ESC()
 
 	Super::Input_ESC();
 }
+void UUI_PopUp_HotelBlueprint::SetHotelBlueprint(AHotelBlueprint* InHotelBlueprint)
+{
+
+	HotelBlueprint = InHotelBlueprint;
+}
 
 #pragma endregion
