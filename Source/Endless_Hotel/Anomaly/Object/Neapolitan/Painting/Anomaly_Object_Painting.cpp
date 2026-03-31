@@ -37,7 +37,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
-	CorrectInteractID = 0;
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
 
@@ -69,7 +68,6 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	CorrectInteractID = 0;
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
@@ -83,7 +81,6 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
-	CorrectInteractID = 0;
 	Object->SetMaterial(1, BlurMaterial);
 }
 
@@ -98,7 +95,7 @@ void AAnomaly_Object_Painting::FrameTilt()
 		return;
 	}
 
-	CurrentTilt = RootComponent->GetRelativeRotation().Pitch;
+	CurrentTilt = GetActorRotation().Roll;
 
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())
@@ -109,8 +106,10 @@ void AAnomaly_Object_Painting::FrameTilt()
 	{
 		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 1.f);
 			
-		const FRotator NewRot(0.f, 0.f, CurrentTilt);
-		RootComponent->SetRelativeRotation(NewRot);
+		FRotator NewRot = GetActorRotation();
+		NewRot.Roll = CurrentTilt;
+
+		SetActorRotation(NewRot);
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
@@ -120,6 +119,20 @@ void AAnomaly_Object_Painting::FrameTilt()
 #pragma endregion
 
 #pragma region Interact
+
+void AAnomaly_Object_Painting::Interact_Implementation(AEHCharacter* Interacter)
+{
+	Super::Interact_Implementation(Interacter);
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::Rotate:
+		InteractRotate();
+		break;
+	}
+}
 
 void AAnomaly_Object_Painting::InteractRotate()
 {

@@ -3,7 +3,7 @@
 #include "Anomaly/Neapolitan/Maze/Anomaly_Maze.h"
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Anomaly/Object/Neapolitan/ShelfDoll/Anomaly_Object_ShelfDoll.h"
+#include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -90,8 +90,7 @@ void AAnomaly_Maze::MazeDoll()
 			continue;
 		}
 
-		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->ActivateDoll_Show();
-		Cast<AAnomaly_Object_ShelfDoll>(TargetActor)->SetInteraction();
+		Cast<AAnomaly_Object_Doll>(TargetActor)->ActivateDoll_Show();
 	}
 }
 

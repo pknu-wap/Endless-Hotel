@@ -15,7 +15,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/CapsuleComponent.h>
-#include <Components/PointLightComponent.h>
+#include <Components/SpotLightComponent.h>
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -35,18 +35,19 @@ void AEHPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
-
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
-
-	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
 
 	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
 
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
+	FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+	if (FlashLight)
+	{
+		FlashLight->SetVisibility(false);
+	}
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -319,17 +320,17 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 void AEHPlayerController::TurnPlayerHandLight()
 {
 	bHasFlash = USaveManager::LoadTutorialData().bHasFlash;
+
 	if (!bCanMove || !bHasFlash)
 	{
 		return;
 	}
-	
-	UPointLightComponent* Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
-	if (Lighter)
-	{
-		Lighter->ToggleVisibility();
 
+	if (!FlashLight)
+	{
+		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
 	}
+	FlashLight->SetVisibility(!FlashLight->IsVisible());
 }
 
 #pragma endregion

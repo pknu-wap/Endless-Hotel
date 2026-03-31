@@ -6,15 +6,6 @@
 #include <CoreMinimal.h>
 #include <Elevator.generated.h>
 
-UENUM(BlueprintType)
-enum class EElevatorState : uint8
-{
-    Idle,
-    DoorMoving,
-    Moving,
-    Finished
-};
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElevatorDelegate, bool, bIsStart);
 
 UCLASS()
@@ -74,9 +65,6 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "UI")
     TObjectPtr<UStaticMeshComponent> StickerPannel;
 
-private:
-    EElevatorState CurrentState = EElevatorState::Idle;
-
 #pragma endregion
 
 #pragma region LightSettings
@@ -110,7 +98,8 @@ protected:
 #pragma region MovementSettings
 
 public:
-    void MoveDoors(bool bIsOpening);
+    UFUNCTION()
+    void MoveDoors();
 
     UFUNCTION()
     void OnDoorTimelineUpdate(float Alpha);
@@ -119,14 +108,11 @@ public:
     void OnDoorTimelineFinished();
 
 protected:
-    void ElevatorMove(FVector Start, FVector End, bool bIsStart);
-    void ExecuteElevatorRide();
+    void MoveElevator(FVector Start, FVector End, bool bIsStart);
 
-    UFUNCTION()
-    void OpenDoorAfterMove();
-
-    UFUNCTION()
-    void BroadcastElevatorFinished();
+public:
+    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+    FName ElevatorID;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Movement")
@@ -153,18 +139,11 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
     float ElevatorMoveDuration = 3.0f;
 
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    bool bIsMapStartElevator;
-
 private:
     FTimerHandle MoveHandle;
 
-    FTimerHandle BoardingCloseTimerHandle;
-
-    bool bShouldMoveAfterClose = false;
-
     bool bIsDoorOpened = false;
-
+    bool bIsOpening = false;
     bool bIsDoorMoving = false;
 
 #pragma endregion
@@ -173,21 +152,35 @@ private:
 
 protected:
     void SetPlayerInputEnabled(bool bEnable);
-
-    void RotatePlayer();
-
-    void SmoothRotate(FRotator TargetRotation);
-
     void TakePlayer();
+
+    UFUNCTION()
+    void OnPlayerRotationUpdate(float Alpha);
+
+    UFUNCTION()
+    void OnPlayerRotationEnd();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Player")
     FRotator RotateAngle;
 
+    UPROPERTY(EditAnywhere, Category = "Player")
+    TObjectPtr<class USceneComponent> PlayerAnchor;
+    
+    UPROPERTY(EditAnywhere, Category = "Player")
+    TObjectPtr<class UArrowComponent> PlayerDirectionArrow;
+
+    UPROPERTY(VisibleAnywhere)
+    class UTimelineComponent* CameraRotationTimeline;
+
+    UPROPERTY(EditAnywhere, Category = "Elevator|Movement")
+    UCurveFloat* RotationCurve;
+
 private:
     FTimerHandle RotateHandle;
-
-    bool bIsPlayerInside = false;
+    FRotator StartControlRotation;
+    FRotator TargetControlRotation;
+    bool bIsPlayerInside = true;
 
 #pragma endregion
 
@@ -206,14 +199,11 @@ protected:
 #pragma region Subsystem
 
 protected:
-    void NotifySubsystemElevatorChoice();
+    void NotifySubsystem();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")
     bool bIsNormalElevator = true;
-
-private:
-    bool bChoiceSentThisRide = false;
 
 #pragma endregion
 
@@ -231,18 +221,12 @@ public:
 
 #pragma endregion
 
-#pragma region Reset
-
-    void EnableFloor();
-
-#pragma endregion
-
-
-#pragma region Anomaly
+#pragma region ElevatorFloor
 
 public:
-    void DisableFloor();
+    void DisableElevatorFloor();
 
 #pragma endregion
+
 
 };

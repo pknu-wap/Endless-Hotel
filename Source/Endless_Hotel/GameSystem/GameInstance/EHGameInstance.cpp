@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Anomaly/Base/Anomaly_Event.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>
@@ -34,7 +35,6 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 	}
 
 	FString TargetLevelPath = FString::Printf(TEXT("/Game/EndlessHotel/Map/%s"), *EnumConverter::GetEnumAsFString<ELevelType>(LevelName));
-	//FName TargetLevelName = FName(*TargetLevelPath);
 
 	bool bSuccess = false;
 	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
@@ -165,16 +165,9 @@ void UEHGameInstance::RelocatePlayer()
 		Player->SetActorTransform(DefaultTransform);
 		return;
 	}
+
 	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
-	//Player->SetActorTransform(AnomalyTransform);
-	Player->GetCharacterMovement()->StopMovementImmediately();//삭제
-	Player->GetCharacterMovement()->Velocity = FVector::ZeroVector;//삭제
-
-	Player->SetActorLocation(AnomalyTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);//삭제
-
-	FRotator TargetRotation = AnomalyTransform.GetRotation().Rotator();//삭제
-	Player->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);//삭제
-	Player->GetController()->SetControlRotation(TargetRotation); //삭제
+	Player->SetActorTransform(AnomalyTransform);
 }
 
 #pragma endregion

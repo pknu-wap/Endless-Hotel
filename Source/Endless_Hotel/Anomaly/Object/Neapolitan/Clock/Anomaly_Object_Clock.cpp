@@ -44,20 +44,16 @@ void AAnomaly_Object_Clock::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Clock::SetInteraction()
+void AAnomaly_Object_Clock::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::SetInteraction();
+	Super::Interact_Implementation(Interacter);
 
-	switch (AnomalyName)
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
 	{
-	case EAnomalyName::Clock_Ringing:
-		Component_Interact->AdditionalAction = ([this]()
-			{
-				if (bInTime)
-				{
-					StopRinging();
-				}
-			});
+	case EInteractType::TurnOff:
+		StopRinging();
 		break;
 	}
 }
@@ -98,6 +94,11 @@ void AAnomaly_Object_Clock::RingingClock()
 
 void AAnomaly_Object_Clock::StopRinging()
 {
+	if (!bInTime)
+	{
+		return;
+	}
+
 	AC_Ringing->OnAudioFinished.Clear();
 	AC_Ringing->Stop();
 	GetWorld()->GetTimerManager().ClearTimer(TurnOffHandle);

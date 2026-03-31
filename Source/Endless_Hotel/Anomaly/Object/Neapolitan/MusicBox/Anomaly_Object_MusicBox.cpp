@@ -61,6 +61,20 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma region Interact
 
+void AAnomaly_Object_MusicBox::Interact_Implementation(AEHCharacter* Interacter)
+{
+	Super::Interact_Implementation(Interacter);
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::TurnOff:
+		StopMusicBox();
+		break;
+	}
+}
+
 void AAnomaly_Object_MusicBox::StopMusicBox()
 {
 	if (!bWaitingInteract) return;
@@ -68,21 +82,6 @@ void AAnomaly_Object_MusicBox::StopMusicBox()
 	bWaitingInteract = false;
 
 	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
-}
-
-void AAnomaly_Object_MusicBox::SetInteraction()
-{
-	Super::SetInteraction();
-
-	switch (AnomalyName)
-	{
-	case EAnomalyName::MusicBox_Ringing:
-		Component_Interact->AdditionalAction = ([this]()
-			{
-				StopMusicBox();
-			});
-		break;
-	}
 }
 
 #pragma endregion

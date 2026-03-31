@@ -8,6 +8,7 @@
 #include <Engine/GameInstance.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
+#include <EngineUtils.h>
 
 #pragma region Base
 
@@ -24,7 +25,6 @@ void AAnomaly_Event::BeginPlay()
 	Super::BeginPlay();
 
 	TriggerBox->SetWorldTransform(Transform_TriggerBox);
-
 	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
@@ -115,21 +115,16 @@ void AAnomaly_Event::ScheduleAnomaly(float delay)
 
 void AAnomaly_Event::InteractSolveVerdict()
 {
-	//상호작용 기반 해결여부
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	bool bAllSolved = true;
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAnomaly_Object_Neapolitan::StaticClass(), FoundActors);
-
-	for (auto* FoundActor : FoundActors)
+	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
 	{
-		if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
+		auto* AnomalyObject = *Iter;
+		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
 		{
 			continue;
 		}
-
-		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		if (!AnomalyObject->bSolved)
 		{
 			bAllSolved = false;

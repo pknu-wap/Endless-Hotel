@@ -2,8 +2,6 @@
 
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Component/Interact/InteractComponent.h"
-#include <Components/WidgetComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
@@ -14,26 +12,17 @@
 AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    Pannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Button_Mesh"));
-    SetRootComponent(Pannel);
-
     Up_Button = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Up_Button"));
-    Up_Button->SetupAttachment(Pannel);
+    Up_Button->SetupAttachment(Object);
 
     Up_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Up_ButtonRing"));
-    Up_ButtonRing->SetupAttachment(Pannel);
+    Up_ButtonRing->SetupAttachment(Object);
 
     Down_Button = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_Button"));
-    Down_Button->SetupAttachment(Pannel);
+    Down_Button->SetupAttachment(Object);
 
     Down_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_ButtonRing"));
-    Down_ButtonRing->SetupAttachment(Pannel);
-
-    Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
-    Component_Widget->SetupAttachment(Pannel);
-    Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
-
-    Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
+    Down_ButtonRing->SetupAttachment(Object);
 }
 
 void AElevator_Button::BeginPlay()
@@ -47,7 +36,7 @@ void AElevator_Button::BeginPlay()
 
 #pragma region Interact
 
-void AElevator_Button::InteractElevator()
+void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
 {
     MoveToButtonPlayer();
 }

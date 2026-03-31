@@ -6,9 +6,38 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
-#include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
 
-#pragma region AnomalyObjectLinker
+#pragma region AnomalyObject
+
+void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params)
+{
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(AnomalyID);
+
+	if (TargetClasses.IsEmpty())
+	{
+		return;
+	}
+
+	for (auto& ObjClass : TargetClasses)
+	{
+		if (!ObjClass)
+		{
+			continue;
+		}
+
+		auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(ObjClass, SpawnTransform, Params);
+
+		if (NewObj)
+		{
+			NewObj->AnomalyID = AnomalyID;
+			NewObj->SetAnomalyName();
+
+			CurrentAnomaly->LinkedObjects.Add(NewObj);
+		}
+	}
+}
 
 void AAnomaly_Generator::AnomalyObjectLinker()
 {
@@ -21,28 +50,21 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 		return;
 	}
 
-	for (TSubclassOf<AAnomaly_Object_Base> TargetClass : TargetClasses)
+	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
 	{
-		if (!TargetClass) continue;
+		auto* AnomalyObject = *Iter;
 
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), TargetClass, FoundActors);
-
-		for (auto* FoundActor : FoundActors)
+		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
 		{
-			if (!IsValid(FoundActor) || FoundActor->GetLevel() != this->GetLevel())
-			{
-				continue;
-			}
+			continue;
+		}
 
-			auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-			if (AnomalyObject)
-			{
-				AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-				AnomalyObject->SetInteraction();
+		if (TargetClasses.Contains(AnomalyObject->GetClass()))
+		{
+			AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+			AnomalyObject->SetAnomalyName();
 
-				CurrentAnomaly->LinkedObjects.Add(FoundActor);
-			}
+			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 		}
 	}
 }
@@ -66,6 +88,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 		return SpawnAnomalyAtIndex(Index, SpawnLevel); // restart
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("[GameSystem] RemainAnomaly: %d"), DataC->GetRemainingAnomalyCounts());
 	TSoftClassPtr<AAnomaly_Event> SoftAnomalyClass = DataC->ActAnomaly[Index].AnomalyClass;
 	UClass* AnomalyClass = SoftAnomalyClass.LoadSynchronous();
 
@@ -99,16 +122,25 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
 	CurrentAnomaly = Spawned;
 
-	AnomalyObjectLinker();
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+
+	if (Spawned->bIsRuntimeSpawned)
+	{
+		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, CurrentAnomaly->ObjectTransform, Params);
+	}
+	else
+	{
+		AnomalyObjectLinker();
+	}
 
 	// Start
-	Spawned->SetAnomalyState();
+	CurrentAnomaly->SetAnomalyState();
 
 	// EventBroadCast
-	OnAnomalySpawned.Broadcast(Spawned);
-	Sub->CurrentAnomalyID = Spawned->AnomalyID;
-	Sub->CurrentAnomaly = Spawned;
-	return Spawned;
+	OnAnomalySpawned.Broadcast(CurrentAnomaly);
+	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyID;
+	Sub->CurrentAnomaly = CurrentAnomaly;
+	return CurrentAnomaly;
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)

@@ -5,19 +5,6 @@
 
 #pragma region Base
 
-AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
-	SetRootComponent(Object);
-
-	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component Widget"));
-	Component_Widget->SetupAttachment(RootComponent);
-	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
-
-	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
-}
-
 void AAnomaly_Object_Base::BeginPlay()
 {
 	Super::BeginPlay();
@@ -29,6 +16,31 @@ void AAnomaly_Object_Base::BeginPlay()
 	{
 		Component_Widget->SetActive(false);
 	}
+}
+
+#pragma endregion
+
+#pragma region Interact
+
+void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
+{
+    FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+    if (Info.InteractType == CorrectInteractType)
+    {
+        bSolved = !bSolved;
+    }
+    else
+    {
+        bSolved = false;
+    }
+
+    switch (Info.InteractType)
+    {
+    case EInteractType::Restore:
+        StartRestoring();
+        break;
+    }
 }
 
 #pragma endregion
@@ -77,9 +89,6 @@ void AAnomaly_Object_Base::FinishRestoring()
     {
         RootPrim->SetSimulatePhysics(false);
     }
-
-    //완료 로직 넣기!
-    //bSolved = true;
 }
 
 #pragma endregion

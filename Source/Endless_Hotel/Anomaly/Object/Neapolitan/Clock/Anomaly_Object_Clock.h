@@ -32,7 +32,7 @@ protected:
 #pragma region Interact
 
 protected:
-	virtual void SetInteraction() override;
+	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
 #pragma endregion
 

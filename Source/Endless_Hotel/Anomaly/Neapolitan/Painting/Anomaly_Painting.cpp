@@ -12,38 +12,19 @@ void AAnomaly_Painting::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Painting_Eye:
-		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
-			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->EyeFollowing();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
-			});
-		ActiveTrigger();
-		break;
-
-	case EAnomalyName::Painting_Blood:
-		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
-			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->BloodDropping();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
-			});
-		ActiveTrigger();
-		break;
-
-	case EAnomalyName::Painting_Blur:
-		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
-			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->BlurPaint();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, EInteractType::Rotate);
 		ScheduleAnomaly();
 		break;
-
+	case EAnomalyName::Painting_Blood:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BloodDropping, EInteractType::Rotate);
+		ActiveTrigger();
+		break;
+	case EAnomalyName::Painting_Blur:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BlurPaint, EInteractType::Rotate);
+		ScheduleAnomaly();
+		break;
 	case EAnomalyName::Painting_Tilt:
-		AnomalyAction = ([](AAnomaly_Object_Base* Portrait)
-			{
-				Cast<AAnomaly_Object_Painting>(Portrait)->FrameTilt();
-				Cast<AAnomaly_Object_Painting>(Portrait)->SetInteraction();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, EInteractType::Rotate);
 		ScheduleAnomaly(10.0f);
 		break;
 	}

@@ -39,42 +39,31 @@ void AAnomaly_Object_Phone::BeginPlay()
 
 #pragma region Interact
 
-void AAnomaly_Object_Phone::SetInteraction()
+void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 {
-	Super::SetInteraction();
+	Super::Interact_Implementation(Interacter);
 
-	switch (AnomalyName)
+	SM_Receiver->SetRelativeTransform(OriginalTrans);
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+
+	Timeline_Move->Stop();
+	Timeline_Ringing->Stop();
+
+	AC->Stop();
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
 	{
-	case EAnomalyName::Phone_Ringing:
-		RingingInteraction();
+	case EInteractType::TurnOff:
+		break;
+
+	case EInteractType::Call:
+		AC->SetSound(SW_Voice);
+		AC->Play();
 		break;
 	}
-}
-
-void AAnomaly_Object_Phone::RingingInteraction()
-{
-	Component_Interact->AdditionalAction = ([this]()
-		{
-			SM_Receiver->SetRelativeTransform(OriginalTrans);
-
-			GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-
-			Timeline_Move->Stop();
-			Timeline_Ringing->Stop();
-
-			AC->Stop();
-
-			switch (Component_Interact->GetSelectedInteraction().InteractType)
-			{
-			case EInteractType::TurnOff:
-				break;
-
-			case EInteractType::Call:
-				AC->SetSound(SW_Voice);
-				AC->Play();
-				break;
-			}
-		});
 }
 
 #pragma endregion

@@ -12,18 +12,12 @@ void AAnomaly_Ceiling::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Ceil_Rotate:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-			{
-				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->PlayCeilingRotate();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Ceiling::PlayCeilingRotate);
 		ScheduleAnomaly(10.0f);
 		break;
 
 	case EAnomalyName::Ceil_Blood:
-		AnomalyAction = ([](AAnomaly_Object_Base* AnomalyObject)
-			{
-				Cast<AAnomaly_Object_Ceiling>(AnomalyObject)->CeilingBloodDripping();
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Ceiling::CeilingBloodDripping);
 		ScheduleAnomaly(10.0f);
 		break;
 	}

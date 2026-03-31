@@ -2,18 +2,8 @@
 
 #include "Component/Interact/InteractComponent.h"
 #include "UI/World/Interact/UI_Interact.h"
-#include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
-#include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
-#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
-#include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
-#include "Actor/Elevator/Elevator_Button.h"
-#include "Component/Float/FloatComponent.h"
-#include "Player/Character/EHPlayer.h"
-#include <Components/StaticMeshComponent.h>
-#include <NiagaraComponent.h>
-#include <Materials/MaterialInstanceDynamic.h>
+#include "Interface/Interact/Interactable.h"
 #include <Components/WidgetComponent.h>
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -21,8 +11,7 @@ void UInteractComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
+	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
 }
 
@@ -74,7 +63,7 @@ void UInteractComponent::ChangeIndex(bool bUp)
 	}
 }
 
-void UInteractComponent::Interact()
+void UInteractComponent::Interact(AEHCharacter* Interacter)
 {
 	ShowInteracting(false);
 
@@ -82,54 +71,10 @@ void UInteractComponent::Interact()
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
 
-	switch (InteractInfo.InteractType)
-	{
-	case EInteractType::Restore:
-		Action_Restore();
-		break;
-
-	case EInteractType::Rotate:
-		Action_Rotate();
-		break;
-
-	case EInteractType::TurnOff:
-		Action_TurnOff();
-		break;
-
-	case EInteractType::Call:
-		Action_Call();
-		break;
-
-	case EInteractType::Burn:
-		Action_Burn();
-		break;
-
-	case EInteractType::DoorOpen:
-		Action_DoorOpen();
-		break;
-
-	case EInteractType::Elevator:
-		Action_Elevator();
-		return;
-	}
-
-	if (AdditionalAction)
-	{
-		AdditionalAction();
-	}
-
-	AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Owner);
-
-	if (AnomalyObject->CorrectInteractID == CurrentIndex)
-	{
-		AnomalyObject->bSolved = !AnomalyObject->bSolved;
-		return;
-	}
-
-	AnomalyObject->bSolved = false;
+	IInteractable::Execute_Interact(Owner.Get(), Interacter);
 }
 
-FInteractInfo UInteractComponent::GetSelectedInteraction()
+FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 {
 	if (List_Interact.IsEmpty())
 	{
@@ -161,152 +106,6 @@ void UInteractComponent::ShowInteractingHighlight(bool bActive)
 			Target->MarkRenderStateDirty();
 		}
 	}
-}
-
-#pragma endregion
-
-#pragma region Action
-
-void UInteractComponent::Action_Restore()
-{
-	Cast<AAnomaly_Object_Base>(Owner)->StartRestoring(2.5);
-}
-
-void UInteractComponent::Action_Rotate()
-{
-	Cast<AAnomaly_Object_Painting>(Owner)->InteractRotate();
-}
-
-void UInteractComponent::Action_TurnOff()
-{
-	
-}
-
-void UInteractComponent::Action_Call()
-{
-
-}
-
-void UInteractComponent::Action_Burn()
-{
-	SetupBurnTargets();
-	StartBurning(BurnDuration);
-}
-
-void UInteractComponent::Action_Elevator()
-{
-	Cast<AElevator_Button>(Owner)->InteractElevator();
-}
-
-void UInteractComponent::Action_DoorOpen()
-{
-	Cast<AAnomaly_Object_Door>(Owner)->MoveToHandlePlayer();
-}
-
-#pragma endregion
-
-#pragma region Burn
-
-void UInteractComponent::SetupBurnTargets()
-{
-	if (!BurnMesh.IsValid())
-	{
-		TArray<UStaticMeshComponent*> Meshes;
-		Owner->GetComponents<UStaticMeshComponent>(OUT Meshes);
-
-		for (UStaticMeshComponent* M : Meshes)
-		{
-			if (M && M->ComponentHasTag(TEXT("BurnMesh")))
-			{
-				BurnMesh = M;
-				break;
-			}
-		}
-
-
-	}
-	if (!BurnNiagara.IsValid())
-	{
-		TArray<UNiagaraComponent*> Nias;
-		Owner->GetComponents<UNiagaraComponent>(OUT Nias);
-
-		for (UNiagaraComponent* N : Nias)
-		{
-			if (N && N->ComponentHasTag(TEXT("BurnNiagara")))
-			{
-				BurnNiagara = N;
-				break;
-			}
-
-		}
-	}
-	if (BurnMesh.IsValid())
-	{
-		if (!BurnMID)
-		{
-			BurnMID = BurnMesh->CreateAndSetMaterialInstanceDynamic(0);
-		}
-
-		if (BurnMID)
-		{
-			if (DissolveTexture)
-			{
-				BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
-			}
-			BurnMID->SetVectorParameterValue(Param_EdgeColor, EdgeColor * ColorBoost);
-			BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
-		}
-	}
-}
-
-void UInteractComponent::StartBurning(float Duration)
-{
-	bIsBurning = true;
-	BurnCurrentTime = 0.f;
-	BurnDuration = FMath::Max(0.01f, Duration);
-
-	if (BurnNiagara.IsValid())
-	{
-		BurnNiagara->Activate(true);
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &UInteractComponent::BurnTick, 0.02f, true);
-}
-
-void UInteractComponent::BurnTick()
-{
-	BurnCurrentTime += 0.02f;
-	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-
-	if (BurnMID)
-	{
-		BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
-	}
-
-	if (BurnNiagara.IsValid())
-	{
-		BurnNiagara->SetVariableFloat(NiagaraVar_Alpha, Alpha);
-		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
-	}
-
-	if (Alpha >= 1.f)
-	{
-		FinishedBurning();
-	}
-}
-
-void UInteractComponent::FinishedBurning()
-{
-	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
-	bIsBurning = false;
-
-	if (BurnNiagara.IsValid())
-	{
-		BurnNiagara->Deactivate();
-	}
-
-	Owner->SetActorHiddenInGame(true);
-	Owner->SetActorEnableCollision(false);
 }
 
 #pragma endregion

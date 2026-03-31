@@ -3,19 +3,20 @@
 #include "Anomaly/EightExit/Elevator/Anomaly_Elevator.h"
 #include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
 
 #pragma region Base
 
 void AAnomaly_Elevator::BeginPlay()
 {
     Super::BeginPlay();
-
-    TArray<AActor*> FoundActors;
-    UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AElevator::StaticClass(), FName("TargetElevator"), FoundActors);
-
-    if (FoundActors.Num() > 0)
+    
+    for (TActorIterator<AElevator> Iter(GetWorld()); Iter; ++Iter)
     {
-        TargetElevator = Cast<AElevator>(FoundActors[0]);
+        if (Iter->ElevatorID == TargetAnomalyElevatorID)
+        {
+            TargetElevator = *Iter;
+        }
     }
 }
 
@@ -29,7 +30,7 @@ void AAnomaly_Elevator::SetAnomalyState()
     switch (AnomalyName)
     {
     case EAnomalyName::ElevatorNoFloor:
-        TargetElevator->DisableFloor();
+        TargetElevator->DisableElevatorFloor();
         ScheduleAnomaly();
         break;
     }
