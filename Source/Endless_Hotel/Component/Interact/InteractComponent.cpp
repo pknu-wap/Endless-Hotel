@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Component/Interact/InteractComponent.h"
-#include "UI/World/Interact/UI_Interact.h"
+#include "UI/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
 #include <Components/WidgetComponent.h>
 

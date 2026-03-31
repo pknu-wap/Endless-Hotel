@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Actor/Interact/InteractBase.h"
-#include "Component/Interact/InteractComponent.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Base.generated.h>

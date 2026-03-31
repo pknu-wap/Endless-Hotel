@@ -85,7 +85,7 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 		Image_Brightness->SetColorAndOpacity(Color);
 
 		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget()))
+		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentHUDWidget()))
 		{
 			UI_InGame->SetBrightness(AlphaValue);
 		}

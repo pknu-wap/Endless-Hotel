@@ -5,7 +5,42 @@
 #include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <GameFramework/SaveGame.h>
+#include <Kismet/GameplayStatics.h>
 #include <SaveManager.generated.h>
+
+#pragma region Macro
+
+#define DATA_SAVE_DEFINITION(ReturnType, TargetData) \
+static ReturnType Load##TargetData() \
+{ \
+	FString SlotName = TEXT(#TargetData); \
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(SlotName, 0)); \
+	ReturnType SaveData{}; \
+	if (!SaveManager) \
+	{ \
+		return SaveData; \
+	} \
+	SaveData = SaveManager->TargetData; \
+	return SaveData; \
+} \
+static void Save##TargetData(const ReturnType& Data) \
+{ \
+	FString SlotName = TEXT(#TargetData); \
+	USaveManager* SaveManager = Cast<USaveManager>(UGameplayStatics::LoadGameFromSlot(SlotName, 0)); \
+    if (!SaveManager) \
+    { \
+        SaveManager = Cast<USaveManager>(UGameplayStatics::CreateSaveGameObject(USaveManager::StaticClass())); \
+    } \
+	SaveManager->TargetData = Data; \
+	UGameplayStatics::SaveGameToSlot(SaveManager, SlotName, 0); \
+} \
+static void Delete##TargetData() \
+{ \
+	FString SlotName = TEXT(#TargetData); \
+	UGameplayStatics::DeleteGameInSlot(SlotName, 0); \
+}
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API USaveManager : public USaveGame
@@ -15,8 +50,7 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 #pragma region Setting
 
 public:
-	static FSaveData_Setting LoadSettingData();
-	static void SaveSettingData(const FSaveData_Setting& Data);
+	DATA_SAVE_DEFINITION(FSaveData_Setting, Data_Setting);
 
 protected:
 	UPROPERTY(SaveGame)
@@ -27,8 +61,7 @@ protected:
 #pragma region Key
 
 public:
-	static FSaveData_Key LoadKeyData();
-	static void SaveKeyData(const FSaveData_Key& Data);
+	DATA_SAVE_DEFINITION(FSaveData_Key, Data_Key);
 
 protected:
 	UPROPERTY(SaveGame)
@@ -39,13 +72,11 @@ protected:
 #pragma region Clear
 
 public:
-	static bool LoadGameClearData();
-	static void SaveGameClearData();
-	static void DeleteGameClearData();
+	DATA_SAVE_DEFINITION(bool, Data_GameClear);
 
 protected:
 	UPROPERTY(SaveGame)
-	bool bGameClearData = false;
+	bool Data_GameClear = false;
 
 #pragma endregion
 
@@ -64,12 +95,22 @@ protected:
 #pragma region Tutorial
 
 public:
-	static FSaveData_Tutorial LoadTutorialData();
-	static void SaveTutorialData(const FSaveData_Tutorial& Data);
+	DATA_SAVE_DEFINITION(FSaveData_Tutorial, Data_Tutorial);
 
 protected:
 	UPROPERTY(SaveGame)
 	FSaveData_Tutorial Data_Tutorial;
+
+#pragma endregion
+
+#pragma region Manual
+
+public:
+	DATA_SAVE_DEFINITION(FSaveData_Manual, Data_Manual);
+
+protected:
+	UPROPERTY(SaveGame)
+	FSaveData_Manual Data_Manual;
 
 #pragma endregion
 

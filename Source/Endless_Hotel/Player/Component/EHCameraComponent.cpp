@@ -78,7 +78,7 @@ void UEHCameraComponent::StartEyeEffect(bool bIsOpen)
 	UGameInstance* GameInstance = World->GetGameInstance();
 
 	UUI_Controller* UICon = GameInstance->GetSubsystem<UUI_Controller>();
-	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentBaseWidget());
+	UUI_HUD_InGame* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentHUDWidget());
 
 	USoundController* SoundCon = GameInstance->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);

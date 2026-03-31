@@ -5,7 +5,14 @@
 #include "UI/Button/UI_Button_Base.h"
 #include "Type/UI/Type_UI_Key.h"
 #include <CoreMinimal.h>
+#include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Key.generated.h>
+
+#pragma region Declare
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FKeyHighlight);
+
+#pragma endregion
 
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Button_Key : public UUI_Button_Base
@@ -27,6 +34,14 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+protected:
+	UFUNCTION()
+	void ResetInputButtons();
+
+#pragma endregion
+
 #pragma region Selector
 
 protected:
@@ -44,7 +59,11 @@ protected:
 #pragma region Highlight
 
 public:
+	UFUNCTION()
 	void SetSavedOption();
+
+protected:
+	static FKeyHighlight Highlight;
 
 #pragma endregion
 

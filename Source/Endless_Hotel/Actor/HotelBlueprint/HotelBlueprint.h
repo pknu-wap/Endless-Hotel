@@ -10,15 +10,11 @@ UCLASS()
 class ENDLESS_HOTEL_API AHotelBlueprint : public AInteractBase
 {
 	GENERATED_BODY()
+	
+#pragma region Base
 
-#pragma region Reference
-
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class AEHCharacter> Player;
-
-	UPROPERTY()
-	TWeakObjectPtr<class USpringArmComponent> Comp_SpringArm;
+public:
+	AHotelBlueprint(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion
 
@@ -29,33 +25,11 @@ public:
 
 #pragma endregion
 
-#pragma region Widget
+#pragma region Component
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Widget")
-	TSubclassOf<class UUI_Base> UI_HotelBlueprint_Class;
-
-#pragma endregion
-
-#pragma region Move
-
-public:
-	void RestoreCamera();
-
-protected:
-	void MoveToBlueprint(AEHCharacter* Interacter);
-
-	UFUNCTION()
-	void OnMoveCompleted();
-
-	UFUNCTION()
-	void OnRestoreCompleted();
-
-protected:
-	FVector OriginalLoc;
-	FRotator OriginalRot;
-
-	FVector AdjustOffset;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UReadComponent> Comp_Read;
 
 #pragma endregion
 

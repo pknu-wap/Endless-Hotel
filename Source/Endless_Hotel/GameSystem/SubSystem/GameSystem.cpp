@@ -33,8 +33,8 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	Floor = 9;
 	ActIndex = 0;
 
-	bIsClear = USaveManager::LoadGameClearData();
-	FSaveData_Setting Data_Setting = USaveManager::LoadSettingData();
+	bIsClear = USaveManager::LoadData_GameClear();
+	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	if (bIsClear && bExceptClearedAnomaly)
@@ -176,7 +176,7 @@ void UGameSystem::GameClear()
 	bIsClear = true;
 	Floor = 9;
 
-	USaveManager::SaveGameClearData();
+	USaveManager::SaveData_GameClear(true);
 }
 
 #pragma endregion
