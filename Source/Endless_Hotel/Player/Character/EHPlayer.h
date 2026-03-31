@@ -6,7 +6,6 @@
 #include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
-#include <Components/PointLightComponent.h>
 #include <EHPlayer.generated.h>
 
 #pragma region Declare
@@ -43,14 +42,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<class USpringArmComponent> SpringArm;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
-	TObjectPtr<class UPointLightComponent> HandLight;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<class UCameraComponent> Camera;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> Third_Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lighter")
+	TObjectPtr<class UPointLightComponent> FlashLight;
+
+
 
 #pragma endregion
 

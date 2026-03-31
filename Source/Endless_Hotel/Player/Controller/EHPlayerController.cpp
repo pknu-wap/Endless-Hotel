@@ -35,19 +35,18 @@ void AEHPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
+
+	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
 
 	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
 
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
-	HandLight = EHPlayer->FindComponentByClass<UPointLightComponent>();
-	if (HandLight)
-	{
-		HandLight->SetVisibility(false);
-	}
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -319,20 +318,17 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 
 void AEHPlayerController::TurnPlayerHandLight()
 {
-	if (!bCanMove) {
+	bHasFlash = USaveManager::LoadTutorialData().bHasFlash;
+	if (!bCanMove || !bHasFlash)
+	{
 		return;
 	}
-
-	if (!HandLight)
+	
+	UPointLightComponent* Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
+	if (Lighter)
 	{
-		HandLight= EHPlayer->FindComponentByClass<UPointLightComponent>();
-	}
-	HandLight->SetVisibility(!HandLight->IsVisible());
+		Lighter->ToggleVisibility();
 
-	if (HandLight)
-	{
-		bool bNewVisibility = !HandLight->IsVisible();
-		HandLight->SetVisibility(bNewVisibility);
 	}
 }
 
@@ -342,9 +338,8 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 void AEHPlayerController::PlayDeathSequence()
 {
-	if (!EHPlayer.IsValid()) {
-		return;
-	}
+	if (!EHPlayer.IsValid()) return;
+
 	bIsPlayerDead = true;
 	SetPlayerInputAble(false);
 }
@@ -444,7 +439,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 		return;
 	}
 
-	CachedInteractComp->Interact();
+	CachedInteractComp->Interact(EHPlayer.Get());
 }
 
 void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
@@ -470,6 +465,15 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
+
+	if (bAble)
+	{
+		ResetIgnoreLookInput();
+	}
+	else
+	{
+		SetIgnoreLookInput(true);
+	}
 }
 
 #pragma endregion

@@ -150,8 +150,6 @@ protected:
 	// Helper function to get camera
 	UCameraComponent* GetPlayerCamera() const;
 
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<class UPointLightComponent> HandLight;
 
 #pragma endregion
 
@@ -169,6 +167,7 @@ public:
 	bool bIsButtonPressing = false;
 	bool bIsPlayerDoorOpening = false;
 	bool bIsPlayerPushingDoor = false;
+	bool bHasFlash = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }
