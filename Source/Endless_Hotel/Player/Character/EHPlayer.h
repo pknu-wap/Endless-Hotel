@@ -51,8 +51,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lighter")
 	TObjectPtr<class UPointLightComponent> FlashLight;
 
-
-
 #pragma endregion
 
 #pragma region Interact
