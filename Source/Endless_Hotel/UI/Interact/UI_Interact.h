@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "UI/World/UI_World_Base.h"
+#include "UI/UI_Base.h"
 #include <CoreMinimal.h>
 #include <UI_Interact.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_Interact : public UUI_World_Base
+class ENDLESS_HOTEL_API UUI_Interact : public UUI_Base
 {
 	GENERATED_BODY()
 

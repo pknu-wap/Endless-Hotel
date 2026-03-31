@@ -7,11 +7,10 @@
 UENUM(BlueprintType)
 enum class EWidgetType : uint8
 {
+	None		UMETA(DisplayName = "None"),
 	HUD			UMETA(DisplayName = "HUD"),
 	PopUp		UMETA(DisplayName = "PopUp"),
-	PopUp_Pause UMETA(DisplayName = "PopUp_Pause"),
-	World		UMETA(DisplayName = "World"),
-	Cover		UMETA(DisplayName = "Cover")
+	PopUp_Pause UMETA(DisplayName = "PopUp_Pause")
 };
 
 UENUM(BlueprintType)

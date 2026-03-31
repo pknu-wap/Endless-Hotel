@@ -6,6 +6,12 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/InputKeySelector.h>
 
+#pragma region Declare
+
+FKeyHighlight UUI_Button_Key::Highlight;
+
+#pragma endregion
+
 #pragma region Bind
 
 void UUI_Button_Key::BindEvents()
@@ -24,6 +30,26 @@ void UUI_Button_Key::BindEvents()
 		Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
 		Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
 	}
+
+	OnClicked.RemoveDynamic(this, &ThisClass::ResetInputButtons);
+	OnClicked.AddDynamic(this, &ThisClass::ResetInputButtons);
+
+	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
+	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void UUI_Button_Key::ResetInputButtons()
+{
+	USaveManager::DeleteData_Key();
+
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->SetKeyMapping(SettingInfo, FKey());
+
+	Highlight.Broadcast();
 }
 
 #pragma endregion
@@ -34,7 +60,7 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 {
 	SettingInfo.Value = SelectedChord.Key;
 
-	FSaveData_Key Data = USaveManager::LoadKeyData();
+	FSaveData_Key Data = USaveManager::LoadData_Key();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
@@ -86,7 +112,7 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 		break;
 	}
 	
-	USaveManager::SaveKeyData(Data);
+	USaveManager::SaveData_Key(Data);
 
 	ConvertLongText(SelectedChord);
 }
@@ -146,7 +172,7 @@ void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
 
 void UUI_Button_Key::SetSavedOption()
 {
-	FSaveData_Key Data = USaveManager::LoadKeyData();
+	FSaveData_Key Data = USaveManager::LoadData_Key();
 	
 	switch (SettingInfo.Type)
 	{

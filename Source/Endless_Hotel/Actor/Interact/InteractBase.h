@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Interface/Interact/Interactable.h"
+#include "Component/Interact/InteractComponent.h"
 #include <CoreMinimal.h>
 #include <InteractBase.generated.h>
 

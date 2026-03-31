@@ -1,7 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
-#include "UI/Miscellaneous/PaintingBlur/UI_PaintingBlur.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>

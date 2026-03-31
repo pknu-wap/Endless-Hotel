@@ -38,7 +38,7 @@ public:
 
 #pragma region Highlight
 
-protected:
+private:
 	UFUNCTION()
 	void HighlightButtons();
 
@@ -61,7 +61,7 @@ public:
 	void ShowCategoryOption(ESettingCategory Target);
 	void SetHideBoxVisibility(ESlateVisibility Option);
 
-protected:
+private:
 	UFUNCTION()
 	void Click_Normal();
 
@@ -106,7 +106,7 @@ protected:
 public:
 	void StartRotateGear(float Target);
 
-protected:
+private:
 	void RotateGear(float InDeltaTime);
 	const float GetShortestAddAngle(int32 Cur, int32 Tar);
 
@@ -114,6 +114,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUserWidget> UI_Gear;
 
+private:
 	bool bRotateGear = false;
 
 	float CurrentAngle = 0;
@@ -130,7 +131,7 @@ public:
 
 #pragma region Control
 
-protected:
+private:
 	UFUNCTION()
 	void Click_Apply();
 

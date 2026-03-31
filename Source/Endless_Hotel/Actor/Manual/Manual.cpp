@@ -1,11 +1,11 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/HotelBlueprint/HotelBlueprint.h"
+#include "Actor/Manual/Manual.h"
 #include "Component/Read/ReadComponent.h"
 
 #pragma region Base
 
-AHotelBlueprint::AHotelBlueprint(const FObjectInitializer& ObjectInitializer)
+AManual::AManual(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Comp_Read = CreateDefaultSubobject<UReadComponent>(TEXT("Comp_Read"));
@@ -15,7 +15,7 @@ AHotelBlueprint::AHotelBlueprint(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Interact
 
-void AHotelBlueprint::Interact_Implementation(AEHCharacter* Interacter)
+void AManual::Interact_Implementation(AEHCharacter* Interacter)
 {
 	Super::Interact_Implementation(Interacter);
 
