@@ -109,7 +109,7 @@ void AAnomaly_Object_Painting::FrameTilt()
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
 		}
-	}), 0.02f, true);
+	}), 0.5f, true);
 }
 #pragma endregion
 
