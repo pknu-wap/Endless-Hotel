@@ -15,7 +15,7 @@
 #include <GameFramework/CharacterMovementComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/CapsuleComponent.h>
-#include <Components/SpotLightComponent.h>
+#include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -38,16 +38,14 @@ void AEHPlayerController::BeginPlay()
 	EHPlayer = Cast<AEHPlayer>(GetCharacter());
 	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
 
+	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
+
 	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
 
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
-	FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
-	if (FlashLight)
-	{
-		FlashLight->SetVisibility(false);
-	}
+	
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -326,11 +324,12 @@ void AEHPlayerController::TurnPlayerHandLight()
 		return;
 	}
 
-	if (!FlashLight)
+	auto Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
+
+	if (Lighter)
 	{
-		FlashLight = EHPlayer->FindComponentByClass<USpotLightComponent>();
+		Lighter->ToggleVisibility();
 	}
-	FlashLight->SetVisibility(!FlashLight->IsVisible());
 }
 
 #pragma endregion

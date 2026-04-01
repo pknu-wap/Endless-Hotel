@@ -9,6 +9,7 @@
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
+#include <Components/PointLightComponent.h>
 
 #pragma region Base
 
@@ -31,6 +32,12 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	HeartbeatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartbeatAudioComponent"));
 	HeartbeatAudioComponent->SetupAttachment(RootComponent);
 	HeartbeatAudioComponent->bAutoActivate = false;
+
+	FlashLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("FlashLight"));
+	FlashLight->SetVisibility(false);
+	FlashLight->SetupAttachment(Camera);
+
+
 
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
 
