@@ -1,4 +1,4 @@
-﻿// Copyright by 2026-1 WAP Game 2 team
+﻿r// Copyright by 2026-1 WAP Game 2 team
 
 #include "UI/PopUp/HotelBlueprint/UI_PopUp_HotelBlueprint.h"
 #include "Actor/HotelBlueprint/HotelBlueprint.h"
@@ -14,7 +14,7 @@ void UUI_PopUp_HotelBlueprint::Input_ESC()
 void UUI_PopUp_HotelBlueprint::SetHotelBlueprint(AHotelBlueprint* InHotelBlueprint)
 {
 
-	HotelBlueprint = InHotelBlueprint;
+	HotelBlueprint = HB;
 }
 
 #pragma endregion
