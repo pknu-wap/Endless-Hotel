@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> Third_Mesh;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lighter")
+	TObjectPtr<class UPointLightComponent> FlashLight;
+
 #pragma endregion
 
 #pragma region Interact
