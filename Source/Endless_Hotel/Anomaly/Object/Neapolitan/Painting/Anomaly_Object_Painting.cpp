@@ -1,7 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
-#include "UI/Miscellaneous/PaintingBlur/UI_PaintingBlur.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -90,12 +89,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	if (!RootComponent)
-	{
-		return;
-	}
-
-	CurrentTilt = GetActorRotation().Roll;
+	CurrentTilt = Object->GetRelativeRotation().Roll;
 
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
 	if (FMath::RandBool())
@@ -106,10 +100,11 @@ void AAnomaly_Object_Painting::FrameTilt()
 	{
 		CurrentTilt = FMath::FInterpConstantTo(CurrentTilt, TargetTilt, GetWorld()->GetDeltaSeconds(), 1.f);
 			
-		FRotator NewRot = GetActorRotation();
+		FRotator NewRot = Object->GetRelativeRotation();
 		NewRot.Roll = CurrentTilt;
 
-		SetActorRotation(NewRot);
+		Object->SetRelativeRotation(NewRot);
+
 		if (FMath::IsNearlyEqual(CurrentTilt, TargetTilt, 0.1f))
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);

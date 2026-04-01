@@ -149,3 +149,22 @@ public:
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;
 };
+
+USTRUCT()
+struct FSaveData_Manual
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(SaveGame)
+	bool bActiveRule2 = false;
+
+	UPROPERTY(SaveGame)
+	bool bActiveRule3 = false;
+
+	UPROPERTY(SaveGame)
+	bool bActiveRule4 = false;
+
+	UPROPERTY(SaveGame)
+	bool bActiveRule5 = false;
+};

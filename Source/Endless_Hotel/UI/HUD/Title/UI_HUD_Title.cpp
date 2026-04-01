@@ -99,7 +99,7 @@ void UUI_HUD_Title::PlayButtonAnim_Unhover(ETitleButtonType ButtonType)
 
 void UUI_HUD_Title::SetLogoImage()
 {
-	if (!USaveManager::LoadGameClearData())
+	if (!USaveManager::LoadData_GameClear())
 	{
 		return;
 	}

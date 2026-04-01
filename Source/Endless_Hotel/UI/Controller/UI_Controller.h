@@ -20,10 +20,10 @@ public:
 	void ClearAllWidget();
 
 public:
-	class UUI_Base* GetCurrentBaseWidget() { return PopUpWidgets[0]; }
+	class UUI_Base* GetCurrentHUDWidget() { return PopUpWidgets[0]; }
 	class UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
 
-protected:
+private:
 	UPROPERTY()
 	TArray<TObjectPtr<class UUI_Base>> PopUpWidgets;
 
@@ -31,17 +31,17 @@ protected:
 
 #pragma region Input
 
-protected:
+private:
 	void SetInputMode(const EInputModeType& InputMode);
 
 #pragma endregion
 
-#pragma region Adjust
+#pragma region ZOrder
 
-protected:
+private:
 	void AdjustZOrder(bool bUp);
 
-protected:
+private:
 	const int32 Max_ZOrder = 100;
 	const int32 Min_ZOrder = 0;
 

@@ -52,7 +52,7 @@ void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 
 void UUI_PopUp_Setting::HighlightButtons()
 {
-	Data_Setting = USaveManager::LoadSettingData();
+	Data_Setting = USaveManager::LoadData_Setting();
 
 	UI_Screen->HighlightOptions();
 	UI_Grapic->HighlightOptions();
@@ -215,7 +215,7 @@ void UUI_PopUp_Setting::Click_Apply()
 	SettingHandle->SaveSettings();
 	SettingHandle->ApplySettings(false);
 
-	USaveManager::SaveSettingData(Data_Setting);
+	USaveManager::SaveData_Setting(Data_Setting);
 
 	Input_ESC();
 }

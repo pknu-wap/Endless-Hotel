@@ -98,7 +98,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
 	TSubclassOf<class UUI_Base> UI_HUD_MainMenu;
 
-	UPROPERTY(EditAnywhere, Category = "Widget|Cover")
+	UPROPERTY(EditAnywhere, Category = "Widget|PopUp")
 	TSubclassOf<class UUI_Base> UI_Loading;
 
 #pragma endregion
