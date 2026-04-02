@@ -11,6 +11,16 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Cart : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
+public:
+	AAnomaly_Object_Cart(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
+
 #pragma region Cart
 
 public:
@@ -20,6 +30,9 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<USoundBase> Sound_Move = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> SM_Cart_Wheel;
 
 #pragma endregion
 
@@ -47,4 +60,25 @@ protected:
 	void FinishMove();
 
 #pragma endregion
+
+#pragma region WheelTimeline
+
+protected:
+	UFUNCTION()
+	void StartWheelSpin();
+
+	UFUNCTION()
+	void UpdateWheelSpin(float Value);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_WheelSpin;
+
+	UPROPERTY(EditAnywhere, Category = "Cart")
+	TObjectPtr<class UCurveFloat> CV_WheelSpin;
+
+	FRotator OriginalWheelRotation;
+
+#pragma endregion
+
 };
