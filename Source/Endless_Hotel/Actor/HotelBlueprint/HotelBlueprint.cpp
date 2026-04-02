@@ -9,6 +9,8 @@ AHotelBlueprint::AHotelBlueprint(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Comp_Read = CreateDefaultSubobject<UReadComponent>(TEXT("Comp_Read"));
+
+	Comp_Tutorial = CreateDefaultSubobject<UTutorialComponent>(TEXT("Comp_Tutorial"));
 }
 
 #pragma endregion

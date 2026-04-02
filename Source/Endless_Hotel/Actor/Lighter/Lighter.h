@@ -13,6 +13,9 @@ class ENDLESS_HOTEL_API ALighter : public AInteractBase
 
 #pragma region Base
 
+public:
+	ALighter(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -22,6 +25,14 @@ protected:
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+
+#pragma endregion
+
+#pragma region Component
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTutorialComponent> Comp_Tutorial;
 
 #pragma endregion
 

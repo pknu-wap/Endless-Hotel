@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UReadComponent> Comp_Read;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UTutorialComponent> Comp_Tutorial;
+
 #pragma endregion
 
 };

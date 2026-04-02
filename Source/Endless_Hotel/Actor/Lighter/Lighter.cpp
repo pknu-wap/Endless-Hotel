@@ -11,6 +11,12 @@
 
 #pragma region Base
 
+ALighter::ALighter(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	Comp_Tutorial = CreateDefaultSubobject<UTutorialComponent>(TEXT("Comp_Tutorial"));
+}
+
 void ALighter::BeginPlay()
 {
 	Super::BeginPlay();
