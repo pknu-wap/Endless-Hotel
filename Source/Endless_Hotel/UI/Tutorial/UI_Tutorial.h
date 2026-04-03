@@ -14,11 +14,15 @@ class ENDLESS_HOTEL_API UUI_Tutorial : public UUI_Base
 #pragma region Text
 
 public:
-	void SetTargetName(const FText& Name);
+	void SetTargetKey(const FText& Name);
+	void SetTargetDescription(const FText& Name);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text_TargetName;
+	TObjectPtr<class UTextBlock> Text_Key;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Description;
 
 #pragma endregion
 

@@ -4,6 +4,7 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "UI/Tutorial/UI_Tutorial.h"
 #include <Components/WidgetComponent.h>
+#include <Components/BoxComponent.h>
 
 #pragma region Base
 
@@ -12,12 +13,25 @@ void UTutorialComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Comp_Widget = Owner->FindComponentByTag<UWidgetComponent>(FName("Tutorial"));
+	Comp_Widget->SetVisibility(false);
 	Comp_Widget->InitWidget();
 
 	auto* UI_Tutorial = Cast<UUI_Tutorial>(Comp_Widget->GetUserWidgetObject());
-	UI_Tutorial->SetTargetName(TargetName);
+	UI_Tutorial->SetTargetKey(TargetKey);
+	UI_Tutorial->SetTargetDescription(TargetDescription);
 
-	ShowTutorialWidget();
+	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
+
+	if (!Data.bIsFirstPlay)
+	{
+		return;
+	}
+
+	TriggerBox = NewObject<UBoxComponent>(Owner.Get());
+	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	TriggerBox->SetWorldTransform(TriggerTrans);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->RegisterComponent();
 }
 
 #pragma endregion
@@ -26,18 +40,10 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
-	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
-
-	if (!Data.bIsFirstPlay)
-	{
-		Comp_Widget->SetVisibility(false);
-		return;
-	}
-
-	constexpr float DisappearDuration = 10.f;
+	Comp_Widget->SetVisibility(true);
 
 	FTimerHandle DisappearHandle;
-	GetWorld()->GetTimerManager().SetTimer(DisappearHandle, this, &ThisClass::DisappearTutorialWidget, DisappearDuration, false);
+	GetWorld()->GetTimerManager().SetTimer(DisappearHandle, this, &ThisClass::DisappearTutorialWidget, WidgetDuration, false);
 }
 
 void UTutorialComponent::DisappearTutorialWidget()
@@ -48,6 +54,17 @@ void UTutorialComponent::DisappearTutorialWidget()
 	USaveManager::SaveData_Tutorial(Data);
 
 	Comp_Widget->SetVisibility(false);
+}
+
+#pragma endregion
+
+#pragma region Trigger
+
+void UTutorialComponent::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ShowTutorialWidget();
+
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion
