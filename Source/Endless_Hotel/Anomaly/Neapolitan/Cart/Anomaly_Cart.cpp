@@ -13,7 +13,7 @@ void AAnomaly_Cart::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Cart_Moving:
-		SetupAnomalyAction(&AAnomaly_Object_Cart::CartMoving);	//이건 상호작용 뭐임? 복구?
+		SetupAnomalyAction(&AAnomaly_Object_Cart::CartMoving, EInteractType::Restore); 
 		ScheduleAnomaly(20);
 		break;
 	}

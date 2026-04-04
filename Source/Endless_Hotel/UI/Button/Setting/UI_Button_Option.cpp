@@ -278,11 +278,11 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 	switch (OptionInfo.Value)
 	{
 	case EOptionValue::On:
-		Sub->bIsAnomalyRepeatable = true;
+		Sub->bExceptClearedAnomaly = true;
 		break;
 
 	case EOptionValue::Off:
-		Sub->bIsAnomalyRepeatable = false;
+		Sub->bExceptClearedAnomaly = false;
 		break;
 	}
 }

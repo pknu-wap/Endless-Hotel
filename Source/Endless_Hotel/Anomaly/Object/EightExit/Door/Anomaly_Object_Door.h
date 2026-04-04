@@ -122,20 +122,33 @@ protected:
 protected:
 	void StartRotateOpen();
 	void StartRotateClose();
-	void UpdateRotate();
+
+	UFUNCTION()
+	void UpdateRotateOpen(float Value);
+
+	UFUNCTION()
+	void UpdateRotateClose(float Value);
+
+	UFUNCTION()
+	void FinishRotateClose();
 
 protected:
-	FTimerHandle RotateHandle;
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Open;
 
-	float CurrentYaw = 0.f;
-	float TargetYaw = 0.f;
-	float OriginYaw = 0.f;
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Close;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
-	float OpenYawDelta = -45.f;
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
+	TObjectPtr<UCurveFloat> Curve_Open;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Rotate")
-	float RotateSpeed = 8.f;
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
+	TObjectPtr<UCurveFloat> Curve_Close;
+
+protected:
+	float OpenYaw = 0.f;
+	float CloseYaw = 0.f;
+	float BaseYaw = 0.f;
 
 #pragma endregion
 	

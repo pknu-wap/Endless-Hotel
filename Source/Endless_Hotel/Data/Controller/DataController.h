@@ -49,7 +49,7 @@ public:
 
 public:
 	UPROPERTY()
-	TSet<uint8> LoadedAnomalySet;
+	TSet<uint8> ClearedAnomalySet;
 
 	UPROPERTY()
 	TArray<FAnomalyEntry> ActAnomaly;

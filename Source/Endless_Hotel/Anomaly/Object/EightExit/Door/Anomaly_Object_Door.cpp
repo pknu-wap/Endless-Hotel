@@ -22,6 +22,9 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	Timeline_Door = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Door"));
 	Timeline_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Handle"));
 
+	Timeline_Open = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Open"));
+	Timeline_Close = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Close"));
+
 	AC_Effect = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Effect"));
 	AC_Effect->SetupAttachment(RootComponent);
 
@@ -63,8 +66,19 @@ void AAnomaly_Object_Door::BeginPlay()
 
 	if (DoorIndex == 8)
 	{
-		OriginYaw = Object->GetRelativeRotation().Yaw;
-		CurrentYaw = OriginYaw;
+		BaseYaw = Object->GetRelativeRotation().Yaw;
+
+		FOnTimelineFloat OpenUpdate;
+		OpenUpdate.BindUFunction(this, FName("UpdateRotateOpen"));
+		Timeline_Open->AddInterpFloat(Curve_Open, OpenUpdate);
+
+		FOnTimelineFloat CloseUpdate;
+		CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
+		Timeline_Close->AddInterpFloat(Curve_Close, CloseUpdate);
+
+		FOnTimelineEvent CloseFinished;
+		CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
+		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 	}
 }
 
@@ -164,21 +178,14 @@ void AAnomaly_Object_Door::OpenDoor()
 
 void AAnomaly_Object_Door::StartRotateOpen()
 {
-	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
-
-	CurrentYaw = Object->GetRelativeRotation().Yaw;
-	TargetYaw = OriginYaw + OpenYawDelta;
-
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
+	OpenYaw = Object->GetRelativeRotation().Yaw;
+	Timeline_Open->PlayFromStart();
 }
 
 void AAnomaly_Object_Door::PlayOpen_Door()
 {
-	if(!AC_DoorMove->IsPlaying())
-	{
-		AC_DoorMove->SetSound(Sound_DoorOpen);
-		AC_DoorMove->Play();
-	}
+	AC_DoorMove->SetSound(Sound_DoorOpen);
+	AC_DoorMove->Play();
 }
 
 #pragma endregion
@@ -193,40 +200,39 @@ void AAnomaly_Object_Door::CloseDoor()
 
 void AAnomaly_Object_Door::StartRotateClose()
 {
-	GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
-
-	CurrentYaw = Object->GetRelativeRotation().Yaw;
-	TargetYaw = OriginYaw;
-
-	GetWorld()->GetTimerManager().SetTimer(RotateHandle, this, &AAnomaly_Object_Door::UpdateRotate, 0.01f, true);
+	CloseYaw = Object->GetRelativeRotation().Yaw;
+	Timeline_Close->PlayFromStart();
 }
 
 void AAnomaly_Object_Door::PlayClose_Door()
 {
-	if (!AC_DoorMove->IsPlaying())
-	{
-		AC_DoorMove->SetSound(Sound_DoorClose);
-		AC_DoorMove->Play();
-	}
+	AC_DoorMove->SetSound(Sound_DoorClose);
+	AC_DoorMove->Play();
 }
 
 #pragma endregion
 
 #pragma region Rotate
 
-void AAnomaly_Object_Door::UpdateRotate()
+void AAnomaly_Object_Door::UpdateRotateOpen(float Value)
 {
-	const float NewYaw = FMath::FInterpTo(CurrentYaw, TargetYaw, GetWorld()->GetDeltaSeconds(), RotateSpeed);
-	CurrentYaw = NewYaw;
-
 	FRotator Rot = Object->GetRelativeRotation();
-	Rot.Yaw = CurrentYaw;
+	Rot.Yaw = OpenYaw + Value;
 	Object->SetRelativeRotation(Rot);
+}
 
-	if (FMath::IsNearlyEqual(CurrentYaw, TargetYaw, 0.1f))
-	{
-		GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
-	}
+void AAnomaly_Object_Door::UpdateRotateClose(float Value)
+{
+	FRotator Rot = Object->GetRelativeRotation();
+	Rot.Yaw = CloseYaw - Value;
+	Object->SetRelativeRotation(Rot);
+}
+
+void AAnomaly_Object_Door::FinishRotateClose()
+{
+	FRotator Rot = Object->GetRelativeRotation();
+	Rot.Yaw = BaseYaw;
+	Object->SetRelativeRotation(Rot);
 }
 
 #pragma endregion
