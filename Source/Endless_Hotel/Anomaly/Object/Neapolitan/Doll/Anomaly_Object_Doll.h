@@ -50,7 +50,9 @@ protected:
 protected:
 	FTimerHandle BurnHandle;
 
+	UPROPERTY(EditAnywhere, Category = "Burn")
 	float BurnDuration = 5.f;
+
 	float BurnCurrentTime = 0.f;
 
 	bool bIsBurning = false;
