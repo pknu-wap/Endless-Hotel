@@ -38,6 +38,9 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
 
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_Tutorial> UI_Tutorial;
+
 #pragma endregion
 
 #pragma region Trigger

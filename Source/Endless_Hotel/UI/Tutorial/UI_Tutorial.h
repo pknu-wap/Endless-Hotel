@@ -26,4 +26,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Animation
+
+public:
+	void ShowTutorialAnimation(bool bIsShow);
+
+protected:
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Show;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Hide;
+
+#pragma endregion
+
 };

@@ -13,10 +13,10 @@ void UTutorialComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Comp_Widget = Owner->FindComponentByTag<UWidgetComponent>(FName("Tutorial"));
-	Comp_Widget->SetVisibility(false);
+	Comp_Widget->SetVisibility(true);
 	Comp_Widget->InitWidget();
 
-	auto* UI_Tutorial = Cast<UUI_Tutorial>(Comp_Widget->GetUserWidgetObject());
+	UI_Tutorial = Cast<UUI_Tutorial>(Comp_Widget->GetUserWidgetObject());
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
@@ -40,7 +40,7 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
-	Comp_Widget->SetVisibility(true);
+	UI_Tutorial->ShowTutorialAnimation(true);
 
 	FTimerHandle DisappearHandle;
 	GetWorld()->GetTimerManager().SetTimer(DisappearHandle, this, &ThisClass::DisappearTutorialWidget, WidgetDuration, false);
@@ -53,7 +53,7 @@ void UTutorialComponent::DisappearTutorialWidget()
 
 	USaveManager::SaveData_Tutorial(Data);
 
-	Comp_Widget->SetVisibility(false);
+	UI_Tutorial->ShowTutorialAnimation(false);
 }
 
 #pragma endregion

@@ -16,3 +16,14 @@ void UUI_Tutorial::SetTargetDescription(const FText& Name)
 }
 
 #pragma endregion
+
+#pragma region Animation
+
+void UUI_Tutorial::ShowTutorialAnimation(bool bIsShow)
+{
+	UWidgetAnimation* Anim = bIsShow ? Anim_Show : Anim_Hide;
+
+	PlayAnimation(Anim);
+}
+
+#pragma endregion
