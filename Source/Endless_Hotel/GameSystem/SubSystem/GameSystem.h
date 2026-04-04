@@ -116,7 +116,7 @@ public:
 
 public:
 	bool bIsClear = false;
-	bool bIsAnomalyRepeatable = false;
+	bool bExceptClearedAnomaly = false;
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion

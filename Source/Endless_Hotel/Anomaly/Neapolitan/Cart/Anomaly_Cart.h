@@ -6,9 +6,6 @@
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include "Anomaly_Cart.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Cart : public AAnomaly_Event_Neapolitan
 {
