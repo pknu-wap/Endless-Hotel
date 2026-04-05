@@ -47,9 +47,7 @@ private:
 	bool bIsElevatorNormal = false;
 
 public:
-	bool GetIsAnomalySolved() const { return bIsAnomalySolved; }
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
-	bool GetIsElevatorNormal() const { return bIsElevatorNormal; }
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
 
 #pragma endregion
@@ -76,7 +74,7 @@ public:
 
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
-	bool ComputeVerdict(bool bIsSolved, bool bIsCorrectElevator) const;
+	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
 
