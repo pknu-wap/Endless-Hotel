@@ -12,8 +12,8 @@ USTRUCT(BlueprintType)
 struct FMazeElevatorSetting
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere) FVector Location;
-	UPROPERTY(EditAnywhere) FRotator Rotation;
+	UPROPERTY(EditAnywhere) FVector Location = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere) FRotator Rotation = FRotator::ZeroRotator;
 };
 
 #pragma endregion
