@@ -55,16 +55,16 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Verdict
 
-bool UGameSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
+bool UGameSystem::ComputeVerdict() const
 {
 	switch (VerdictMode)
 	{
 	case EAnomalyVerdictMode::SolvedOnly:
-		return bSolved;
+		return bIsAnomalySolved;
 	case EAnomalyVerdictMode::Both_AND:
-		return bSolved && !bNormalElevator;
+		return bIsAnomalySolved && !bIsElevatorNormal;
 	case EAnomalyVerdictMode::Normal:
-		return bSolved && bNormalElevator;
+		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
 		return false;
 	}
@@ -73,7 +73,7 @@ bool UGameSystem::ComputeVerdict(bool bSolved, bool bNormalElevator) const
 void UGameSystem::ApplyVerdict()
 {
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	bPassed = ComputeVerdict(bIsAnomalySolved, bIsElevatorNormal);
+	bPassed = ComputeVerdict();
 	if (bPassed)
 	{
 		SubFloor();
