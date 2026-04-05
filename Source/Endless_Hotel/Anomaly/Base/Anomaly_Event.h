@@ -55,6 +55,9 @@ public:
 	bool bIsRuntimeSpawned = false;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	bool bIsEightExitObject = false;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	FTransform ObjectTransform = FTransform(FRotator::ZeroRotator, FVector::ZeroVector, FVector(1, 1, 1));
 
 protected:

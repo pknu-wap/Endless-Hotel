@@ -72,7 +72,11 @@ void AAnomaly_Event::SetAnomalyState()
 			continue;
 		}
 
-		AnomalyObject->SetSolvedFalse();
+		if(!bIsEightExitObject)
+		{
+			AnomalyObject->SetSolvedFalse();
+		}
+
 		TargetAnomalyObjects.Add(AnomalyObject);
 	}
 }
