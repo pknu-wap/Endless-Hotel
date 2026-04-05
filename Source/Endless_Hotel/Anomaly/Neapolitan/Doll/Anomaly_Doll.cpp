@@ -1,9 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Neapolitan/Doll/Anomaly_Doll.h"
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
-#include <Kismet/GameplayStatics.h>
+
+#pragma region Activity
 
 void AAnomaly_Doll::SetAnomalyState()
 {
@@ -17,3 +17,5 @@ void AAnomaly_Doll::SetAnomalyState()
 		break;
 	}
 }
+
+#pragma endregion
