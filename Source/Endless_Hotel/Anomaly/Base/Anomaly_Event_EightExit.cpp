@@ -9,7 +9,7 @@
 AAnomaly_Event_EightExit::AAnomaly_Event_EightExit(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-
+    bIsEightExitObject = true;
 }
 
 void AAnomaly_Event_EightExit::BeginPlay()
