@@ -6,7 +6,9 @@
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
+#include <Components/AudioComponent.h>
 #include <GameFramework/GameUserSettings.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Declare
 
@@ -170,6 +172,13 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 
 	TargetAngle = Target;
 	bRotateGear = true;
+
+	if (!IsValid(AC_Gear))
+	{
+		AC_Gear = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gear);
+	}
+
+	AC_Gear->FadeIn(0.5f, 1, 0);
 }
 
 void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
@@ -191,6 +200,8 @@ void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 		UI_Gear->SetRenderTransform(TargetTrans);
 
 		bRotateGear = false;
+
+		AC_Gear->FadeOut(0.5f, 0);
 	}
 }
 

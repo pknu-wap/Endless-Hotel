@@ -117,6 +117,12 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUserWidget> UI_Gear;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_Gear;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_Gear;
+
 private:
 	bool bRotateGear = false;
 
