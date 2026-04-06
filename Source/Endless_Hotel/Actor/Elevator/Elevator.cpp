@@ -111,6 +111,12 @@ void AElevator::BeginPlay()
             auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
             if (Sub->CurrentAnomaly->TargetElevatorID == ElevatorID && Sub->Floor < 9)
             {
+                ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+                AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+                PC->SetControlRotation(FRotator(0, 180, 0));
+                Player->SetActorRotation(FRotator(0, 180, 0));
+                Player->bUseControllerRotationYaw = true;
+
                 MoveElevator(StartPos, MapPos, true);
                 ElevatorLight->SetIntensity(LightOnIntensity);
                 bIsPlayerInside = true;
@@ -283,6 +289,7 @@ void AElevator::OnPlayerRotationEnd()
     Player->SetActorRotation(TargetControlRotation);
     Player->bUseControllerRotationYaw = true;
     Player->SetActorRelativeLocation(FVector(0, 0, 85));
+    Player->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
     bIsOpening = false;
     MoveDoors();
