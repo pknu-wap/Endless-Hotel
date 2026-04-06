@@ -89,6 +89,7 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 	UI_System->SetVisibility(ESlateVisibility::Hidden);
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
+	Border_HideBox2->SetVisibility(ESlateVisibility::Hidden);
 
 	Button_Normal->SetVisibility(ESlateVisibility::Hidden);
 	Button_Input->SetVisibility(ESlateVisibility::Hidden);
@@ -126,8 +127,12 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		break;
 
 	case ESettingCategory::Gameplay:
+	{
 		UI_Gameplay->SetVisibility(ESlateVisibility::Visible);
+		ESlateVisibility SlateVisibility = USaveManager::LoadData_GameClear() ? ESlateVisibility::Hidden : ESlateVisibility::Visible;
+		Border_HideBox2->SetVisibility(SlateVisibility);
 		break;
+	}
 
 	case ESettingCategory::System:
 		UI_System->SetVisibility(ESlateVisibility::Visible);

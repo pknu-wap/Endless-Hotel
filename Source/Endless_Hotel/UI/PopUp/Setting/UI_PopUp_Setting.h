@@ -94,6 +94,9 @@ protected:
 	TObjectPtr<class UBorder> Border_HideBox;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBorder> Border_HideBox2;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Normal;
 
 	UPROPERTY(meta = (BindWidget))
