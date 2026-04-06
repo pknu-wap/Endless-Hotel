@@ -138,8 +138,8 @@ void UEHGameInstance::SpawnAnomalyGenerator()
 
 	if (IsNormal > 8 || Subsystem->Floor == 9)
 	{
-		//Generator->SpawnNormal(SpawnLevel);
-		//return;
+		Generator->SpawnNormal(SpawnLevel);
+		return;
 	}
 
 	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);
