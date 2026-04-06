@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -8,6 +8,28 @@ public class Endless_Hotel : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
-	}
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "EnhancedInput",
+            "AIModule",
+            "MovieScene",
+            "LevelSequence",
+            "NavigationSystem",
+            "UMG",
+            "Slate",
+            "SlateCore",
+            "Niagara",
+            "AdvancedWidgets",
+            "Chaos",            
+            "ChaosSolverEngine",
+            "GeometryCollectionEngine"
+        });
+
+        PrivateIncludePaths.Add("Endless_Hotel");
+        PublicDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+    }
 }

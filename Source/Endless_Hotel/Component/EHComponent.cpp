@@ -1,0 +1,20 @@
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#include "Component/EHComponent.h"
+
+#pragma region Base
+
+UEHComponent::UEHComponent(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UEHComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Owner = GetOwner();
+}
+
+#pragma endregion

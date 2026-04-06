@@ -1,0 +1,81 @@
+// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
+
+#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Ghost.generated.h>
+
+class UCameraShakeBase;
+
+UCLASS()
+class ENDLESS_HOTEL_API AAnomaly_Object_Ghost : public AAnomaly_Object_Neapolitan
+{
+    GENERATED_BODY()
+
+#pragma region Base
+
+public:
+    AAnomaly_Object_Ghost(const FObjectInitializer& ObjectInitializer);
+
+protected:
+    virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
+
+#pragma endregion
+
+#pragma region Step
+public:
+    void StartGhostSequence();
+
+private:
+    void Reveal();
+    void StartStep();
+    void MoveStep();
+    void FinishSequence();
+    void TurnOffLights();
+    void TurnOnLights();
+    void RevealWithLightDelay();
+    void Hide();
+
+private:
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* Mesh;
+
+    UPROPERTY(EditAnywhere)
+    float TriggerX = 5000.f;
+
+    UPROPERTY(EditAnywhere, Category = "Ghost|Effects")
+    TSubclassOf<UCameraShakeBase> CameraShakeClass;
+
+    UPROPERTY()
+    TObjectPtr<class UAudioComponent> AC;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundBase> Sound_On;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundBase> Sound_Off;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundBase> Sound_Shake;
+
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class USoundBase> Sound_Fin;
+
+    ACharacter* Player;
+    APlayerController* PC;
+
+    UPROPERTY(EditAnywhere, Category = "Position")
+    FVector SpawnLocation;
+
+    int32 StepIndex;
+
+public:
+    bool bTriggerEnabled = false;
+    bool bAnomalyTriggered = false;
+    bool bHasTriggered = false;
+    bool bHasRevealedOnce = false;
+};
+
+#pragma endregion

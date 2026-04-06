@@ -1,0 +1,64 @@
+﻿// Copyright by 2025-2 WAP Game 2 team
+
+#pragma once
+
+#include "Anomaly/Base/Anomaly_Event_EightExit.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Shrink.generated.h>
+
+UCLASS()
+class ENDLESS_HOTEL_API AAnomaly_Shrink : public AAnomaly_Event_EightExit
+{
+	GENERATED_BODY()
+
+#pragma region Base
+
+public:
+	AAnomaly_Shrink(const FObjectInitializer& ObjectInitializer);
+
+protected:
+	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Reference
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class USkeletalMeshComponent> PlayerSM;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
+
+#pragma endregion
+
+#pragma region Activity
+
+public:
+	virtual void SetAnomalyState() override;
+
+protected:
+	virtual void StartAnomalyAction() override;
+	virtual void DisableAnomaly() override;
+
+#pragma endregion
+
+#pragma region Shrink
+
+protected:
+	UFUNCTION()
+	void ShrinkPlayer(float Value);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> Timeline_Shrink;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
+	TObjectPtr<UCurveFloat> Curve_Shrink;
+
+	FVector OriginalScale;
+	float OriginalSpeed;
+
+#pragma endregion
+
+};

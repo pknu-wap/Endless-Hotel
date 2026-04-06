@@ -76,3 +76,5 @@ DerivedDataCache/*
 
 # Additional Directory
 Plugins/
+Plugins
+shadertoolsconfig
