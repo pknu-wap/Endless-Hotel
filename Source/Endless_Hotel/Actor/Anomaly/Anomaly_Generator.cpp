@@ -76,7 +76,6 @@ void AAnomaly_Generator::AnomalyObjectLinker()
 // Spawn Anomaly at Specific Index
 AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
 {
-
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 
