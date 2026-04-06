@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+public:
+	AAnomaly_Fire(const FObjectInitializer& ObjectInitializer);
+
+#pragma endregion
+
 #pragma region Reference
 
 protected:
@@ -68,6 +75,9 @@ protected:
 
 protected:
 	FTimerHandle SmokeHandle;
+
+	UPROPERTY(EditAnywhere)
+	float JilsikDuration = 10.f;
 
 #pragma endregion
 
