@@ -112,7 +112,7 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// 타이머 & 즉발
-	virtual void ScheduleAnomaly(float delay = 0.01f);
+	virtual void ScheduleAnomaly(float Delay = 0.01f);
 
 #pragma endregion
 
