@@ -25,16 +25,16 @@ public:
 	int32 DoorIndex = 0;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UAudioComponent> AC_Effect;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UAudioComponent> AC_Voice;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
 
 #pragma endregion

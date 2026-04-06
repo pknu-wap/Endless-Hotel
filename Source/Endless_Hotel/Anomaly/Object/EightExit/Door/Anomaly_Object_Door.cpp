@@ -350,6 +350,8 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::DoorRotateStarted()
 {
+	PlayOpenDoor();
+
 	FVector TargetLocation = DoorOpenTransform.GetLocation();
 	FRotator TargetRotation = DoorOpenTransform.Rotator();
 
@@ -386,6 +388,8 @@ void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* Overlapp
 void AAnomaly_Object_Door::CloseFirstDoor()
 {
 	bIsDoorOpened = false;
+
+	PlayClose_Door();
 
 	FVector InitialLocation = DoorInitialTransform.GetLocation();
 	FRotator InitialRotation = DoorInitialTransform.Rotator();
