@@ -17,7 +17,10 @@ AAnomaly_Object_Phone::AAnomaly_Object_Phone(const FObjectInitializer& ObjectIni
 	AC->SetAutoActivate(false);
 
 	Timeline_Move = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Move"));
+	Timeline_Move->SetLooping(false);
+
 	Timeline_Ringing = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Ringing"));
+	Timeline_Ringing->SetLooping(false);
 }
 
 void AAnomaly_Object_Phone::BeginPlay()
@@ -45,7 +48,8 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 	SM_Receiver->SetRelativeTransform(OriginalTrans);
 
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+	GetWorld()->GetTimerManager().ClearTimer(ShakeHandle);
 
 	Timeline_Move->Stop();
 	Timeline_Ringing->Stop();
@@ -72,8 +76,10 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Phone::RingingPhone()
 {
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	static int32 Count = 0;
+	Count++;
 
+	UE_LOG(LogTemp, Error, TEXT("RingingPhone REAL CALL COUNT = %d"), Count);
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
 	GetWorld()->GetTimerManager().SetTimer(ShakeHandle, this, &ThisClass::ShakePhone, 1.5f, false);
 }
