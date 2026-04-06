@@ -5,8 +5,19 @@
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/LevelStreamingDynamic.h>
+
+#pragma region Base
+
+AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
+}
+
+#pragma endregion
 
 #pragma region Activity
 
@@ -90,16 +101,24 @@ void AAnomaly_Fire::SpawnFires()
 
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
-	if (bIsCrouch)
+	UWorld* World = GetWorld();
+	if (!IsValid(World)) // CDO가 해당 함수를 호출하려고 시도하여 nullptr 체크가 필요함
 	{
-		GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
 		return;
 	}
 
-	GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	FTimerManager& TimerManager = World->GetTimerManager();
+
+	if (bIsCrouch)
+	{
+		TimerManager.ClearTimer(SmokeHandle);
+		return;
+	}
+
+	TimerManager.SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
-		}), 5, false);
+		}), JilsikDuration, false);
 }
 
 #pragma endregion

@@ -13,6 +13,7 @@ void UInteractComponent::BeginPlay()
 
 	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
+	UI_Interact->ShowDescription(false);
 }
 
 #pragma endregion

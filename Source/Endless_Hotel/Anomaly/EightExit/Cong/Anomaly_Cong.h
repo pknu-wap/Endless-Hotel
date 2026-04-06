@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Event_EightExit
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 #pragma endregion
 
