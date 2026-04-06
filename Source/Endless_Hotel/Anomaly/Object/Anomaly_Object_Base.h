@@ -40,7 +40,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnyWhere)
-	EInteractType CorrectInteractType = EInteractType::None;
+	TArray<EInteractType> CorrectInteractTypes;
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;

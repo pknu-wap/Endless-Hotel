@@ -29,7 +29,7 @@ void AAnomaly_SignDrop::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::SignDrop:
-		SetupAnomalyAction(&AAnomaly_Object_SignDrop::ExecuteSignDrop, EInteractType::Restore);
+		SetupAnomalyAction(&AAnomaly_Object_SignDrop::ExecuteSignDrop, { EInteractType::Restore });
 		break;
 	}
 	ActiveTrigger();

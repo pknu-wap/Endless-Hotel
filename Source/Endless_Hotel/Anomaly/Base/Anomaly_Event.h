@@ -131,13 +131,13 @@ public:
 
 protected:
 	template<typename ObjectType>
-	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None })
 	{
-		AnomalyAction = [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
+		AnomalyAction = [SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
-					TargetObj->CorrectInteractType = Interaction;
+					TargetObj->CorrectInteractTypes = Interactions;
 					(TargetObj->*SelectedFunc)();
 				}
 			};
