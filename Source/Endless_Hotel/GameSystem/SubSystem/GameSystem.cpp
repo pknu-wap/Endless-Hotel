@@ -32,6 +32,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	Floor = 9;
 	ActIndex = 0;
+	AnomalyRules.Add(EAnomalyRule::EightExit);
 
 	bIsClear = USaveManager::LoadData_GameClear();
 	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
@@ -144,6 +145,9 @@ void UGameSystem::InitializePool()
 	DataC->ActAnomaly = DataC->GetOriginAnomaly();
 
 	ActIndex = 0;
+
+	// Temp Logic : Remove Anomaly By Rule
+	// DataC->RemoveNoRuleAnomaly();
 
 	if (bExceptClearedAnomaly && !DataC->ClearedAnomalySet.IsEmpty() && DataC->ClearedAnomalySet.Num() < AnomalyCount)
 	{

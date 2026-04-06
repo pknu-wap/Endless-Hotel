@@ -5,6 +5,7 @@
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include "Type/Interact/Type_Interact.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Event.generated.h>
 
@@ -50,6 +51,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyName AnomalyName;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
+	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	bool bIsRuntimeSpawned = false;
