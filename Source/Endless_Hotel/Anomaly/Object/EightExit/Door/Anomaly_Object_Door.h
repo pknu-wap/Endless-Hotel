@@ -6,6 +6,7 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Door.generated.h>
 
+
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 {
@@ -202,8 +203,10 @@ protected:
 protected:
 	bool bIsDoorOpened = false;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite , Category = "Components")
 	class UBoxComponent* ExitTrigger;
+
+
 
 	UFUNCTION()
 	void OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);

@@ -6,6 +6,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
+
 #pragma region Base
 
 AAnomaly_Door::AAnomaly_Door(const FObjectInitializer& ObjectInitializer)
@@ -90,6 +91,7 @@ void AAnomaly_Door::OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* Overlapp
 		return;
 	}
 	TriggerTargetDoor->CloseDoor();
+
 
 	TriggerBox_Close->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
