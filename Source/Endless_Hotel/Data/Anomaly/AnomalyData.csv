@@ -1,7 +1,7 @@
 ﻿Row,AnomalyID,Anomaly_En,AnomalyPath,ObjectPath
 1,1,Hair,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Hair.BP_EightExit_Hair_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Hair/BP_Object_Hair.BP_Object_Hair_C
-2,2,Light_Destory,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_Light.BP_Light_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Light/BP_Object_Light.BP_Object_Light_C
-3,3,Light_Blue,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_Light.BP_Light_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Light/BP_Object_Light.BP_Object_Light_C
+2,2,Light_Destory,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Light.BP_EightExit_Light_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Light/BP_Object_Light.BP_Object_Light_C
+3,3,Light_Blue,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Light.BP_EightExit_Light_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Light/BP_Object_Light.BP_Object_Light_C
 4,4,Door_Shake,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Door.BP_EightExit_Door_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Door/BP_Object_Door.BP_Object_Door_C
 5,5,Cry,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Cry.BP_EightExit_Cry_C,
 6,6,Cong,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Cong.BP_EightExit_Cong_C,/Game/EndlessHotel/Anomaly/Object/EightExit/HandPrint/BP_Object_HandPrint.BP_Object_HandPrint_C

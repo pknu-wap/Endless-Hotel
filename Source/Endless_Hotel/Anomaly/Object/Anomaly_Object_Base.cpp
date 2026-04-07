@@ -11,11 +11,6 @@ void AAnomaly_Object_Base::BeginPlay()
 
     bSolved = true;
     SaveOriginalTransform();
-
-	if (!Component_Interact->CanInteract())
-	{
-		Component_Widget->SetActive(false);
-	}
 }
 
 #pragma endregion
