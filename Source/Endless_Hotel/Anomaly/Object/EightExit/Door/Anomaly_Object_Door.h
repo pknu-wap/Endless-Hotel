@@ -97,7 +97,7 @@ public:
 	void PlayOpen_Door();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorOpen;
 
 	bool bOpenTriggered = false;
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorClose;
 
 	bool bCloseTriggered = false;
