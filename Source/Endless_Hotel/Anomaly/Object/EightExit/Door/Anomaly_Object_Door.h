@@ -25,7 +25,7 @@ public:
 	int32 DoorIndex = 0;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -210,8 +210,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite , Category = "Components")
 	class UBoxComponent* ExitTrigger;
-
-
 
 	UFUNCTION()
 	void OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
