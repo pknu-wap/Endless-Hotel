@@ -154,6 +154,11 @@ protected:
 #pragma endregion
 	
 #pragma region Interact
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Sound")
+	TObjectPtr<class USoundWave> Sound_HandleTwist;
+
+	void PlayHandleTwistSound();
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;

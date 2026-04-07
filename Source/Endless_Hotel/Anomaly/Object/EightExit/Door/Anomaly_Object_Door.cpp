@@ -239,6 +239,12 @@ void AAnomaly_Object_Door::FinishRotateClose()
 
 #pragma region Interact
 
+void AAnomaly_Object_Door::PlayHandleTwistSound()
+{
+	AC_DoorMove->SetSound(Sound_HandleTwist);
+	AC_DoorMove->Play();
+}
+
 void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 {
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
@@ -247,9 +253,11 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	{
 	case EInteractType::DoorOpen:
 		MoveToHandlePlayer();
+		PlayHandleTwistSound();
 		break;
 	}
 }
+
 
 #pragma endregion
 
