@@ -24,7 +24,7 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	Timeline_Open = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Open"));
 	Timeline_Close = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Close"));
-
+		
 	AC_Effect = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Effect"));
 	AC_Effect->SetupAttachment(RootComponent);
 
@@ -350,7 +350,7 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::DoorRotateStarted()
 {
-	PlayOpenDoor();
+	PlayOpen_Door();
 
 	FVector TargetLocation = DoorOpenTransform.GetLocation();
 	FRotator TargetRotation = DoorOpenTransform.Rotator();
