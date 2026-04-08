@@ -154,7 +154,7 @@ protected:
 	
 #pragma region Interact
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Sound")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_HandleTwist;
 
 	void PlayHandleTwistSound();
