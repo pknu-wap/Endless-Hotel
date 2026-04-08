@@ -6,7 +6,6 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Door.generated.h>
 
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 {
@@ -28,13 +27,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Effect;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Voice;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
 
 #pragma endregion
@@ -111,7 +110,7 @@ public:
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Sound")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_DoorClose;
 
 	bool bCloseTriggered = false;
@@ -208,7 +207,7 @@ protected:
 protected:
 	bool bIsDoorOpened = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite , Category = "Components")
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UBoxComponent* ExitTrigger;
 
 	UFUNCTION()
