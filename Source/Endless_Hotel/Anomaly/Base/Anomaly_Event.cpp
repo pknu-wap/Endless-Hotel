@@ -24,7 +24,7 @@ void AAnomaly_Event::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TriggerBox->SetWorldTransform(Transform_TriggerBox);
+	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 

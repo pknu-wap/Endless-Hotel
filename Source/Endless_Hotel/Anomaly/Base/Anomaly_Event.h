@@ -56,13 +56,10 @@ public:
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsRuntimeSpawned = false;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	bool bIsEightExitObject = false;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	FTransform ObjectTransform = FTransform(FRotator::ZeroRotator, FVector::ZeroVector, FVector(1, 1, 1));
+	TArray<FTransform> ObjectSpawnTransform;
 
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
@@ -101,7 +98,7 @@ public:
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
-	FTransform Transform_TriggerBox;
+	FTransform TriggerBox_Transform;
 
 #pragma endregion
 
