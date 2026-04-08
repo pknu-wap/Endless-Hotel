@@ -258,7 +258,6 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	}
 }
 
-
 #pragma endregion
 
 #pragma region FirstDoorOpen
