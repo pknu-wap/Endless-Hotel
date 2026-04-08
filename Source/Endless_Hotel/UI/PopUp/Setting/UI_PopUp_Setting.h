@@ -94,6 +94,9 @@ protected:
 	TObjectPtr<class UBorder> Border_HideBox;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBorder> Border_HideBox2;
+
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Normal;
 
 	UPROPERTY(meta = (BindWidget))
@@ -113,6 +116,12 @@ private:
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUserWidget> UI_Gear;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_Gear;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_Gear;
 
 private:
 	bool bRotateGear = false;
