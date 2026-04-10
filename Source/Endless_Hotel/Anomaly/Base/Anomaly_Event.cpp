@@ -24,7 +24,7 @@ void AAnomaly_Event::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TriggerBox->SetWorldTransform(Transform_TriggerBox);
+	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
@@ -102,7 +102,7 @@ void AAnomaly_Event::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* O
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAnomaly_Event::ScheduleAnomaly(float delay)
+void AAnomaly_Event::ScheduleAnomaly(float Delay)
 {
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(
@@ -110,7 +110,7 @@ void AAnomaly_Event::ScheduleAnomaly(float delay)
 		[this]()
 		{
 			StartAnomalyAction();
-		}), delay, false);
+		}), Delay, false);
 }
 
 #pragma endregion

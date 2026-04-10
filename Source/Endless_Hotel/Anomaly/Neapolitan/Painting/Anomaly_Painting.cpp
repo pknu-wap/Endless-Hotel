@@ -12,19 +12,19 @@ void AAnomaly_Painting::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Painting_Eye:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, EInteractType::Rotate);
+		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, { EInteractType::Rotate });
 		ScheduleAnomaly();
 		break;
 	case EAnomalyName::Painting_Blood:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::BloodDropping, EInteractType::Rotate);
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BloodDropping, { EInteractType::Rotate });
 		ActiveTrigger();
 		break;
 	case EAnomalyName::Painting_Blur:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::BlurPaint, EInteractType::Rotate);
+		SetupAnomalyAction(&AAnomaly_Object_Painting::BlurPaint, { EInteractType::Rotate });
 		ScheduleAnomaly();
 		break;
 	case EAnomalyName::Painting_Tilt:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, EInteractType::Rotate);
+		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, { EInteractType::Rotate });
 		ScheduleAnomaly(10.0f);
 		break;
 	}

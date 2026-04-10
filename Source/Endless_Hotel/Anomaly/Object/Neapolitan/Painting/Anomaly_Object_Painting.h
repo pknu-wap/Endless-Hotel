@@ -116,4 +116,16 @@ protected:
 
 #pragma endregion
 
+
+#pragma region Audio
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	TObjectPtr<class USoundWave> Sound_Rotate;
+
+#pragma endregion
+
 };
