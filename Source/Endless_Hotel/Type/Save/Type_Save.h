@@ -4,6 +4,7 @@
 
 #include "Type/UI/Type_UI_Setting.h"
 #include "Type/UI/Type_UI_Key.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
@@ -157,14 +158,5 @@ struct FSaveData_Manual
 	
 public:
 	UPROPERTY(SaveGame)
-	bool bActiveRule2 = false;
-
-	UPROPERTY(SaveGame)
-	bool bActiveRule3 = false;
-
-	UPROPERTY(SaveGame)
-	bool bActiveRule4 = false;
-
-	UPROPERTY(SaveGame)
-	bool bActiveRule5 = false;
+	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit };
 };
