@@ -21,7 +21,7 @@ private:
 	TWeakObjectPtr<AActor> TargetObject;
 
 	UPROPERTY()
-	TWeakObjectPtr<class AEHCharacter> Player;
+	TWeakObjectPtr<class AEHPlayer> Player;
 
 	UPROPERTY()
 	TWeakObjectPtr<class USpringArmComponent> Comp_SpringArm;

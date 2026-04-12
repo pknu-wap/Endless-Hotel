@@ -25,6 +25,15 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
+void UUI_HUD_InGame::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	auto Data = USaveManager::LoadData_Setting();
+
+	SetBrightness(0.05f + Data.Brightness * 0.95f);
+}
+
 #pragma endregion
 
 #pragma region Crosshair

@@ -34,6 +34,7 @@ protected:
 
 public:
 	class UCameraComponent* GetCamera() { return Camera; }
+	class USkeletalMeshComponent* GetThirdMesh() { return Third_Mesh; }
 
 protected:
 	UPROPERTY(EditAnywhere)

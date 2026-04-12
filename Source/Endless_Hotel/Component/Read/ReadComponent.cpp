@@ -4,8 +4,8 @@
 #include "Component/Interact/InteractComponent.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Read/UI_PopUp_Read.h"
+#include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Character/Character/EHCharacter.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
@@ -21,7 +21,7 @@ void UReadComponent::SetReferenceObject(AEHCharacter* Interacter, AActor* Target
 
 	if (!IsValid(Player.Get()))
 	{
-		Player = Interacter;
+		Player = Cast<AEHPlayer>(Interacter);
 	}
 
 	if (!IsValid(Comp_SpringArm.Get()))
@@ -89,7 +89,8 @@ void UReadComponent::OnMoveCompleted()
 
 void UReadComponent::OnRestoreCompleted()
 {
-	Comp_SpringArm->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("HeadSocket"));
+	Comp_SpringArm->AttachToComponent(Player->GetThirdMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("HeadSocket"));
+	Comp_SpringArm->SetRelativeLocation(FVector(7, 7, 0));
 	Comp_SpringArm->bUsePawnControlRotation = true;
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
