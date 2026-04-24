@@ -25,6 +25,7 @@ class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 #pragma endregion
@@ -150,6 +151,13 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
+
+#pragma endregion
+
+#pragma region Camera
+
+protected:
+	void PossessCamera(bool bGearCamera);
 
 #pragma endregion
 

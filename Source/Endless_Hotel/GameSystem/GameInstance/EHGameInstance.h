@@ -3,9 +3,7 @@
 #pragma once
 
 #include "Type/Level/Type_Level.h"
-#include <CoreMinimal.h>
 #include <Engine/GameInstance.h>
-#include <Engine/StreamableManager.h>
 #include <Delegates/DelegateCombinations.h>
 #include <EHGameInstance.generated.h>
 

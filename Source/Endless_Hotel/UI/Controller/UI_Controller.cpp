@@ -26,6 +26,11 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 		break;
 	}
 
+	if (!PopUpWidgets.IsEmpty())
+	{
+		PopUpWidgets[0]->SetVisibility(ESlateVisibility::Hidden);
+	}
+
 	CreatedWidget->AddToViewport(Widget_ZOrder);
 	PopUpWidgets.Add(CreatedWidget);
 
@@ -58,7 +63,10 @@ void UUI_Controller::CloseWidget()
 	PopUpWidgets.Top()->RemoveFromViewport();
 	PopUpWidgets.Pop();
 
-	SetInputMode(PopUpWidgets.Top()->InputModeType);
+	UUI_Base* TopWidget = PopUpWidgets.Top();
+	TopWidget->SetVisibility(ESlateVisibility::Visible);
+
+	SetInputMode(TopWidget->InputModeType);
 }
 
 void UUI_Controller::ClearAllWidget()

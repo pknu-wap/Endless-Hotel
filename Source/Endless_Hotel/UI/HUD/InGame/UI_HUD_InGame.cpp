@@ -16,8 +16,8 @@ void UUI_HUD_InGame::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	AEHPlayer* EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
@@ -146,6 +146,18 @@ void UUI_HUD_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Demo);
+}
+
+#pragma endregion
+
+#pragma region Camera
+
+void UUI_HUD_InGame::PossessCamera()
+{
+	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	PC->SetViewTargetWithBlend(Player);
 }
 
 #pragma endregion
