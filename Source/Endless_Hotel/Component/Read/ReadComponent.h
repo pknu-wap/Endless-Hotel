@@ -54,7 +54,10 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
-	FRotator RotOffset = FRotator::ZeroRotator;
+	FVector LocOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Move")
+	FRotator RotOffset;
 
 private:
 	FVector OriginalLoc;

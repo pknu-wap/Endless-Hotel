@@ -65,7 +65,7 @@ void UReadComponent::MoveCameraToTarget(AEHCharacter* Interacter, AActor* Target
 	LatentInfo.Linkage = 0;
 	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
 
-	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation + LocOffset, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
 }
 
 void UReadComponent::RestoreCamera()
@@ -83,7 +83,6 @@ void UReadComponent::OnMoveCompleted()
 {
 	auto* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
 	auto* UI_Read = Cast<UUI_PopUp_Read>(UICon->OpenWidget(UI_Read_Class));
-
 	UI_Read->SetTarget(TargetObject.Get());
 }
 
