@@ -9,6 +9,7 @@
 #include <Components/StaticMeshComponent.h>
 #include <Components/SceneComponent.h>
 #include <Kismet/KismetMathLibrary.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -16,18 +17,22 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	:Super(ObjectInitializer)
 {
 	Mesh_LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_LeftEye"));
-	Mesh_LeftEye->SetupAttachment(RootComponent);
+	Mesh_LeftEye->SetupAttachment(Object);
 
 	Mesh_RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_RightEye"));
-	Mesh_RightEye->SetupAttachment(RootComponent);
+	Mesh_RightEye->SetupAttachment(Object);
 
 	Niagara_Blood_Left = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Left"));
-	Niagara_Blood_Left->SetupAttachment(RootComponent);
+	Niagara_Blood_Left->SetupAttachment(Object);
 	Niagara_Blood_Left->SetAutoActivate(false);
 
 	Niagara_Blood_Right = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Blood_Right"));
-	Niagara_Blood_Right->SetupAttachment(RootComponent);
+	Niagara_Blood_Right->SetupAttachment(Object);
 	Niagara_Blood_Right->SetAutoActivate(false);
+
+	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
+	AC->SetupAttachment(Object);
+	AC->SetAutoActivate(false);
 }
 
 #pragma endregion
@@ -132,7 +137,7 @@ void AAnomaly_Object_Painting::Interact_Implementation(AEHCharacter* Interacter)
 void AAnomaly_Object_Painting::InteractRotate()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
-
+	AC->Play();
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;
 	InteractedMoveStep(0);

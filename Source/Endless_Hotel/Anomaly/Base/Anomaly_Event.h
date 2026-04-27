@@ -5,6 +5,7 @@
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyName.h"
 #include "Type/Interact/Type_Interact.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Event.generated.h>
 
@@ -51,14 +52,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyName AnomalyName;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsRuntimeSpawned = false;
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
+	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	bool bIsEightExitObject = false;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	FTransform ObjectTransform = FTransform(FRotator::ZeroRotator, FVector::ZeroVector, FVector(1, 1, 1));
+	TArray<FTransform> ObjectSpawnTransform;
 
 protected:
 	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
@@ -97,7 +98,7 @@ public:
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
-	FTransform Transform_TriggerBox;
+	FTransform TriggerBox_Transform;
 
 #pragma endregion
 
@@ -112,7 +113,7 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	// 타이머 & 즉발
-	virtual void ScheduleAnomaly(float delay = 0.01f);
+	virtual void ScheduleAnomaly(float Delay = 0.01f);
 
 #pragma endregion
 
@@ -131,13 +132,13 @@ public:
 
 protected:
 	template<typename ObjectType>
-	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), EInteractType Interaction = EInteractType::None)
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None })
 	{
-		AnomalyAction = [SelectedFunc, Interaction](AAnomaly_Object_Base* Obj)
+		AnomalyAction = [SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
-					TargetObj->CorrectInteractType = Interaction;
+					TargetObj->CorrectInteractTypes = Interactions;
 					(TargetObj->*SelectedFunc)();
 				}
 			};

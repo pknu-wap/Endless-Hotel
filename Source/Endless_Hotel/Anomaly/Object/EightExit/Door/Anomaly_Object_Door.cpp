@@ -24,7 +24,7 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	Timeline_Open = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Open"));
 	Timeline_Close = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Close"));
-
+		
 	AC_Effect = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Effect"));
 	AC_Effect->SetupAttachment(RootComponent);
 
@@ -239,6 +239,12 @@ void AAnomaly_Object_Door::FinishRotateClose()
 
 #pragma region Interact
 
+void AAnomaly_Object_Door::PlayHandleTwistSound()
+{
+	AC_DoorMove->SetSound(Sound_HandleTwist);
+	AC_DoorMove->Play();
+}
+
 void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 {
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
@@ -247,6 +253,7 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	{
 	case EInteractType::DoorOpen:
 		MoveToHandlePlayer();
+		PlayHandleTwistSound();
 		break;
 	}
 }
@@ -350,6 +357,8 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::DoorRotateStarted()
 {
+	PlayOpen_Door();
+
 	FVector TargetLocation = DoorOpenTransform.GetLocation();
 	FRotator TargetRotation = DoorOpenTransform.Rotator();
 
@@ -386,6 +395,8 @@ void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* Overlapp
 void AAnomaly_Object_Door::CloseFirstDoor()
 {
 	bIsDoorOpened = false;
+
+	PlayClose_Door();
 
 	FVector InitialLocation = DoorInitialTransform.GetLocation();
 	FRotator InitialRotation = DoorInitialTransform.Rotator();

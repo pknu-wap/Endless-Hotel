@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
@@ -91,6 +92,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
+
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
 
 #pragma endregion
 

@@ -6,7 +6,9 @@
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
+#include <Components/AudioComponent.h>
 #include <GameFramework/GameUserSettings.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Declare
 
@@ -89,6 +91,7 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 	UI_System->SetVisibility(ESlateVisibility::Hidden);
 
 	Border_HideBox->SetVisibility(ESlateVisibility::Hidden);
+	Border_HideBox2->SetVisibility(ESlateVisibility::Hidden);
 
 	Button_Normal->SetVisibility(ESlateVisibility::Hidden);
 	Button_Input->SetVisibility(ESlateVisibility::Hidden);
@@ -126,8 +129,12 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 		break;
 
 	case ESettingCategory::Gameplay:
+	{
 		UI_Gameplay->SetVisibility(ESlateVisibility::Visible);
+		ESlateVisibility SlateVisibility = USaveManager::LoadData_GameClear() ? ESlateVisibility::Hidden : ESlateVisibility::Visible;
+		Border_HideBox2->SetVisibility(SlateVisibility);
 		break;
+	}
 
 	case ESettingCategory::System:
 		UI_System->SetVisibility(ESlateVisibility::Visible);
@@ -165,6 +172,13 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 
 	TargetAngle = Target;
 	bRotateGear = true;
+
+	if (!IsValid(AC_Gear))
+	{
+		AC_Gear = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gear);
+	}
+
+	AC_Gear->FadeIn(0.5f, 1, 0);
 }
 
 void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
@@ -186,6 +200,8 @@ void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 		UI_Gear->SetRenderTransform(TargetTrans);
 
 		bRotateGear = false;
+
+		AC_Gear->FadeOut(0.5f, 0);
 	}
 }
 

@@ -21,7 +21,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
-    if (Info.InteractType == CorrectInteractType)
+    if (CorrectInteractTypes.Contains(Info.InteractType))
     {
         bSolved = !bSolved;
     }

@@ -4,6 +4,7 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include <GameSystem/SubSystem/GameSystem.h>
 
 #pragma region Base
 
@@ -82,6 +83,17 @@ void UDataController::RemoveClearedAnomaly()
 void UDataController::ResetClearedAnomaly()
 {
 	ClearedAnomalySet.Empty();
+}
+
+void UDataController::RemoveNoRuleAnomaly()
+{
+	// Temp Logic : Remove Anomaly By Rule
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	ActAnomaly.RemoveAll([GameSystem](const FAnomalyEntry& Entry)
+		{
+			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry.AnomalyClass.Get());
+			return !GameSystem->AnomalyRules.Contains(DefaultObj->AnomalyRule);
+		});
 }
 
 uint8 UDataController::GetRemainingAnomalyCounts()

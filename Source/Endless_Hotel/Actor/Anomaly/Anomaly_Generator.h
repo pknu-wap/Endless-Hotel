@@ -10,6 +10,7 @@
 
 // Forward Declaration
 class AAnomaly_Event;
+class AAnomaly_Object_Base;
 
 // Delegate
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Event*, Spawned);
@@ -24,8 +25,8 @@ class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
 #pragma region Object
 
 private:
-	void SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params);
-	void AnomalyObjectLinker();
+	void SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses);
+	void AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses);
 
 #pragma endregion
 

@@ -10,10 +10,8 @@
 
 #pragma region AnomalyObject
 
-void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params)
+void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(AnomalyID);
 
 	if (TargetClasses.IsEmpty())
 	{
@@ -28,22 +26,12 @@ void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTra
 		}
 
 		auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(ObjClass, SpawnTransform, Params);
-
-		if (NewObj)
-		{
-			NewObj->AnomalyID = AnomalyID;
-			NewObj->SetAnomalyName();
-
-			CurrentAnomaly->LinkedObjects.Add(NewObj);
-		}
+		NewObj->ExecuteAnomalies.Add(CurrentAnomaly->AnomalyName);
 	}
 }
 
-void AAnomaly_Generator::AnomalyObjectLinker()
+void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 	
 	if (TargetClasses.IsEmpty())
 	{
@@ -123,14 +111,12 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 
-	if (Spawned->bIsRuntimeSpawned)
+	for (auto& SpawnObjectTransform : CurrentAnomaly->ObjectSpawnTransform)
 	{
-		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, CurrentAnomaly->ObjectTransform, Params);
+		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, SpawnObjectTransform, Params, TargetClasses);
 	}
-	else
-	{
-		AnomalyObjectLinker();
-	}
+
+	AnomalyObjectLinker(TargetClasses);
 
 	// Start
 	CurrentAnomaly->SetAnomalyState();

@@ -12,7 +12,7 @@ void AAnomaly_Clock::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyName::Clock_Ringing:
-		SetupAnomalyAction(&AAnomaly_Object_Clock::RingingClock, EInteractType::TurnOff);
+		SetupAnomalyAction(&AAnomaly_Object_Clock::RingingClock, { EInteractType::TurnOff });
 		ScheduleAnomaly(20);
 		break;
 	}
