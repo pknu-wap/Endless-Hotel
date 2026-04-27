@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "UI/Interact/UI_Interact.h"
+#include "UI/Base/Interact/UI_Interact.h"
 #include <Components/TextBlock.h>
 #include <Components/Image.h>
 

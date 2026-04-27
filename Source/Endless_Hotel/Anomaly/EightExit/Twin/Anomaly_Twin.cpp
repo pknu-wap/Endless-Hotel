@@ -28,7 +28,7 @@ void AAnomaly_Twin::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Twin:
+	case EAnomalyID::Twin:
 		SetupAnomalyAction(&AAnomaly_Object_Twin::TwinReveal);
 		break;
 	}

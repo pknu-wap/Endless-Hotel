@@ -40,4 +40,23 @@ protected:
 
 #pragma endregion
 
+#pragma region Widget
+
+private:
+	void SettingWidget();
+
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_NoteBook> UI_NoteBook_Left;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_NoteBook> UI_NoteBook_Right;
+
+	uint8 LeftIndex = 0;
+	uint8 RightIndex = 3;
+
+	const uint8 IndexChangeSize = 3;
+
+#pragma endregion
+
 };

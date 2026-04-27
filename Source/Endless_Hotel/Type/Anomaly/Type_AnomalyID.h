@@ -5,7 +5,7 @@
 #include <CoreMinimal.h>
 
 UENUM(BlueprintType)
-enum class EAnomalyName : uint8
+enum class EAnomalyID : uint8
 {
 	None				= 0		UMETA(DisplayName = "None"),
 	Hair				= 1		UMETA(DisplayName = "Hair"),

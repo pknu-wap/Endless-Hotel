@@ -29,7 +29,7 @@ void AAnomaly_Hair::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Hair:
+	case EAnomalyID::Hair:
 		SetupAnomalyAction(&AAnomaly_Object_Hair::StartHair);
 		break;
 	}

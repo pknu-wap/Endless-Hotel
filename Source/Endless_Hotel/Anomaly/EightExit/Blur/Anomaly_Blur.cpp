@@ -24,7 +24,7 @@ void AAnomaly_Blur::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Blur:
+	case EAnomalyID::Blur:
 		ActiveTrigger();
 		break;
 	}
