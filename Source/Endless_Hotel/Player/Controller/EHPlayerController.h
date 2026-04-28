@@ -285,4 +285,11 @@ protected:
 
 #pragma endregion
 
+#pragma region PaintingAnomaly
+	
+public:
+	bool bIsWatchingPainting = false;
+
+#pragma endregion
+
 };

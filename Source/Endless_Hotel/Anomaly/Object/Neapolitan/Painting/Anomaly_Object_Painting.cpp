@@ -182,23 +182,36 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 
 void AAnomaly_Object_Painting::DieWatchingPainting()
 {
-	/*FTimerHandle WatchingTimeline;
+	FTimerHandle WatchingTimeline;
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimeline, FTimerDelegate::CreateWeakLambda(this, [&WatchingTimeline, this]()
 		{
-			if (!Component_Interact->CanInteract())
+			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			if (!Player) 
+			{
+				return;
+			}
+
+			AEHPlayerController* PC = Cast<AEHPlayerController>(Player->Controller);
+			if (!PC) 
+			{
+				return;
+			}
+
+			if (PC->bIsWatchingPainting && !bSolved)
+			{
+				if (CurrentWatchTime >= MaxWatchTime)
+				{
+					GetWorld()->GetTimerManager().ClearTimer(WatchingTimeline);
+					Player->DieDelegate.Broadcast(EDeathReason::Music);
+					return;
+				}
+				CurrentWatchTime += 0.01;
+			}
+			else
 			{
 				CurrentWatchTime = 0;
 			}
-			if (CurrentWatchTime >= MaxWatchTime)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(WatchingTimeline);
-				AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-				if (!Player) return;
-				Player->DieDelegate.Broadcast(EDeathReason::Music);
-				return;
-			}
-			CurrentWatchTime += 0.01;
-		}), 0.01f, true);*/
+		}), 0.01f, true);
 }
 
 #pragma endregion
