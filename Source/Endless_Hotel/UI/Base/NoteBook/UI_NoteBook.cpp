@@ -19,38 +19,9 @@ void UUI_NoteBook::ChangeDescription(const uint8& StartIndex)
 	auto& AssetManager = UEHAssetManager::Get();
 	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset({ Index1,Index2,Index3 });
 
-	if (Datas.IsValidIndex(0))
-	{
-		Image1->SetBrushFromTexture(Datas[0]->Image_Description.LoadSynchronous());
-		Text1->SetText(Datas[0]->Text_Description);
-	}
-	else
-	{
-		Image1->SetBrushFromTexture(Image_Empty);
-		Text1->SetText(FText());
-	}
-
-	if (Datas.IsValidIndex(1))
-	{
-		Image2->SetBrushFromTexture(Datas[1]->Image_Description.LoadSynchronous());
-		Text2->SetText(Datas[1]->Text_Description);
-	}
-	else
-	{
-		Image2->SetBrushFromTexture(Image_Empty);
-		Text2->SetText(FText());
-	}
-
-	if (Datas.IsValidIndex(2))
-	{
-		Image3->SetBrushFromTexture(Datas[2]->Image_Description.LoadSynchronous());
-		Text3->SetText(Datas[2]->Text_Description);
-	}
-	else
-	{
-		Image3->SetBrushFromTexture(Image_Empty);
-		Text3->SetText(FText());
-	}
+	SetDescription(Datas, Image1, Text1, Index1);
+	SetDescription(Datas, Image2, Text2, Index2);
+	SetDescription(Datas, Image3, Text3, Index3);
 }
 
 void UUI_NoteBook::HideDescription()
@@ -74,6 +45,20 @@ void UUI_NoteBook::HideDescription()
 			Text2->SetVisibility(ESlateVisibility::Visible);
 			Text3->SetVisibility(ESlateVisibility::Visible);
 		}), Duration, false);
+}
+
+void UUI_NoteBook::SetDescription(const TArray<UPDA_Anomaly*>& Datas, UImage* Image, UTextBlock* Text, uint8 Index)
+{
+	if (Datas.IsValidIndex(2))
+	{
+		Image->SetBrushFromTexture(Datas[Index]->Image_Description.LoadSynchronous());
+		Text->SetText(Datas[Index]->Text_Description);
+	}
+	else
+	{
+		Image->SetBrushFromTexture(Image_Empty);
+		Text->SetText(FText());
+	}
 }
 
 #pragma endregion

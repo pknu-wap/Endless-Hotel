@@ -55,7 +55,14 @@ private:
 	uint8 LeftIndex = 0;
 	uint8 RightIndex = 3;
 
-	const uint8 IndexChangeSize = 3;
+	const uint8 IndexChangeSize = 6;
+
+#pragma endregion
+
+#pragma region Page
+
+private:
+	void TurnOverPage(bool bLeft);
 
 #pragma endregion
 

@@ -17,7 +17,7 @@ void UEHAssetManager::LoadAnomalyDataAsset()
 
 	for (const auto& ID : IDs)
 	{
-		LoadPrimaryAsset(ID);
+		LoadPrimaryAsset(ID)->WaitUntilComplete();
 		AnomalyDatas.Add(GetPrimaryAssetObject<UPDA_Anomaly>(ID));
 	}
 
@@ -33,7 +33,10 @@ TArray<UPDA_Anomaly*> UEHAssetManager::GetAnomalyDataAsset(const TArray<uint8>& 
 
 	for (const uint8& Index : Indexes)
 	{
-		ReturnArray.Add(AnomalyDatas[Index]);
+		if (AnomalyDatas.IsValidIndex(Index))
+		{
+			ReturnArray.Add(AnomalyDatas[Index]);
+		}
 	}
 
 	return ReturnArray;

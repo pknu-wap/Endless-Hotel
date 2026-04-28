@@ -23,42 +23,12 @@ void UUI_PopUp_NoteBook::NativeOnInitialized()
 
 void UUI_PopUp_NoteBook::Click_ButtonLeft()
 {
-	SettingWidget();
-
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadAnomalyDataAsset();
-	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex - IndexChangeSize * 2))
-	{
-		return;
-	}
-
-	Cast<ANoteBook>(TargetObject)->TurnOverPage(true);
-
-	LeftIndex -= IndexChangeSize;
-	RightIndex -= IndexChangeSize;
-
-	UI_NoteBook_Left->ChangeDescription(LeftIndex);
-	UI_NoteBook_Right->ChangeDescription(RightIndex);
+	TurnOverPage(true);
 }
 
 void UUI_PopUp_NoteBook::Click_ButtonRight()
 {
-	SettingWidget();
-
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadAnomalyDataAsset();
-	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex + IndexChangeSize * 2))
-	{
-		return;
-	}
-
-	Cast<ANoteBook>(TargetObject)->TurnOverPage(false);
-
-	LeftIndex += IndexChangeSize;
-	RightIndex += IndexChangeSize;
-
-	UI_NoteBook_Left->ChangeDescription(LeftIndex);
-	UI_NoteBook_Right->ChangeDescription(RightIndex);
+	TurnOverPage(false);
 }
 
 #pragma endregion
@@ -77,6 +47,32 @@ void UUI_PopUp_NoteBook::SettingWidget()
 
 	UI_NoteBook_Left = Cast<UUI_NoteBook>(WC_Des1->GetUserWidgetObject());
 	UI_NoteBook_Right = Cast<UUI_NoteBook>(WC_Des2->GetUserWidgetObject());
+}
+
+#pragma endregion
+
+#pragma region Page
+
+void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
+{
+	SettingWidget();
+
+	int32 ChangeSize = bLeft ? -IndexChangeSize : IndexChangeSize;
+
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.LoadAnomalyDataAsset();
+	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex + ChangeSize))
+	{
+		return;
+	}
+
+	Cast<ANoteBook>(TargetObject)->TurnOverPage(bLeft);
+
+	LeftIndex += ChangeSize;
+	RightIndex += ChangeSize;
+
+	UI_NoteBook_Left->ChangeDescription(LeftIndex);
+	UI_NoteBook_Right->ChangeDescription(RightIndex);
 }
 
 #pragma endregion
