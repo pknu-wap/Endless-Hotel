@@ -71,6 +71,8 @@ protected:
 
 	FTransform OriginalTrans;
 
+	bool bIsInteracted = false;
+
 #pragma endregion
 
 };

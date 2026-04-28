@@ -70,6 +70,8 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 		break;
 	}
 
+	bIsInteracted = true;
+
 	// 나중에 이탈리아어로 말하는 것으로 대사 변경 예정 및 FText 하드 코딩 제거 예정
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->ShowSubTitle(FText::FromString(TEXT("모시 모시")), 0.1f, 2.f);
@@ -81,6 +83,11 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Phone::RingingPhone()
 {
+	if (bIsInteracted)
+	{
+		return;
+	}
+	
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
 	GetWorld()->GetTimerManager().SetTimer(ShakeHandle, this, &ThisClass::ShakePhone, 1.5f, false);
 }
