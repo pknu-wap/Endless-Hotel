@@ -8,6 +8,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
+#include <Components/TextBlock.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -158,6 +159,28 @@ void UUI_HUD_InGame::PossessCamera()
 
 	auto* PC = GetWorld()->GetFirstPlayerController();
 	PC->SetViewTargetWithBlend(Player);
+}
+
+#pragma endregion
+
+#pragma region SubTitle
+
+void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
+{
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubTitle]()
+		{
+			Image_SubTitle->SetVisibility(ESlateVisibility::Visible);
+			Text_SubTitle->SetText(SubTitle);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Visible);
+		}), Delay, false);
+
+	FTimerHandle HideHandle;
+	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+		}), Delay + Duration, false);
 }
 
 #pragma endregion

@@ -92,4 +92,18 @@ protected:
 
 #pragma endregion
 
+#pragma region SubTitle
+
+public:
+	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_SubTitle;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_SubTitle;
+
+#pragma endregion
+
 };
