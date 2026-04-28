@@ -18,7 +18,7 @@ public:
 
 private:
 	void HideDescription();
-	void SetDescription(const TArray<class UPDA_Anomaly*>& Datas, class UImage* Image, class UTextBlock* Text, uint8 Index);
+	void SetDescription(TArray<class UPDA_Anomaly*>& Datas, class UImage* Image, class UTextBlock* Text, uint8 Index);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

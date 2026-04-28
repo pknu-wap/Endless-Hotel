@@ -19,9 +19,9 @@ void UUI_NoteBook::ChangeDescription(const uint8& StartIndex)
 	auto& AssetManager = UEHAssetManager::Get();
 	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset({ Index1,Index2,Index3 });
 
-	SetDescription(Datas, Image1, Text1, Index1);
-	SetDescription(Datas, Image2, Text2, Index2);
-	SetDescription(Datas, Image3, Text3, Index3);
+	SetDescription(Datas, Image1, Text1, 0);
+	SetDescription(Datas, Image2, Text2, 1);
+	SetDescription(Datas, Image3, Text3, 2);
 }
 
 void UUI_NoteBook::HideDescription()
@@ -47,9 +47,9 @@ void UUI_NoteBook::HideDescription()
 		}), Duration, false);
 }
 
-void UUI_NoteBook::SetDescription(const TArray<UPDA_Anomaly*>& Datas, UImage* Image, UTextBlock* Text, uint8 Index)
+void UUI_NoteBook::SetDescription(TArray<UPDA_Anomaly*>& Datas, UImage* Image, UTextBlock* Text, uint8 Index)
 {
-	if (Datas.IsValidIndex(2))
+	if (Datas.IsValidIndex(Index))
 	{
 		Image->SetBrushFromTexture(Datas[Index]->Image_Description.LoadSynchronous());
 		Text->SetText(Datas[Index]->Text_Description);
