@@ -1,6 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
+#include "Player/Controller/EHPlayerController.h"
+#include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -43,6 +45,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 {
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
+	DieWatchingPainting();
 
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
@@ -72,6 +75,7 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
+	DieWatchingPainting();
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
@@ -85,6 +89,7 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
+	DieWatchingPainting();
 	Object->SetMaterial(1, BlurMaterial);
 }
 
@@ -94,6 +99,7 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
+	DieWatchingPainting();
 	CurrentTilt = Object->GetRelativeRotation().Roll;
 
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
@@ -116,6 +122,7 @@ void AAnomaly_Object_Painting::FrameTilt()
 		}
 	}), 0.5f, true);
 }
+
 #pragma endregion
 
 #pragma region Interact
@@ -167,6 +174,31 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, RotateAngle, 0);
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, Location, Rotation,
 		true, true, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
+}
+
+#pragma endregion
+
+#pragma region Die
+
+void AAnomaly_Object_Painting::DieWatchingPainting()
+{
+	/*FTimerHandle WatchingTimeline;
+	GetWorld()->GetTimerManager().SetTimer(WatchingTimeline, FTimerDelegate::CreateWeakLambda(this, [&WatchingTimeline, this]()
+		{
+			if (!Component_Interact->CanInteract())
+			{
+				CurrentWatchTime = 0;
+			}
+			if (CurrentWatchTime >= MaxWatchTime)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(WatchingTimeline);
+				AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+				if (!Player) return;
+				Player->DieDelegate.Broadcast(EDeathReason::Music);
+				return;
+			}
+			CurrentWatchTime += 0.01;
+		}), 0.01f, true);*/
 }
 
 #pragma endregion
