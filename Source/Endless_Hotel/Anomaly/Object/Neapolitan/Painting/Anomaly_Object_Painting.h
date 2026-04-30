@@ -133,10 +133,11 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, Category = "Die|Watching")
 	float MaxWatchTime = 5;
+
 private:
 	float CurrentWatchTime = 0.0f;
 
-protected:
+public:
 	void DieWatchingPainting();
 
 #pragma endregion

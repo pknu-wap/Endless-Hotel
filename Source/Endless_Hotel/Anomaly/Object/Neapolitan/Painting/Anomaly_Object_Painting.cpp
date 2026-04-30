@@ -45,7 +45,6 @@ void AAnomaly_Object_Painting::EyeFollowing()
 {
 	Mesh_LeftEye->SetVisibleFlag(true);
 	Mesh_RightEye->SetVisibleFlag(true);
-	DieWatchingPainting();
 
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
@@ -75,7 +74,6 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	DieWatchingPainting();
 	Niagara_Blood_Left->SetActive(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
@@ -89,7 +87,6 @@ void AAnomaly_Object_Painting::BloodDropping()
 
 void AAnomaly_Object_Painting::BlurPaint()
 {
-	DieWatchingPainting();
 	Object->SetMaterial(1, BlurMaterial);
 }
 
@@ -99,7 +96,6 @@ void AAnomaly_Object_Painting::BlurPaint()
 
 void AAnomaly_Object_Painting::FrameTilt()
 {
-	DieWatchingPainting();
 	CurrentTilt = Object->GetRelativeRotation().Roll;
 
 	TargetTilt = FMath::FRandRange(10.f, 180.f);
