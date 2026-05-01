@@ -31,6 +31,7 @@ enum class EAnomalyName : uint8
 	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color"),
 	GhostHand			= 24	UMETA(DisplayName = "GhostHand"),
 	Ghost               = 28	UMETA(DisplayName = "Ghost"),
+	CrawlChild			= 80	UMETA(DisplayName = "CrawlChild"),
 	Phone_Ringing		= 83	UMETA(DisplayName = "Phone_Ringing"),
 	Twin				= 85	UMETA(DisplayName = "Twin"),
 	SignDrop			= 86	UMETA(DisplayName = "SignDrop"),

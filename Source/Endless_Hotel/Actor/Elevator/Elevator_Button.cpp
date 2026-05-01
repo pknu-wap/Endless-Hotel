@@ -56,27 +56,31 @@ void AElevator_Button::MoveToButtonPlayer()
 
     FVector TargetLocation = ButtonLocation
         + (ButtonForward * PlayerToElevatorDistance)
-        + (ButtonRight * PlayerToElevatorSideOffset);
+        - (ButtonRight * PlayerToElevatorSideOffset);
     TargetLocation.Z = Player->GetActorLocation().Z;
 
     FRotator TargetRotation = (-ButtonForward).Rotation();
     TargetRotation.Pitch = 0.0f;
     TargetRotation.Roll = 0.0f;
 
-    FLatentActionInfo LatentInfo;
+    /*FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
     LatentInfo.UUID = __LINE__;
     LatentInfo.Linkage = 0;
 
     UKismetSystemLibrary::MoveComponentTo(
-        Player->GetRootComponent(),
-        TargetLocation,
-        TargetRotation,
-        true, true, 0.5f, false,
-        EMoveComponentAction::Move,
-        LatentInfo
-    );
+    Player->GetRootComponent(),
+    TargetLocation,
+    TargetRotation,
+    true, true, 0.5f, false,
+    EMoveComponentAction::Move,
+    LatentInfo
+    );*/
+
+    Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::TeleportPhysics);
+    PC->SetControlRotation(TargetRotation);
+    OnMoveCompleted();
 }
 
 void AElevator_Button::OnMoveCompleted()
@@ -124,8 +128,8 @@ void AElevator_Button::PlayButtonPressAnimation()
     FVector PressedLocation_Button = DownButtonDefaultLocation;
     FVector PressedLocation_Ring = DownButtonRingDefaultLocation;
 
-    PressedLocation_Button.X -= ButtonPressDistance;
-    PressedLocation_Ring.X -= ButtonPressDistance;
+    PressedLocation_Button.Y += ButtonPressDistance;
+    PressedLocation_Ring.Y += ButtonPressDistance;
 
     FLatentActionInfo LatentInfo1;
     LatentInfo1.CallbackTarget = this;

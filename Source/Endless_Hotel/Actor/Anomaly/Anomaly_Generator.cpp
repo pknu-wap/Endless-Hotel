@@ -26,7 +26,8 @@ void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTra
 		}
 
 		auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(ObjClass, SpawnTransform, Params);
-		NewObj->ExecuteAnomalies.Add(CurrentAnomaly->AnomalyName);
+		const EAnomalyName AnomalyName = static_cast<EAnomalyName>(CurrentAnomaly->AnomalyID);
+		NewObj->ExecuteAnomalies.Add(AnomalyName);
 	}
 }
 
