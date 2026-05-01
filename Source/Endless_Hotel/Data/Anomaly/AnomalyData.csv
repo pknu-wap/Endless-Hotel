@@ -22,7 +22,7 @@
 21,23,RugColor,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Rug.BP_EightExit_Rug_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Rug/BP_Object_Rug.BP_Object_Rug_C
 22,24,GhostHand,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_GhostHand.BP_EightExit_GhostHand_C,
 23,28,Ghost,/Game/EndlessHotel/Anomaly/Base/EightExit/BP_EightExit_Ghost.BP_EightExit_Ghost_C,/Game/EndlessHotel/Anomaly/Object/EightExit/Ghost/BP_Object_Ghost.BP_Object_Ghost_C
-24,80,BackChild,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_BackChild.BP_Neapolitan_BackChild_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/BackChild/BP_Object_BackChild.BP_Object_BackChild_C
+24,80,CrawlChild,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_CrawlChild.BP_Neapolitan_CrawlChild_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/CrawlChild/BP_Object_CrawlChild.BP_Object_CrawlChild_C
 25,83,Phone_Ringing,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Phone.BP_Neapolitan_Phone_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Phone/BP_Object_Phone.BP_Object_Phone_C
 26,85,Twin,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Twin.BP_Neapolitan_Twin_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Twin/BP_Object_Twin.BP_Object_Twin_C
 27,86,SignDrop,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_SignDrop.BP_Neapolitan_SignDrop_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/SignDrop/BP_Object_SignDrop.BP_Object_SignDrop_C

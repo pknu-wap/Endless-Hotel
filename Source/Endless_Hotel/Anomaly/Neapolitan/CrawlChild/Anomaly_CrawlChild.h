@@ -4,10 +4,10 @@
 
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_BackChild.generated.h>
+#include <Anomaly_CrawlChild.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_BackChild : public AAnomaly_Event_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_CrawlChild : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 
@@ -23,7 +23,7 @@ protected:
 
 #pragma endregion
 
-#pragma region BackChild
+#pragma region CrawlChild
 
 protected:
 	UPROPERTY()

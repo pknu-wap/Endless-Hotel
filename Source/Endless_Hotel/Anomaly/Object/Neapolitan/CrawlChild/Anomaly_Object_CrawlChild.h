@@ -4,10 +4,10 @@
 
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Object_BackChild.generated.h>
+#include <Anomaly_Object_CrawlChild.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_BackChild : public AAnomaly_Object_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_Neapolitan
 {
 	GENERATED_BODY()
 	
@@ -19,14 +19,14 @@ protected:
 
 #pragma endregion
 
-#pragma region BackChild
+#pragma region CrawlChild
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
 	float LockSpeed = 100.f;
 
 	UPROPERTY(EditAnywhere, Category = "Socket")
-	FName SocketName = TEXT("BackChild");
+	FName SocketName = TEXT("CrawlChild");
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_Child;

@@ -1,21 +1,21 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Anomaly/Neapolitan/BackChild/Anomaly_BackChild.h"
-#include "Anomaly/Object/Neapolitan/BackChild/Anomaly_Object_BackChild.h"
+#include "Anomaly/Neapolitan/CrawlChild/Anomaly_CrawlChild.h"
+#include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
-#pragma region BackChild
+#pragma region CrawlChild
 
-void AAnomaly_BackChild::SetAnomalyState()
+void AAnomaly_CrawlChild::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::BackChild:
-		SetupAnomalyAction(&AAnomaly_Object_BackChild::AttatchChildToPlayer);
+	case EAnomalyName::CrawlChild:
+		SetupAnomalyAction(&AAnomaly_Object_CrawlChild::AttatchChildToPlayer);
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		PlayerMC = Player->GetCharacterMovement();
 		OriginalSpeed = PlayerMC->MaxWalkSpeed;
@@ -24,7 +24,7 @@ void AAnomaly_BackChild::SetAnomalyState()
 	}
 }
 
-void AAnomaly_BackChild::DisableAnomaly()
+void AAnomaly_CrawlChild::DisableAnomaly()
 {
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PC->bCanRun = true;

@@ -1,13 +1,13 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Anomaly/Object/Neapolitan/BackChild/Anomaly_Object_BackChild.h"
+#include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
-#pragma region BackChild
+#pragma region CrawlChild
 
-void AAnomaly_Object_BackChild::AttatchChildToPlayer()
+void AAnomaly_Object_CrawlChild::AttatchChildToPlayer()
 {
 	bSolved = true;
 	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
