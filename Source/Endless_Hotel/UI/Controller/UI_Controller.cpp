@@ -2,6 +2,7 @@
 
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/UI_PopUp_Base.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/PlayerController.h>
@@ -24,6 +25,11 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 	case EWidgetType::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		break;
+	}
+
+	if (!PopUpWidgets.IsEmpty())
+	{
+		PopUpWidgets[0]->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	CreatedWidget->AddToViewport(Widget_ZOrder);
@@ -58,7 +64,10 @@ void UUI_Controller::CloseWidget()
 	PopUpWidgets.Top()->RemoveFromViewport();
 	PopUpWidgets.Pop();
 
-	SetInputMode(PopUpWidgets.Top()->InputModeType);
+	UUI_Base* TopWidget = PopUpWidgets.Top();
+	TopWidget->SetVisibility(ESlateVisibility::Visible);
+
+	SetInputMode(TopWidget->InputModeType);
 }
 
 void UUI_Controller::ClearAllWidget()
@@ -115,6 +124,16 @@ void UUI_Controller::AdjustZOrder(bool bUp)
 {
 	int32 Value = bUp ? 1 : -1;
 	Widget_ZOrder = FMath::Clamp(Widget_ZOrder + Value, Min_ZOrder, Max_ZOrder);
+}
+
+#pragma endregion
+
+#pragma region SubTitle
+
+void UUI_Controller::ShowSubTitle(FText SubTitle, float Delay, float Duration)
+{
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(GetCurrentHUDWidget());
+	UI_InGame->ShowSubTitle(SubTitle, Delay, Duration);
 }
 
 #pragma endregion

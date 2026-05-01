@@ -20,7 +20,7 @@ void AAnomaly_Rug::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Rug_Color:
+	case EAnomalyID::Rug_Color:
 		SetupAnomalyAction(&AAnomaly_Object_Rug::ChangeRugColor);
 		ScheduleAnomaly();
 		break;

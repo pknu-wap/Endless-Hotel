@@ -4,8 +4,8 @@
 #include "Component/Interact/InteractComponent.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Read/UI_PopUp_Read.h"
+#include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Character/Character/EHCharacter.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
@@ -21,7 +21,7 @@ void UReadComponent::SetReferenceObject(AEHCharacter* Interacter, AActor* Target
 
 	if (!IsValid(Player.Get()))
 	{
-		Player = Interacter;
+		Player = Cast<AEHPlayer>(Interacter);
 	}
 
 	if (!IsValid(Comp_SpringArm.Get()))
@@ -65,7 +65,7 @@ void UReadComponent::MoveCameraToTarget(AEHCharacter* Interacter, AActor* Target
 	LatentInfo.Linkage = 0;
 	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
 
-	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation + LocOffset, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
 }
 
 void UReadComponent::RestoreCamera()
@@ -83,13 +83,13 @@ void UReadComponent::OnMoveCompleted()
 {
 	auto* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
 	auto* UI_Read = Cast<UUI_PopUp_Read>(UICon->OpenWidget(UI_Read_Class));
-
 	UI_Read->SetTarget(TargetObject.Get());
 }
 
 void UReadComponent::OnRestoreCompleted()
 {
-	Comp_SpringArm->AttachToComponent(Player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("HeadSocket"));
+	Comp_SpringArm->AttachToComponent(Player->GetThirdMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("HeadSocket"));
+	Comp_SpringArm->SetRelativeLocation(FVector(7, 7, 0));
 	Comp_SpringArm->bUsePawnControlRotation = true;
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

@@ -36,6 +36,23 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Super::NativeConstruct();
 
 	HighlightButtons();
+
+	FTimerHandle CameraHandle;
+	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			PossessCamera(true);
+		}), 0.1f, false);
+}
+
+void UUI_PopUp_Setting::NativeDestruct()
+{
+	FTimerHandle CameraHandle;
+	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			PossessCamera(false);
+		}), 0.1f, false);
+
+	Super::NativeDestruct();
 }
 
 void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -234,6 +251,24 @@ void UUI_PopUp_Setting::Click_Apply()
 	USaveManager::SaveData_Setting(Data_Setting);
 
 	Input_ESC();
+}
+
+#pragma endregion
+
+#pragma region Camera
+
+void UUI_PopUp_Setting::PossessCamera(bool bGearCamera)
+{
+	const FName CameraTag = bGearCamera ? FName("Gear") : FName("MainMenu");
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
+
+	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (IsValid(PC))
+	{
+		PC->SetViewTargetWithBlend(FoundActors[0], 2.f);
+	}
 }
 
 #pragma endregion

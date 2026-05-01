@@ -49,4 +49,11 @@ private:
 
 #pragma endregion
 
+#pragma region SubTitle
+
+public:
+	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
+
+#pragma endregion
+
 };

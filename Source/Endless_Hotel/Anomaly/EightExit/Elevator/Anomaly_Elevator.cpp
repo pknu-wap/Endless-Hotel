@@ -26,10 +26,10 @@ void AAnomaly_Elevator::BeginPlay()
 
 void AAnomaly_Elevator::SetAnomalyState()
 {
-    AnomalyName = static_cast<EAnomalyName>(AnomalyID);
+    AnomalyName = static_cast<EAnomalyID>(AnomalyID);
     switch (AnomalyName)
     {
-    case EAnomalyName::ElevatorNoFloor:
+    case EAnomalyID::ElevatorNoFloor:
         TargetElevator->DisableElevatorFloor();
         ScheduleAnomaly();
         break;

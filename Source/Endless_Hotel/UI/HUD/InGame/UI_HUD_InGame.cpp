@@ -8,6 +8,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
+#include <Components/TextBlock.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -16,13 +17,22 @@ void UUI_HUD_InGame::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	AEHPlayer* EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
+}
+
+void UUI_HUD_InGame::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	auto Data = USaveManager::LoadData_Setting();
+
+	SetBrightness(0.05f + Data.Brightness * 0.95f);
 }
 
 #pragma endregion
@@ -137,6 +147,40 @@ void UUI_HUD_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Demo);
+}
+
+#pragma endregion
+
+#pragma region Camera
+
+void UUI_HUD_InGame::PossessCamera()
+{
+	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	PC->SetViewTargetWithBlend(Player);
+}
+
+#pragma endregion
+
+#pragma region SubTitle
+
+void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
+{
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubTitle]()
+		{
+			Image_SubTitle->SetVisibility(ESlateVisibility::Visible);
+			Text_SubTitle->SetText(SubTitle);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Visible);
+		}), Delay, false);
+
+	FTimerHandle HideHandle;
+	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+		}), Delay + Duration, false);
 }
 
 #pragma endregion

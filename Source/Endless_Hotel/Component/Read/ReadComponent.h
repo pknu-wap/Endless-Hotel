@@ -21,7 +21,7 @@ private:
 	TWeakObjectPtr<AActor> TargetObject;
 
 	UPROPERTY()
-	TWeakObjectPtr<class AEHCharacter> Player;
+	TWeakObjectPtr<class AEHPlayer> Player;
 
 	UPROPERTY()
 	TWeakObjectPtr<class USpringArmComponent> Comp_SpringArm;
@@ -54,7 +54,10 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
-	FRotator RotOffset = FRotator::ZeroRotator;
+	FVector LocOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Move")
+	FRotator RotOffset;
 
 private:
 	FVector OriginalLoc;

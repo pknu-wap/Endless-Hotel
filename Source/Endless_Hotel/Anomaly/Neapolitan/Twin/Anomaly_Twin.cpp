@@ -26,7 +26,7 @@ void AAnomaly_Twin::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Twin:
+	case EAnomalyID::Twin:
 		break;
 	}
 	//ActiveTrigger();

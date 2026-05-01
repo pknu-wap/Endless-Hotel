@@ -23,7 +23,7 @@ void AAnomaly_Choose::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Choose:
+	case EAnomalyID::Choose:
 		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
 			{
 				if (UGameInstance* GI = GetGameInstance())

@@ -13,7 +13,7 @@ void AAnomaly_Bug::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Bug:
+	case EAnomalyID::Bug:
 		ActiveTrigger();
 		break;
 	}

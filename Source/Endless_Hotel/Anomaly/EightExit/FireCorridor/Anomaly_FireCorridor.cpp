@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/EightExit/FireCorridor/Anomaly_FireCorridor.h"
@@ -21,7 +21,7 @@ void AAnomaly_FireCorridor::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::FireCorridor:
+	case EAnomalyID::FireCorridor:
 		ScheduleAnomaly();
 		break;
 	}

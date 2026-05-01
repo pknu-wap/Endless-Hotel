@@ -11,7 +11,7 @@ void AAnomaly_Event_Phone::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Phone_Ringing:
+	case EAnomalyID::Phone_Ringing:
 		SetupAnomalyAction(&AAnomaly_Object_Phone::RingingPhone, { EInteractType::TurnOff, EInteractType::Call });
 		ScheduleAnomaly(30);
 		break;

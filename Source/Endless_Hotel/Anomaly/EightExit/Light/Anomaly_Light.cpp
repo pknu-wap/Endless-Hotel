@@ -12,12 +12,12 @@ void AAnomaly_Light::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Light_Destroy:
+	case EAnomalyID::Light_Destroy:
 		SetupAnomalyAction(&AAnomaly_Object_Light::DropLight);
 		ActiveTrigger();
 		break;
 
-	case EAnomalyName::Light_Blue:
+	case EAnomalyID::Light_Blue:
 		SetupAnomalyAction(&AAnomaly_Object_Light::ChangeLightColor);
 		ActiveTrigger();
 		break;
