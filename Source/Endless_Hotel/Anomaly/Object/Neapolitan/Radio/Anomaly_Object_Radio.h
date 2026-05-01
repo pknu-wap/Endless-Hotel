@@ -50,6 +50,7 @@ protected:
 
 protected:
 	void FinishMove();
+	void StopRadio();
 
 #pragma endregion
 
@@ -69,4 +70,9 @@ protected:
 	FRotator OriginalPointerRotation;
 
 #pragma endregion
+
+#pragma region Interact
+
+protected:
+	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 };

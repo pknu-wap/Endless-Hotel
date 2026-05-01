@@ -71,3 +71,36 @@ void AAnomaly_Object_Radio::UpdatePointerSpin(float Value)
 	SM_Radio_Pointer->SetRelativeRotation(Target);
 }
 #pragma endregion
+
+#pragma region Interact
+
+void AAnomaly_Object_Radio::Interact_Implementation(AEHCharacter* Interacter)
+{
+	Super::Interact_Implementation(Interacter);
+
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+
+	switch (Info.InteractType)
+	{
+	case EInteractType::TurnOff:
+		StopRadio();
+		break;
+	}
+}
+
+void AAnomaly_Object_Radio::StopRadio()
+{
+	bIsPlaying = false;
+
+	AC->FadeOut(0.5f, 0.f);
+
+	Timeline_PointerSpin->SetPlayRate(0.2f);
+
+	FTimerHandle TempHandle;
+	GetWorld()->GetTimerManager().SetTimer(TempHandle, [this]()
+		{
+			Timeline_PointerSpin->Stop();
+		}, 0.5f, false);
+}
+
+#pragma endregion
