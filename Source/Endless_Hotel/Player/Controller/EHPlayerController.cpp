@@ -413,7 +413,8 @@ void AEHPlayerController::CheckForInteractables()
 		HitComp = HitActor->FindComponentByClass<UInteractComponent>();
 	}
 
-	bIsWatchingPainting = Cast<AAnomaly_Object_Painting>(HitActor) != nullptr;
+	AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(HitActor);
+	bIsWatchingPainting = AnomalyPainting != nullptr && AnomalyPainting->bIsAnomaly;
 
 	if (CachedInteractComp.Get())
 	{

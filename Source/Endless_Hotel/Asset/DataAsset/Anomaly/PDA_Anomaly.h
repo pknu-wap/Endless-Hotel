@@ -26,7 +26,7 @@ public:
 	TSoftClassPtr<class AAnomaly_Event> Anomaly;
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-	TArray<TSoftClassPtr<class AAnomaly_Event>> Objects;
+	TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (AssetBundles = "UI"))

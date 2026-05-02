@@ -39,21 +39,46 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 		return;
 	}
 
+	static TMap<UClass*, bool> ClassCheckCache;
+
 	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
 	{
 		auto* AnomalyObject = *Iter;
+		UClass* ActorClass = Iter->GetClass();
 
 		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
 		{
 			continue;
 		}
 
-		if (TargetClasses.Contains(AnomalyObject->GetClass()))
+		if (bool* bCachedResult = ClassCheckCache.Find(ActorClass))
 		{
-			AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-			AnomalyObject->SetAnomalyName();
+			if (*bCachedResult)
+			{
+				AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+				AnomalyObject->SetAnomalyName();
 
-			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+				CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+			}
+			continue;
+		}
+
+		bool bIsTarget = false;
+		for (const UClass* TargetClass : TargetClasses)
+		{
+			if (ActorClass->IsChildOf(TargetClass))
+			{
+				bIsTarget = true;
+				break;
+			}
+		}
+		ClassCheckCache.Add(ActorClass, bIsTarget);
+
+		if (bIsTarget)
+		{
+			Iter->AnomalyID = CurrentAnomaly->AnomalyID;
+			Iter->SetAnomalyName();
+			CurrentAnomaly->LinkedObjects.Add(*Iter);
 		}
 	}
 }

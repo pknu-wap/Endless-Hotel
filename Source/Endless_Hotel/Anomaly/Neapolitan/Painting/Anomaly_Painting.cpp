@@ -31,6 +31,7 @@ void AAnomaly_Painting::SetAnomalyState()
 	for (auto AnomalyObject : TargetAnomalyObjects)
 	{
 		AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(AnomalyObject);
+		AnomalyPainting->bIsAnomaly = true;
 		AnomalyPainting->DieWatchingPainting();
 	}
 }
