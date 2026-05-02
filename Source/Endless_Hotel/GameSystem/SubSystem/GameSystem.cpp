@@ -84,7 +84,7 @@ void UGameSystem::ApplyVerdict()
 		if (bExceptClearedAnomaly)
 		{
 			DataC->ClearedAnomalySet.Add(CurrentAnomalyID);
-			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
+			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
 	else 
