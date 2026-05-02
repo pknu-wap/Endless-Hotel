@@ -25,7 +25,7 @@ void AAnomaly_Event::BeginPlay()
 	Super::BeginPlay();
 
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
-	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
+	//UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion

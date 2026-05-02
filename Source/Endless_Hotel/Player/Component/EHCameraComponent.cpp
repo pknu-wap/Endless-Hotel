@@ -23,7 +23,9 @@ void UEHCameraComponent::BeginPlay()
 	Super::BeginPlay();
 
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	UEHGameInstance::OnLevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
+
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->LevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
 
 	FindPPV();
 	SettingEyeEffect();
@@ -122,7 +124,9 @@ void UEHCameraComponent::EndEyeEffect()
 
 void UEHCameraComponent::LevelShownCompleted()
 {
-	switch (UEHGameInstance::CurrentLevelType)
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+
+	switch (GameInstance->CurrentLevelType)
 	{
 	case ELevelType::Hotel:
 		StartEyeEffect(true);
