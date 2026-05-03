@@ -59,7 +59,8 @@ void AAnomaly_Door::SetupDoorTrigger()
 			TriggerTargetDoor = Door;
 			break;
 		}
-	}
+	}	// 이 부분 필요한가? 어차피 ExecuteAnomalies 쓰면 되는 거 아닌가?
+
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 	TriggerBox->SetWorldLocation(FVector(-2681.0, 573.0, 600.0));
