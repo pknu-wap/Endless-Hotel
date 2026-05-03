@@ -16,7 +16,7 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::CrawlChild:
-		SetupAnomalyAction(&AAnomaly_Object_CrawlChild::AttatchChildToPlayer);
+		SetupAnomalyAction(&AAnomaly_Object_CrawlChild::ActivePlayTrigger);
 		SetupAnomalyAction(&AAnomaly_Object_Door::OpenDoor);
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		PlayerMC = Player->GetCharacterMovement();
