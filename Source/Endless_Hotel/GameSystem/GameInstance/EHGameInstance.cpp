@@ -80,7 +80,7 @@ void UEHGameInstance::OnLevelLoaded()
 		break;
 	}
 
-	CurrentStreamLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), EnumConverter::GetEnumAsName<ELevelType>(CurrentLevelType));
+	CurrentStreamLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), *CurrentLevel.GetAssetName());
 	CurrentStreamLevel->OnLevelShown.RemoveAll(this);
 	CurrentStreamLevel->OnLevelShown.AddDynamic(this, &ThisClass::OnLevelShown);
 	CurrentStreamLevel->SetShouldBeVisible(true);
@@ -112,6 +112,13 @@ void UEHGameInstance::UnloadStreamLevel()
 		return;
 	}
 
+	CurrentStreamLevel->OnLevelHidden.RemoveAll(this);
+	CurrentStreamLevel->OnLevelHidden.AddDynamic(this, &ThisClass::OnLevelHidden);
+	CurrentStreamLevel->SetShouldBeVisible(false);
+}
+
+void UEHGameInstance::OnLevelHidden()
+{
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
 	LatentInfo.ExecutionFunction = FName("OnLevelUnloaded");
@@ -123,6 +130,9 @@ void UEHGameInstance::UnloadStreamLevel()
 
 void UEHGameInstance::OnLevelUnloaded()
 {
+	CurrentStreamLevel = nullptr;
+	CurrentLevel = nullptr;
+
 	LoadStreamLevel();
 }
 

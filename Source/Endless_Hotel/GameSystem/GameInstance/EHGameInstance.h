@@ -63,6 +63,9 @@ private:
 	void UnloadStreamLevel();
 
 	UFUNCTION()
+	void OnLevelHidden();
+
+	UFUNCTION()
 	void OnLevelUnloaded();
 
 private:
