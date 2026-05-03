@@ -37,3 +37,4 @@
 36,97,MazeMonster,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Maze.BP_Neapolitan_Maze_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Maze/BP_Object_Maze.BP_Object_Maze_C
 37,98,Doll,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Doll.BP_Neapolitan_Doll_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Doll/BP_Object_Doll.BP_Object_Doll_C
 38,99,Portrait_Eye,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Painting.BP_Neapolitan_Painting_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Painting/BP_Object_Painting.BP_Object_Painting_C
+39,100,Radio,/Game/EndlessHotel/Anomaly/Base/Neapolitan/BP_Neapolitan_Radio.BP_Neapolitan_Radio_C,/Game/EndlessHotel/Anomaly/Object/Neapolitan/Radio/BP_Object_Radio.BP_Object_Radio_C
