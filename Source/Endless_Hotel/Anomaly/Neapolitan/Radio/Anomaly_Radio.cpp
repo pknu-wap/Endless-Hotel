@@ -11,7 +11,7 @@ void AAnomaly_Radio::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Radio:
+	case EAnomalyID::Radio:
 		SetupAnomalyAction(&AAnomaly_Object_Radio::PointerMoving, { EInteractType::TurnOff });
 		ScheduleAnomaly(20);
 		break;
