@@ -178,6 +178,7 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 
 void AAnomaly_Object_Painting::DieWatchingPainting()
 {
+	this->bIsAnomaly = true;
 	FTimerHandle WatchingTimeline;
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimeline, FTimerDelegate::CreateWeakLambda(this, [&WatchingTimeline, this]()
 		{

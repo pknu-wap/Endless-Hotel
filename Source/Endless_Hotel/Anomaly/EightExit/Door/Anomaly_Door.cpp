@@ -29,10 +29,11 @@ void AAnomaly_Door::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Door_Shake:
-		AnomalyAction = ([this](AAnomaly_Object_Base* AnomalyObject)
+		/*AnomalyActions.Add([this](AAnomaly_Object_Base* AnomalyObject)
 			{
 				Cast<AAnomaly_Object_Door>(AnomalyObject)->DoorShaking();
-			});
+			});*/
+		SetupAnomalyAction(&AAnomaly_Object_Door::DoorShaking);
 		ActiveTrigger();
 		break;
 
