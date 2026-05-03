@@ -72,8 +72,17 @@ private:
 	void StartLoadedLevel();
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
+	FLevelLoaded LevelLoaded;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelShown);
 	FLevelShown LevelShown;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelUnloaded);
+	FLevelUnloaded LevelUnloaded;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelHidden);
+	FLevelHidden LevelHidden;
 
 private:
 	FTimerHandle StartHandle;

@@ -84,6 +84,8 @@ void UEHGameInstance::OnLevelLoaded()
 	CurrentStreamLevel->OnLevelShown.RemoveAll(this);
 	CurrentStreamLevel->OnLevelShown.AddDynamic(this, &ThisClass::OnLevelShown);
 	CurrentStreamLevel->SetShouldBeVisible(true);
+
+	LevelLoaded.Broadcast();
 }
 
 void UEHGameInstance::OnLevelShown()
@@ -126,6 +128,8 @@ void UEHGameInstance::OnLevelHidden()
 	LatentInfo.UUID = __LINE__;
 
 	UGameplayStatics::UnloadStreamLevelBySoftObjectPtr(GetWorld(), CurrentLevel, LatentInfo, false);
+
+	LevelHidden.Broadcast();
 }
 
 void UEHGameInstance::OnLevelUnloaded()
@@ -134,6 +138,8 @@ void UEHGameInstance::OnLevelUnloaded()
 	CurrentLevel = nullptr;
 
 	LoadStreamLevel();
+
+	LevelUnloaded.Broadcast();
 }
 
 void UEHGameInstance::StartLoadedLevel()

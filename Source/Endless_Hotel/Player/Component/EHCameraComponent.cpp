@@ -25,10 +25,9 @@ void UEHCameraComponent::BeginPlay()
 	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->LevelLoaded.AddDynamic(this, &ThisClass::FindPPV);
+	GameInstance->LevelLoaded.AddDynamic(this, &ThisClass::SettingEyeEffect);
 	GameInstance->LevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
-
-	FindPPV();
-	SettingEyeEffect();
 }
 
 void UEHCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -44,7 +43,10 @@ void UEHCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UEHCameraComponent::FindPPV()
 {
-	PostProcessVolume = nullptr;
+	if (PostProcessVolume.IsValid())
+	{
+		return;
+	}
 
 	for (TActorIterator<APostProcessVolume> Iter(GetWorld()); Iter; ++Iter)
 	{
@@ -62,6 +64,11 @@ void UEHCameraComponent::FindPPV()
 
 void UEHCameraComponent::SettingEyeEffect()
 {
+	if (IsValid(DynMat_EyeEffect))
+	{
+		return;
+	}
+
 	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
@@ -130,6 +137,10 @@ void UEHCameraComponent::LevelShownCompleted()
 	{
 	case ELevelType::Hotel:
 		StartEyeEffect(true);
+		break;
+
+	case ELevelType::MainMenu:
+		DynMat_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 		break;
 	}
 }
