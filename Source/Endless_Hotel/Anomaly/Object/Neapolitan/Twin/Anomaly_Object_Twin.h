@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -13,33 +13,21 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Twin : public AAnomaly_Object_Neapolitan
 	
 #pragma region Base
 
-public:
-	AAnomaly_Object_Twin(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
+//public:
+//	AAnomaly_Object_Twin(const FObjectInitializer& ObjectInitializer);
+//
+//protected:
+//	virtual void BeginPlay() override;
 
 #pragma endregion
 
 #pragma region Activity
 
-public:
-	void TwinReveal();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Twin")
-	FVector FirstSpawnLocation;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Twin")
-	FVector ActiveSpawnLocation;
-
+//샤이닝 안 봐서 모르는데 뭐해야 하는거지
 
 #pragma endregion
 
 #pragma region Twin
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Twin")
-	TObjectPtr<UStaticMeshComponent> TwinMesh;
 
 #pragma endregion
 };

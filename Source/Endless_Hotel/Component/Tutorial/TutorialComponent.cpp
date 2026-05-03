@@ -2,7 +2,7 @@
 
 #include "Component/Tutorial/TutorialComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "UI/Tutorial/UI_Tutorial.h"
+#include "UI/Base/Tutorial/UI_Tutorial.h"
 #include <Components/WidgetComponent.h>
 #include <Components/BoxComponent.h>
 

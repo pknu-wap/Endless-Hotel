@@ -29,7 +29,7 @@ void AAnomaly_Cry::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Cry:
+	case EAnomalyID::Cry:
 		ActiveTrigger();
 		break;
 	}

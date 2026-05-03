@@ -12,7 +12,7 @@ void AAnomaly_Shelf::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Plant_Change:
+	case EAnomalyID::Plant_Change:
 		SetupAnomalyAction(&AAnomaly_Object_Shelf::StartChange);
 		ScheduleAnomaly();
 		break;

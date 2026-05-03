@@ -10,5 +10,19 @@ UCLASS(Abstract, Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_HUD_Base : public UUI_Base
 {
 	GENERATED_BODY()
-	
+
+#pragma region Base
+
+protected:
+	virtual void NativeConstruct() override;
+
+#pragma endregion
+
+#pragma region Camera
+
+protected:
+	virtual void PossessCamera() PURE_VIRTUAL(ThisClass::PossessCamera, );
+
+#pragma endregion
+
 };

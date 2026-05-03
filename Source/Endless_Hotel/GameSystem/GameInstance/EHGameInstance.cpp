@@ -2,17 +2,15 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/Enum/EnumConverter.h"
-#include "Actor/Anomaly/Anomaly_Generator.h"
 #include "GameSystem/GameMode/EHGameMode.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include "UI/Controller/UI_Controller.h"
+#include "Actor/Anomaly/Anomaly_Generator.h"
 #include "Anomaly/Base/Anomaly_Event.h"
-#include "Actor/Elevator/Elevator.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <Engine/LevelStreamingDynamic.h>
 #include <GameFramework/Character.h>
-#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Declare
 

@@ -33,7 +33,7 @@ public:
 	// 상호작용 가능 여부 시각 확인 함수
 	void ShowInteracting(bool bIsShow);
 
-	// 상호작용 가능 여부 리턴 ( List_Interact에 아무것도 없어야 하고, 한번이라도 상호작용 X 이어야 함 )
+	// 상호작용 가능 여부 리턴 ( List_Interact에 하나라도 있어야 하고, 한 번이라도 상호작용 X 이어야 함 )
 	bool CanInteract() { return !List_Interact.IsEmpty() && !bIsInteracted; }
 
 	// 현재 선택된 상호작용 번호 변경
