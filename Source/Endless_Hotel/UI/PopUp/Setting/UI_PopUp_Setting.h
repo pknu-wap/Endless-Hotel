@@ -111,6 +111,7 @@ public:
 	void StartRotateGear(float Target);
 
 private:
+	void FindGearActor();
 	void RotateGear(float InDeltaTime);
 	const float GetShortestAddAngle(int32 Cur, int32 Tar);
 
@@ -121,10 +122,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_Gear;
 
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class AStaticMeshActor> SM_Gear;
+
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Gear;
 
-private:
 	bool bRotateGear = false;
 
 	float CurrentAngle = 0;

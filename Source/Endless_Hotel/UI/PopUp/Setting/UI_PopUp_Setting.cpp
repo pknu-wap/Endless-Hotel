@@ -9,6 +9,7 @@
 #include <Components/AudioComponent.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Kismet/GameplayStatics.h>
+#include <Engine/StaticMeshActor.h>
 
 #pragma region Declare
 
@@ -36,6 +37,7 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Super::NativeConstruct();
 
 	HighlightButtons();
+	FindGearActor();
 
 	FTimerHandle CameraHandle;
 	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -112,7 +114,7 @@ void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
 
 	Button_Normal->SetVisibility(ESlateVisibility::Hidden);
 	Button_Input->SetVisibility(ESlateVisibility::Hidden);
-	
+
 	switch (Target)
 	{
 	case ESettingCategory::Screen:
@@ -198,11 +200,30 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 	AC_Gear->FadeIn(0.5f, 1, 0);
 }
 
+void UUI_PopUp_Setting::FindGearActor()
+{
+	if (SM_Gear.IsValid())
+	{
+		return;
+	}
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStaticMeshActor::StaticClass(), OUT FoundActors);
+
+	for (AActor* FoundActor : FoundActors)
+	{
+		if (FoundActor->ActorHasTag("Gear"))
+		{
+			SM_Gear = Cast<AStaticMeshActor>(FoundActor);
+		}
+	}
+}
+
 void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 {
 	const float AddAngle = GetShortestAddAngle(CurrentAngle, TargetAngle);
 	const float FinalAngle = CurrentAngle + AddAngle;
-	const float RotateSpeed = 90.f;
+	constexpr float RotateSpeed = 90.f;
 
 	FWidgetTransform TargetTrans;
 	CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, InDeltaTime, RotateSpeed);
@@ -210,11 +231,19 @@ void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 
 	UI_Gear->SetRenderTransform(TargetTrans);
 
+	const float AddDeltaValue = AddAngle >= 0 ? RotateSpeed : -RotateSpeed;
+	FRotator TargetRot = SM_Gear->GetActorRotation();
+	TargetRot.Pitch = CurrentAngle;
+	SM_Gear->AddActorLocalRotation(FRotator(0, AddDeltaValue * InDeltaTime, 0));
+
 	if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
 	{
 		CurrentAngle = FinalAngle;
 		TargetTrans.Angle = CurrentAngle;
 		UI_Gear->SetRenderTransform(TargetTrans);
+
+		TargetRot.Pitch = FinalAngle;
+		SM_Gear->SetActorRotation(TargetRot);
 
 		bRotateGear = false;
 
