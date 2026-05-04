@@ -146,4 +146,15 @@ public:
 
 #pragma endregion
 
+#pragma region Elevator
+
+public:
+	void SetElevatorTransform(const FTransform PlayerElevatorTransform) { RelativeTransform = PlayerElevatorTransform; };
+	FTransform GetElevatorTransform() { return RelativeTransform; };
+
+private:
+	FTransform RelativeTransform = { FRotator(0,0,0), FVector(0,0,0), FVector(1, 1, 1) };
+
+#pragma endregion
+
 };

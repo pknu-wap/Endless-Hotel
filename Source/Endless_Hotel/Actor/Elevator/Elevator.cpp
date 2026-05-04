@@ -180,7 +180,6 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
 void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
-    SetPlayerInputEnabled(true);
     Door_AC->Stop();
 
     if (!bIsDoorOpened && bIsPlayerAlreadyInside)
@@ -246,6 +245,7 @@ void AElevator::TakePlayer()
 void AElevator::OnButtonClicked()
 {
     bWillOpen = true;
+    SetPlayerInputEnabled(true);
     ElevatorLight->SetIntensity(LightOnIntensity);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     MoveDoors();
@@ -257,11 +257,22 @@ void AElevator::OnButtonClicked()
 
 void AElevator::NotifySubsystem()
 {
+    auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    
+    Player->bUseControllerRotationYaw = false;
+    Player->bUseControllerRotationRoll = false;
+    Player->bUseControllerRotationPitch = false;
+
+    FVector RelativePlayerPos = Car->GetComponentTransform().InverseTransformPosition(Player->GetActorLocation());
+    FRotator RelativePlayerRot = Car->GetComponentTransform().InverseTransformRotation(Player->GetActorRotation().Quaternion()).Rotator();
+    FTransform RelativePlayerTrans = FTransform(RelativePlayerRot, RelativePlayerPos, Player->GetActorScale());
+
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {
         Sub->SetIsElevatorNormal(bIsNormalElevator);
         Sub->TryInteractSolveVerdict();
         Sub->ApplyVerdict();
+        Sub->SetElevatorTransform(RelativePlayerTrans);
     }
 }
 

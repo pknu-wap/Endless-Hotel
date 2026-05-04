@@ -63,21 +63,6 @@ void AElevator_Button::MoveToButtonPlayer()
     TargetRotation.Pitch = 0.0f;
     TargetRotation.Roll = 0.0f;
 
-    /*FLatentActionInfo LatentInfo;
-    LatentInfo.CallbackTarget = this;
-    LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
-    LatentInfo.UUID = __LINE__;
-    LatentInfo.Linkage = 0;
-
-    UKismetSystemLibrary::MoveComponentTo(
-    Player->GetRootComponent(),
-    TargetLocation,
-    TargetRotation,
-    true, true, 0.5f, false,
-    EMoveComponentAction::Move,
-    LatentInfo
-    );*/
-
     Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::TeleportPhysics);
     PC->SetControlRotation(TargetRotation);
     OnMoveCompleted();

@@ -160,7 +160,6 @@ void UEHGameInstance::RelocatePlayer()
 	auto* PC = Player->GetController();
 
 	FTransform AnomalyTransform;
-
 	if (Subsystem->bPassed)
 	{
 		AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
@@ -174,7 +173,6 @@ void UEHGameInstance::RelocatePlayer()
 		AnomalyTransform = DefaultTransform;
 		Player->SetActorTransform(AnomalyTransform);
 	}
-
 	Player->bUseControllerRotationYaw = true;
 	Player->bUseControllerRotationRoll = true;
 	Player->bUseControllerRotationPitch = true;
