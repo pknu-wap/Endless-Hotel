@@ -36,7 +36,7 @@ void AAnomaly_Light::StartAnomalyAction()
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
 				if (CurrentIndex == Light->LightIndex)
 				{
-					AnomalyAction(Light);
+					AnomalyActions[0](Light);
 					RemoveTargets.Add(FoundActor);
 				}
 			}

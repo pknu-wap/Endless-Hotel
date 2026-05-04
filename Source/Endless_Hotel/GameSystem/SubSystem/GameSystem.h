@@ -24,6 +24,16 @@ enum class EAnomalyVerdictMode : uint8
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 
+USTRUCT(BlueprintType)
+struct FAnomalyObjectArray
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	TArray<TObjectPtr<AAnomaly_Object_Base>> Objects;
+};
+
 #pragma endregion
 
 UCLASS()
@@ -100,12 +110,18 @@ public:
 #pragma region Pool
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
 	uint8 ActIndex = 0;
 
+private:
+	UPROPERTY()
+	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> AnomalyObjectPool;
+
 public:
 	void InitializePool();
+	void RegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	void UnRegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; };
 
 #pragma endregion
 

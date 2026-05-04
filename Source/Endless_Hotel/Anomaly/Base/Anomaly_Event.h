@@ -62,7 +62,7 @@ public:
 	TArray<FTransform> ObjectSpawnTransform;
 
 protected:
-	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
+	TArray<TFunction<void(class AAnomaly_Object_Base*)>> AnomalyActions;
 
 #pragma endregion
 
@@ -134,14 +134,14 @@ protected:
 	template<typename ObjectType>
 	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None })
 	{
-		AnomalyAction = [SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
+		AnomalyActions.Add([SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
 					TargetObj->CorrectInteractTypes = Interactions;
 					(TargetObj->*SelectedFunc)();
 				}
-			};
+			});
 	}
 
 #pragma endregion

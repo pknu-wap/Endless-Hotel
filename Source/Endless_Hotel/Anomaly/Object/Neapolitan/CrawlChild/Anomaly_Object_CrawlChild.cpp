@@ -2,10 +2,43 @@
 
 #include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Character/EHPlayer.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
+#include <Components/BoxComponent.h>
+
+#pragma region Base
+
+AAnomaly_Object_CrawlChild::AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	TriggerBox->SetupAttachment(RootComponent);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+#pragma endregion
 
 #pragma region CrawlChild
+
+void AAnomaly_Object_CrawlChild::ActivePlayTrigger()
+{
+	TriggerBox->SetWorldTransform(TriggerBox_Transform);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBox);
+	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
+	ShowSubTitle();
+}
+
+void AAnomaly_Object_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
+	if (!Player) return;
+	AttatchChildToPlayer();
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
 
 void AAnomaly_Object_CrawlChild::AttatchChildToPlayer()
 {
@@ -22,6 +55,24 @@ void AAnomaly_Object_CrawlChild::AttatchChildToPlayer()
 	PC->bIsRunning = false;
 	PC->bCanCrouch = false;
 	Move->MaxWalkSpeed = LockSpeed;
+	ApplyBackwardsPenalty();
+}
+
+void AAnomaly_Object_CrawlChild::ApplyBackwardsPenalty()
+{
+	//Todo : 여기서 뒤로가기 키 누르면 나올 연출들
+}
+
+void AAnomaly_Object_CrawlChild::ShowSubTitle()
+{
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	FTimerHandle SubTitleTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(SubTitleTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon]()
+		{
+			UICon->ShowSubTitle(FText::FromString(TEXT("살려줘")), 0.5f, 2.f);
+			UICon->ShowSubTitle(FText::FromString(TEXT("뜨거워")), 0.5f, 2.f);
+			UICon->ShowSubTitle(FText::FromString(TEXT("아파")), 0.5f, 2.f);
+		}), 8, true);
 }
 
 #pragma endregion
