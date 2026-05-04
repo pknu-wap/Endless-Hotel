@@ -158,13 +158,7 @@ void UEHGameInstance::RelocatePlayer()
 	auto* Subsystem = GetSubsystem<UGameSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(World, 0);
 
-	if (!Subsystem->bPassed)
-	{
-		Player->SetActorTransform(DefaultTransform);
-		return;
-	}
-
-	FTransform AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
+	FTransform AnomalyTransform = Subsystem->bPassed ? Generator->CurrentAnomaly->PlayerStartTransform : DefaultTransform;
 	Player->SetActorTransform(AnomalyTransform);
 }
 
