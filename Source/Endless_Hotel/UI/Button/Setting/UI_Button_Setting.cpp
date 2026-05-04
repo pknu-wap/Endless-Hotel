@@ -35,6 +35,11 @@ void UUI_Button_Setting::ReleaseSlateResources(bool bReleaseChildren)
 
 void UUI_Button_Setting::Click_Button()
 {
+	if (!bIsSideButton)
+	{
+		SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+
 	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
 	SettingWidget->ShowCategoryOption(SettingInfo.Enum);
 	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
@@ -73,6 +78,10 @@ void UUI_Button_Setting::Highlight(FSettingCategory TargetInfo)
 	if (SettingInfo.Enum == TargetInfo.Enum)
 	{
 		ButtonStyle.Normal.TintColor = Color_Highlight;
+	}
+	else
+	{
+		SetVisibility(ESlateVisibility::Visible);
 	}
 
 	SetStyle(ButtonStyle);

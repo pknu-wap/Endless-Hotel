@@ -7,6 +7,8 @@
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
 #include <Components/AudioComponent.h>
+#include <Components/SpotLightComponent.h>
+#include <Components/ExponentialHeightFogComponent.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/StaticMeshActor.h>
@@ -38,21 +40,13 @@ void UUI_PopUp_Setting::NativeConstruct()
 
 	HighlightButtons();
 	FindGearActor();
-
-	FTimerHandle CameraHandle;
-	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			PossessCamera(true);
-		}), 0.1f, false);
+	PossessCamera(true);
 }
 
 void UUI_PopUp_Setting::NativeDestruct()
 {
-	FTimerHandle CameraHandle;
-	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			PossessCamera(false);
-		}), 0.1f, false);
+	PossessCamera(false);
+	SM_Gear->SetActorRotation(OriginRot);
 
 	Super::NativeDestruct();
 }
@@ -189,7 +183,12 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 		return;
 	}
 
-	TargetAngle = Target;
+	const float AdditionAngle = GetShortestAdditionAngle(CurrentAngle, Target);
+	FinalAngle = CurrentAngle + AdditionAngle;
+
+	CurrentQuat = SM_Gear->GetActorQuat();
+	FinalQuat = CurrentQuat * FQuat(FVector::UpVector, FMath::DegreesToRadians(AdditionAngle));
+
 	bRotateGear = true;
 
 	if (!IsValid(AC_Gear))
@@ -198,6 +197,8 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 	}
 
 	AC_Gear->FadeIn(0.5f, 1, 0);
+
+	TurnOnGearLight(false);
 }
 
 void UUI_PopUp_Setting::FindGearActor()
@@ -208,52 +209,51 @@ void UUI_PopUp_Setting::FindGearActor()
 	}
 
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AStaticMeshActor::StaticClass(), OUT FoundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OUT FoundActors);
 
 	for (AActor* FoundActor : FoundActors)
 	{
-		if (FoundActor->ActorHasTag("Gear"))
+		if (FoundActor->ActorHasTag("Gear_StaticMesh"))
 		{
 			SM_Gear = Cast<AStaticMeshActor>(FoundActor);
+			OriginRot = SM_Gear->GetActorRotation();
+		}
+		else if (FoundActor->ActorHasTag("Gear_SpotLight"))
+		{
+			Comp_SpotLight = FoundActor->FindComponentByClass<USpotLightComponent>();
 		}
 	}
+
+	Comp_Fog = SM_Gear->FindComponentByClass<UExponentialHeightFogComponent>();
 }
 
 void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 {
-	const float AddAngle = GetShortestAddAngle(CurrentAngle, TargetAngle);
-	const float FinalAngle = CurrentAngle + AddAngle;
-	constexpr float RotateSpeed = 90.f;
-
-	FWidgetTransform TargetTrans;
 	CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, InDeltaTime, RotateSpeed);
-	TargetTrans.Angle = CurrentAngle;
+	UI_Gear->SetRenderTransformAngle(CurrentAngle);
 
-	UI_Gear->SetRenderTransform(TargetTrans);
-
-	const float AddDeltaValue = AddAngle >= 0 ? RotateSpeed : -RotateSpeed;
-	FRotator TargetRot = SM_Gear->GetActorRotation();
-	TargetRot.Pitch = CurrentAngle;
-	SM_Gear->AddActorLocalRotation(FRotator(0, AddDeltaValue * InDeltaTime, 0));
+	CurrentQuat = FMath::QInterpConstantTo(CurrentQuat, FinalQuat, InDeltaTime, FMath::DegreesToRadians(RotateSpeed));
+	SM_Gear->SetActorRotation(CurrentQuat);
 
 	if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
 	{
 		CurrentAngle = FinalAngle;
-		TargetTrans.Angle = CurrentAngle;
-		UI_Gear->SetRenderTransform(TargetTrans);
+		UI_Gear->SetRenderTransformAngle(CurrentAngle);
 
-		TargetRot.Pitch = FinalAngle;
-		SM_Gear->SetActorRotation(TargetRot);
+		CurrentQuat = FinalQuat;
+		SM_Gear->SetActorRotation(CurrentQuat);
 
 		bRotateGear = false;
 
 		AC_Gear->FadeOut(0.5f, 0);
+
+		TurnOnGearLight(true);
 	}
 }
 
-const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
+const int32 UUI_PopUp_Setting::GetShortestAdditionAngle(int32 Cur, int32 Tar)
 {
-	const float AngularSpacing = (Tar - Cur) % 360;
+	const int32 AngularSpacing = (Tar - Cur) % 360;
 
 	if (AngularSpacing > 180)
 	{
@@ -265,6 +265,29 @@ const float UUI_PopUp_Setting::GetShortestAddAngle(int32 Cur, int32 Tar)
 	}
 
 	return AngularSpacing;
+}
+
+void UUI_PopUp_Setting::TurnOnGearLight(bool bOn)
+{
+	const float LightValue = bOn ? 200.f : 20.f;
+	const float FogValue = bOn ? 2.f : 0.f;
+	constexpr float Speed = 720.f;
+
+	UWorld* World = GetWorld();
+	World->GetTimerManager().ClearTimer(LightHandle);
+	World->GetTimerManager().SetTimer(LightHandle, FTimerDelegate::CreateWeakLambda(this, [this, LightValue, World, Speed]()
+		{
+			const float Target = FMath::FInterpConstantTo(Comp_SpotLight->Intensity, LightValue, World->GetDeltaSeconds(), Speed);
+			Comp_SpotLight->SetIntensity(Target);
+
+			if (FMath::IsNearlyEqual(Target, LightValue))
+			{
+				Comp_SpotLight->SetIntensity(LightValue);
+				World->GetTimerManager().ClearTimer(LightHandle);
+			}
+		}), World->GetDeltaSeconds(), true);
+	
+	Comp_Fog->SetFogDensity(FogValue);
 }
 
 #pragma endregion
@@ -288,7 +311,9 @@ void UUI_PopUp_Setting::Click_Apply()
 
 void UUI_PopUp_Setting::PossessCamera(bool bGearCamera)
 {
-	const FName CameraTag = bGearCamera ? FName("Gear") : FName("MainMenu");
+	TurnOnGearLight(bGearCamera);
+
+	const FName CameraTag = bGearCamera ? FName("Gear_Camera") : FName("Title_Camera");
 
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
@@ -296,7 +321,7 @@ void UUI_PopUp_Setting::PossessCamera(bool bGearCamera)
 	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	if (IsValid(PC))
 	{
-		PC->SetViewTargetWithBlend(FoundActors[0], 2.f);
+		PC->SetViewTargetWithBlend(FoundActors[0], 1.f);
 	}
 }
 
