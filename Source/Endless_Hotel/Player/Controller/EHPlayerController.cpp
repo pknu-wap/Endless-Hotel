@@ -414,7 +414,7 @@ void AEHPlayerController::CheckForInteractables()
 	}
 
 	AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(HitActor);
-	bIsWatchingPainting = AnomalyPainting != nullptr && AnomalyPainting->bIsAnomaly;
+	bIsWatchingPainting = IsValid(AnomalyPainting) && AnomalyPainting->bIsAnomaly;
 
 	if (CachedInteractComp.Get())
 	{

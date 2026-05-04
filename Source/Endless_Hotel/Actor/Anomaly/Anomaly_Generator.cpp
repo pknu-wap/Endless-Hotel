@@ -24,45 +24,33 @@ void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTra
 
 void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
-	
 	if (TargetClasses.IsEmpty())
 	{
 		return;
 	}
 
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto ObjectPool = Sub->GetAnomalyObject();
+
 	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
 
-	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
+	for (const auto& TargetClass : TargetClasses)
 	{
-		auto* AnomalyObject = *Iter;
-		UClass* ActorClass = Iter->GetClass();
-
-		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
+		if (auto* FoundStruct = ObjectPool.Find(TargetClass.Get()))
 		{
-			continue;
-		}
-
-		bool bIsTargetClass = false;
-
-		for (const UClass* TargetClass : TargetClasses)
-		{
-			if (ActorClass->IsChildOf(TargetClass))
+			for (auto& AnomalyObject : FoundStruct->Objects)
 			{
-				bIsTargetClass = true;
-				break;
+				if (!IsValid(AnomalyObject))
+				{
+					continue;
+				}
+				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
+				{
+					AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+					AnomalyObject->SetAnomalyName();
+					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+				}
 			}
-		}
-
-		if (!bIsTargetClass)
-		{
-			continue;
-		}
-
-		if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
-		{
-			AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-			AnomalyObject->SetAnomalyName();
-			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 		}
 	}
 }

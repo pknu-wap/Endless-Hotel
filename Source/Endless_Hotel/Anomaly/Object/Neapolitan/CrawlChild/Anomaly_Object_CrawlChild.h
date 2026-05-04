@@ -17,7 +17,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class UAudioComponent> AC;
 
-protected:
+public:
 	AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion

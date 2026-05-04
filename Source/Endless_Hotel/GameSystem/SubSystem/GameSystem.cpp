@@ -173,6 +173,34 @@ void UGameSystem::InitializePool()
 	ActIndex = 0;
 }
 
+void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
+{
+	if (!IsValid(Object))
+	{
+		return;
+	}
+	UClass* ActorClass = Object->GetClass();
+	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.Add(Object);
+}
+
+void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
+{
+	if (!Object) return;
+	UClass* TargetClass = Object->GetClass();
+	if (FAnomalyObjectArray* FoundStruct = AnomalyObjectPool.Find(TargetClass))
+	{
+		FoundStruct->Objects.Remove(Object);
+		if (FoundStruct->Objects.IsEmpty())
+		{
+			AnomalyObjectPool.Remove(TargetClass);
+		}
+		if(IsValid(CurrentAnomaly))
+		{
+			CurrentAnomaly->LinkedObjects.Remove(Object);
+		}
+	}
+}
+
 #pragma endregion
 
 #pragma region Clear
