@@ -154,12 +154,6 @@ protected:
     void SetPlayerInputEnabled(bool bEnable);
     void TakePlayer();
 
-    UFUNCTION()
-    void OnPlayerRotationUpdate(float Alpha);
-
-    UFUNCTION()
-    void OnPlayerRotationEnd();
-
 protected:
     UPROPERTY(EditAnywhere, Category = "Player")
     FRotator RotateAngle;

@@ -66,12 +66,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     TriggerBlockBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetupAttachment(Car);
-
-    PlayerAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerAnchor"));
-    PlayerAnchor->SetupAttachment(Car);
-    PlayerDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("PlayerDirectionArrow"));
-    PlayerDirectionArrow->SetupAttachment(PlayerAnchor);
-    CameraRotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraRotationTimeline"));
 }
 
 void AElevator::BeginPlay()
@@ -86,11 +80,6 @@ void AElevator::BeginPlay()
     DoorTimeline->AddInterpFloat(DoorCurve, UpdateFunc);
     FinishedFunc.BindUFunction(this, FName("OnDoorTimelineFinished"));
     DoorTimeline->SetTimelineFinishedFunc(FinishedFunc);
-
-    UpdateFunc.BindUFunction(this, FName("OnPlayerRotationUpdate"));
-    CameraRotationTimeline->AddInterpFloat(RotationCurve, UpdateFunc);
-    FinishedFunc.BindUFunction(this, FName("OnPlayerRotationEnd"));
-    CameraRotationTimeline->SetTimelineFinishedFunc(FinishedFunc);
 
     InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
     InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
@@ -107,12 +96,6 @@ void AElevator::BeginPlay()
             auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
             if (Sub->CurrentAnomaly->TargetElevatorID == ElevatorID && Sub->Floor < 9)
             {
-                ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-                AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-                PC->SetControlRotation(FRotator(0, 180, 0));
-                Player->SetActorRotation(FRotator(0, 180, 0));
-                Player->bUseControllerRotationYaw = true;
-
                 MoveElevator(StartPos, MapPos, true);
                 ElevatorLight->SetIntensity(LightOnIntensity);
                 bIsPlayerAlreadyInside = true;
@@ -138,7 +121,6 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
     
     bIsPlayerAlreadyInside = true;
     TakePlayer();
-    SetPlayerInputEnabled(false);
 }
 
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -210,7 +192,6 @@ void AElevator::OnDoorTimelineFinished()
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     bWillOpen = true;
-    SetPlayerInputEnabled(false);
     Exterior_Structure->SetRelativeLocation(Start);
     Elevator_AC->Play();
     
@@ -253,43 +234,9 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 
 void AElevator::TakePlayer()
 {
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-    FRotator TargetRotation = PlayerAnchor->GetRelativeRotation() + RotateAngle;
-
-    Player->AttachToComponent(PlayerAnchor, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-    Player->bUseControllerRotationYaw = false;
-    Player->SetActorRelativeLocation(FVector(0,0,85));
-
-    TargetControlRotation = PlayerAnchor->GetComponentRotation() + RotateAngle;
-    CameraRotationTimeline->PlayFromStart();
-}
-
-void AElevator::OnPlayerRotationUpdate(float Alpha)
-{
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-    FQuat StartQuat = FQuat(StartControlRotation);
-    FQuat TargetQuat = FQuat(TargetControlRotation);
-    FQuat ResultQuat = FQuat::Slerp(StartQuat, TargetQuat, Alpha);
-
-    PC->SetControlRotation(ResultQuat.Rotator());
-    Player->SetActorRotation(ResultQuat.Rotator());
-}
-
-void AElevator::OnPlayerRotationEnd()
-{
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-
-    PC->SetControlRotation(TargetControlRotation);
-    Player->SetActorRotation(TargetControlRotation);
-    Player->bUseControllerRotationYaw = true;
-    Player->SetActorRelativeLocation(FVector(0, 0, 85));
-    Player->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
     bWillOpen = false;
     MoveDoors();
+    MoveElevator(MapPos, EndPos, false);
 }
 
 #pragma endregion
