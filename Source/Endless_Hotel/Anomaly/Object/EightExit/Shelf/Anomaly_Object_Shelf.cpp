@@ -1,12 +1,9 @@
 // Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/EightExit/Shelf/Anomaly_Object_Shelf.h"
 #include <Components/StaticMeshComponent.h>
-#include <Components/BoxComponent.h>
 #include <Components/SceneComponent.h>
 #include <Components/AudioComponent.h>
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 

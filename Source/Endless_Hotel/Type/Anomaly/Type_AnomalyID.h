@@ -45,5 +45,6 @@ enum class EAnomalyID : uint8
 	Painting_Blood		= 96	UMETA(DisplayName = "Painting_Blood"),
 	Maze_Monster		= 97	UMETA(DisplayName = "Maze_Monster"),
 	Doll				= 98	UMETA(DisplayName = "Doll"),
-	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye")
+	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye"),
+	Radio				= 100	UMETA(DisplayName = "Radio")
 };
