@@ -12,6 +12,8 @@ class AAnomaly_Generator;
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
 
+#define STARTFLOOR 9
+
 #pragma region Declare
 
 UENUM(BlueprintType)
@@ -56,10 +58,10 @@ public:
 #pragma region Floor
 
 public:
-	uint8 Floor = 9;
+	uint8 Floor = STARTFLOOR;
 
 private:
-	void ResetFloor() { Floor = 9; };
+	void ResetFloor() { Floor = STARTFLOOR; };
 	void SubFloor();
 	void AddFloor();
 

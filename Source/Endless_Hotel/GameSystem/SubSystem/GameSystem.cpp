@@ -30,7 +30,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 		DataController->GetAnomalyEntries();
 	}
 
-	Floor = 9;
+	Floor = STARTFLOOR;
 	ActIndex = 0;
 	AnomalyRules.Add(EAnomalyRule::EightExit);
 
@@ -180,7 +180,7 @@ void UGameSystem::InitializePool()
 void UGameSystem::GameClear()
 {
 	bIsClear = true;
-	Floor = 9;
+	Floor = STARTFLOOR;
 
 	USaveManager::SaveData_GameClear(true);
 }

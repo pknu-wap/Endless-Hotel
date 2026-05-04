@@ -177,7 +177,7 @@ void UEHGameInstance::SpawnAnomalyGenerator()
 	auto* Subsystem = GetSubsystem<UGameSystem>();
 	int32 IsNormal = FMath::RandRange(1, 10);
 
-	if (IsNormal > 8 || Subsystem->Floor == 9)
+	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
 	{
 		Generator->SpawnNormal(SpawnLevel);
 		return;
