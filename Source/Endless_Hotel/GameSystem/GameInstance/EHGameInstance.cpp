@@ -52,6 +52,12 @@ void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
 
 	CurrentLevel = ULevelStreamingDynamic::LoadLevelInstanceBySoftObjectPtr(GetWorld(), TargetLevel, FVector::ZeroVector, FRotator::ZeroRotator, OUT bSuccess);
 
+	if (!CurrentLevel || !bSuccess)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Level Load Failed!"));
+		return;
+	}
+
 	CurrentLevel->SetShouldBeVisible(false);
 	CurrentLevel->SetShouldBeLoaded(true);
 
