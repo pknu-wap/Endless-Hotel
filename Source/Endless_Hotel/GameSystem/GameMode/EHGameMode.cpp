@@ -20,12 +20,3 @@ void AEHGameMode::BeginPlay()
 }
 
 #pragma endregion
-
-#pragma region Respawn
-
-void AEHGameMode::RespawnPlayer()
-{
-	RestartPlayer(GetWorld()->GetFirstPlayerController());
-}
-
-#pragma endregion

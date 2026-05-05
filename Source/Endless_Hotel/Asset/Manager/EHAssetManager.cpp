@@ -23,7 +23,7 @@ void UEHAssetManager::LoadAnomalyDataAsset()
 
 	AnomalyDatas.Sort([](const UPDA_Anomaly& First, const UPDA_Anomaly& Second)
 		{
-			return First.Number < Second.Number;
+			return First.ID < Second.ID;
 		});
 }
 
@@ -33,10 +33,14 @@ TArray<UPDA_Anomaly*> UEHAssetManager::GetAnomalyDataAsset(const TArray<uint8>& 
 
 	for (const uint8& Index : Indexes)
 	{
-		if (AnomalyDatas.IsValidIndex(Index))
-		{
-			ReturnArray.Add(AnomalyDatas[Index]);
-		}
+		auto FoundPDA = AnomalyDatas.FindByPredicate([Index](const UPDA_Anomaly* Item) {
+            return Item && static_cast<uint8>(Item->ID) == Index;
+        });
+
+        if (FoundPDA && *FoundPDA)
+        {
+            ReturnArray.Add(*FoundPDA);
+        }
 	}
 
 	return ReturnArray;

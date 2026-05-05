@@ -4,9 +4,8 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Sound/SoundController.h"
-#include "Actor/Elevator/Elevator.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "Type/Level/Type_Level.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <EngineUtils.h>
 #include <Engine/PostProcessVolume.h>
 
@@ -22,11 +21,12 @@ void UEHCameraComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::StartEyeEffect);
-	UEHGameInstance::OnLevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
-
-	FindPPV();
-	SettingEyeEffect();
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->LevelLoaded.RemoveAll(this);
+	GameInstance->LevelLoaded.AddDynamic(this, &ThisClass::FindPPV);
+	GameInstance->LevelLoaded.AddDynamic(this, &ThisClass::SettingEyeEffect);
+	GameInstance->LevelShown.RemoveAll(this);
+	GameInstance->LevelShown.AddDynamic(this, &ThisClass::LevelShownCompleted);
 }
 
 void UEHCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -42,7 +42,10 @@ void UEHCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UEHCameraComponent::FindPPV()
 {
-	PostProcessVolume = nullptr;
+	if (PostProcessVolume.IsValid())
+	{
+		return;
+	}
 
 	for (TActorIterator<APostProcessVolume> Iter(GetWorld()); Iter; ++Iter)
 	{
@@ -60,6 +63,11 @@ void UEHCameraComponent::FindPPV()
 
 void UEHCameraComponent::SettingEyeEffect()
 {
+	if (IsValid(DynMat_EyeEffect))
+	{
+		return;
+	}
+
 	DynMat_EyeEffect = UMaterialInstanceDynamic::Create(Mat_EyeEffect, this);
 
 	PostProcessVolume->Settings.WeightedBlendables.Array.Empty();
@@ -122,10 +130,21 @@ void UEHCameraComponent::EndEyeEffect()
 
 void UEHCameraComponent::LevelShownCompleted()
 {
-	switch (UEHGameInstance::CurrentLevelType)
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+
+	switch (GameInstance->CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		StartEyeEffect(true);
+	{
+		if (GameInstance->GetSubsystem<UGameSystem>()->Floor == STARTFLOOR)
+		{
+			StartEyeEffect(true);
+		}
+		break;
+	}
+
+	case ELevelType::MainMenu:
+		DynMat_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 		break;
 	}
 }

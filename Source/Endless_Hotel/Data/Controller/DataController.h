@@ -55,6 +55,8 @@ public:
 	UPROPERTY()
 	TArray<FAnomalyEntry> ActAnomaly;
 
+	const uint8 MaxIndex = 255;
+
 protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
