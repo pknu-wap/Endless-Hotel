@@ -10,6 +10,7 @@
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Actor/Elevator/Elevator.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -211,6 +212,37 @@ void UGameSystem::GameClear()
 	Floor = 9;
 
 	USaveManager::SaveData_GameClear(true);
+}
+
+void UGameSystem::RegisterStartElevator(class AElevator* Elevator)
+{
+	if (!IsValid(Elevator))
+	{
+		return;
+	}
+
+	StartElevator = Elevator;
+
+	if (bPassed)
+	{
+		auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		auto* PC = Player->GetController();
+
+		FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
+		FRotator FinalCamRot = StartElevator->Exterior_Structure->GetComponentTransform().TransformRotation(this->RelativePlayerRotation.Quaternion()).Rotator();
+
+		Player->AttachToComponent(StartElevator->Exterior_Structure, AttachRules);
+		Player->SetActorRelativeLocation(this->RelativePlayerLocation, false, nullptr, ETeleportType::TeleportPhysics);
+		Player->SetActorRotation(FinalCamRot);
+		PC->SetControlRotation(FinalCamRot);
+
+		Player->bUseControllerRotationYaw = true;
+		Player->bUseControllerRotationRoll = true;
+		Player->bUseControllerRotationPitch = true;
+
+		FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, false);
+		Player->DetachFromActor(DetachRules);
+	}
 }
 
 #pragma endregion

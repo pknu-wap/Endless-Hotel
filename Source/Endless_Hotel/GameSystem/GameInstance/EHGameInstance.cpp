@@ -161,23 +161,10 @@ void UEHGameInstance::RelocatePlayer()
 
 	FTransform AnomalyTransform;
 
-	if (Subsystem->bPassed)
+	if (!Subsystem->bPassed)
 	{
-		AnomalyTransform = Generator->CurrentAnomaly->PlayerStartTransform;
-		FTransform OffsetTransform = Subsystem->GetElevatorTransform();
-		Player->SetActorLocation(AnomalyTransform.GetLocation() + OffsetTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
-		Player->SetActorRotation(AnomalyTransform.GetRotation() + OffsetTransform.GetRotation());
-		PC->SetControlRotation(AnomalyTransform.GetRotation().Rotator() + OffsetTransform.GetRotation().Rotator());
+		Player->SetActorTransform(DefaultTransform);
 	}
-	else
-	{
-		AnomalyTransform = DefaultTransform;
-		Player->SetActorTransform(AnomalyTransform);
-	}
-
-	Player->bUseControllerRotationYaw = true;
-	Player->bUseControllerRotationRoll = true;
-	Player->bUseControllerRotationPitch = true;
 }
 
 #pragma endregion

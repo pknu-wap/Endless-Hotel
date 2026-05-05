@@ -149,12 +149,13 @@ public:
 #pragma region Elevator
 
 public:
-	void SetElevatorTransform(const FTransform PlayerElevatorTransform) { RelativeTransform = PlayerElevatorTransform; };
-	FTransform GetElevatorTransform() { return RelativeTransform; };
+	void RegisterStartElevator(class AElevator* Elevator);
+	void SetElevatorTransform(const FVector& PlayerRLocaion, FRotator& CameraRRotation) { RelativePlayerLocation = PlayerRLocaion; RelativePlayerRotation = CameraRRotation; };
 
 private:
-	FTransform RelativeTransform = { FRotator(0,0,0), FVector(0,0,0), FVector(1, 1, 1) };
-
+	FVector RelativePlayerLocation;
+	FRotator RelativePlayerRotation;
+	TWeakObjectPtr<class AElevator> StartElevator;
 #pragma endregion
 
 };

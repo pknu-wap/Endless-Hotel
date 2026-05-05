@@ -28,10 +28,11 @@ protected:
     UFUNCTION()
     void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-protected:
+public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Exterior_Structure;
 
+protected:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Entrance;
 
@@ -152,7 +153,6 @@ private:
 
 protected:
     void SetPlayerInputEnabled(bool bEnable);
-    void TakePlayer();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Player")
@@ -221,6 +221,5 @@ public:
     void DisableElevatorFloor();
 
 #pragma endregion
-
 
 };
