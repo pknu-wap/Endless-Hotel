@@ -21,11 +21,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Respawn
-
-public:
-	void RespawnPlayer();
-
-#pragma endregion
-
 };

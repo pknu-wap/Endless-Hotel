@@ -26,6 +26,7 @@ protected:
 #pragma region Post Processing
 
 protected:
+	UFUNCTION()
 	void FindPPV();
 
 protected:
@@ -41,6 +42,7 @@ public:
 	void StartEyeEffect(bool bIsOpen);
 
 protected:
+	UFUNCTION()
 	void SettingEyeEffect();
 
 	UFUNCTION()

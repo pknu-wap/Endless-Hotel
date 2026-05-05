@@ -7,7 +7,6 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
-#include <Engine/LevelStreamingDynamic.h>
 
 #pragma region Base
 
@@ -74,16 +73,16 @@ void AAnomaly_Fire::DisableAnomaly()
 void AAnomaly_Fire::SpawnFires()
 {
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	EHPlayer->CrouchDelegate.RemoveAll(this);
 	EHPlayer->CrouchDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
 
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
 
-			FActorSpawnParameters Params;
-			Params.OverrideLevel = GetGameInstance<UEHGameInstance>()->GetCurrentLevel()->GetLoadedLevel();
+			auto* GameInstance = GetGameInstance<UEHGameInstance>();
 
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator, Params);
+			auto* SpawnedFire = GameInstance->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++]);
 			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
 
 			SpawnedFires.Add(SpawnedFire);
@@ -102,7 +101,7 @@ void AAnomaly_Fire::SpawnFires()
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
 	UWorld* World = GetWorld();
-	if (!IsValid(World)) // CDO가 해당 함수를 호출하려고 시도하여 nullptr 체크가 필요함
+	if (!IsValid(World))
 	{
 		return;
 	}

@@ -17,7 +17,7 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-protected:
+private:
 	UPROPERTY()
 	TWeakObjectPtr<class UEHGameInstance> GameInstance;
 
@@ -25,13 +25,15 @@ protected:
 
 #pragma region Loading
 
-protected:
+public:
+	bool IsLoadingComplete() { return LoadingPercentage >= TargetPercentage; }
+
+private:
 	void SetLoadingPercentage(float InDeltaTime);
 
-protected:
-	const float TargetPercentage = 0.95f;
+private:
+	const float TargetPercentage = 1.f;
 	float LoadingPercentage = 0.f;
-	bool bIsLoaded = false;
 
 #pragma endregion
 

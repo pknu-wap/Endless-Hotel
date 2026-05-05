@@ -113,7 +113,7 @@ void UUI_HUD_Title::SetLogoImage()
 
 void UUI_HUD_Title::PossessCamera()
 {
-	const FName CameraTag = FName("MainMenu");
+	const FName CameraTag = FName("Title_Camera");
 
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
