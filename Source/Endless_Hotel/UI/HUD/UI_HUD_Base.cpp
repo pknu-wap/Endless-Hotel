@@ -11,7 +11,7 @@ void UUI_HUD_Base::NativeConstruct()
 	FTimerHandle CameraHandle;
 	GetWorld()->GetTimerManager().SetTimer(CameraHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			PossessCamera();
+			//PossessCamera();
 		}), 0.1f, false);
 }
 

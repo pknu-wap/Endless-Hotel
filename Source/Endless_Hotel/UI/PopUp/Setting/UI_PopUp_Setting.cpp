@@ -39,14 +39,14 @@ void UUI_PopUp_Setting::NativeConstruct()
 	Super::NativeConstruct();
 
 	HighlightButtons();
-	FindGearActor();
-	PossessCamera(true);
+	//FindGearActor();
+	//PossessCamera(true);
 }
 
 void UUI_PopUp_Setting::NativeDestruct()
 {
-	PossessCamera(false);
-	SM_Gear->SetActorRotation(OriginRot);
+	//PossessCamera(false);
+	//SM_Gear->SetActorRotation(OriginRot);
 
 	Super::NativeDestruct();
 }
@@ -186,8 +186,8 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 	const float AdditionAngle = GetShortestAdditionAngle(CurrentAngle, Target);
 	FinalAngle = CurrentAngle + AdditionAngle;
 
-	CurrentQuat = SM_Gear->GetActorQuat();
-	FinalQuat = CurrentQuat * FQuat(FVector::UpVector, FMath::DegreesToRadians(AdditionAngle));
+	//CurrentQuat = SM_Gear->GetActorQuat();
+	//FinalQuat = CurrentQuat * FQuat(FVector::UpVector, FMath::DegreesToRadians(AdditionAngle));
 
 	bRotateGear = true;
 
@@ -198,7 +198,7 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 
 	AC_Gear->FadeIn(0.5f, 1, 0);
 
-	TurnOnGearLight(false);
+	//TurnOnGearLight(false);
 }
 
 void UUI_PopUp_Setting::FindGearActor()
@@ -232,22 +232,22 @@ void UUI_PopUp_Setting::RotateGear(float InDeltaTime)
 	CurrentAngle = FMath::FInterpConstantTo(CurrentAngle, FinalAngle, InDeltaTime, RotateSpeed);
 	UI_Gear->SetRenderTransformAngle(CurrentAngle);
 
-	CurrentQuat = FMath::QInterpConstantTo(CurrentQuat, FinalQuat, InDeltaTime, FMath::DegreesToRadians(RotateSpeed));
-	SM_Gear->SetActorRotation(CurrentQuat);
+	//CurrentQuat = FMath::QInterpConstantTo(CurrentQuat, FinalQuat, InDeltaTime, FMath::DegreesToRadians(RotateSpeed));
+	//SM_Gear->SetActorRotation(CurrentQuat);
 
 	if (FMath::IsNearlyEqual(CurrentAngle, FinalAngle))
 	{
 		CurrentAngle = FinalAngle;
 		UI_Gear->SetRenderTransformAngle(CurrentAngle);
 
-		CurrentQuat = FinalQuat;
-		SM_Gear->SetActorRotation(CurrentQuat);
+		//CurrentQuat = FinalQuat;
+		//SM_Gear->SetActorRotation(CurrentQuat);
 
 		bRotateGear = false;
 
 		AC_Gear->FadeOut(0.5f, 0);
 
-		TurnOnGearLight(true);
+		//TurnOnGearLight(true);
 	}
 }
 
