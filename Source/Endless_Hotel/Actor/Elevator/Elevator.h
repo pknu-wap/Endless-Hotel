@@ -61,7 +61,7 @@ protected:
     TObjectPtr<class UBoxComponent> InsideTrigger;
 
     UPROPERTY(VisibleAnywhere, Category = "Trigger")
-    TObjectPtr<UStaticMeshComponent> TriggerBlockBox;
+    TObjectPtr<class UBoxComponent> TriggerBlockBox;
 
     UPROPERTY(VisibleAnywhere, Category = "UI")
     TObjectPtr<UStaticMeshComponent> StickerPannel;
@@ -154,26 +154,7 @@ private:
 protected:
     void SetPlayerInputEnabled(bool bEnable);
 
-protected:
-    UPROPERTY(EditAnywhere, Category = "Player")
-    FRotator RotateAngle;
-
-    UPROPERTY(EditAnywhere, Category = "Player")
-    TObjectPtr<class USceneComponent> PlayerAnchor;
-    
-    UPROPERTY(EditAnywhere, Category = "Player")
-    TObjectPtr<class UArrowComponent> PlayerDirectionArrow;
-
-    UPROPERTY(VisibleAnywhere)
-    class UTimelineComponent* CameraRotationTimeline;
-
-    UPROPERTY(EditAnywhere, Category = "Elevator|Movement")
-    UCurveFloat* RotationCurve;
-
 private:
-    FTimerHandle RotateHandle;
-    FRotator StartControlRotation;
-    FRotator TargetControlRotation;
     bool bIsPlayerAlreadyInside = true;
 
 #pragma endregion

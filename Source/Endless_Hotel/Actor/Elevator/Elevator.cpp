@@ -11,7 +11,6 @@
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
-#include <Components/ArrowComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <GameFramework/Character.h>
@@ -60,12 +59,14 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
     InsideTrigger->SetupAttachment(Car);
-    InsideTrigger->SetBoxExtent(FVector(100.f, 100.0f, 120.0f));
+    InsideTrigger->SetBoxExtent(FVector(120.f, 20.0f, 120.0f));
     InsideTrigger->SetCollisionProfileName(TEXT("Trigger"));
     InsideTrigger->SetGenerateOverlapEvents(true);
 
-    TriggerBlockBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerBlockBox"));
+    TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
+    TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
     TriggerBlockBox->SetupAttachment(Car);
+    InsideTrigger->SetCollisionProfileName(TEXT("TriggerBlockBox"));
 }
 
 void AElevator::BeginPlay()
@@ -96,6 +97,8 @@ void AElevator::BeginPlay()
     {
         this->Exterior_Structure->SetRelativeLocation(StartPos);
         Sub->RegisterStartElevator(this);
+        Door_AC->Activate(true);
+        Elevator_AC->Activate(true);
         MoveElevator(StartPos, MapPos, true);
         ElevatorLight->SetIntensity(LightOnIntensity);
         bIsPlayerAlreadyInside = true;
@@ -106,6 +109,8 @@ void AElevator::BeginPlay()
         bIsPlayerAlreadyInside = false;
     }
     InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
 }
 
 #pragma endregion
@@ -118,7 +123,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
     {
         return;
     }
-    
+    InsideTrigger->SetBoxExtent(FVector(200.f, 200.0f, 150.0f));
     bIsPlayerAlreadyInside = true;
     bWillOpen = false;
     MoveDoors();
@@ -133,7 +138,9 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     }
 
     InsideTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    InsideTrigger->SetBoxExtent(FVector(0, 0, 0));
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
 
     bIsPlayerAlreadyInside = false;
     bWillOpen = false;
@@ -158,9 +165,11 @@ void AElevator::MoveDoors()
     }
 
     bIsDoorOpened = bWillOpen;
+    Door_AC->Activate(true);
     Elevator_AC->Stop();
     Door_AC->Play();
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
 
     if (bWillOpen)
     {
@@ -177,13 +186,16 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
     bIsDoorMoving = true;
     LeftDoor->SetRelativeLocation(FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha));
     RightDoor->SetRelativeLocation(FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha));
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+    TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
 }
 
 void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
     Door_AC->Stop();
-
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
     if (!bIsDoorOpened && bIsPlayerAlreadyInside)
     {
         MoveElevator(MapPos, EndPos, false);
@@ -193,7 +205,7 @@ void AElevator::OnDoorTimelineFinished()
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     Exterior_Structure->SetRelativeLocation(Start);
-    Elevator_AC->SetActive(true);
+    Elevator_AC->Activate(true);
     Elevator_AC->Play();
 
     FLatentActionInfo LatentInfo;
@@ -241,6 +253,10 @@ void AElevator::OnButtonClicked()
     SetPlayerInputEnabled(true);
     ElevatorLight->SetIntensity(LightOnIntensity);
     MoveDoors();
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
+    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    InsideTrigger->SetBoxExtent(FVector(120.f, 20.0f, 120.0f));
 }
 
 #pragma endregion
