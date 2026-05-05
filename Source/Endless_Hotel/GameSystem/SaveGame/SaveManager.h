@@ -83,8 +83,7 @@ protected:
 #pragma region Anomaly
 
 public:
-	static TArray<uint8> LoadClearedAnomalyID();
-	static void SaveClearedAnomalyID(uint8 AnomalyID);
+	DATA_SAVE_DEFINITION(TArray<uint8>, ClearedAnomalyID);
 
 protected:
 	UPROPERTY(SaveGame)

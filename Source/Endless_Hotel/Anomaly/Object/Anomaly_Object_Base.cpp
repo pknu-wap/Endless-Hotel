@@ -1,7 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/WidgetComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -11,6 +13,16 @@ void AAnomaly_Object_Base::BeginPlay()
 
     bSolved = true;
     SaveOriginalTransform();
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    Sub->RegisterAnomalyObject(this);
+}
+
+void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    Sub->UnRegisterAnomalyObject(this);
+
+    Super::EndPlay(EndPlayReason);
 }
 
 #pragma endregion

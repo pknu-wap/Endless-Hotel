@@ -42,8 +42,10 @@ void AAnomaly_Event::StartAnomalyAction()
 		{
 			continue;
 		}
-
-		AnomalyAction(TargetActor);
+		for(const auto& Action : AnomalyActions)
+		{
+			Action(TargetActor);
+		}
 	}
 }
 

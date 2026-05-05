@@ -10,50 +10,47 @@
 
 #pragma region AnomalyObject
 
-void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
+void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TSubclassOf<AAnomaly_Object_Base> TargetClass)
 {
-
-	if (TargetClasses.IsEmpty())
+	if (!TargetClass)
 	{
 		return;
 	}
 
-	for (auto& ObjClass : TargetClasses)
-	{
-		if (!ObjClass)
-		{
-			continue;
-		}
-
-		auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(ObjClass, SpawnTransform, Params);
-		const EAnomalyID AnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
-		NewObj->ExecuteAnomalies.Add(AnomalyName);
-	}
+	auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(TargetClass, SpawnTransform, Params);
+	const EAnomalyID AnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
+	NewObj->ExecuteAnomalies.Add(AnomalyName);
 }
 
 void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
-	
 	if (TargetClasses.IsEmpty())
 	{
 		return;
 	}
 
-	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto ObjectPool = Sub->GetAnomalyObject();
+
+	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
+
+	for (const auto& TargetClass : TargetClasses)
 	{
-		auto* AnomalyObject = *Iter;
-
-		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
+		if (auto* FoundStruct = ObjectPool.Find(TargetClass.Get()))
 		{
-			continue;
-		}
-
-		if (TargetClasses.Contains(AnomalyObject->GetClass()))
-		{
-			AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
-			AnomalyObject->SetAnomalyName();
-
-			CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+			for (auto& AnomalyObject : FoundStruct->Objects)
+			{
+				if (!IsValid(AnomalyObject))
+				{
+					continue;
+				}
+				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
+				{
+					AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+					AnomalyObject->SetAnomalyName();
+					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
+				}
+			}
 		}
 	}
 }
@@ -112,9 +109,12 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 
+	INT32 CurrentIndex = 0;
+
 	for (auto& SpawnObjectTransform : CurrentAnomaly->ObjectSpawnTransform)
 	{
-		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, SpawnObjectTransform, Params, TargetClasses);
+		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, SpawnObjectTransform, Params, TargetClasses[CurrentIndex]);
+		Index++;
 	}
 
 	AnomalyObjectLinker(TargetClasses);

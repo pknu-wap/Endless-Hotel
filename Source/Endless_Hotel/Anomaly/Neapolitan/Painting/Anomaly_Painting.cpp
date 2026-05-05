@@ -28,11 +28,7 @@ void AAnomaly_Painting::SetAnomalyState()
 		ScheduleAnomaly(10.0f);
 		break;
 	}
-	for (auto AnomalyObject : TargetAnomalyObjects)
-	{
-		AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(AnomalyObject);
-		AnomalyPainting->DieWatchingPainting();
-	}
+	SetupAnomalyAction(&AAnomaly_Object_Painting::DieWatchingPainting);
 }
 
 #pragma endregion
