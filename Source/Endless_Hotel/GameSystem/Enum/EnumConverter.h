@@ -8,7 +8,7 @@ class ENDLESS_HOTEL_API EnumConverter
 {
 public:
 	template <class EnumClass>
-	static FName GetEnumAsFName(EnumClass EnumValue)
+	static FName GetEnumAsName(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 
@@ -16,7 +16,7 @@ public:
 	}
 
 	template <class EnumClass>
-	static FString GetEnumAsFString(EnumClass EnumValue)
+	static FString GetEnumAsString(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 
@@ -24,7 +24,7 @@ public:
 	}
 
 	template <class EnumClass>
-	static FText GetEnumAsFText(EnumClass EnumValue)
+	static FText GetEnumAsText(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 

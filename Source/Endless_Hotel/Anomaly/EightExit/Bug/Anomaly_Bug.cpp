@@ -3,7 +3,6 @@
 #include "Anomaly/EightExit/Bug/Anomaly_Bug.h"
 #include "Anomaly/Object/EightExit/Bug/Anomaly_Object_Bug.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include <Engine/LevelStreamingDynamic.h>
 
 #pragma region Activity
 
@@ -30,12 +29,11 @@ void AAnomaly_Bug::StartAnomalyAction()
 
 void AAnomaly_Bug::SpawnBugs()
 {
-	FActorSpawnParameters Params;
-	Params.OverrideLevel = GetGameInstance<UEHGameInstance>()->GetCurrentLevel()->GetLoadedLevel();
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 
 	for (const FVector& Target : BugLocations)
 	{
-		auto* SpawnedBug = GetWorld()->SpawnActor<AAnomaly_Object_Bug>(BugClass, Target, FRotator::ZeroRotator, Params);
+		auto* SpawnedBug = GameInstance->SpawnActor<AAnomaly_Object_Bug>(BugClass, Target);
 		SpawnedBug->ActiveBug();
 	}
 }

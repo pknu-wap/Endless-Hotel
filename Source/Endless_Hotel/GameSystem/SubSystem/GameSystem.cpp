@@ -31,7 +31,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 		DataController->GetAnomalyEntries();
 	}
 
-	Floor = 9;
+	Floor = STARTFLOOR;
 	ActIndex = 0;
 	AnomalyRules.Add(EAnomalyRule::EightExit);
 
@@ -209,40 +209,9 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 void UGameSystem::GameClear()
 {
 	bIsClear = true;
-	Floor = 9;
+	Floor = STARTFLOOR;
 
 	USaveManager::SaveData_GameClear(true);
-}
-
-void UGameSystem::RegisterStartElevator(class AElevator* Elevator)
-{
-	if (!IsValid(Elevator))
-	{
-		return;
-	}
-
-	StartElevator = Elevator;
-
-	if (bPassed)
-	{
-		auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		auto* PC = Player->GetController();
-
-		FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
-		FRotator FinalCamRot = StartElevator->Exterior_Structure->GetComponentTransform().TransformRotation(this->RelativePlayerRotation.Quaternion()).Rotator();
-
-		Player->AttachToComponent(StartElevator->Exterior_Structure, AttachRules);
-		Player->SetActorRelativeLocation(this->RelativePlayerLocation, false, nullptr, ETeleportType::TeleportPhysics);
-		Player->SetActorRotation(FinalCamRot);
-		PC->SetControlRotation(FinalCamRot);
-
-		Player->bUseControllerRotationYaw = true;
-		Player->bUseControllerRotationRoll = true;
-		Player->bUseControllerRotationPitch = true;
-
-		FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, false);
-		Player->DetachFromActor(DetachRules);
-	}
 }
 
 #pragma endregion
