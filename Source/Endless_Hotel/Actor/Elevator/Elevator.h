@@ -63,6 +63,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "UI")
     TObjectPtr<UStaticMeshComponent> StickerPannel;
 
+    UPROPERTY(EditAnywhere, Category = "Teleport")
+    TObjectPtr<USceneComponent> TeleportAnchor;
+
 #pragma endregion
 
 #pragma region LightSettings

@@ -99,6 +99,7 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
+		CurrentAnomaly = nullptr;
 		FloorChange.Broadcast();
 	}
 }

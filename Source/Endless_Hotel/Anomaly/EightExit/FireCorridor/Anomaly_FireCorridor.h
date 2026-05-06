@@ -11,14 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_FireCorridor : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_FireCorridor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
-#pragma endregion
-
-
 #pragma region Anomaly
 
 public:

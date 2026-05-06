@@ -3,9 +3,9 @@
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "Anomaly/Base/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Anomaly/Base/Anomaly_Event.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -14,6 +14,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <GameFramework/Character.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -65,6 +66,9 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
     TriggerBlockBox->SetupAttachment(Car);
     InsideTrigger->SetCollisionProfileName(TEXT("TriggerBlockBox"));
+
+    TeleportAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("TeleportAnchor"));
+    TeleportAnchor->SetupAttachment(Exterior_Structure);
 }
 
 void AElevator::BeginPlay()
@@ -207,7 +211,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
             NotifySubsystem();
-        }), ElevatorMoveDuration + 1.5f, false);
+        }), ElevatorMoveDuration, false);
 }
 
 #pragma endregion
@@ -255,15 +259,17 @@ void AElevator::NotifySubsystem()
     FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
     Player->AttachToComponent(Exterior_Structure, AttachRules);
 
-    FVector LocalPos = Player->GetRootComponent()->GetRelativeLocation();
-    FRotator LocalCamRot = Exterior_Structure->GetComponentTransform().InverseTransformRotation(PC->GetControlRotation().Quaternion()).Rotator();
+    FVector AnchorToPlayerOffset = Player->GetActorLocation() - TeleportAnchor->GetComponentLocation();
+    FRotator ElevRot = Exterior_Structure->GetComponentRotation();
+    FRotator ControlRot = PC->GetControlRotation();
+    FRotator DeltaRot = (FQuat(ControlRot) * FQuat(ElevRot).Inverse()).Rotator();
 
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {
         Sub->SetIsElevatorNormal(this->bIsNormalElevator);
         Sub->TryInteractSolveVerdict();
         Sub->ApplyVerdict();
-        Sub->SetElevatorTransform(LocalPos, LocalCamRot);
+        Sub->SetElevatorTransform(AnchorToPlayerOffset, DeltaRot);
     }
 }
 
@@ -277,25 +283,29 @@ void AElevator::StartElevator()
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
         
-        FVector SavedLocation = Sub->GetPlayerElevatorLocation();
-        FRotator SavedRotation = Sub->GetPlayerElevatorRotation();
+        FVector SavedAnchorOffset = Sub->GetPlayerElevatorLocation();
+        FRotator SavedDeltaRot = Sub->GetPlayerElevatorRotation();
 
-        FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
-        FRotator FinalCamRot = this->Exterior_Structure->GetComponentTransform().TransformRotation(SavedRotation.Quaternion()).Rotator();
+        Player->GetCharacterMovement()->DisableMovement();
 
-        Player->AttachToComponent(this->Exterior_Structure, AttachRules);
-        Player->SetActorRelativeLocation(SavedLocation, false, nullptr, ETeleportType::TeleportPhysics);
-        Player->SetActorRotation(FinalCamRot);
-        PC->SetControlRotation(FinalCamRot);
+        FVector TargetAnchorPos = this->TeleportAnchor->GetComponentLocation();
+        FRotator TargetElevRot = this->Exterior_Structure->GetComponentRotation();
+
+        FVector FinalWorldPos = TargetAnchorPos + SavedAnchorOffset;
+        FRotator FinalControlRot = (FQuat(TargetElevRot) * FQuat(SavedDeltaRot)).Rotator();
+
+        FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, false);
+        Player->DetachFromActor(DetachRules);
+
+        Player->SetActorLocation(FinalWorldPos, false, nullptr, ETeleportType::TeleportPhysics);
+        PC->SetControlRotation(FinalControlRot);
+        Player->SetActorRotation(FinalControlRot);
+        Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 
         Player->bUseControllerRotationYaw = true;
         Player->bUseControllerRotationRoll = true;
         Player->bUseControllerRotationPitch = true;
 
-        FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, false);
-        Player->DetachFromActor(DetachRules);
-        Door_AC->Activate(true);
-        Elevator_AC->Activate(true);
         MoveElevator(StartPos, MapPos, true);
         ElevatorLight->SetIntensity(LightOnIntensity);
         bIsPlayerAlreadyInside = true;
