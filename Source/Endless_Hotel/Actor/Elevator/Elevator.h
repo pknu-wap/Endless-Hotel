@@ -6,8 +6,6 @@
 #include <CoreMinimal.h>
 #include <Elevator.generated.h>
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElevatorDelegate, bool, bIsStart);
-
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AEHActor
 {
@@ -17,7 +15,6 @@ class ENDLESS_HOTEL_API AElevator : public AEHActor
 
 public:
     AElevator(const FObjectInitializer& ObjectInitializer);
-    static FElevatorDelegate ElevatorDelegate;
 
 protected:
     virtual void BeginPlay() override;
@@ -175,6 +172,9 @@ protected:
 
 protected:
     void NotifySubsystem();
+
+    UFUNCTION()
+    void StartElevator();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")

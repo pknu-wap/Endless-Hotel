@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 
 #include "Anomaly/Object/EightExit/FootStep/Anomaly_Object_FootStep.h"
@@ -14,7 +14,7 @@ void AAnomaly_Object_FootStep::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AElevator::ElevatorDelegate.AddDynamic(this, &AAnomaly_Object_FootStep::ResetFootStep);
+	//AElevator::ElevatorDelegate.AddDynamic(this, &AAnomaly_Object_FootStep::ResetFootStep);
 }
 
 void AAnomaly_Object_FootStep::ChangeFootStep()

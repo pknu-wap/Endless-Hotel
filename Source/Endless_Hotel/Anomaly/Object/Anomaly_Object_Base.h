@@ -77,4 +77,12 @@ public:
 
 #pragma endregion
 
+#pragma region Spawn
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	bool bIsDynamicallySpawned = false;
+
+#pragma endregion
+
 };

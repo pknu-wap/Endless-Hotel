@@ -20,6 +20,7 @@ void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTra
 	auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(TargetClass, SpawnTransform, Params);
 	const EAnomalyID AnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
 	NewObj->ExecuteAnomalies.Add(AnomalyName);
+	NewObj->bIsDynamicallySpawned = true;
 }
 
 void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
@@ -55,9 +56,31 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 	}
 }
 
+void AAnomaly_Generator::BeginPlay()
+{
+	Super::BeginPlay();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	Sub->FloorChange.AddDynamic(this, &ThisClass::SpawnAnomaly);
+}
+
 #pragma endregion
 
 #pragma region Generate
+
+void AAnomaly_Generator::SpawnAnomaly()
+{
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	int32 IsNormal = FMath::RandRange(1, 10);
+
+	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
+	{
+		SpawnNormal(SpawnedLevel);
+		return;
+	}
+
+	SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
+	Subsystem->ActIndex++;
+}
 
 // Spawn Anomaly at Specific Index
 AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel)
@@ -123,9 +146,9 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	CurrentAnomaly->SetAnomalyState();
 
 	// EventBroadCast
-	OnAnomalySpawned.Broadcast(CurrentAnomaly);
 	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyID;
 	Sub->CurrentAnomaly = CurrentAnomaly;
+	Sub->SetTargetElevator();
 	return CurrentAnomaly;
 }
 

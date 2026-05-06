@@ -99,8 +99,7 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
-		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-		GameInstance->OpenLevel(ELevelType::Hotel, false);
+		FloorChange.Broadcast();
 	}
 }
 
@@ -212,6 +211,21 @@ void UGameSystem::GameClear()
 	Floor = STARTFLOOR;
 
 	USaveManager::SaveData_GameClear(true);
+}
+
+void UGameSystem::RegisterElevator(class AElevator* Elevator)
+{
+	Elevators.Add(Elevator->ElevatorID, Elevator);
+}
+
+void UGameSystem::SetTargetElevator()
+{
+	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
+}
+
+bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
+{
+	return (TargetElevator == Elevator) ? true : false;
 }
 
 #pragma endregion
