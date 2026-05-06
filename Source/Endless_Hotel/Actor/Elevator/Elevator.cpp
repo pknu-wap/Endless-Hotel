@@ -273,6 +273,7 @@ void AElevator::StartElevator()
     if (Sub->IsTargetElevator(this) && Sub->Floor < 9)
     {
         this->Exterior_Structure->SetRelativeLocation(StartPos);
+        this->bIsPlayerAlreadyInside = true;
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
         
