@@ -30,14 +30,16 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 		DataController->GetAnomalyEntries();
 	}
 
-	Floor = 9;
+	Floor = STARTFLOOR;
 	ActIndex = 0;
 	AnomalyRules.Add(EAnomalyRule::EightExit);
 
 	bIsClear = USaveManager::LoadData_GameClear();
 	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
+	FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
+	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
@@ -82,7 +84,7 @@ void UGameSystem::ApplyVerdict()
 		if (bExceptClearedAnomaly)
 		{
 			DataC->ClearedAnomalySet.Add(CurrentAnomalyID);
-			USaveManager::SaveClearedAnomalyID(CurrentAnomalyID);
+			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
 	else 
@@ -171,6 +173,34 @@ void UGameSystem::InitializePool()
 	ActIndex = 0;
 }
 
+void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
+{
+	if (!IsValid(Object))
+	{
+		return;
+	}
+	UClass* ActorClass = Object->GetClass();
+	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.Add(Object);
+}
+
+void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
+{
+	if (!Object) return;
+	UClass* TargetClass = Object->GetClass();
+	if (FAnomalyObjectArray* FoundStruct = AnomalyObjectPool.Find(TargetClass))
+	{
+		FoundStruct->Objects.Remove(Object);
+		if (FoundStruct->Objects.IsEmpty())
+		{
+			AnomalyObjectPool.Remove(TargetClass);
+		}
+		if(IsValid(CurrentAnomaly))
+		{
+			CurrentAnomaly->LinkedObjects.Remove(Object);
+		}
+	}
+}
+
 #pragma endregion
 
 #pragma region Clear
@@ -178,7 +208,7 @@ void UGameSystem::InitializePool()
 void UGameSystem::GameClear()
 {
 	bIsClear = true;
-	Floor = 9;
+	Floor = STARTFLOOR;
 
 	USaveManager::SaveData_GameClear(true);
 }

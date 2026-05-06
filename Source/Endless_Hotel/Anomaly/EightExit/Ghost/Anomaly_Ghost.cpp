@@ -9,8 +9,8 @@ void AAnomaly_Ghost::SetAnomalyState()
 
     switch (AnomalyName)
     {
-    case EAnomalyName::Ghost:
-        AnomalyAction = ([this](AAnomaly_Object_Base* Obj)
+    case EAnomalyID::Ghost:
+        AnomalyActions.Add([this](AAnomaly_Object_Base* Obj)
             {
                    Cast<AAnomaly_Object_Ghost>(Obj)->bTriggerEnabled = true;
             });

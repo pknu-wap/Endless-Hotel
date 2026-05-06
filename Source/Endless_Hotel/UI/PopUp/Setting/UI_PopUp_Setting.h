@@ -19,12 +19,13 @@ UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 #pragma endregion
@@ -110,8 +111,10 @@ public:
 	void StartRotateGear(float Target);
 
 private:
+	void FindGearActor();
 	void RotateGear(float InDeltaTime);
-	const float GetShortestAddAngle(int32 Cur, int32 Tar);
+	const int32 GetShortestAdditionAngle(int32 Cur, int32 Tar);
+	void TurnOnGearLight(bool bOn);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -120,14 +123,36 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_Gear;
 
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class AStaticMeshActor> SM_Gear;
+
+	UPROPERTY()
+	TWeakObjectPtr<class USpotLightComponent> Comp_SpotLight;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UExponentialHeightFogComponent> Comp_Fog;
+
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Gear;
 
 private:
-	bool bRotateGear = false;
+	// UI
+	float CurrentAngle = 0.f;
+	float FinalAngle = 0.f;
+	const float RotateSpeed = 45.f;
 
-	float CurrentAngle = 0;
-	float TargetAngle = 0;
+private:
+	// Actor
+	FRotator OriginRot;
+	FQuat CurrentQuat;
+	FQuat FinalQuat;
+
+private:
+	FTimerHandle LightHandle;
+
+private:
+	bool bRotateGear = false;
 
 #pragma endregion
 
@@ -150,6 +175,13 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
+
+#pragma endregion
+
+#pragma region Camera
+
+protected:
+	void PossessCamera(bool bGearCamera);
 
 #pragma endregion
 

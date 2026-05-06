@@ -12,6 +12,8 @@ class AAnomaly_Generator;
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
 
+#define STARTFLOOR 9
+
 #pragma region Declare
 
 UENUM(BlueprintType)
@@ -23,6 +25,16 @@ enum class EAnomalyVerdictMode : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
+
+USTRUCT(BlueprintType)
+struct FAnomalyObjectArray
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	TArray<TObjectPtr<AAnomaly_Object_Base>> Objects;
+};
 
 #pragma endregion
 
@@ -56,10 +68,10 @@ public:
 #pragma region Floor
 
 public:
-	uint8 Floor = 9;
+	uint8 Floor = STARTFLOOR;
 
 private:
-	void ResetFloor() { Floor = 9; };
+	void ResetFloor() { Floor = STARTFLOOR; };
 	void SubFloor();
 	void AddFloor();
 
@@ -100,12 +112,18 @@ public:
 #pragma region Pool
 
 public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
 	uint8 ActIndex = 0;
 
+private:
+	UPROPERTY()
+	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> AnomalyObjectPool;
+
 public:
 	void InitializePool();
+	void RegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	void UnRegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; };
 
 #pragma endregion
 

@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API UUI_HUD_InGame : public UUI_HUD_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 
 #pragma endregion
 
@@ -81,6 +82,27 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUI_Base> UI_Demo;
+
+#pragma endregion
+
+#pragma region Camera
+
+protected:
+	virtual void PossessCamera() override;
+
+#pragma endregion
+
+#pragma region SubTitle
+
+public:
+	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_SubTitle;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_SubTitle;
 
 #pragma endregion
 

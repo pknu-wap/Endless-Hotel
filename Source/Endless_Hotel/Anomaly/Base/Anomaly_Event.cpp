@@ -25,7 +25,9 @@ void AAnomaly_Event::BeginPlay()
 	Super::BeginPlay();
 
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
-	UEHGameInstance::OnLevelLoaded.AddDynamic(this, &ThisClass::DisableAnomaly);
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->LevelShown.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion
@@ -40,8 +42,10 @@ void AAnomaly_Event::StartAnomalyAction()
 		{
 			continue;
 		}
-
-		AnomalyAction(TargetActor);
+		for(const auto& Action : AnomalyActions)
+		{
+			Action(TargetActor);
+		}
 	}
 }
 
@@ -61,7 +65,7 @@ void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 void AAnomaly_Event::SetAnomalyState()
 {
-	AnomalyName = static_cast<EAnomalyName>(AnomalyID);
+	AnomalyName = static_cast<EAnomalyID>(AnomalyID);
 	TargetAnomalyObjects.Empty();
 	for (auto* FoundActor : LinkedObjects)
 	{

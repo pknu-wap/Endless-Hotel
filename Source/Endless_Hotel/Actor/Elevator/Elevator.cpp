@@ -25,9 +25,8 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 {
     Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
     RootComponent = Entrance;
-
     StickerPannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Elevator_Sticker"));
-    StickerPannel->SetupAttachment(Entrance);
+    StickerPannel->SetupAttachment(RootComponent);
 
     Exterior_Structure = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Exterior_Structure"));
     Exterior_Structure->SetupAttachment(RootComponent);
@@ -37,18 +36,18 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
     LeftDoor->SetupAttachment(Car);
+    LeftGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftGlass"));
+    LeftGlass->SetupAttachment(LeftDoor);
 
     RightDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightDoor"));
     RightDoor->SetupAttachment(Car);
-
-    Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
-    Floor->SetupAttachment(Car);
-
     RightGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightGlass"));
     RightGlass->SetupAttachment(RightDoor);
 
-    LeftGlass = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftGlass"));
-    LeftGlass->SetupAttachment(LeftDoor);
+    DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+
+    Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
+    Floor->SetupAttachment(Car);
 
     ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
     ElevatorLight->SetupAttachment(Car);
@@ -68,14 +67,11 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     TriggerBlockBox = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetupAttachment(Car);
 
-    DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
-    CameraRotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraRotationTimeline"));
-
     PlayerAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("PlayerAnchor"));
     PlayerAnchor->SetupAttachment(Car);
-
     PlayerDirectionArrow = CreateDefaultSubobject<UArrowComponent>(TEXT("PlayerDirectionArrow"));
     PlayerDirectionArrow->SetupAttachment(PlayerAnchor);
+    CameraRotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("CameraRotationTimeline"));
 }
 
 void AElevator::BeginPlay()
@@ -109,7 +105,7 @@ void AElevator::BeginPlay()
     GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
             auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-            if (Sub->CurrentAnomaly->TargetElevatorID == ElevatorID && Sub->Floor < 9)
+            if (IsValid(Sub->CurrentAnomaly) && Sub->CurrentAnomaly->TargetElevatorID == ElevatorID && Sub->Floor < STARTFLOOR)
             {
                 ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
                 AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
@@ -119,12 +115,12 @@ void AElevator::BeginPlay()
 
                 MoveElevator(StartPos, MapPos, true);
                 ElevatorLight->SetIntensity(LightOnIntensity);
-                bIsPlayerInside = true;
+                bIsPlayerAlreadyInside = true;
             }
             else
             {
                 Exterior_Structure->SetRelativeLocation(MapPos);
-                bIsPlayerInside = false;
+                bIsPlayerAlreadyInside = false;
             }
         }), 1, false);
 }
@@ -135,27 +131,28 @@ void AElevator::BeginPlay()
 
 void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (!Cast<AEHPlayer>(OtherActor) || bIsPlayerInside)
+    if (!Cast<AEHPlayer>(OtherActor) || bIsPlayerAlreadyInside)
     {
         return;
     }
     
-    bIsPlayerInside = true;
+    bIsPlayerAlreadyInside = true;
     TakePlayer();
     SetPlayerInputEnabled(false);
 }
 
 void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (!Cast<AEHPlayer>(OtherActor) || !bIsPlayerInside)
+    if (!Cast<AEHPlayer>(OtherActor) || !bIsPlayerAlreadyInside)
     {
         return;
     }
 
     InsideTrigger->SetBoxExtent(FVector(40.0f, 40.0f, 120.0f));
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    bIsPlayerInside = false;
-    bIsOpening = false;
+
+    bIsPlayerAlreadyInside = false;
+    bWillOpen = false;
     FTimerHandle StartDelayHandle;
 
     GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -176,12 +173,12 @@ void AElevator::MoveDoors()
         return;
     }
 
-    bIsDoorOpened = bIsOpening;
+    bIsDoorOpened = bWillOpen;
     Elevator_AC->Stop();
     Door_AC->Play();
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-    if (bIsOpening)
+    if (bWillOpen)
     {
         DoorTimeline->Play();
     }
@@ -204,7 +201,7 @@ void AElevator::OnDoorTimelineFinished()
     SetPlayerInputEnabled(true);
     Door_AC->Stop();
 
-    if (!bIsDoorOpened && bIsPlayerInside)
+    if (!bIsDoorOpened && bIsPlayerAlreadyInside)
     {
         MoveElevator(MapPos, EndPos, false);
     }
@@ -212,7 +209,7 @@ void AElevator::OnDoorTimelineFinished()
 
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
-    bIsOpening = true;
+    bWillOpen = true;
     SetPlayerInputEnabled(false);
     Exterior_Structure->SetRelativeLocation(Start);
     Elevator_AC->Play();
@@ -291,7 +288,7 @@ void AElevator::OnPlayerRotationEnd()
     Player->SetActorRelativeLocation(FVector(0, 0, 85));
     Player->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
-    bIsOpening = false;
+    bWillOpen = false;
     MoveDoors();
 }
 
@@ -301,7 +298,7 @@ void AElevator::OnPlayerRotationEnd()
 
 void AElevator::OnButtonClicked()
 {
-    bIsOpening = true;
+    bWillOpen = true;
     ElevatorLight->SetIntensity(LightOnIntensity);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     MoveDoors();

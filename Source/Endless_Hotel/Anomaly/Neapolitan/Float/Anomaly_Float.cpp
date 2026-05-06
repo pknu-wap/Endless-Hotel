@@ -14,8 +14,8 @@ void AAnomaly_Float::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Float:
-		AnomalyAction = ([this](AAnomaly_Object_Base* Float)
+	case EAnomalyID::Float:
+		AnomalyActions.Add([this](AAnomaly_Object_Base* Float)
 			{
                 for (auto* Obj : LinkedObjects)
                 {

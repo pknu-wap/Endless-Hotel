@@ -12,12 +12,12 @@ void AAnomaly_Light::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Light_Destroy:
+	case EAnomalyID::Light_Destroy:
 		SetupAnomalyAction(&AAnomaly_Object_Light::DropLight);
 		ActiveTrigger();
 		break;
 
-	case EAnomalyName::Light_Blue:
+	case EAnomalyID::Light_Blue:
 		SetupAnomalyAction(&AAnomaly_Object_Light::ChangeLightColor);
 		ActiveTrigger();
 		break;
@@ -36,7 +36,7 @@ void AAnomaly_Light::StartAnomalyAction()
 				auto* Light = Cast<AAnomaly_Object_Light>(FoundActor);
 				if (CurrentIndex == Light->LightIndex)
 				{
-					AnomalyAction(Light);
+					AnomalyActions[0](Light);
 					RemoveTargets.Add(FoundActor);
 				}
 			}

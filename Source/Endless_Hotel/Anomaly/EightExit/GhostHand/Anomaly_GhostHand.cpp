@@ -28,7 +28,7 @@ void AAnomaly_GhostHand::SetAnomalyState()
 	
 	switch (AnomalyName)
 	{
-	case EAnomalyName::GhostHand:
+	case EAnomalyID::GhostHand:
 			AttachGhostHand();
 			ScheduleAnomaly();
 			break;

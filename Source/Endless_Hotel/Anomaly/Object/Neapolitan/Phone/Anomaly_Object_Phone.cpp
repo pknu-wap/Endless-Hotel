@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Phone/Anomaly_Object_Phone.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Components/AudioComponent.h>
 #include <Components/TimelineComponent.h>
 
@@ -68,6 +69,12 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 		AC->Play();
 		break;
 	}
+
+	bIsInteracted = true;
+
+	// 나중에 이탈리아어로 말하는 것으로 대사 변경 예정 및 FText 하드 코딩 제거 예정
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->ShowSubTitle(FText::FromString(TEXT("모시 모시")), 0.1f, 2.f);
 }
 
 #pragma endregion
@@ -76,10 +83,11 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Phone::RingingPhone()
 {
-	static int32 Count = 0;
-	Count++;
-
-	UE_LOG(LogTemp, Error, TEXT("RingingPhone REAL CALL COUNT = %d"), Count);
+	if (bIsInteracted)
+	{
+		return;
+	}
+	
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &ThisClass::MovePhone, 1, false);
 	GetWorld()->GetTimerManager().SetTimer(ShakeHandle, this, &ThisClass::ShakePhone, 1.5f, false);
 }

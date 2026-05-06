@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Actor/Interact/InteractBase.h"
-#include "Type/Anomaly/Type_AnomalyName.h"
+#include "Type/Anomaly/Type_AnomalyID.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Base.generated.h>
 
@@ -16,6 +16,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AInteractBase
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 #pragma endregion
 
@@ -23,16 +24,16 @@ protected:
 
 public:
 	void SetSolvedFalse() { bSolved = false; }
-	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyName>(AnomalyID); }
+	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyID>(AnomalyID); }
 
 public:
 	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
-	TArray<EAnomalyName> ExecuteAnomalies;
+	TArray<EAnomalyID> ExecuteAnomalies;
 
 protected:
-	EAnomalyName AnomalyName;
+	EAnomalyID AnomalyName;
 
 #pragma endregion
 

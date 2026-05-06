@@ -95,7 +95,7 @@ void UUI_HUD_Title::PlayButtonAnim_Unhover(ETitleButtonType ButtonType)
 
 #pragma endregion
 
-#pragma region Title
+#pragma region Logo
 
 void UUI_HUD_Title::SetLogoImage()
 {
@@ -105,6 +105,21 @@ void UUI_HUD_Title::SetLogoImage()
 	}
 
 	Image_Logo->SetBrushFromTexture(Texture_Clear);
+}
+
+#pragma endregion
+
+#pragma region Camera
+
+void UUI_HUD_Title::PossessCamera()
+{
+	const FName CameraTag = FName("Title_Camera");
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
+
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	PC->SetViewTargetWithBlend(FoundActors[0]);
 }
 
 #pragma endregion

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Actor/EHActor.h"
-#include "Type/Anomaly/Type_AnomalyName.h"
+#include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Interact/Type_Interact.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
@@ -50,7 +50,7 @@ public:
 	uint8 AnomalyID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
-	EAnomalyName AnomalyName;
+	EAnomalyID AnomalyName;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
@@ -62,7 +62,7 @@ public:
 	TArray<FTransform> ObjectSpawnTransform;
 
 protected:
-	TFunction<void(class AAnomaly_Object_Base*)> AnomalyAction;
+	TArray<TFunction<void(class AAnomaly_Object_Base*)>> AnomalyActions;
 
 #pragma endregion
 
@@ -134,14 +134,14 @@ protected:
 	template<typename ObjectType>
 	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None })
 	{
-		AnomalyAction = [SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
+		AnomalyActions.Add([SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
 					TargetObj->CorrectInteractTypes = Interactions;
 					(TargetObj->*SelectedFunc)();
 				}
-			};
+			});
 	}
 
 #pragma endregion

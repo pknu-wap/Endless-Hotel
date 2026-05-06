@@ -4,6 +4,8 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Asset/Manager/EHAssetManager.h"
+#include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include <GameSystem/SubSystem/GameSystem.h>
 
 #pragma region Base
@@ -23,35 +25,51 @@ UDataController::UDataController()
 
 void UDataController::GetAnomalyEntries()
 {
-	if (!DataTable_Anomaly) return;
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.LoadAnomalyDataAsset();
+	TArray<uint8> AnomalyList;
+	OriginAnomaly.Empty();
+
+	if (!DataTable_Anomaly) 
+	{
+		return;
+	}
 
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
-		if (Data->AnomalyPath.IsEmpty()) continue;
-		
-		UClass* LoadedClass = StaticLoadClass(AAnomaly_Event::StaticClass(), nullptr, *Data->AnomalyPath);
+		AnomalyList.Add(Data->AnomalyID);
+	}
 
-		TArray<FString> PathStrings;
-		Data->ObjectPath.ParseIntoArray(PathStrings, TEXT(";"), true);
-
-		TArray<UClass*> LoadedObjectClasses;
-		for (const FString& SinglePath : PathStrings)
+	if (AnomalyList.IsEmpty())
+	{
+		for (int index = 0; index < MaxIndex; ++index)
 		{
-			FString TrimmedPath = SinglePath.TrimStartAndEnd();
-			if (TrimmedPath.IsEmpty()) continue;
+			AnomalyList.Add(index);
+		}
+	}
 
-			UClass* ObjClass = StaticLoadClass(AAnomaly_Object_Base::StaticClass(), nullptr, *TrimmedPath);
-			if (ObjClass)
+	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset(AnomalyList);
+	
+	for (UPDA_Anomaly* PDA : Datas)
+	{
+		if (!PDA) 
+		{
+			continue;
+		}
+
+		FAnomalyEntry Entry;
+		Entry.AnomalyID = static_cast<uint8>(PDA->ID);
+		Entry.AnomalyClass = PDA->Anomaly;
+		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
+		{
+			if (UClass* LoadedClass = SoftClassPtr.LoadSynchronous())
 			{
-				LoadedObjectClasses.Add(ObjClass);
+				Entry.ObjectClasses.Add(LoadedClass);
 			}
 		}
 
-		if (LoadedClass)
-		{
-			OriginAnomaly.Add(FAnomalyEntry{ Data->AnomalyID, LoadedClass, LoadedObjectClasses });
-		}
+		OriginAnomaly.Add(Entry);
 	}
 }
 

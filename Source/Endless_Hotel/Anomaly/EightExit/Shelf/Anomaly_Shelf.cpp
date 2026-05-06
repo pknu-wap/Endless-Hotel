@@ -12,15 +12,12 @@ void AAnomaly_Shelf::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Plant_Change:
+	case EAnomalyID::Plant_Change:
 		SetupAnomalyAction(&AAnomaly_Object_Shelf::StartChange);
 		ScheduleAnomaly();
 		break;
-	}
 
-	switch (AnomalyName)
-	{
-	case EAnomalyName::Shelf_Book:
+	case EAnomalyID::Shelf_Book:
 		SetupAnomalyAction(&AAnomaly_Object_Shelf::FallSound);
 		ActiveTrigger();
 		break;

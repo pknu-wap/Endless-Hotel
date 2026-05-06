@@ -25,10 +25,10 @@ void AAnomaly_Maze::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Maze_Monster:
+	case EAnomalyID::Maze_Monster:
 		ScheduleAnomaly();
 		break;
-	case EAnomalyName::Maze_Doll:
+	case EAnomalyID::Maze_Doll:
 		ScheduleAnomaly();
 	}
 }
@@ -37,10 +37,10 @@ void AAnomaly_Maze::StartAnomalyAction()
 {
 	switch (AnomalyName)
 	{
-	case EAnomalyName::Maze_Monster:
+	case EAnomalyID::Maze_Monster:
 		MazeMonster();
 		break;
-	case EAnomalyName::Maze_Doll:
+	case EAnomalyID::Maze_Doll:
 		MazeDoll();
 		break;
 	}

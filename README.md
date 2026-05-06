@@ -48,24 +48,26 @@ _`#심리적공포` `#퍼즐` `#초현실적` `#분위기있는` `#3D`_
     <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1DNsfskjJtWhewcdCt8_4spNsZf7lmL3wKQ&s" width="100px;" alt=""/></td>
     <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWHx8rhkj-NfrL6OTHBYsFvgxI2ysF3R-YIg&s" width="100px;" alt=""/></td>
     <td><img src="https://i.namu.wiki/i/1Hiv-mf3x_xkYU1kd6PRSAA9TZycl-A3h-HM--kersQF5fL6_fF2PmO8757fj9CqhXnmcy2lFaQkwToWTxtIHw.webp" width="100px;" alt=""/></td>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/KakaoTalk_logo.svg/2048px-KakaoTalk_logo.svg.png" width="100px;" alt=""/></td>
+    <td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnOACrRJyk-4693gXNbbpXfQ4OVXSWm3sl5g&s" width="100px;" alt=""/></td>
+    <td><img src="https://images.icon-icons.com/3041/PNG/512/google_drive_logo_icon_189245.png" width="100px;" alt=""/></td>
   </tr>
   <tr>
     <td align="center"><b>Github</b></td>
     <td align="center"><b>Notion</b></td>
     <td align="center"><b>Discord</b></td>
-    <td align="center"><b>Kakao Talk</b></td>
+    <td align="center"><b>KakaoTalk</b></td>
+    <td align="center"><b>GoogleDrive</b></td>
   </tr>
 </table>
 
 ### 🎮 **출시**
-⭐ **2026년 1분기 출시 예정** ⭐
+⭐ **2026년 출시 예정** ⭐
 <table>
   <tr>
     <td align="center"><b>Platform</b></td>
   </tr>
   <tr>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/768px-Steam_icon_logo.svg.png" width="100px;" alt=""/></td>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/960px-Steam_icon_logo.svg.png" width="100px;" alt=""/></td>
   </tr>
   <tr>
     <td align="center"><b>Steam</b></td>
@@ -79,27 +81,46 @@ _`#심리적공포` `#퍼즐` `#초현실적` `#분위기있는` `#3D`_
     <td align="center"><b>개발자</b></td>
     <td align="center"><b>개발자</b></td>
     <td align="center"><b>개발자</b></td>
-    <td align="center"><b>디자이너</b></td>
+    <td align="center"><b>개발자</b></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/KaneBigNose"><img src="https://github.com/KaneBigNose.png" width="100px;" alt=""/>
     <td align="center"><a href="https://github.com/kwkim526"><img src="https://github.com/kwkim526.png" width="100px;" alt=""/>
     <td align="center"><a href="https://github.com/ssiver6324"><img src="https://github.com/ssiver6324.png" width="100px;" alt=""/>
     <td align="center"><a href="https://github.com/bumyee11"><img src="https://github.com/bumyee11.png" width="100px;" alt=""/>
-    <td align="center"><a href=""><img src="https://i.redd.it/ckozt6zt2tjc1.jpeg" width="100px;" alt=""/>
+    <td align="center"><a href="https://github.com/Wanthzz"><img src="https://github.com/Wanthzz.png" width="100px;" alt=""/>
   </tr>
     <tr>
     <td align="center"><a href="https://github.com/KaneBigNose" title="Code">이상혁</a></td>
     <td align="center"><a href="https://github.com/kwkim526" title="Code">김경원</a></td>
     <td align="center"><a href="https://github.com/ssiver6324" title="Code">심서은</a></td>
     <td align="center"><a href="https://github.com/bumyee11" title="Code">조성범</a></td>
-    <td align="center"><a href="" title="Code">권명진</a></td>
+    <td align="center"><a href="https://github.com/Wanthzz" title="Code">구민재</a></td>
   </tr>
   <tr>
     <td align="center"><b>UI & 코드 설계</b></td>
     <td align="center"><b>Game System</b></td>
     <td align="center"><b>Anomaly & Map</b></td>
-    <td align="center"><b>Player</b></td>
+    <td align="center"><b>1대 Player</b></td>
+    <td align="center"><b>2대 Player</b></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center"><b>디자이너</b></td>
+    <td align="center"><b>디자이너</b></td>
+  </tr>
+  <tr>
+    <td align="center"><a href=""><img src="https://i.redd.it/ckozt6zt2tjc1.jpeg" width="100px;" alt=""/>
+    <td align="center"><a href="https://github.com/chenny-art"><img src="https://github.com/chenny-art.png" width="100px;" alt=""/>
+  </tr>
+    <tr>
+    <td align="center"><a href="" title="Code">권명진</a></td>
+    <td align="center"><a href="" title="Code">김채은</a></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Design</b></td>
     <td align="center"><b>Design</b></td>
   </tr>
 </table>

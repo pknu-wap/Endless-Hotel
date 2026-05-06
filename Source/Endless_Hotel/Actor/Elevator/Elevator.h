@@ -143,7 +143,7 @@ private:
     FTimerHandle MoveHandle;
 
     bool bIsDoorOpened = false;
-    bool bIsOpening = false;
+    bool bWillOpen = false;
     bool bIsDoorMoving = false;
 
 #pragma endregion
@@ -180,7 +180,7 @@ private:
     FTimerHandle RotateHandle;
     FRotator StartControlRotation;
     FRotator TargetControlRotation;
-    bool bIsPlayerInside = true;
+    bool bIsPlayerAlreadyInside = true;
 
 #pragma endregion
 

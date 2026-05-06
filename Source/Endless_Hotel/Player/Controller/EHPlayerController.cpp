@@ -7,6 +7,7 @@
 #include "Type/UI/Type_UI_Key.h"
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 #include <InputMappingContext.h>
@@ -411,6 +412,9 @@ void AEHPlayerController::CheckForInteractables()
 	{
 		HitComp = HitActor->FindComponentByClass<UInteractComponent>();
 	}
+
+	AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(HitActor);
+	bIsWatchingPainting = IsValid(AnomalyPainting) && AnomalyPainting->bIsAnomaly;
 
 	if (CachedInteractComp.Get())
 	{
