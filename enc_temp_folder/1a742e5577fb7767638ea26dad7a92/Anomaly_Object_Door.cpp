@@ -82,7 +82,7 @@ void AAnomaly_Object_Door::BeginPlay()
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub && Sub->Floor != 9)
+		if (Sub && Sub->Floor != 9) // 9가 아니면 (808호가 아니면)
 		{
 			Component_Interact->Deactivate();
 
