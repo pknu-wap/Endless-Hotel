@@ -110,8 +110,7 @@ void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
     }
     InsideTrigger->SetBoxExtent(FVector(200.f, 200.0f, 150.0f));
     bIsPlayerAlreadyInside = true;
-    bWillOpen = false;
-    MoveDoors();
+    MoveDoors(false);
     FTimerHandle MoveDelayHandle;
     GetWorld()->GetTimerManager().SetTimer(MoveDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
@@ -132,12 +131,11 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
     TriggerBlockBox->SetBoxExtent(FVector(100.f, 32.0f, 150.0f));
 
     bIsPlayerAlreadyInside = false;
-    bWillOpen = false;
     FTimerHandle StartDelayHandle;
 
     GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            MoveDoors();
+            MoveDoors(false);
             ElevatorLight->SetIntensity(LightOffIntensity);
         }), 2, false);
 }
@@ -146,7 +144,7 @@ void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 
 #pragma region MovementSettings
 
-void AElevator::MoveDoors()
+void AElevator::MoveDoors(bool bWillOpen)
 {
     if (bIsDoorMoving)
     {
@@ -192,26 +190,28 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     Exterior_Structure->SetRelativeLocation(Start);
     Elevator_AC->Activate(true);
     Elevator_AC->Play();
+    ElevatorLight->SetIntensity(LightOnIntensity);
 
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = __LINE__;
     LatentInfo.Linkage = 0;
-    LatentInfo.ExecutionFunction = FName("MoveDoors");
-    bWillOpen = bIsStart;
     
     UKismetSystemLibrary::MoveComponentTo(Exterior_Structure, End, FRotator::ZeroRotator, false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 
-    if (bIsStart)
-    {
-        return;
-    }
-
-    FTimerHandle StartDelayHandle;
-    GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+    GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            NotifySubsystem();
-        }), ElevatorMoveDuration, false);
+            MoveDoors(true);
+        }), ElevatorMoveDuration + 0.1f, false);
+
+    if (!bIsStart)
+    {
+        FTimerHandle StartDelayHandle;
+        GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+            {
+                NotifySubsystem();
+            }), ElevatorMoveDuration, false);
+    }
 }
 
 #pragma endregion
@@ -233,10 +233,9 @@ void AElevator::SetPlayerInputEnabled(bool bEnable)
 
 void AElevator::OnButtonClicked()
 {
-    bWillOpen = true;
     SetPlayerInputEnabled(true);
     ElevatorLight->SetIntensity(LightOnIntensity);
-    MoveDoors();
+    MoveDoors(true);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
     InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -250,74 +249,52 @@ void AElevator::OnButtonClicked()
 void AElevator::NotifySubsystem()
 {
     auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    auto* PC = Cast<APlayerController>(Player->GetController());
+    auto* PC = Player->GetController();
 
-    Player->bUseControllerRotationYaw = false;
-    Player->bUseControllerRotationRoll = false;
-    Player->bUseControllerRotationPitch = false;
+    FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
+    FVector WorldLocation = Player->GetActorLocation();
 
-    FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, false);
-    Player->AttachToComponent(Exterior_Structure, AttachRules);
-
-    FVector AnchorToPlayerOffset = Player->GetActorLocation() - TeleportAnchor->GetComponentLocation();
-    FRotator ElevRot = Exterior_Structure->GetComponentRotation();
-    FRotator ControlRot = PC->GetControlRotation();
-    FRotator DeltaRot = (FQuat(ControlRot) * FQuat(ElevRot).Inverse()).Rotator();
+    FVector LocalLocation = AnchorWorldTransform.InverseTransformPosition(WorldLocation);
+    FRotator Rotation = Player->GetActorRotation();
 
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {
         Sub->SetIsElevatorNormal(this->bIsNormalElevator);
         Sub->TryInteractSolveVerdict();
+        Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation);
         Sub->ApplyVerdict();
-        Sub->SetElevatorTransform(AnchorToPlayerOffset, DeltaRot);
     }
 }
 
 void AElevator::StartElevator()
 {
+
+    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
+
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this) && Sub->Floor < 9)
     {
-        this->Exterior_Structure->SetRelativeLocation(StartPos);
-        this->bIsPlayerAlreadyInside = true;
+        Exterior_Structure->SetRelativeLocation(StartPos);
+        bIsPlayerAlreadyInside = true;
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
         
-        FVector SavedAnchorOffset = Sub->GetPlayerElevatorLocation();
-        FRotator SavedDeltaRot = Sub->GetPlayerElevatorRotation();
-
-        Player->GetCharacterMovement()->DisableMovement();
-
-        FVector TargetAnchorPos = this->TeleportAnchor->GetComponentLocation();
-        FRotator TargetElevRot = this->Exterior_Structure->GetComponentRotation();
-
-        FVector FinalWorldPos = TargetAnchorPos + SavedAnchorOffset;
-        FRotator FinalControlRot = (FQuat(TargetElevRot) * FQuat(SavedDeltaRot)).Rotator();
-
-        FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, false);
-        Player->DetachFromActor(DetachRules);
-
-        Player->SetActorLocation(FinalWorldPos, false, nullptr, ETeleportType::TeleportPhysics);
-        PC->SetControlRotation(FinalControlRot);
-        Player->SetActorRotation(FinalControlRot);
-        Player->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-
-        Player->bUseControllerRotationYaw = true;
-        Player->bUseControllerRotationRoll = true;
-        Player->bUseControllerRotationPitch = true;
-
+        FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
+        FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
+        FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
+        FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
+        Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
+        Player->SetActorRotation(SavedRotation);
+        PC->SetControlRotation(SavedRotation);
         MoveElevator(StartPos, MapPos, true);
-        ElevatorLight->SetIntensity(LightOnIntensity);
-        bIsPlayerAlreadyInside = true;
     }
     else
     {
         this->Exterior_Structure->SetRelativeLocation(MapPos);
         bIsPlayerAlreadyInside = false;
     }
-    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
 }
 
 #pragma endregion

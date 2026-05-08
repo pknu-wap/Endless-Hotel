@@ -77,7 +77,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 		SpawnNormal(SpawnedLevel);
 		return;
 	}
-
+	
 	SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
 	Subsystem->ActIndex++;
 }
@@ -173,6 +173,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 
 	CurrentAnomaly = Spawned;
 	Sub->CurrentAnomaly = Spawned;
+	Sub->SetTargetElevator();
 
 	return Spawned;
 }

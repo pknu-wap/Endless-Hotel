@@ -100,7 +100,7 @@ protected:
 
 public:
     UFUNCTION()
-    void MoveDoors();
+    void MoveDoors(bool bWillOpen);
 
     UFUNCTION()
     void OnDoorTimelineUpdate(float Alpha);
@@ -144,7 +144,6 @@ private:
     FTimerHandle MoveHandle;
 
     bool bIsDoorOpened = false;
-    bool bWillOpen = false;
     bool bIsDoorMoving = false;
 
 #pragma endregion

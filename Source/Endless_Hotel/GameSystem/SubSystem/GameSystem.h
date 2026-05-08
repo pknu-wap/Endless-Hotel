@@ -156,14 +156,17 @@ public:
 public:
 	void RegisterElevator(class AElevator* Elevator);
 	void SetTargetElevator();
-	void SetElevatorTransform(const FVector& PlayerRLocaion, FRotator& CameraRRotation) { RelativePlayerLocation = PlayerRLocaion; RelativePlayerRotation = CameraRRotation; };
-	FVector GetPlayerElevatorLocation() { return RelativePlayerLocation; };
-	FRotator GetPlayerElevatorRotation() { return RelativePlayerRotation; };
+	void SetPlayerinElevatorTransform(const FTransform& PlayerTransform) { RelativePlayerTransform = PlayerTransform; };
+	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation) { RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; };
+	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; };
+	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; };
+	FTransform GetPlayerinElevatorTransform() { return RelativePlayerTransform; };
 	bool IsTargetElevator(const AElevator* Elevator);
 
 private:
 	FVector RelativePlayerLocation;
 	FRotator RelativePlayerRotation;
+	FTransform RelativePlayerTransform;
 	TMap<FName, TWeakObjectPtr<class AElevator>> Elevators;
 	TWeakObjectPtr<class AElevator> TargetElevator = nullptr;
 
