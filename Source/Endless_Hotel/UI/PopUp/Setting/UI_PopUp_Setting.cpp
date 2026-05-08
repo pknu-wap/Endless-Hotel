@@ -38,6 +38,14 @@ void UUI_PopUp_Setting::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	SetVisibility(ESlateVisibility::Hidden);
+
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}), 1.f, false);
+
 	HighlightButtons();
 	FindGearActor();
 	PossessCamera(true);
