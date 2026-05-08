@@ -39,8 +39,6 @@ void AAnomaly_Object_Radio::BeginPlay()
 
 void AAnomaly_Object_Radio::PointerMoving()
 {
-	bIsPlaying = true;
-	
 	AC->Sound = Sound_Radio;
 	AC->Play();
 
@@ -53,8 +51,6 @@ void AAnomaly_Object_Radio::PointerMoving()
 
 void AAnomaly_Object_Radio::FinishMove()
 {
-	bIsPlaying = false;
-
 	AC->Stop();
 
 	Timeline_PointerSpin->Stop();
@@ -90,17 +86,15 @@ void AAnomaly_Object_Radio::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Radio::StopRadio()
 {
-	bIsPlaying = false;
-
 	AC->FadeOut(0.5f, 0.f);
 
 	Timeline_PointerSpin->SetPlayRate(0.2f);
 
 	FTimerHandle TempHandle;
-	GetWorld()->GetTimerManager().SetTimer(TempHandle, [this]()
-		{
+	GetWorld()->GetTimerManager().SetTimer(TempHandle, FTimerDelegate::CreateLambda(this, [this]()
+	{
 			Timeline_PointerSpin->Stop();
-		}, 0.5f, false);
+	}), 0.5f, false);
 }
 
 #pragma endregion

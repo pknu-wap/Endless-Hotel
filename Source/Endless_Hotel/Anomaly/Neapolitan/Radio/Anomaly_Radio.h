@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
-#include "Anomaly_Radio.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Radio.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Radio : public AAnomaly_Event_Neapolitan
