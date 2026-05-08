@@ -1,6 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Component/Tutorial/TutorialComponent.h"
+#include "Component/Interact/InteractComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include <Components/WidgetComponent.h>
@@ -15,6 +16,8 @@ void UTutorialComponent::BeginPlay()
 	Comp_Widget = Owner->FindComponentByTag<UWidgetComponent>(FName("Tutorial"));
 	Comp_Widget->SetVisibility(true);
 	Comp_Widget->InitWidget();
+
+	Comp_Interact = Owner->FindComponentByClass<UInteractComponent>();
 
 	UI_Tutorial = Cast<UUI_Tutorial>(Comp_Widget->GetUserWidgetObject());
 	UI_Tutorial->SetTargetKey(TargetKey);
@@ -42,6 +45,11 @@ void UTutorialComponent::ShowTutorialWidget()
 {
 	UI_Tutorial->ShowTutorialAnimation(true);
 
+	if (Comp_Interact.IsValid())
+	{
+		Comp_Interact->ShowInteractingHighlight(true);
+	}
+
 	FTimerHandle DisappearHandle;
 	GetWorld()->GetTimerManager().SetTimer(DisappearHandle, this, &ThisClass::DisappearTutorialWidget, WidgetDuration, false);
 }
@@ -54,6 +62,11 @@ void UTutorialComponent::DisappearTutorialWidget()
 	USaveManager::SaveData_Tutorial(Data);
 
 	UI_Tutorial->ShowTutorialAnimation(false);
+
+	if (Comp_Interact.IsValid())
+	{
+		Comp_Interact->ShowInteractingHighlight(false);
+	}
 }
 
 #pragma endregion
