@@ -10,7 +10,7 @@ UCLASS()
 class ENDLESS_HOTEL_API UReadComponent : public UEHComponent
 {
 	GENERATED_BODY()
-
+	
 #pragma region Reference
 
 private:
@@ -28,6 +28,9 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> Comp_Interact;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UCameraComponent> Comp_Camera;
 
 #pragma endregion
 
@@ -51,13 +54,6 @@ private:
 
 	UFUNCTION()
 	void OnRestoreCompleted();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Move")
-	FVector LocOffset;
-
-	UPROPERTY(EditAnywhere, Category = "Move")
-	FRotator RotOffset;
 
 private:
 	FVector OriginalLoc;

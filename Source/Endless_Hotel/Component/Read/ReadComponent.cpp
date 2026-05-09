@@ -14,24 +14,29 @@
 
 void UReadComponent::SetReferenceObject(AEHCharacter* Interacter, AActor* Target)
 {
-	if (!IsValid(TargetObject.Get()))
+	if (!TargetObject.IsValid())
 	{
 		TargetObject = Target;
 	}
 
-	if (!IsValid(Player.Get()))
+	if (!Player.IsValid())
 	{
 		Player = Cast<AEHPlayer>(Interacter);
 	}
 
-	if (!IsValid(Comp_SpringArm.Get()))
+	if (!Comp_SpringArm.IsValid())
 	{
 		Comp_SpringArm = Player->FindComponentByClass<USpringArmComponent>();
 	}
 
-	if (!IsValid(Comp_Interact.Get()))
+	if (!Comp_Interact.IsValid())
 	{
 		Comp_Interact = TargetObject->FindComponentByClass<UInteractComponent>();
+	}
+
+	if (!Comp_Camera.IsValid())
+	{
+		Comp_Camera = TargetObject->FindComponentByClass<UCameraComponent>();
 	}
 }
 
@@ -65,7 +70,7 @@ void UReadComponent::MoveCameraToTarget(AEHCharacter* Interacter, AActor* Target
 	LatentInfo.Linkage = 0;
 	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
 
-	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation + LocOffset, TargetRotation + RotOffset, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(Comp_SpringArm.Get(), TargetLocation, TargetRotation, true, true, 0.5f, true, EMoveComponentAction::Move, LatentInfo);
 }
 
 void UReadComponent::RestoreCamera()
