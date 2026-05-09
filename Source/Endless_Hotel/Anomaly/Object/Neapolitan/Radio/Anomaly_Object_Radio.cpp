@@ -4,7 +4,6 @@
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -91,9 +90,9 @@ void AAnomaly_Object_Radio::StopRadio()
 	Timeline_PointerSpin->SetPlayRate(0.2f);
 
 	FTimerHandle TempHandle;
-	GetWorld()->GetTimerManager().SetTimer(TempHandle, FTimerDelegate::CreateLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(TempHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
-			Timeline_PointerSpin->Stop();
+		Timeline_PointerSpin->Stop();
 	}), 0.5f, false);
 }
 
