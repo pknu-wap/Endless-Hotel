@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/EightExit/FootStep/Anomaly_Object_FootStep.h"
 #include "Player/AnimInstance/EHPlayerAnimInstance.h"
 #include "Actor/Elevator/Elevator.h"
