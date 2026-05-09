@@ -58,6 +58,10 @@ protected:
 #pragma region Subtitle
 
 public:
+    UPROPERTY(EditAnywhere, Category = "SubTitle")
+    FText Subtitle;
+
+public:
 	void ShowSubTitle();
 
 #pragma endregion

@@ -69,9 +69,9 @@ void AAnomaly_Object_CrawlChild::ShowSubTitle()
 	FTimerHandle SubTitleTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(SubTitleTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon]()
 		{
-			UICon->ShowSubTitle(FText::FromString(TEXT("살려줘")), 0.5f, 2.f);
-			UICon->ShowSubTitle(FText::FromString(TEXT("뜨거워")), 0.5f, 2.f);
-			UICon->ShowSubTitle(FText::FromString(TEXT("아파")), 0.5f, 2.f);
+			UICon->ShowSubTitle(FText::FromString(TEXT("살려줘")), 2f, 0.5f);
+			UICon->ShowSubTitle(FText::FromString(TEXT("뜨거워")), 2f, 0.5f);
+			UICon->ShowSubTitle(FText::FromString(TEXT("아파")), 2f, 0.5f);
 		}), 8, true);
 }
 
