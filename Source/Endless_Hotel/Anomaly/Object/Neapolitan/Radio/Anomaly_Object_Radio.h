@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
-#include "Anomaly_Object_Radio.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Radio.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Radio : public AAnomaly_Object_Neapolitan
@@ -44,9 +44,6 @@ public:
 #pragma endregion
 
 #pragma region Move
-
-protected:
-	bool bIsPlaying = false;
 
 protected:
 	void FinishMove();
