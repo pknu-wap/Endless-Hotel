@@ -17,9 +17,6 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, Category = "InGame|Data")
-	uint8 Number = 0;
-
-	UPROPERTY(EditAnywhere, Category = "InGame|Data")
 	EAnomalyID ID = EAnomalyID::None;
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
