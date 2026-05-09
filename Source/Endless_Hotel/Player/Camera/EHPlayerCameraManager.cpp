@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Player/Controller/EHPlayerController.h"
@@ -26,11 +26,16 @@ void AEHPlayerCameraManager::SetReference()
 
 #pragma region Possess
 
-void AEHPlayerCameraManager::PossessCamera(const FName& CameraTag, const float& BlendTime)
+void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const float& BlendTime)
 {
-	auto* TargetCamera = Cameras.Find(CameraTag);
-	
+	auto* TargetCamera = Cameras.Find(CameraType);
+
 	PC->SetViewTargetWithBlend(TargetCamera->Get(), BlendTime);
+}
+
+void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
+{
+	PC->SetViewTargetWithBlend(CameraOwner, BlendTime);
 }
 
 #pragma endregion

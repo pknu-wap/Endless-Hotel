@@ -3,6 +3,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
@@ -48,12 +49,16 @@ void UUI_PopUp_Setting::NativeConstruct()
 
 	HighlightButtons();
 	FindGearActor();
-	PossessCamera(true);
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Gear, 1.f);
 }
 
 void UUI_PopUp_Setting::NativeDestruct()
 {
-	PossessCamera(false);
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Title, 1.f);
+
 	SM_Gear->SetActorRotation(OriginRot);
 
 	Super::NativeDestruct();
@@ -311,26 +316,6 @@ void UUI_PopUp_Setting::Click_Apply()
 	USaveManager::SaveData_Setting(Data_Setting);
 
 	Input_ESC();
-}
-
-#pragma endregion
-
-#pragma region Camera
-
-void UUI_PopUp_Setting::PossessCamera(bool bGearCamera)
-{
-	TurnOnGearLight(bGearCamera);
-
-	const FName CameraTag = bGearCamera ? FName("Gear_Camera") : FName("Title_Camera");
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
-
-	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if (IsValid(PC))
-	{
-		PC->SetViewTargetWithBlend(FoundActors[0], 1.f);
-	}
 }
 
 #pragma endregion

@@ -108,18 +108,3 @@ void UUI_HUD_Title::SetLogoImage()
 }
 
 #pragma endregion
-
-#pragma region Camera
-
-void UUI_HUD_Title::PossessCamera()
-{
-	const FName CameraTag = FName("Title_Camera");
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
-
-	auto* PC = GetWorld()->GetFirstPlayerController();
-	PC->SetViewTargetWithBlend(FoundActors[0]);
-}
-
-#pragma endregion

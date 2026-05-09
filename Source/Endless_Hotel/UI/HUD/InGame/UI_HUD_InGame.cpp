@@ -5,7 +5,6 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
-#include "Actor/Elevator/Elevator.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Components/TextBlock.h>
@@ -22,8 +21,6 @@ void UUI_HUD_InGame::NativeOnInitialized()
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
-
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
 void UUI_HUD_InGame::NativeConstruct()
@@ -147,18 +144,6 @@ void UUI_HUD_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(UI_Demo);
-}
-
-#pragma endregion
-
-#pragma region Camera
-
-void UUI_HUD_InGame::PossessCamera()
-{
-	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	auto* PC = GetWorld()->GetFirstPlayerController();
-	PC->SetViewTargetWithBlend(Player);
 }
 
 #pragma endregion

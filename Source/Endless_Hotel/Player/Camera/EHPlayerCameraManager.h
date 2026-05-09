@@ -1,7 +1,8 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #pragma once
 
+#include "Type/Camera/Type_Camera.h"
 #include <CoreMinimal.h>
 #include <Camera/PlayerCameraManager.h>
 #include <EHPlayerCameraManager.generated.h>
@@ -32,18 +33,19 @@ private:
 #pragma region Possess
 
 public:
-	void PossessCamera(const FName& CameraTag, const float& BlendTime);
+	void PossessCamera(const ECameraType& CameraType, const float& BlendTime = 0.f);
+	void PossessCamera(AActor* CameraOwner, const float& BlendTime = 0.f);
 
 #pragma endregion
 
 #pragma region Camera
 
 public:
-	void RegisterCamera(const FName& CameraTag, class AEHCameraActor* Camera) { Cameras.FindOrAdd(CameraTag, Camera); }
+	void RegisterCamera(const ECameraType& CameraType, class AEHCameraActor* Camera) { Cameras.Add(CameraType, Camera); }
 
 private:
 	UPROPERTY()
-	TMap<FName, TObjectPtr<class AEHCameraActor>> Cameras
+	TMap<ECameraType, TObjectPtr<class AEHCameraActor>> Cameras;
 
 #pragma endregion
 

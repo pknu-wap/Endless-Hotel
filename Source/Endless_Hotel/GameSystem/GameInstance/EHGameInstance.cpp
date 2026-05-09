@@ -7,6 +7,7 @@
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Loading/UI_PopUp_Loading.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 
@@ -144,18 +145,24 @@ void UEHGameInstance::OnLevelUnloaded()
 
 void UEHGameInstance::StartLoadedLevel()
 {
+	UWorld* World = GetWorld();
+
 	auto* UICon = GetSubsystem<UUI_Controller>();
 	UICon->CloseWidget();
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(World, 0));
 
 	switch (CurrentLevelType)
 	{
 	case ELevelType::Hotel:
 		SpawnAnomalyGenerator();
 		UICon->OpenWidget(UI_HUD_InGame_Class);
+		CameraManager->PossessCamera(UGameplayStatics::GetPlayerCharacter(World, 0));
 		break;
 
 	case ELevelType::MainMenu:
 		UICon->OpenWidget(UI_HUD_Title_Class);
+		CameraManager->PossessCamera(ECameraType::Title);
 		break;
 	}
 

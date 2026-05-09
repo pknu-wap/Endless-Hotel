@@ -85,13 +85,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Camera
-
-protected:
-	virtual void PossessCamera() override;
-
-#pragma endregion
-
 #pragma region SubTitle
 
 public:
