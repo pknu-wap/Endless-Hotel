@@ -59,7 +59,7 @@ protected:
 
 public:
     UPROPERTY(EditAnywhere, Category = "SubTitle")
-    FText Subtitle;
+    TArray<FText> Subtitle;
 
 public:
 	void ShowSubTitle();
