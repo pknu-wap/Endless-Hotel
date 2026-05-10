@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Actor/Interact/InteractBase.h"
+#include "Actor/Interact/Read/InteractRead.h"
 #include <CoreMinimal.h>
 #include <NoteBook.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API ANoteBook : public AInteractBase
+class ENDLESS_HOTEL_API ANoteBook : public AInteractRead
 {
 	GENERATED_BODY()
 
@@ -15,21 +15,6 @@ class ENDLESS_HOTEL_API ANoteBook : public AInteractBase
 
 public:
 	ANoteBook(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
-#pragma region Interact
-
-public:
-	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
-
-#pragma endregion
-
-#pragma region Component
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UReadComponent> Comp_Read;
 
 #pragma endregion
 

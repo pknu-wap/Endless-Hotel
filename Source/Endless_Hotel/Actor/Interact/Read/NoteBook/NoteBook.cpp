@@ -1,7 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/NoteBook/NoteBook.h"
-#include "Component/Read/ReadComponent.h"
+#include "Actor/Interact/Read/NoteBook/NoteBook.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -9,29 +8,9 @@
 ANoteBook::ANoteBook(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Comp_Read = CreateDefaultSubobject<UReadComponent>(TEXT("Comp_Read"));
-
 	SM_Paper = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Paper"));
 	SM_Paper->SetupAttachment(RootComponent);
 	SM_Paper->SetVisibility(false);
-}
-
-#pragma endregion
-
-#pragma region Interact
-
-void ANoteBook::Interact_Implementation(AEHCharacter* Interacter)
-{
-	Super::Interact_Implementation(Interacter);
-
-	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-
-	switch (Info.InteractType)
-	{
-	case EInteractType::Read:
-		Comp_Read->MoveCameraToTarget(Interacter, this);
-		break;
-	}
 }
 
 #pragma endregion

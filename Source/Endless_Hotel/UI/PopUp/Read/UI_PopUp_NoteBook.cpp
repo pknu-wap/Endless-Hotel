@@ -2,7 +2,7 @@
 
 #include "UI/PopUp/Read/UI_PopUp_NoteBook.h"
 #include "UI/Base/NoteBook/UI_NoteBook.h"
-#include "Actor/NoteBook/NoteBook.h"
+#include "Actor/Interact/Read/NoteBook/NoteBook.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include <Components/Button.h>
 #include <Components/WidgetComponent.h>

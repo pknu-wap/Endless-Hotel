@@ -1,6 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/Lighter/Lighter.h"
+#include "Actor/Interact/Lighter/Lighter.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Camera/CameraComponent.h>
