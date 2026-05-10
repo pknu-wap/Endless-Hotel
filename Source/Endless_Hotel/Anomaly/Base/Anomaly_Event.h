@@ -30,11 +30,17 @@ protected:
 
 #pragma endregion
 
-#pragma region ObjectLinker
+#pragma region Objects
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Linker")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	TArray<AActor*> LinkedObjects;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	bool bIsEightExitObject = false;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	TArray<FTransform> ObjectSpawnTransform;
 
 	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
 
@@ -54,12 +60,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsEightExitObject = false;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	TArray<FTransform> ObjectSpawnTransform;
 
 protected:
 	TArray<TFunction<void(class AAnomaly_Object_Base*)>> AnomalyActions;
@@ -87,7 +87,7 @@ public:
 	virtual void SetAnomalyState();
 
 	UFUNCTION()
-	virtual void DisableAnomaly() {}
+	virtual void DisableAnomaly();
 
 #pragma endregion
 
@@ -120,9 +120,6 @@ protected:
 #pragma region Transform
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Start")
-	FTransform PlayerStartTransform = FTransform(FRotator(0, 180, 0), FVector(-750, 570, 997), FVector(0.75f, 0.75f, 0.75f));
-
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	FName TargetElevatorID = "HotelElevator";
 

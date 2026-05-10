@@ -6,8 +6,6 @@
 #include <CoreMinimal.h>
 #include <Elevator.generated.h>
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FElevatorDelegate, bool, bIsStart);
-
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AEHActor
 {
@@ -17,7 +15,6 @@ class ENDLESS_HOTEL_API AElevator : public AEHActor
 
 public:
     AElevator(const FObjectInitializer& ObjectInitializer);
-    static FElevatorDelegate ElevatorDelegate;
 
 protected:
     virtual void BeginPlay() override;
@@ -28,10 +25,11 @@ protected:
     UFUNCTION()
     void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-protected:
+public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Exterior_Structure;
 
+protected:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Entrance;
 
@@ -60,10 +58,13 @@ protected:
     TObjectPtr<class UBoxComponent> InsideTrigger;
 
     UPROPERTY(VisibleAnywhere, Category = "Trigger")
-    TObjectPtr<UStaticMeshComponent> TriggerBlockBox;
+    TObjectPtr<class UBoxComponent> TriggerBlockBox;
 
     UPROPERTY(VisibleAnywhere, Category = "UI")
     TObjectPtr<UStaticMeshComponent> StickerPannel;
+
+    UPROPERTY(EditAnywhere, Category = "Teleport")
+    TObjectPtr<USceneComponent> TeleportAnchor;
 
 #pragma endregion
 
@@ -99,7 +100,7 @@ protected:
 
 public:
     UFUNCTION()
-    void MoveDoors();
+    void MoveDoors(bool bWillOpen);
 
     UFUNCTION()
     void OnDoorTimelineUpdate(float Alpha);
@@ -143,7 +144,6 @@ private:
     FTimerHandle MoveHandle;
 
     bool bIsDoorOpened = false;
-    bool bWillOpen = false;
     bool bIsDoorMoving = false;
 
 #pragma endregion
@@ -152,34 +152,8 @@ private:
 
 protected:
     void SetPlayerInputEnabled(bool bEnable);
-    void TakePlayer();
-
-    UFUNCTION()
-    void OnPlayerRotationUpdate(float Alpha);
-
-    UFUNCTION()
-    void OnPlayerRotationEnd();
-
-protected:
-    UPROPERTY(EditAnywhere, Category = "Player")
-    FRotator RotateAngle;
-
-    UPROPERTY(EditAnywhere, Category = "Player")
-    TObjectPtr<class USceneComponent> PlayerAnchor;
-    
-    UPROPERTY(EditAnywhere, Category = "Player")
-    TObjectPtr<class UArrowComponent> PlayerDirectionArrow;
-
-    UPROPERTY(VisibleAnywhere)
-    class UTimelineComponent* CameraRotationTimeline;
-
-    UPROPERTY(EditAnywhere, Category = "Elevator|Movement")
-    UCurveFloat* RotationCurve;
 
 private:
-    FTimerHandle RotateHandle;
-    FRotator StartControlRotation;
-    FRotator TargetControlRotation;
     bool bIsPlayerAlreadyInside = true;
 
 #pragma endregion
@@ -200,6 +174,9 @@ protected:
 
 protected:
     void NotifySubsystem();
+
+    UFUNCTION()
+    void StartElevator();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")
@@ -227,6 +204,5 @@ public:
     void DisableElevatorFloor();
 
 #pragma endregion
-
 
 };

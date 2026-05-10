@@ -12,9 +12,6 @@
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
 
-// Delegate
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAnomalySpawned, AAnomaly_Event*, Spawned);
-
 #pragma endregion
 
 UCLASS()
@@ -30,6 +27,13 @@ private:
 
 #pragma endregion
 
+#pragma region Base
+
+protected:
+	virtual void BeginPlay();
+
+#pragma endregion
+
 #pragma region Generate & State
 
 public:
@@ -41,22 +45,23 @@ public:
 
 #pragma endregion
 
-#pragma region Event
-	
-	UPROPERTY(BlueprintAssignable, Category = "Anomaly|Event")
-	FOnAnomalySpawned OnAnomalySpawned;
-
-#pragma endregion
-
 #pragma region Generate Anomaly
 
 public:
+	UFUNCTION()
+	void SpawnAnomaly();
+
 	AAnomaly_Event* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
 	AAnomaly_Event* SpawnNormal(ULevel* SpawnLevel);
+
+	void SetSpawnLevel(ULevel* CurrentLevel) { SpawnedLevel = CurrentLevel; };
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
 	TSoftClassPtr<AAnomaly_Event> NormalClass;
+
+private:
+	TObjectPtr<class ULevel> SpawnedLevel;
 
 #pragma endregion
 
