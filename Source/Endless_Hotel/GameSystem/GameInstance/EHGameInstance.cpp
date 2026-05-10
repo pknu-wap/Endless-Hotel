@@ -171,20 +171,6 @@ void UEHGameInstance::StartLoadedLevel()
 void UEHGameInstance::SpawnAnomalyGenerator()
 {
 	ULevel* SpawnLevel = CurrentStreamLevel->GetLoadedLevel();
-
-	Generator = SpawnActor<AAnomaly_Generator>(GeneratorClass);
-
-	auto* Subsystem = GetSubsystem<UGameSystem>();
-	int32 IsNormal = FMath::RandRange(1, 10);
-
-	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
-	{
-		Generator->SpawnNormal(SpawnLevel);
-		return;
-	}
-
-	Generator->SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnLevel);
-	Subsystem->ActIndex++;
 }
 
 #pragma endregion
@@ -195,9 +181,10 @@ void UEHGameInstance::RelocatePlayer()
 {
 	auto* Subsystem = GetSubsystem<UGameSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-
-	FTransform TargetTrans = Subsystem->bPassed ? Generator->CurrentAnomaly->PlayerStartTransform : DefaultTransform;
-	Player->SetActorTransform(TargetTrans);
+	auto* PC = Player->GetController();
+	Subsystem->SetVerdictMode();
+	Subsystem->ApplyVerdict();
+	Player->SetActorTransform(DefaultTransform);
 }
 
 #pragma endregion
