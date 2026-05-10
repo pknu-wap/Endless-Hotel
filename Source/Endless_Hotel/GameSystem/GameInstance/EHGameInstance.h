@@ -89,20 +89,6 @@ private:
 
 #pragma endregion
 
-#pragma region Anomaly
-
-protected:
-	void SpawnAnomalyGenerator();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly")
-	TSubclassOf<class AAnomaly_Generator> GeneratorClass;
-
-	UPROPERTY()
-	TObjectPtr<class AAnomaly_Generator> Generator;
-
-#pragma endregion
-
 #pragma region Player
 
 private:

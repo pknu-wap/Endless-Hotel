@@ -21,9 +21,11 @@ public:
 #pragma region Anomaly
 
 public:
-	void LoadAnomalyDataAsset();
 	TArray<class UPDA_Anomaly*> GetAnomalyDataAsset(const TArray<uint8>& Indexes);
 	bool IsValidIndexAnomalyDataAsset(uint8 Index) { return AnomalyDatas.IsValidIndex(Index); }
+
+private:
+	void LoadAnomalyDataAsset();
 
 private:
 	UPROPERTY()

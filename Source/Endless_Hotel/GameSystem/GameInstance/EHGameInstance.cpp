@@ -1,10 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include "Actor/Anomaly/Anomaly_Generator.h"
-#include "Anomaly/Base/Anomaly_Event.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Loading/UI_PopUp_Loading.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
@@ -155,7 +152,6 @@ void UEHGameInstance::StartLoadedLevel()
 	switch (CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		SpawnAnomalyGenerator();
 		UICon->OpenWidget(UI_HUD_InGame_Class);
 		CameraManager->PossessCamera(UGameplayStatics::GetPlayerCharacter(World, 0));
 		break;
@@ -173,22 +169,12 @@ void UEHGameInstance::StartLoadedLevel()
 
 #pragma endregion
 
-#pragma region Anomaly
-
-void UEHGameInstance::SpawnAnomalyGenerator()
-{
-	ULevel* SpawnLevel = CurrentStreamLevel->GetLoadedLevel();
-}
-
-#pragma endregion
-
 #pragma region Player
 
 void UEHGameInstance::RelocatePlayer()
 {
 	auto* Subsystem = GetSubsystem<UGameSystem>();
 	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	auto* PC = Player->GetController();
 	Subsystem->SetVerdictMode();
 	Subsystem->ApplyVerdict();
 	Player->SetActorTransform(DefaultTransform);

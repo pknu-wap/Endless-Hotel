@@ -60,7 +60,6 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 	int32 ChangeSize = bLeft ? -IndexChangeSize : IndexChangeSize;
 
 	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadAnomalyDataAsset();
 	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex + ChangeSize))
 	{
 		return;
