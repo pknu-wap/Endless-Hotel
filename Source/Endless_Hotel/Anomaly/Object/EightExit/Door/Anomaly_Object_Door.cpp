@@ -277,7 +277,7 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 
 		if (DoorIndex == 8)
 		{
-			if (Sub->Floor != 9)
+			if (Sub->Floor != STARTFLOOR)
 			{
 				return;
 			}
@@ -285,7 +285,7 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 		MoveToHandlePlayer();
 		PlayHandleTwistSound();
 		break;
-		
+	}
 	
 }
 
@@ -423,6 +423,11 @@ void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* Overlapp
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (OtherActor == Player && bIsDoorOpened)
 	{
+		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+		if (Sub &&Sub->Floor == STARTFLOOR)
+		{
+			return;
+		}
 		CloseFirstDoor();
 	}
 }
