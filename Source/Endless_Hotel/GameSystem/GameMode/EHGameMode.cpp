@@ -16,7 +16,7 @@ void AEHGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenLevel(ELevelType::MainMenu, false);
+	GameInstance->LoadLevel(ELevelType::MainMenu);
 }
 
 #pragma endregion

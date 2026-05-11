@@ -6,10 +6,17 @@
 #include <CoreMinimal.h>
 #include <UI_PopUp_Loading.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
+UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Loading : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
+
+#pragma region Base
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+#pragma endregion
 
 #pragma region Input
 

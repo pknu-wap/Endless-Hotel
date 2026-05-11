@@ -12,3 +12,14 @@ enum class ELevelType : uint8
 	MainMenu	UMETA(DisplayName = "MainMenu"),
 	Hotel		UMETA(DisplayName = "Hotel")
 };
+
+UENUM(BlueprintType)
+enum class EHotelDataLayer : uint8
+{
+	None		UMETA(DisplayName = "None"),
+	Default		UMETA(DisplayName = "Default"),
+	Hotel		UMETA(DisplayName = "Hotel"),
+	Fire		UMETA(DisplayName = "Fire"),
+	Maze		UMETA(DisplayName = "Maze"),
+	Choice		UMETA(DisplayName = "Choice")
+};

@@ -3,10 +3,9 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/Loading/UI_PopUp_Loading.h"
-#include "Player/Camera/EHPlayerCameraManager.h"
+#include "Asset/Manager/EHAssetManager.h"
+#include "Asset/DataAsset/Map/PDA_Map.h"
 #include <Kismet/GameplayStatics.h>
-#include <GameFramework/Character.h>
 
 #pragma region Game
 
@@ -17,167 +16,81 @@ void UEHGameInstance::QuitGame()
 
 #pragma endregion
 
-#pragma region Level
+#pragma region Data
 
-void UEHGameInstance::OpenLevel(const ELevelType& LevelName, bool bNeedLoading)
+void UEHGameInstance::LoadMapDataAsset(const FName& BundleName)
 {
-	CurrentLevelType = LevelName;
-	bIsOpenedLoadingWidget = bNeedLoading;
+	FPrimaryAssetId DataID = DA_Map->GetPrimaryAssetId();
 
-	UnloadStreamLevel();
-
-	if (bNeedLoading)
+	if (IsValid(DA_Map) && DA_Map_Handles[BundleName]->HasLoadCompleted())
 	{
-		auto* UICon = GetSubsystem<UUI_Controller>();
-		UI_Loading = Cast<UUI_PopUp_Loading>(UICon->OpenWidget(UI_Loading_Class));
+		return;
 	}
+
+	DA_Map_Handles.Remove(BundleName);
+
+	auto& AssetManager = UEHAssetManager::Get();
+	DA_Map_Handles.Add(BundleName, AssetManager.LoadPrimaryAsset(DataID, { BundleName }));
 }
 
 #pragma endregion
 
-#pragma region Loading
+#pragma region Level
 
-bool UEHGameInstance::IsLevelLoaded()
+void UEHGameInstance::LoadLevel(const ELevelType& LevelType)
 {
-	return CurrentStreamLevel->IsLevelLoaded();
-}
+	CurrentLevelType = LevelType;
 
-void UEHGameInstance::LoadStreamLevel()
-{
-	TSoftObjectPtr<UWorld> TargetLevel = nullptr;
-
-	switch (CurrentLevelType)
-	{
-	case ELevelType::MainMenu:
-		TargetLevel = Level_MainMenu;
-		break;
-
-	case ELevelType::Hotel:
-		TargetLevel = Level_Hotel;
-		break;
-	}
-
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnLevelLoaded");
-	LatentInfo.Linkage = 0;
-	LatentInfo.UUID = __LINE__;
-
-	UGameplayStatics::LoadStreamLevelBySoftObjectPtr(GetWorld(), TargetLevel, false, false, LatentInfo);
-}
-
-void UEHGameInstance::OnLevelLoaded()
-{
-	switch (CurrentLevelType)
-	{
-	case ELevelType::MainMenu:
-		CurrentLevel = Level_MainMenu;
-		break;
-	case ELevelType::Hotel:
-		CurrentLevel = Level_Hotel;
-		break;
-	}
-
-	CurrentStreamLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), *CurrentLevel.GetAssetName());
-	CurrentStreamLevel->OnLevelShown.RemoveAll(this);
-	CurrentStreamLevel->OnLevelShown.AddDynamic(this, &ThisClass::OnLevelShown);
-	CurrentStreamLevel->SetShouldBeVisible(true);
-
-	LevelLoaded.Broadcast();
-}
-
-void UEHGameInstance::OnLevelShown()
-{
-	if (!bIsOpenedLoadingWidget)
-	{
-		StartLoadedLevel();
-		return;
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			if (UI_Loading->IsLoadingComplete())
-			{
-				StartLoadedLevel();
-				GetWorld()->GetTimerManager().ClearTimer(StartHandle);
-			}
-		}), 0.1f, true);
-}
-
-void UEHGameInstance::UnloadStreamLevel()
-{
-	if (!CurrentLevel.IsValid())
-	{
-		LoadStreamLevel();
-		return;
-	}
-
-	CurrentStreamLevel->OnLevelHidden.RemoveAll(this);
-	CurrentStreamLevel->OnLevelHidden.AddDynamic(this, &ThisClass::OnLevelHidden);
-	CurrentStreamLevel->SetShouldBeVisible(false);
-}
-
-void UEHGameInstance::OnLevelHidden()
-{
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnLevelUnloaded");
-	LatentInfo.Linkage = 0;
-	LatentInfo.UUID = __LINE__;
-
-	UGameplayStatics::UnloadStreamLevelBySoftObjectPtr(GetWorld(), CurrentLevel, LatentInfo, false);
-
-	LevelHidden.Broadcast();
-}
-
-void UEHGameInstance::OnLevelUnloaded()
-{
-	CurrentStreamLevel = nullptr;
-	CurrentLevel = nullptr;
-
-	LoadStreamLevel();
-
-	LevelUnloaded.Broadcast();
-}
-
-void UEHGameInstance::StartLoadedLevel()
-{
-	UWorld* World = GetWorld();
+	LoadMapDataAsset(FName("Level"));
 
 	auto* UICon = GetSubsystem<UUI_Controller>();
-	UICon->CloseWidget();
+	UICon->OpenWidget(UI_Loading_Class);
 
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(World, 0));
+	OnLevelLoaded.Broadcast();
+}
+
+void UEHGameInstance::OpenLevel()
+{
+	UWorld* World = GetWorld();
+	TSoftObjectPtr<UWorld> TargetWorld = nullptr;
+
+	auto* UICon = GetSubsystem<UUI_Controller>();
 
 	switch (CurrentLevelType)
 	{
 	case ELevelType::Hotel:
+		TargetWorld = DA_Map->Level_MainMenu;
 		UICon->OpenWidget(UI_HUD_InGame_Class);
 		CameraManager->PossessCamera(UGameplayStatics::GetPlayerCharacter(World, 0));
 		break;
 
 	case ELevelType::MainMenu:
+		TargetWorld = DA_Map->Level_Hotel;
 		UICon->OpenWidget(UI_HUD_Title_Class);
 		CameraManager->PossessCamera(ECameraType::Title);
 		break;
 	}
 
-	RelocatePlayer();
+	UGameplayStatics::OpenLevelBySoftObjectPtr(World, TargetWorld);
 
-	LevelShown.Broadcast();
+	auto* GameSystem = GetSubsystem<UGameSystem>();
+	GameSystem->SetVerdictMode();
+	GameSystem->ApplyVerdict();
+
+	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	Player->SetActorTransform(DefaultTransform);
+
+	OnLevelOpened.Broadcast(CurrentLevelType);
 }
 
-#pragma endregion
-
-#pragma region Player
-
-void UEHGameInstance::RelocatePlayer()
+void UEHGameInstance::LoadDataLayer(const EHotelDataLayer& Layer)
 {
-	auto* Subsystem = GetSubsystem<UGameSystem>();
-	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	Subsystem->SetVerdictMode();
-	Subsystem->ApplyVerdict();
-	Player->SetActorTransform(DefaultTransform);
+
+}
+
+void UEHGameInstance::SwitchDataLayer()
+{
+
 }
 
 #pragma endregion

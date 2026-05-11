@@ -2,6 +2,23 @@
 
 #include "UI/PopUp/Loading/UI_PopUp_Loading.h"
 #include "UI/Slider/Loading/UI_Slider_Loading.h"
+#include "UI/Controller/UI_Controller.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
+
+#pragma region Base
+
+void UUI_PopUp_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OpenLevel();
+
+	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+	UICon->CloseWidget();
+}
+
+#pragma endregion
 
 #pragma region Loading
 

@@ -3,8 +3,9 @@
 #pragma once
 
 #include "Type/Level/Type_Level.h"
-#include <Engine/GameInstance.h>
+#include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
+#include <Engine/GameInstance.h>
 #include <EHGameInstance.generated.h>
 
 UCLASS()
@@ -19,80 +20,41 @@ public:
 
 #pragma endregion
 
+#pragma region Data
+
+private:
+	void LoadMapDataAsset(const FName& BundleName);
+
+protected:
+	UPROPERTY(EditAnyWhere, Category = "Data|Map")
+	TObjectPtr<class UPDA_Map> DA_Map;
+
+private:
+	TMap<FName, TSharedPtr<struct FStreamableHandle>> DA_Map_Handles;
+
+#pragma endregion
+
 #pragma region Level
 
 public:
-	void OpenLevel(const ELevelType& LevelName, bool bNeedLoading);
+	void LoadLevel(const ELevelType& LevelType);
+	void OpenLevel();
+
+	void LoadDataLayer(const EHotelDataLayer& Layer);
+	void SwitchDataLayer();
 
 public:
 	ELevelType CurrentLevelType = ELevelType::Persistent;
 
-protected:
-	UPROPERTY(EditAnyWhere, Category = "Level")
-	TSoftObjectPtr<UWorld> Level_MainMenu;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelLoaded);
+	FOnLevelLoaded OnLevelLoaded;
 
-	UPROPERTY(EditAnyWhere, Category = "Level")
-	TSoftObjectPtr<UWorld> Level_Hotel;
-
-private:
-	UPROPERTY()
-	TObjectPtr<ULevelStreaming> CurrentStreamLevel;
-
-	UPROPERTY()
-	TSoftObjectPtr<UWorld> CurrentLevel;
-
-	bool bIsOpenedLoadingWidget = false;
-
-#pragma endregion
-
-#pragma region Loading
-
-public:
-	bool IsLevelLoaded();
-
-private:
-	void LoadStreamLevel();
-
-	UFUNCTION()
-	void OnLevelLoaded();
-
-	UFUNCTION()
-	void OnLevelShown();
-
-private:
-	void UnloadStreamLevel();
-
-	UFUNCTION()
-	void OnLevelHidden();
-
-	UFUNCTION()
-	void OnLevelUnloaded();
-
-private:
-	void StartLoadedLevel();
-
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
-	FLevelLoaded LevelLoaded;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelShown);
-	FLevelShown LevelShown;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelUnloaded);
-	FLevelUnloaded LevelUnloaded;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelHidden);
-	FLevelHidden LevelHidden;
-
-private:
-	FTimerHandle StartHandle;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, ELevelType);
+	FOnLevelOpened OnLevelOpened;
 
 #pragma endregion
 
 #pragma region Player
-
-private:
-	void RelocatePlayer();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
@@ -111,25 +73,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Widget|PopUp")
 	TSubclassOf<class UUI_Base> UI_Loading_Class;
-
-private:
-	UPROPERTY()
-	TWeakObjectPtr<class UUI_PopUp_Loading> UI_Loading;
-
-#pragma endregion
-
-#pragma region Spawn
-
-public:
-	template<class ActorClass>
-	ActorClass* SpawnActor(UClass* Class, const FVector& Location = FVector::ZeroVector, const FRotator& Rotation = FRotator::ZeroRotator)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.OverrideLevel = CurrentStreamLevel->GetLoadedLevel();
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		return GetWorld()->SpawnActor<ActorClass>(Class, Location, Rotation, SpawnParams);
-	}
 
 #pragma endregion
 
