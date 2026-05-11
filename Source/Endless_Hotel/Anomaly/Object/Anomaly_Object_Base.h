@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnyWhere)
 	TArray<EInteractType> CorrectInteractTypes;
 
+	UPROPERTY(EditAnywhere)
+	bool bIsOrderedInteractTypes = false;
+
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
