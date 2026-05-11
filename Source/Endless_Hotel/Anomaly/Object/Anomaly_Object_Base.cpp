@@ -41,8 +41,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
             {
                 bSolved = !bSolved;
             }
-            // 이거 안 됨. 이유 : Info에 참조가 아니라서 복사본만 false임.
-            Info.bIsInteracted = false;
+            Component_Interact->bIsInteracted = false;
         }
         else
         {
