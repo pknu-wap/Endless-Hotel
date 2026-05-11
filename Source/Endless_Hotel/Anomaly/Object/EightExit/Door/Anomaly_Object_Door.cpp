@@ -82,7 +82,7 @@ void AAnomaly_Object_Door::BeginPlay()
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub && Sub->Floor != 9)
+		if (Sub && Sub->Floor != STARTFLOOR)
 		{
 			Component_Interact->Deactivate();
 
@@ -272,23 +272,21 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	{
 	case EInteractType::DoorOpen:
 
-		if (Info.InteractType == EInteractType::DoorOpen)
-		{
-			UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-			if (!Sub) return;
+		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
-			if (DoorIndex == 8)
+
+		if (DoorIndex == 8)
+		{
+			if (Sub->Floor != 9)
 			{
-				if (Sub->Floor != 9)
-				{
-					return;
-				}
+				return;
 			}
-			MoveToHandlePlayer();
-			PlayHandleTwistSound();
-			break;
 		}
-	}
+		MoveToHandlePlayer();
+		PlayHandleTwistSound();
+		break;
+		
+	
 }
 
 #pragma endregion
@@ -350,7 +348,7 @@ void AAnomaly_Object_Door::OnPushMoveStarted()
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
 
 	FVector TargetLocation = PushPlayerTransform.GetLocation();
-	TargetLocation.X -= 30.0f;
+	TargetLocation.X -= PushOffsetX; 
 	FRotator TargetRotation = PushPlayerTransform.Rotator();
 	EHPC->SetControlRotation(TargetRotation);
 
