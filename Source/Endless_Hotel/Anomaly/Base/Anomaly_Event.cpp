@@ -26,8 +26,8 @@ void AAnomaly_Event::BeginPlay()
 
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->LevelShown.AddDynamic(this, &ThisClass::DisableAnomaly);
+	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	SubSystem->FloorChange.AddDynamic(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion
@@ -83,6 +83,17 @@ void AAnomaly_Event::SetAnomalyState()
 
 		TargetAnomalyObjects.Add(AnomalyObject);
 	}
+}
+
+void AAnomaly_Event::DisableAnomaly()
+{
+	for (auto Object : LinkedObjects)
+	{
+		if(Cast<AAnomaly_Object_Base>(Object)->bIsDynamicallySpawned)
+		Object->Destroy();
+	}
+	this->LinkedObjects.Empty();
+	this->Destroy();
 }
 
 #pragma endregion

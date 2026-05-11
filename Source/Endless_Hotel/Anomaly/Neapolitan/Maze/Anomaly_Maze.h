@@ -10,14 +10,6 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Maze : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
-	
-
-#pragma region Base
-
-public:
-	AAnomaly_Maze(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
 
 #pragma region Anomaly
 

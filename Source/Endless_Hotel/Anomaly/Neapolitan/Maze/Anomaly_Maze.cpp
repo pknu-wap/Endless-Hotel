@@ -7,16 +7,6 @@
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
-#pragma region Base
-
-AAnomaly_Maze::AAnomaly_Maze(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	PlayerStartTransform.SetLocation(FVector(-3790, 640, -2852));
-}
-
-#pragma endregion
-
 #pragma region Anomaly
 
 void AAnomaly_Maze::SetAnomalyState()

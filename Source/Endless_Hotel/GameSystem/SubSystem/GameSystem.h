@@ -21,10 +21,12 @@ enum class EAnomalyVerdictMode : uint8
 {
 	SolvedOnly,
 	Both_AND,
-	Normal
+	Normal,
+	Reset
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChangedDelegate);
 
 USTRUCT(BlueprintType)
 struct FAnomalyObjectArray
@@ -69,6 +71,7 @@ public:
 
 public:
 	uint8 Floor = STARTFLOOR;
+	FOnFloorChangedDelegate FloorChange;
 
 private:
 	void ResetFloor() { Floor = STARTFLOOR; };
@@ -86,7 +89,7 @@ public:
 	bool bPassed = false;
 
 public:
-	void SetVerdictMode(EAnomalyVerdictMode ENewMode) { VerdictMode = ENewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Reset) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
@@ -145,6 +148,27 @@ public:
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "AnomalyData")
 	int32 GlobalSelectedKeyIndex = 0;
+
+#pragma endregion
+
+#pragma region Elevator
+
+public:
+	void RegisterElevator(class AElevator* Elevator);
+	void SetTargetElevator();
+	void SetPlayerinElevatorTransform(const FTransform& PlayerTransform) { RelativePlayerTransform = PlayerTransform; };
+	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation) { RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; };
+	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; };
+	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; };
+	FTransform GetPlayerinElevatorTransform() { return RelativePlayerTransform; };
+	bool IsTargetElevator(const AElevator* Elevator);
+
+private:
+	FVector RelativePlayerLocation;
+	FRotator RelativePlayerRotation;
+	FTransform RelativePlayerTransform;
+	TMap<FName, TWeakObjectPtr<class AElevator>> Elevators;
+	TWeakObjectPtr<class AElevator> TargetElevator = nullptr;
 
 #pragma endregion
 

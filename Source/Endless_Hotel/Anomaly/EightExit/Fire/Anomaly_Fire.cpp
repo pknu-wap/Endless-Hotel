@@ -13,7 +13,7 @@
 AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
+	//AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
 }
 
 #pragma endregion

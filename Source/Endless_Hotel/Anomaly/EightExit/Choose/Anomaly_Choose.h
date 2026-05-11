@@ -11,13 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_Choose : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Choose(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 #pragma region Activity
 
 public:
