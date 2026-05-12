@@ -260,14 +260,13 @@ void AElevator::NotifySubsystem()
     {
         Sub->SetIsElevatorNormal(this->bIsNormalElevator);
         Sub->TryInteractSolveVerdict();
-        Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation);
+        Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
         Sub->ApplyVerdict();
     }
 }
 
 void AElevator::StartElevator()
 {
-
     InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
@@ -282,6 +281,7 @@ void AElevator::StartElevator()
         
         FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
         FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
+        SavedRotation -= Sub->GetElevatorOffset() - this->GetActorRotation();
         FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
         FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
         Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
