@@ -55,6 +55,14 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	UFUNCTION()
+	void Reset();
+
+#pragma endregion
+
 #pragma region Mesh & Texture
 
 protected:
