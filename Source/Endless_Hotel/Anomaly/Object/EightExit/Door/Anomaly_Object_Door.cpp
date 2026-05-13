@@ -82,20 +82,35 @@ void AAnomaly_Object_Door::BeginPlay()
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub && Sub->Floor != STARTFLOOR)
+		if (Sub)
 		{
-			Component_Interact->Deactivate();
-
-			if (Object)
+			if (Sub->Floor == STARTFLOOR)
 			{
-				Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-				Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore); 
+				Component_Interact->Deactivate();
+				if (Object)
+				{
+					Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+					Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+				}
 			}
-
-			if (Mesh_Handle)
+			else
 			{
-				Mesh_Handle->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-				Mesh_Handle->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+				Component_Interact->Activate();
+				bIsDoorOpened = false; 
+
+				if (Object)
+				{
+					Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+					Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+				}
+
+				FVector InitialLocation = DoorInitialTransform.GetLocation();
+				FRotator InitialRotation = DoorInitialTransform.Rotator();
+
+				GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
+
+				if (Timeline_Open) Timeline_Open->Stop();
+				if (AC_DoorMove) AC_DoorMove->Stop();
 			}
 		}
 	}
