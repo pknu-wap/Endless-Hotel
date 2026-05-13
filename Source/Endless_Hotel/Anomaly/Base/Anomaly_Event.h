@@ -129,13 +129,14 @@ public:
 
 protected:
 	template<typename ObjectType>
-	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None })
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None }, bool bIsOrdered = false)
 	{
-		AnomalyActions.Add([SelectedFunc, Interactions](AAnomaly_Object_Base* Obj)
+		AnomalyActions.Add([SelectedFunc, Interactions, bIsOrdered](AAnomaly_Object_Base* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
 					TargetObj->CorrectInteractTypes = Interactions;
+					TargetObj->bIsOrderedInteractTypes = bIsOrdered;
 					(TargetObj->*SelectedFunc)();
 				}
 			});

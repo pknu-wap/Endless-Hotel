@@ -32,14 +32,32 @@ void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-
-    if (CorrectInteractTypes.Contains(Info.InteractType))
+    if (bIsOrderedInteractTypes)
     {
-        bSolved = !bSolved;
+        if (CorrectInteractTypes[0] == Info.InteractType)
+        {
+            CorrectInteractTypes.Remove(Info.InteractType);
+            if (CorrectInteractTypes.Num() == 0)
+            {
+                bSolved = !bSolved;
+            }
+            Component_Interact->bIsInteracted = false;
+        }
+        else
+        {
+            bSolved = false;
+        }
     }
     else
     {
-        bSolved = false;
+        if (CorrectInteractTypes.Contains(Info.InteractType))
+        {
+            bSolved = !bSolved;
+        }
+        else
+        {
+            bSolved = false;
+        }
     }
 
     switch (Info.InteractType)
