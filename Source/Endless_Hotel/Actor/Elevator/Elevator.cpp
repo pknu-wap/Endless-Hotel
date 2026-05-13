@@ -276,7 +276,7 @@ void AElevator::StartElevator()
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if (Sub->IsTargetElevator(this) && Sub->Floor < 9)
+    if (Sub->IsTargetElevator(this) && Sub->Floor < STARTFLOOR)
     {
         Exterior_Structure->SetRelativeLocation(StartPos);
         bIsPlayerAlreadyInside = true;
