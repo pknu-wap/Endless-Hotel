@@ -84,34 +84,9 @@ void AAnomaly_Object_Door::BeginPlay()
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 		if (Sub)
 		{
-			if (Sub->Floor == STARTFLOOR)
-			{
-				Component_Interact->Deactivate();
-				if (Object)
-				{
-					Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-					Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-				}
-			}
-			else
-			{
-				Component_Interact->Activate();
-				bIsDoorOpened = false; 
+			Sub->FloorChange.AddDynamic(this, &AAnomaly_Object_Door::UpdateDoorByFloor);
 
-				if (Object)
-				{
-					Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-					Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-				}
-
-				FVector InitialLocation = DoorInitialTransform.GetLocation();
-				FRotator InitialRotation = DoorInitialTransform.Rotator();
-
-				GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
-
-				if (Timeline_Open) Timeline_Open->Stop();
-				if (AC_DoorMove) AC_DoorMove->Stop();
-			}
+			UpdateDoorByFloor();
 		}
 	}
 }
@@ -302,6 +277,34 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 		break;
 	}
 	
+}
+
+void AAnomaly_Object_Door::UpdateDoorByFloor()
+{
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (!Sub || DoorIndex != 8) return;
+
+	if (Sub->Floor == STARTFLOOR) 
+	{
+		Component_Interact->Deactivate();
+	}
+	else 
+	{
+		Component_Interact->Activate();
+		bIsDoorOpened = false;
+
+		if (Object)
+		{
+			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+			Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+
+			FVector InitialLocation = DoorInitialTransform.GetLocation();
+			FRotator InitialRotation = DoorInitialTransform.Rotator();
+			GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
+		}
+
+		if (Timeline_Open) Timeline_Open->Stop();
+	}
 }
 
 #pragma endregion

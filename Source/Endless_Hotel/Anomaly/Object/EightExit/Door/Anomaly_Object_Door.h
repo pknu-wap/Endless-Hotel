@@ -168,6 +168,10 @@ protected:
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
+protected:
+	UFUNCTION()
+	void UpdateDoorByFloor();	
+
 #pragma endregion
 
 #pragma region FirstDoorOpen
