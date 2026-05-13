@@ -200,7 +200,10 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
     GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            MoveDoors(true);
+            if(bIsPlayerAlreadyInside)
+            {
+                MoveDoors(true);
+            }
         }), ElevatorMoveDuration + 0.1f, false);
 
     if (!bIsStart)
@@ -249,6 +252,7 @@ void AElevator::NotifySubsystem()
 {
     auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     auto* PC = Player->GetController();
+    bIsPlayerAlreadyInside = false;
 
     FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
     FVector WorldLocation = Player->GetActorLocation();
@@ -278,6 +282,7 @@ void AElevator::StartElevator()
         bIsPlayerAlreadyInside = true;
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
+        InsideTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         
         FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
         FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
@@ -288,11 +293,22 @@ void AElevator::StartElevator()
         Player->SetActorRotation(SavedRotation);
         PC->SetControlRotation(SavedRotation);
         MoveElevator(StartPos, MapPos, true);
+        FTimerHandle ReEnableHandle;
+        GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+            {
+                InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+            }), 0.5f, false);
     }
     else
     {
+        InsideTrigger->SetBoxExtent(FVector(120.f, 20.0f, 120.0f));
         this->Exterior_Structure->SetRelativeLocation(MapPos);
         bIsPlayerAlreadyInside = false;
+        LeftDoor->SetRelativeLocation(LeftDoorClosed);
+        RightDoor->SetRelativeLocation(RightDoorClosed);
+        bIsDoorOpened = false;
+        bIsDoorMoving = false;
+        ElevatorLight->SetIntensity(LightOffIntensity);
     }
 }
 
