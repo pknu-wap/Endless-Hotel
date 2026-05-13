@@ -112,6 +112,7 @@ void AElevator_Button::OnMoveCompleted()
 
             EHPC->OnEVButtonPressCompleted();
             EHPC->SetIgnoreLookInput(false);
+            EHPC->SetPlayerInputAble(true);
 
         }), 2.0f, false);
 }

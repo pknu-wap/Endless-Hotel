@@ -218,24 +218,10 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
 #pragma endregion
 
-#pragma region Player
-
-void AElevator::SetPlayerInputEnabled(bool bEnable)
-{
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-
-    PC->OnCrouchCompleted();
-    PC->SetPlayerInputAble(bEnable);
-}
-
-#pragma endregion
-
 #pragma region Button
 
 void AElevator::OnButtonClicked()
 {
-    SetPlayerInputEnabled(true);
     ElevatorLight->SetIntensity(LightOnIntensity);
     MoveDoors(true);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -289,6 +275,7 @@ void AElevator::StartElevator()
         SavedRotation -= Sub->GetElevatorOffset() - this->GetActorRotation();
         FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
         FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
+        Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
         Player->SetActorRotation(SavedRotation);
         PC->SetControlRotation(SavedRotation);

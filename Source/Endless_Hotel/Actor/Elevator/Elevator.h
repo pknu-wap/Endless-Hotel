@@ -150,9 +150,6 @@ private:
 
 #pragma region Player
 
-protected:
-    void SetPlayerInputEnabled(bool bEnable);
-
 private:
     bool bIsPlayerAlreadyInside = true;
 
