@@ -2,3 +2,18 @@
 
 #include "Anomaly/Neapolitan/Wind-up/Anomaly_Windup.h"
 
+#pragma region Activity
+
+void AAnomaly_Windup::SetAnomalyState()
+{
+	Super::SetAnomalyState();
+
+	switch (AnomalyName)
+	{
+	case EAnomalyID::Windup:
+		ScheduleAnomaly(20);
+		break;
+	}
+}
+
+#pragma endregion

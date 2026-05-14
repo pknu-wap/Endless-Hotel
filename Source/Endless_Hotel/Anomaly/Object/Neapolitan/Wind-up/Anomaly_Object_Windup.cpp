@@ -12,9 +12,6 @@ AAnomaly_Object_Windup::AAnomaly_Object_Windup(const FObjectInitializer& ObjectI
 {
 	AC_Windup = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Windup"));
 	AC_Windup->SetupAttachment(RootComponent);
-
-	AC_Wrong = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Wrong"));
-	AC_Wrong->SetupAttachment(RootComponent);
 }
 
 void AAnomaly_Object_Windup::BeginPlay()
@@ -22,14 +19,31 @@ void AAnomaly_Object_Windup::BeginPlay()
 	Super::BeginPlay();
 
 	AC_Windup->SetSound(Sound_Windup);
-	WindupPlay();
-
-	AC_Wrong->SetSound(Sound_Wrong);
+	StartWindupLoop();
 }
 
 #pragma endregion
 
 #pragma region Sound
+void AAnomaly_Object_Windup::StartWindupLoop()
+{
+	CurrentWindupPlayCount = 0;
+
+	WindupLoopTick();
+
+	GetWorld()->GetTimerManager().SetTimer(WindupPlayHandle, this, &AAnomaly_Object_Windup::WindupLoopTick, WindupPlayInterval, true);
+}
+
+void AAnomaly_Object_Windup::WindupLoopTick()
+{
+	if (CurrentWindupPlayCount >= MaxWindupPlayCount)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
+		return;
+	}
+	WindupPlay();
+	CurrentWindupPlayCount++;
+}
 
 void AAnomaly_Object_Windup::WindupPlay()
 {
@@ -38,12 +52,36 @@ void AAnomaly_Object_Windup::WindupPlay()
 
 void AAnomaly_Object_Windup::StopWindup()
 {
+	GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
 	AC_Windup->Stop();
 }
 
-void AAnomaly_Object_Windup::WrongPlay()
+void AAnomaly_Object_Windup::StartWrongLoop()
 {
-	AC_Wrong->Play();
+	GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
+	AC_Windup->Stop();
+
+	CurrentWrongPlayCount = 0;
+
+	WrongLoopTick();
+
+	GetWorld()->GetTimerManager().SetTimer(WrongPlayHandle, this, &AAnomaly_Object_Windup::WrongLoopTick, WrongPlayInterval, true);
+}
+
+void AAnomaly_Object_Windup::WrongLoopTick()
+{
+	if (CurrentWrongPlayCount >= WrongPlayCount)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WrongPlayHandle);
+		
+		SetupBurnTargets();
+		StartBurning(BurnDuration);
+
+		return;
+	}
+	
+	WindupPlay();
+	CurrentWrongPlayCount++;
 }
 
 #pragma endregion
@@ -66,10 +104,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 
 			else if(Info.InteractType == EInteractType::Burn)
 			{
-				SetupBurnTargets();
-				StartBurning(BurnDuration);
-
-				WrongPlay();
+				StartWrongLoop();
 
 				CurrentInteractStep = EWindupInteractStep::Finished;
 			}

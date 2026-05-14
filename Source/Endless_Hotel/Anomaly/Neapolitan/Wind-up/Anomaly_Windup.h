@@ -10,5 +10,12 @@ UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Windup : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
-	
+
+#pragma region Activity
+
+public:
+	virtual void SetAnomalyState() override;
+
+#pragma endregion
+
 };

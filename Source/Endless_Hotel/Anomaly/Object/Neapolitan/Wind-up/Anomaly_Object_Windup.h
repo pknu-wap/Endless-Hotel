@@ -27,21 +27,43 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> AC_Windup;
 
-	UPROPERTY()
-	TObjectPtr<UAudioComponent> AC_Wrong;
-
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<USoundWave> Sound_Windup;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<USoundWave> Sound_Wrong;
+	int32 MaxWindupPlayCount = 5;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	float WindupPlayInterval = 4.0f;
+
+	int32 CurrentWindupPlayCount = 0;
+
+	FTimerHandle WindupPlayHandle;
+	
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	int32 WrongPlayCount = 5;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	float WrongPlayInterval = 1.0f;
+
+	int32 CurrentWrongPlayCount = 0;
+
+	FTimerHandle WrongPlayHandle;
 
 protected:
 	void WindupPlay();
 
 	void StopWindup();
 
-	void WrongPlay();
+	void StartWindupLoop();
+
+	void WindupLoopTick();
+
+	void StartWrongLoop();
+	
+	void WrongLoopTick();
+
+	void FinishWrongLoop();
 
 #pragma endregion
 
@@ -58,7 +80,6 @@ protected:
 		Finished
 	};
 
-	UPROPERTY()
 	EWindupInteractStep CurrentInteractStep = EWindupInteractStep::NeedStopSound;
 
 #pragma endregion
