@@ -99,6 +99,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 			if (Info.InteractType == EInteractType::TurnOff)
 			{
 				StopWindup();
+
 				CurrentInteractStep = EWindupInteractStep::NeedBurn;
 			}
 
@@ -122,9 +123,6 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 			}
 			break;
 		}
-		
-		case EWindupInteractStep::Finished:
-			break;
 	}
 }
 
