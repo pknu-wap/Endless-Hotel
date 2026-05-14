@@ -1,0 +1,14 @@
+// Copyright by 2026-1 WAP Game 2 team
+
+#pragma once
+
+#include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Windup.generated.h>
+
+UCLASS()
+class ENDLESS_HOTEL_API AAnomaly_Windup : public AAnomaly_Event_Neapolitan
+{
+	GENERATED_BODY()
+	
+};
