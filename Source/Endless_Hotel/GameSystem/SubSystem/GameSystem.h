@@ -156,9 +156,11 @@ public:
 public:
 	void RegisterElevator(class AElevator* Elevator);
 	void SetTargetElevator();
-	void SetPlayerinElevatorTransform(const FTransform& PlayerTransform) { RelativePlayerTransform = PlayerTransform; };
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
+	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
+
+	float GetPlayerVelocity() { return PlayerVelocity; }
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }
 	FRotator GetElevatorOffset() { return ElevatorOffset; }
@@ -172,6 +174,7 @@ private:
 	FTransform RelativePlayerTransform;
 	TMap<FName, TWeakObjectPtr<class AElevator>> Elevators;
 	TWeakObjectPtr<class AElevator> TargetElevator = nullptr;
+	float PlayerVelocity;
 
 #pragma endregion
 

@@ -125,6 +125,9 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Movement|Door")
     float DoorDuration = 1.0f;
 
+    UPROPERTY(EditAnywhere, Category = "Movement|Door")
+    float DoorDelay = 2.0f;
+
     UPROPERTY(EditAnywhere, Category = "Movement|Door|Closed")
     FVector LeftDoorClosed;
 
@@ -202,4 +205,14 @@ public:
 
 #pragma endregion
 
+#pragma region Trigger
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
+    FVector InsideTriggerActiveExtent = FVector(120.f, 20.f, 120.f);
+
+    UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
+    FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);
+
+#pragma endregion
 };
