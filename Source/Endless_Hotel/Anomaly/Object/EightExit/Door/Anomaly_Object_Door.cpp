@@ -3,6 +3,7 @@
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Component/Interact/InteractComponent.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
@@ -79,6 +80,24 @@ void AAnomaly_Object_Door::BeginPlay()
 		FOnTimelineEvent CloseFinished;
 		CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
+
+		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+		if (Sub && Sub->Floor != 9)
+		{
+			Component_Interact->Deactivate();
+
+			if (Object)
+			{
+				Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+				Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore); 
+			}
+
+			if (Mesh_Handle)
+			{
+				Mesh_Handle->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+				Mesh_Handle->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+			}
+		}
 	}
 }
 
@@ -252,9 +271,23 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::DoorOpen:
-		MoveToHandlePlayer();
-		PlayHandleTwistSound();
-		break;
+
+		if (Info.InteractType == EInteractType::DoorOpen)
+		{
+			UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+			if (!Sub) return;
+
+			if (DoorIndex == 8)
+			{
+				if (Sub->Floor != 9)
+				{
+					return;
+				}
+			}
+			MoveToHandlePlayer();
+			PlayHandleTwistSound();
+			break;
+		}
 	}
 }
 
@@ -274,6 +307,7 @@ void AAnomaly_Object_Door::MoveToHandlePlayer()
 	FTransform WorldTarget = TargetPlayerTransform;
 
 	FVector TargetLocation = WorldTarget.GetLocation();
+	TargetLocation.X -= 30.0f;
 	FRotator TargetRotation = WorldTarget.Rotator();
 
 	TargetLocation.Z = Player->GetActorLocation().Z;
@@ -316,6 +350,7 @@ void AAnomaly_Object_Door::OnPushMoveStarted()
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
 
 	FVector TargetLocation = PushPlayerTransform.GetLocation();
+	TargetLocation.X -= 30.0f;
 	FRotator TargetRotation = PushPlayerTransform.Rotator();
 	EHPC->SetControlRotation(TargetRotation);
 
@@ -348,7 +383,9 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 	FTimerHandle DoorPushHandle;
 	GetWorld()->GetTimerManager().SetTimer(DoorPushHandle, FTimerDelegate::CreateWeakLambda(this, [this, EHPC, Player]()
 		{
-			Player->SetActorLocation(PushPlayerTransform.GetLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+			FVector TargetLocation = PushPlayerTransform.GetLocation() + FVector(-30.0f, 0.0f, 0.0f);
+
+			Player->SetActorLocation(TargetLocation, false, nullptr, ETeleportType::TeleportPhysics);
 
 			EHPC->OnPushDoorCompleted();
 			EHPC->SetIgnoreLookInput(false);

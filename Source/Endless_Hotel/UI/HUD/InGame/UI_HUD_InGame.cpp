@@ -23,7 +23,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 
-	AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
+	//AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::ShowCrosshair);
 }
 
 void UUI_HUD_InGame::NativeConstruct()

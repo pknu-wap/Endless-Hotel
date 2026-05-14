@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnyWhere)
 	TArray<EInteractType> CorrectInteractTypes;
 
+	UPROPERTY(EditAnywhere)
+	bool bIsOrderedInteractTypes = false;
+
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
@@ -74,6 +77,14 @@ public:
 	FTransform OriginalTransform;
 	FTransform StartTransform;
 	FTimerHandle RestoreHandle;
+
+#pragma endregion
+
+#pragma region Spawn
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	bool bIsDynamicallySpawned = false;
 
 #pragma endregion
 
