@@ -89,8 +89,15 @@ void AAnomaly_Event::DisableAnomaly()
 {
 	for (auto Object : LinkedObjects)
 	{
-		if(Cast<AAnomaly_Object_Base>(Object)->bIsDynamicallySpawned)
-		Object->Destroy();
+		auto BaseObj = Cast<AAnomaly_Object_Base>(Object);
+
+		if (BaseObj && BaseObj->IsValidLowLevel())
+		{
+			if (BaseObj->bIsDynamicallySpawned)
+			{
+				Object->Destroy();
+			}
+		}
 	}
 	this->LinkedObjects.Empty();
 	this->Destroy();

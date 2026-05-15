@@ -38,10 +38,27 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
 
+	bIsDynamicallySpawned = false;
+
 	TextureParameterName = FName("Diffuse Texture");
 }
 
 #pragma endregion
+
+void AAnomaly_Object_Painting::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (Object)
+	{
+		DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(1);
+
+		if (DynamicMaterial && NormalTexture)
+		{
+			DynamicMaterial->SetTextureParameterValue(TextureParameterName, NormalTexture);
+		}
+	}
+}
 
 #pragma region EyeMove
 
