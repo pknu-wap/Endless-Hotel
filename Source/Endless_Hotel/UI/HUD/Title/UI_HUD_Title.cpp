@@ -44,13 +44,13 @@ void UUI_HUD_Title::Click_Start()
 void UUI_HUD_Title::Click_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Setting);
+	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 
 void UUI_HUD_Title::Click_Quit()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_QuitCheck);
+	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 
 #pragma endregion

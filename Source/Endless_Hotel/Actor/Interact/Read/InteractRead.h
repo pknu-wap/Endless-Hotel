@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/UI/Type_UI.h"
 #include "Actor/Interact/InteractBase.h"
 #include <CoreMinimal.h>
 #include <InteractRead.generated.h>
@@ -29,7 +30,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Widget")
-	TSubclassOf<class UUI_Base> UI_Read_Class;
+	EWidgetType WidgetType = EWidgetType::None;
 
 #pragma endregion
 

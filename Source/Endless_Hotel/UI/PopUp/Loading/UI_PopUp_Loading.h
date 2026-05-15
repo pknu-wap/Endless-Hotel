@@ -27,9 +27,6 @@ protected:
 
 #pragma region Loading
 
-public:
-	bool IsLoadingComplete();
-
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Slider_Loading> Slider_Loading;

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <GameFramework/GameModeBase.h>
 #include <EHGameMode.generated.h>
@@ -18,6 +19,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Widget
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	EWidgetType WidgetType;
 
 #pragma endregion
 

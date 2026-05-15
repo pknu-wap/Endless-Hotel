@@ -40,11 +40,15 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
+	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->OnLevelOpened.RemoveAll(this);
+	GameInstance->OnLevelOpened.AddDynamic(this, &ThisClass::OpenedLevel);
+
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
 	{
 		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
-		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+		auto* DataC = GameInstance->GetSubsystem<UDataController>();
 
 		DataC->ClearedAnomalySet.Reset();
 		for (uint8 ID : LoadedHistory)
@@ -55,6 +59,16 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	InitializePool();
 }
+#pragma endregion
+
+#pragma region Level
+
+void UGameSystem::OpenedLevel(const ELevelType& LevelType)
+{
+	SetVerdictMode();
+	ApplyVerdict();
+}
+
 #pragma endregion
 
 #pragma region Verdict

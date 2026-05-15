@@ -24,19 +24,19 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 void UUI_PopUp_Escape::Click_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Setting);
+	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 
 void UUI_PopUp_Escape::Click_MainMenu()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_MainMenuCheck);
+	UICon->OpenWidget(EWidgetType::PopUp_MainMenuCheck);
 }
 
 void UUI_PopUp_Escape::Click_Quit()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_QuitCheck);
+	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 
 #pragma endregion

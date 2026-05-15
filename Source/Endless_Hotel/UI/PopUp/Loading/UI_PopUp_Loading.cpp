@@ -11,20 +11,14 @@ void UUI_PopUp_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenLevel();
+	if (Slider_Loading->IsLoadingComplete())
+	{
+		auto* GameInstance = GetGameInstance<UEHGameInstance>();
+		GameInstance->OpenLevel();
 
-	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
-	UICon->CloseWidget();
-}
-
-#pragma endregion
-
-#pragma region Loading
-
-bool UUI_PopUp_Loading::IsLoadingComplete()
-{
-	return Slider_Loading->IsLoadingComplete();
+		auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+		UICon->CloseWidget();
+	}
 }
 
 #pragma endregion

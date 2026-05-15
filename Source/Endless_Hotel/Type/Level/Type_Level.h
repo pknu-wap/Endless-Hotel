@@ -8,7 +8,6 @@ UENUM(BlueprintType)
 enum class ELevelType : uint8
 {
 	None		UMETA(DisplayName = "None"),
-	Persistent	UMETA(DisplayName = "Persistent"),
 	MainMenu	UMETA(DisplayName = "MainMenu"),
 	Hotel		UMETA(DisplayName = "Hotel")
 };

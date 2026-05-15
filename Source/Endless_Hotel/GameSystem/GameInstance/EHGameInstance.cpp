@@ -1,10 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "GameSystem/SubSystem/GameSystem.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Asset/Manager/EHAssetManager.h"
-#include "Asset/DataAsset/Map/PDA_Map.h"
+#include "Asset/DataAsset/Level/PDA_Level.h"
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Game
@@ -20,17 +19,15 @@ void UEHGameInstance::QuitGame()
 
 void UEHGameInstance::LoadMapDataAsset(const FName& BundleName)
 {
-	FPrimaryAssetId DataID = DA_Map->GetPrimaryAssetId();
-
-	if (IsValid(DA_Map) && DA_Map_Handles[BundleName]->HasLoadCompleted())
-	{
-		return;
-	}
-
-	DA_Map_Handles.Remove(BundleName);
+	FPrimaryAssetId DataAssetID = PDA_Map->GetPrimaryAssetId();
 
 	auto& AssetManager = UEHAssetManager::Get();
-	DA_Map_Handles.Add(BundleName, AssetManager.LoadPrimaryAsset(DataID, { BundleName }));
+	AssetManager.LoadPrimaryAsset(DataAssetID, {BundleName}, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedLevelDataAsset, DataAssetID));
+}
+
+void UEHGameInstance::OnLoadedLevelDataAsset(FPrimaryAssetId DataAssetID)
+{
+	
 }
 
 #pragma endregion
@@ -41,44 +38,28 @@ void UEHGameInstance::LoadLevel(const ELevelType& LevelType)
 {
 	CurrentLevelType = LevelType;
 
-	LoadMapDataAsset(FName("Level"));
-
 	auto* UICon = GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Loading_Class);
+	UICon->OpenWidget(EWidgetType::PopUp_Loading);
 
 	OnLevelLoaded.Broadcast();
 }
 
 void UEHGameInstance::OpenLevel()
 {
-	UWorld* World = GetWorld();
 	TSoftObjectPtr<UWorld> TargetWorld = nullptr;
-
-	auto* UICon = GetSubsystem<UUI_Controller>();
 
 	switch (CurrentLevelType)
 	{
 	case ELevelType::Hotel:
-		TargetWorld = DA_Map->Level_MainMenu;
-		UICon->OpenWidget(UI_HUD_InGame_Class);
-		CameraManager->PossessCamera(UGameplayStatics::GetPlayerCharacter(World, 0));
+		TargetWorld = PDA_Map->Level_Hotel;
 		break;
 
 	case ELevelType::MainMenu:
-		TargetWorld = DA_Map->Level_Hotel;
-		UICon->OpenWidget(UI_HUD_Title_Class);
-		CameraManager->PossessCamera(ECameraType::Title);
+		TargetWorld = PDA_Map->Level_MainMenu;
 		break;
 	}
 
-	UGameplayStatics::OpenLevelBySoftObjectPtr(World, TargetWorld);
-
-	auto* GameSystem = GetSubsystem<UGameSystem>();
-	GameSystem->SetVerdictMode();
-	GameSystem->ApplyVerdict();
-
-	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	Player->SetActorTransform(DefaultTransform);
+	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), TargetWorld);
 
 	OnLevelOpened.Broadcast(CurrentLevelType);
 }

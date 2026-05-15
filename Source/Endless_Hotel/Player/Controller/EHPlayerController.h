@@ -130,10 +130,6 @@ protected:
 #pragma region Widget
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<class UUI_Base> UI_Escape;
-
-protected:
 	void EscapeStarted(const struct FInputActionValue& InputValue);
 
 #pragma endregion

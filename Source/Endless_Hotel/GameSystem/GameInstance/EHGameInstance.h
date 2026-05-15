@@ -25,12 +25,12 @@ public:
 private:
 	void LoadMapDataAsset(const FName& BundleName);
 
-protected:
-	UPROPERTY(EditAnyWhere, Category = "Data|Map")
-	TObjectPtr<class UPDA_Map> DA_Map;
+	UFUNCTION()
+	void OnLoadedLevelDataAsset(FPrimaryAssetId DataAssetID);
 
-private:
-	TMap<FName, TSharedPtr<struct FStreamableHandle>> DA_Map_Handles;
+protected:
+	UPROPERTY(EditAnywhere, Category = "DataAsset")
+	TObjectPtr<class UPDA_Level> PDA_Map;
 
 #pragma endregion
 
@@ -44,35 +44,13 @@ public:
 	void SwitchDataLayer();
 
 public:
-	ELevelType CurrentLevelType = ELevelType::Persistent;
+	ELevelType CurrentLevelType = ELevelType::MainMenu;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelLoaded);
 	FOnLevelLoaded OnLevelLoaded;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, ELevelType);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, const ELevelType&, LevelType);
 	FOnLevelOpened OnLevelOpened;
-
-#pragma endregion
-
-#pragma region Player
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FTransform DefaultTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 1100, 680), FVector(0.75f, 0.75f, 0.75f));
-
-#pragma endregion
-
-#pragma region Widget
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
-	TSubclassOf<class UUI_Base> UI_HUD_InGame_Class;
-
-	UPROPERTY(EditAnywhere, Category = "Widget|HUD")
-	TSubclassOf<class UUI_Base> UI_HUD_Title_Class;
-
-	UPROPERTY(EditAnywhere, Category = "Widget|PopUp")
-	TSubclassOf<class UUI_Base> UI_Loading_Class;
 
 #pragma endregion
 

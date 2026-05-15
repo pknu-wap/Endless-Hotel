@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Level/Type_Level.h"
 #include "Type/Camera/Type_Camera.h"
 #include <CoreMinimal.h>
 #include <Camera/PlayerCameraManager.h>
@@ -14,19 +15,50 @@ class ENDLESS_HOTEL_API AEHPlayerCameraManager : public APlayerCameraManager
 	
 #pragma region Base
 
+public:
+	AEHPlayerCameraManager(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
 
 #pragma endregion
 
-#pragma region Reference
+#pragma region Data
 
 private:
-	void SetReference();
+	void LoadCameraDataAsset();
+
+	UFUNCTION()
+	void OnLoadedCameraDataAsset(FPrimaryAssetId DataAssetID);
+
+#pragma endregion
+
+#pragma region Post Processing
+
+private:
+	void FindPPV();
 
 private:
 	UPROPERTY()
-	TWeakObjectPtr<class AEHPlayerController> PC;
+	TWeakObjectPtr<APostProcessVolume> PPV_EyeEffect;
+
+	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
+
+#pragma endregion
+
+#pragma region Eye
+
+public:
+	void StartEyeEffect(bool bIsOpen);
+
+private:
+	UFUNCTION()
+	void OnValueChangedEyeEffect(float Value);
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Eye;
 
 #pragma endregion
 

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI_Widget.h"
+#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <Blueprint/UserWidget.h>
 #include <UI_Base.generated.h>
@@ -16,10 +16,10 @@ class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Type")
-	EWidgetType WidgetType;
+	EWidgetLayer WidgetLayer = EWidgetLayer::None;
 
 	UPROPERTY(EditAnywhere, Category = "Type")
-	EInputModeType InputModeType;
+	EWidgetInputMode WidgetInputMode = EWidgetInputMode::None;
 
 #pragma endregion
 

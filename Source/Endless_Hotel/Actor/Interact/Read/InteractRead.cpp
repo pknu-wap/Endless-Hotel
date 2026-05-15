@@ -51,7 +51,7 @@ void AInteractRead::PossessCamera(bool bIsReading)
 	GetWorld()->GetTimerManager().SetTimer(WidgetHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-			auto* UI_Read = Cast<UUI_PopUp_Read>(UICon->OpenWidget(UI_Read_Class));
+			auto* UI_Read = Cast<UUI_PopUp_Read>(UICon->OpenWidget(WidgetType));
 			UI_Read->SetTarget(this);
 		}), Duration, false);
 }

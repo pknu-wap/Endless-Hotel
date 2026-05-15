@@ -143,7 +143,7 @@ void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart)
 void UUI_HUD_InGame::OpenDemoWidget()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Demo);
+	UICon->OpenWidget(EWidgetType::PopUp_Demo);
 }
 
 #pragma endregion
