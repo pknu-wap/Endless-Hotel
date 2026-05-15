@@ -4,10 +4,10 @@
 
 #include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Radio.generated.h>
+#include <Anomaly_Windup.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Radio : public AAnomaly_Event_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Windup : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 
