@@ -55,7 +55,7 @@ private:
 	// 현재 선택된 상호작용의 설명 텍스트 값 리턴
 	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
 
-protected:
+public:
 	// 해당 물체에 할 수 있는 상호작용 리스트 ( 에디터에서 추가 )
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
