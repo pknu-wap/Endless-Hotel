@@ -10,19 +10,6 @@
 
 #pragma region AnomalyObject
 
-void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TSubclassOf<AAnomaly_Object_Base> TargetClass)
-{
-	if (!TargetClass)
-	{
-		return;
-	}
-
-	auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(TargetClass, SpawnTransform, Params);
-	const EAnomalyID AnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
-	NewObj->ExecuteAnomalies.Add(AnomalyName);
-	NewObj->bIsDynamicallySpawned = true;
-}
-
 void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
 	if (TargetClasses.IsEmpty())
@@ -113,7 +100,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 
 	UE_LOG(LogTemp, Warning, TEXT("클래스 이름: %s"), *AnomalyClass->GetName());
 
-	// Spawn
+	// 이거 상혁이형이 한대로 수정하기
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
 	FActorSpawnParameters Params;
@@ -129,6 +116,9 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 
 	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
 	CurrentAnomaly = Spawned;
+
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+	AnomalyObjectLinker(TargetClasses);
 
 	// Start
 	CurrentAnomaly->SetAnomalyState();

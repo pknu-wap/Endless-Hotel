@@ -62,9 +62,33 @@ void UDataController::GetAnomalyEntries()
 		FAnomalyEntry Entry;
 		Entry.AnomalyID = static_cast<uint8>(PDA->ID);
 		Entry.AnomalyClass = PDA->Anomaly;
+		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
+		{
+			if (UClass* LoadedClass = SoftClassPtr.LoadSynchronous())
+			{
+				Entry.ObjectClasses.Add(LoadedClass);
+			}
+		}
 
 		OriginAnomaly.Add(Entry);
 	}
+}
+
+TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(uint8 AnomalyID)
+{
+	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
+	for (const FAnomalyEntry& Entry : OriginAnomaly)
+	{
+		if (Entry.AnomalyID == AnomalyID)
+		{
+			for (UClass* ObjClass : Entry.ObjectClasses)
+			{
+				ResultArray.Add(ObjClass);
+			}
+			break;
+		}
+	}
+	return ResultArray;
 }
 
 void UDataController::RemoveClearedAnomaly()

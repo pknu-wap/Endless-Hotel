@@ -39,9 +39,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
 	bool bIsEightExitObject = false;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	TArray<FTransform> ObjectSpawnTransform;
-
 	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
 
 #pragma endregion

@@ -15,4 +15,7 @@ struct FAnomalyEntry
 
 	UPROPERTY()
 	TSoftClassPtr<class AAnomaly_Event> AnomalyClass;
+
+	UPROPERTY()
+	TArray<UClass*> ObjectClasses;
 };
