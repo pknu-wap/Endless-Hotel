@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyRule.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
@@ -52,6 +53,14 @@ public:
 
 private:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
+#pragma endregion
+
+#pragma region Level
+
+private:
+	UFUNCTION()
+	void OpenedLevel(const ELevelType& LevelType);
 
 #pragma endregion
 

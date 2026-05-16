@@ -72,9 +72,8 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 	bIsInteracted = true;
 
-	// 나중에 이탈리아어로 말하는 것으로 대사 변경 예정 및 FText 하드 코딩 제거 예정
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->ShowSubTitle(FText::FromString(TEXT("모시 모시")), 0.1f, 2.f);
+	UICon->ShowSubTitle(CallText, 0.1f, 2.f);
 }
 
 #pragma endregion

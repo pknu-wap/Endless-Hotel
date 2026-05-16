@@ -21,7 +21,7 @@ protected:
 
 #pragma region Reference
 
-protected:
+private:
 	UPROPERTY()
 	TWeakObjectPtr<class UUI_Interact> UI_Interact;
 
@@ -48,7 +48,7 @@ public:
 	// 상호작용을 다시 할 수 있게 해주는 함수
 	void RestoreInteract() { bIsInteracted = false; }
 
-protected:
+private:
 	// 상호작용 UI를 보여주는 함수
 	void ShowDescriptionWidget(bool bIsShow);
 
@@ -60,6 +60,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
 
+private:
 	// 현재 선택된 상호작용 번호
 	int8 CurrentIndex = 0;
 
@@ -70,13 +71,13 @@ public:
 
 #pragma region Highlight
 
-protected:
+public:
 	// 상호작용 윤곽선을 보여주는 함수
 	void ShowInteractingHighlight(bool bActive);
 
-protected:
+private:
 	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
-	const FName HighlightTag = TEXT("Highlight");
+	static const FName HighlightTag;
 
 #pragma endregion
 

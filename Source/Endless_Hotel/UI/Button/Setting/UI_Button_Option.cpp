@@ -294,13 +294,13 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 void UUI_Button_Option::PopUpOption_ResetNote()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_ResetNote);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetNote);
 }
 
 void UUI_Button_Option::PopUpOption_ResetSetting()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_ResetSetting);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetSetting);
 }
 
 #pragma endregion

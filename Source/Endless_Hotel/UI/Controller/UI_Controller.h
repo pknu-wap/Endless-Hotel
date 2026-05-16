@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI_Widget.h"
+#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <UI_Controller.generated.h>
@@ -12,10 +12,24 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
+#pragma region Data
+
+private:
+	void LoadWidgetDataAsset(const EWidgetType& WidgetType);
+
+	UFUNCTION()
+	void OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType);
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UPDA_Widget> PDA_Widget;
+
+#pragma endregion
+
 #pragma region Open & Close
 
 public:
-	class UUI_Base* OpenWidget(TSubclassOf<class UUI_Base> WidgetClass);
+	class UUI_Base* OpenWidget(const EWidgetType& WidgetType);
 	void CloseWidget();
 	void ClearAllWidget();
 
@@ -32,7 +46,7 @@ private:
 #pragma region Input
 
 private:
-	void SetInputMode(const EInputModeType& InputMode);
+	void SetInputMode(const EWidgetInputMode& InputMode);
 
 #pragma endregion
 

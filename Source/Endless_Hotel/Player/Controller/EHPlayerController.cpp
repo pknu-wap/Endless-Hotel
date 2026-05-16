@@ -46,8 +46,6 @@ void AEHPlayerController::BeginPlay()
 	PlayerCameraManager->ViewPitchMin = -70.0f;
 	PlayerCameraManager->ViewPitchMax = 70.0f;
 
-	
-
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(IMC_Default, 0);
@@ -123,7 +121,7 @@ UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Escape);
+	UICon->OpenWidget(EWidgetType::PopUp_Escape);
 }
 
 #pragma endregion 
