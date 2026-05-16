@@ -130,18 +130,6 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
 	CurrentAnomaly = Spawned;
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
-
-	INT32 CurrentIndex = 0;
-
-	for (auto& SpawnObjectTransform : CurrentAnomaly->ObjectSpawnTransform)
-	{
-		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, SpawnObjectTransform, Params, TargetClasses[CurrentIndex]);
-		Index++;
-	}
-
-	AnomalyObjectLinker(TargetClasses);
-
 	// Start
 	CurrentAnomaly->SetAnomalyState();
 
