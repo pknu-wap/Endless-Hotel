@@ -27,7 +27,7 @@ UDataController::UDataController()
 void UDataController::GetAnomalyEntries()
 {
 	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadAnomalyDataAsset();
+
 	TArray<uint8> AnomalyList;
 	OriginAnomaly.Empty();
 

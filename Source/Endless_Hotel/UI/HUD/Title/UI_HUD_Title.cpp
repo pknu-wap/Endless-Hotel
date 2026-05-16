@@ -38,19 +38,19 @@ void UUI_HUD_Title::Click_Start()
 	Subsystem->Floor = 9;
 
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OpenLevel(ELevelType::Hotel, true);
+	GameInstance->LoadLevel(ELevelType::Hotel);
 }
 
 void UUI_HUD_Title::Click_Setting()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_Setting);
+	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 
 void UUI_HUD_Title::Click_Quit()
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(UI_QuitCheck);
+	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 
 #pragma endregion
@@ -105,21 +105,6 @@ void UUI_HUD_Title::SetLogoImage()
 	}
 
 	Image_Logo->SetBrushFromTexture(Texture_Clear);
-}
-
-#pragma endregion
-
-#pragma region Camera
-
-void UUI_HUD_Title::PossessCamera()
-{
-	const FName CameraTag = FName("Title_Camera");
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), CameraTag, OUT FoundActors);
-
-	auto* PC = GetWorld()->GetFirstPlayerController();
-	PC->SetViewTargetWithBlend(FoundActors[0]);
 }
 
 #pragma endregion

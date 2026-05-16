@@ -2,12 +2,23 @@
 
 #include "UI/PopUp/Loading/UI_PopUp_Loading.h"
 #include "UI/Slider/Loading/UI_Slider_Loading.h"
+#include "UI/Controller/UI_Controller.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 
-#pragma region Loading
+#pragma region Base
 
-bool UUI_PopUp_Loading::IsLoadingComplete()
+void UUI_PopUp_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
-	return Slider_Loading->IsLoadingComplete();
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (Slider_Loading->IsLoadingComplete())
+	{
+		auto* GameInstance = GetGameInstance<UEHGameInstance>();
+		GameInstance->OpenLevel();
+
+		auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+		UICon->CloseWidget();
+	}
 }
 
 #pragma endregion

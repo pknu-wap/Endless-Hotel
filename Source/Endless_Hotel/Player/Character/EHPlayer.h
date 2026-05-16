@@ -28,6 +28,15 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Start
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	FTransform StartTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 1100, 680), FVector(0.75f, 0.75f, 0.75f));
+
 #pragma endregion
 
 #pragma region Component
@@ -37,9 +46,6 @@ public:
 	class USkeletalMeshComponent* GetThirdMesh() { return Third_Mesh; }
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UEHCameraComponent> Component_Camera;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<class USpringArmComponent> SpringArm;
 

@@ -21,13 +21,15 @@ public:
 #pragma region Anomaly
 
 public:
-	void LoadAnomalyDataAsset();
 	TArray<class UPDA_Anomaly*> GetAnomalyDataAsset(const TArray<uint8>& Indexes);
-	bool IsValidIndexAnomalyDataAsset(uint8 Index) { return AnomalyDatas.IsValidIndex(Index); }
+	bool IsValidIndexAnomalyDataAsset(uint8 Index) { return DA_Anomalies.IsValidIndex(Index); }
+
+private:
+	void LoadAnomalyDataAsset();
 
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UPDA_Anomaly>> AnomalyDatas;
+	TArray<TObjectPtr<class UPDA_Anomaly>> DA_Anomalies;
 
 #pragma endregion
 

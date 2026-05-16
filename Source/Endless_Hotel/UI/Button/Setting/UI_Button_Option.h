@@ -104,13 +104,6 @@ protected:
 	void PopUpOption_ResetNote();
 	void PopUpOption_ResetSetting();
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|System")
-	TSubclassOf<class UUI_Base> UI_ResetNote;
-
-	UPROPERTY(EditAnywhere, Category = "Setting|System")
-	TSubclassOf<class UUI_Base> UI_ResetSetting;
-
 #pragma endregion
 
 };

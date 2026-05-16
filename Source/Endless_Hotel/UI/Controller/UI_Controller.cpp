@@ -1,28 +1,65 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Controller/UI_Controller.h"
-#include "UI/PopUp/UI_PopUp_Base.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Asset/Manager/EHAssetManager.h"
+#include "Asset/DataAsset/Widget/PDA_Widget.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/PlayerController.h>
 
+#pragma region Data
+
+void UUI_Controller::LoadWidgetDataAsset(const EWidgetType& WidgetType)
+{
+	if (IsValid(PDA_Widget))
+	{
+		return;
+	}
+
+	TArray<FPrimaryAssetId> DataIDs;
+
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.GetPrimaryAssetIdList(FPrimaryAssetType("Widget"), OUT DataIDs);
+
+	FPrimaryAssetId DataID = DataIDs[0];
+	AssetManager.LoadPrimaryAsset(DataID, { FName("") }, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedWidgetDataAsset, DataID, WidgetType));
+}
+
+void UUI_Controller::OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType)
+{
+	auto& AssetManager = UEHAssetManager::Get();
+	PDA_Widget = AssetManager.GetPrimaryAssetObject<UPDA_Widget>(DataAssetID);
+
+	OpenWidget(WidgetType);
+}
+
+#pragma endregion
+
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
+UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 {
-	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass);
-
-	switch (CreatedWidget->WidgetType)
+	if (!IsValid(PDA_Widget))
 	{
-	case EWidgetType::None:
+		LoadWidgetDataAsset(WidgetType);
+		return nullptr;
+	}
+
+	auto WidgetClass = PDA_Widget->GetWidgetClass(WidgetType);
+
+	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass.LoadSynchronous());
+
+	switch (CreatedWidget->WidgetLayer)
+	{
+	case EWidgetLayer::None:
 		return CreatedWidget;
 
-	case EWidgetType::HUD:
+	case EWidgetLayer::HUD:
 		ClearAllWidget();
 		break;
 
-	case EWidgetType::PopUp_Pause:
+	case EWidgetLayer::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		break;
 	}
@@ -36,7 +73,7 @@ UUI_Base* UUI_Controller::OpenWidget(TSubclassOf<UUI_Base> WidgetClass)
 	PopUpWidgets.Add(CreatedWidget);
 
 	AdjustZOrder(true);
-	SetInputMode(CreatedWidget->InputModeType);
+	SetInputMode(CreatedWidget->WidgetInputMode);
 
 	return CreatedWidget;
 }
@@ -48,13 +85,13 @@ void UUI_Controller::CloseWidget()
 		return;
 	}
 
-	switch (PopUpWidgets.Top()->WidgetType)
+	switch (PopUpWidgets.Top()->WidgetLayer)
 	{
-	case EWidgetType::None:
-	case EWidgetType::HUD:
+	case EWidgetLayer::None:
+	case EWidgetLayer::HUD:
 		return;
 
-	case EWidgetType::PopUp_Pause:
+	case EWidgetLayer::PopUp_Pause:
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		break;
 	}
@@ -67,7 +104,7 @@ void UUI_Controller::CloseWidget()
 	UUI_Base* TopWidget = PopUpWidgets.Top();
 	TopWidget->SetVisibility(ESlateVisibility::Visible);
 
-	SetInputMode(TopWidget->InputModeType);
+	SetInputMode(TopWidget->WidgetInputMode);
 }
 
 void UUI_Controller::ClearAllWidget()
@@ -85,19 +122,19 @@ void UUI_Controller::ClearAllWidget()
 
 #pragma region Input
 
-void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
+void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 
 	switch (InputMode)
 	{
-	case EInputModeType::GameOnly:
+	case EWidgetInputMode::GameOnly:
 	{
 		PC->SetInputMode(FInputModeGameOnly());
 		PC->bShowMouseCursor = false;
 		break;
 	}
-	case EInputModeType::UIOnly:
+	case EWidgetInputMode::UIOnly:
 	{
 		FInputModeUIOnly InputMode;
 		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
@@ -105,7 +142,7 @@ void UUI_Controller::SetInputMode(const EInputModeType& InputMode)
 		PC->bShowMouseCursor = true;
 		break;
 	}
-	case EInputModeType::GameAndUI:
+	case EWidgetInputMode::GameAndUI:
 	{
 		FInputModeGameAndUI InputMode;
 		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());

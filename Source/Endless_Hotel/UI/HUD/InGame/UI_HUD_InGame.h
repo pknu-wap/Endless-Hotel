@@ -79,17 +79,6 @@ protected:
 	UFUNCTION()
 	void OpenDemoWidget();
 
-protected:
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUI_Base> UI_Demo;
-
-#pragma endregion
-
-#pragma region Camera
-
-protected:
-	virtual void PossessCamera() override;
-
 #pragma endregion
 
 #pragma region SubTitle
