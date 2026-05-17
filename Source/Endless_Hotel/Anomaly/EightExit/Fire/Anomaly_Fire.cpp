@@ -4,19 +4,7 @@
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Candle.h"
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
-#include "Actor/Elevator/Elevator.h"
 #include <Kismet/GameplayStatics.h>
-
-#pragma region Base
-
-AAnomaly_Fire::AAnomaly_Fire(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	//AElevator::ElevatorDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
-}
-
-#pragma endregion
 
 #pragma region Activity
 
@@ -80,9 +68,7 @@ void AAnomaly_Fire::SpawnFires()
 		{
 			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
 
-			auto* GameInstance = GetGameInstance<UEHGameInstance>();
-
-			auto* SpawnedFire = GameInstance->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++]);
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator);
 			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
 
 			SpawnedFires.Add(SpawnedFire);

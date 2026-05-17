@@ -178,11 +178,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Camera
-
-protected:
-	void PossessCamera(bool bGearCamera);
-
-#pragma endregion
-
 };

@@ -43,6 +43,14 @@ public:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+    UFUNCTION()
+    void Reset();
+
+#pragma endregion
+
 #pragma region Interact
 
 public:

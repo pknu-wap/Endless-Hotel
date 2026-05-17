@@ -19,8 +19,17 @@ ARoomSignActor::ARoomSignActor(const FObjectInitializer& ObjectInitializer)
 void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	Sub->FloorChange.AddDynamic(this, &ThisClass::Reset);
 	SaveOriginalTransform();
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void ARoomSignActor::Reset()
+{
 	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(2);
 	FLinearColor Offset = FLinearColor::Black;
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();

@@ -2,22 +2,21 @@
 
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Player/Component/EHCameraComponent.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/CapsuleComponent.h>
-#include <Camera/CameraComponent.h>
-#include <GameFramework/SpringArmComponent.h>
 #include <Components/AudioComponent.h>
-#include <GameFramework/CharacterMovementComponent.h>
 #include <Components/PointLightComponent.h>
+#include <Camera/CameraComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
 AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Component_Camera = CreateDefaultSubobject<UEHCameraComponent>(TEXT("Component_Camera"));
-
 	Third_Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Third_Mesh"));
 	Third_Mesh->SetupAttachment(GetMesh());
 
@@ -37,8 +36,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	FlashLight->SetVisibility(false);
 	FlashLight->SetupAttachment(Camera);
 
-
-
 	DieDelegate.AddDynamic(this, &ThisClass::DiePlayer);
 
 	bUseControllerRotationYaw = true;
@@ -55,6 +52,8 @@ void AEHPlayer::BeginPlay()
 	{
 		Third_Mesh = Cast<USkeletalMeshComponent>(GetDefaultSubobjectByName(TEXT("Third")));
 	}
+
+	SetActorTransform(StartTransform);
 }
 
 #pragma endregion
@@ -105,7 +104,8 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	FTimerHandle EyeHandle;
 	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Component_Camera->StartEyeEffect(false);
+			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+			CameraManager->StartEyeEffect(false);
 		}), AnimLength, false);
 
 	FTimerHandle DeathHandle;

@@ -2,6 +2,7 @@
 
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
@@ -31,7 +32,18 @@ void AElevator_Button::BeginPlay()
 
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    Sub->FloorChange.AddDynamic(this, &ThisClass::Reset);
 }
+#pragma endregion
+
+#pragma region Reset
+
+void AElevator_Button::Reset()
+{
+    Component_Interact->bIsInteracted = false;
+}
+
 #pragma endregion
 
 #pragma region Interact
@@ -100,6 +112,7 @@ void AElevator_Button::OnMoveCompleted()
 
             EHPC->OnEVButtonPressCompleted();
             EHPC->SetIgnoreLookInput(false);
+            EHPC->SetPlayerInputAble(true);
 
         }), 2.0f, false);
 }

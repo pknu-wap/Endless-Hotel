@@ -5,6 +5,12 @@
 #include "Interface/Interact/Interactable.h"
 #include <Components/WidgetComponent.h>
 
+#pragma region Static
+
+const FName UInteractComponent::HighlightTag = TEXT("Highlight");
+
+#pragma endregion
+
 #pragma region Base
 
 void UInteractComponent::BeginPlay()

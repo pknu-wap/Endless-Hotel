@@ -2,7 +2,7 @@
 
 #include "UI/PopUp/Read/UI_PopUp_NoteBook.h"
 #include "UI/Base/NoteBook/UI_NoteBook.h"
-#include "Actor/NoteBook/NoteBook.h"
+#include "Actor/Interact/Read/NoteBook/NoteBook.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include <Components/Button.h>
 #include <Components/WidgetComponent.h>
@@ -60,7 +60,6 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 	int32 ChangeSize = bLeft ? -IndexChangeSize : IndexChangeSize;
 
 	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadAnomalyDataAsset();
 	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex + ChangeSize))
 	{
 		return;

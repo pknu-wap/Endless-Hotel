@@ -39,6 +39,9 @@ private:
 	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
 
 	UPROPERTY()
+	TWeakObjectPtr<class UInteractComponent> Comp_Interact;
+
+	UPROPERTY()
 	TWeakObjectPtr<class UUI_Tutorial> UI_Tutorial;
 
 #pragma endregion

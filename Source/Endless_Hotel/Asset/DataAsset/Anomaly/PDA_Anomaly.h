@@ -13,7 +13,7 @@ class ENDLESS_HOTEL_API UPDA_Anomaly : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId(TEXT("Anomaly"), GetFName()); }
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("Anomaly", GetFName()); }
 
 public:
 	UPROPERTY(EditAnywhere, Category = "InGame|Data")

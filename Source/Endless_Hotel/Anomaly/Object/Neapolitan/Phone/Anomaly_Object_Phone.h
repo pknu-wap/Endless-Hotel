@@ -73,6 +73,9 @@ protected:
 
 	bool bIsInteracted = false;
 
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	FText CallText;
+
 #pragma endregion
 
 };
