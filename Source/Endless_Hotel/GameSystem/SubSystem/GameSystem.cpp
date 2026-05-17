@@ -66,7 +66,6 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UGameSystem::OpenedLevel(const ELevelType& LevelType)
 {
 	SetVerdictMode();
-	ApplyVerdict();
 }
 
 #pragma endregion
@@ -84,7 +83,7 @@ bool UGameSystem::ComputeVerdict() const
 	case EAnomalyVerdictMode::Normal:
 		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
-		return false;
+		return true;
 	}
 }
 
@@ -113,7 +112,6 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
-		CurrentAnomaly = nullptr;
 		FloorChange.Broadcast();
 	}
 }

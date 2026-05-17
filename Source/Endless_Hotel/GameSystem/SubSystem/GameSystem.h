@@ -162,6 +162,8 @@ public:
 
 #pragma region Elevator
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
+
 public:
 	void RegisterElevator(class AElevator* Elevator);
 	void SetTargetElevator();
@@ -175,6 +177,10 @@ public:
 	FRotator GetElevatorOffset() { return ElevatorOffset; }
 	FTransform GetPlayerinElevatorTransform() { return RelativePlayerTransform; };
 	bool IsTargetElevator(const AElevator* Elevator);
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FAnomalySpawned OnAnomalySpawned;
 
 private:
 	FVector RelativePlayerLocation;

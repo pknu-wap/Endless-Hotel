@@ -64,6 +64,7 @@ private:
 	// 현재 선택된 상호작용 번호
 	int8 CurrentIndex = 0;
 
+public:
 	// 해당 물체를 한번이라도 상호작용 했는지 여부
 	bool bIsInteracted = false;
 

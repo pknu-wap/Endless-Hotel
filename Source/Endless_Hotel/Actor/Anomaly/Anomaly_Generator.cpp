@@ -127,6 +127,8 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyID;
 	Sub->CurrentAnomaly = CurrentAnomaly;
 	Sub->SetTargetElevator();
+	Sub->OnAnomalySpawned.Broadcast();
+
 	return CurrentAnomaly;
 }
 
@@ -152,6 +154,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 	CurrentAnomaly = Spawned;
 	Sub->CurrentAnomaly = Spawned;
 	Sub->SetTargetElevator();
+	Sub->OnAnomalySpawned.Broadcast();
 
 	return Spawned;
 }

@@ -87,11 +87,6 @@ void AAnomaly_Event::SetAnomalyState()
 
 void AAnomaly_Event::DisableAnomaly()
 {
-	for (auto Object : LinkedObjects)
-	{
-		if(Cast<AAnomaly_Object_Base>(Object)->bIsDynamicallySpawned)
-		Object->Destroy();
-	}
 	this->LinkedObjects.Empty();
 	this->Destroy();
 }
