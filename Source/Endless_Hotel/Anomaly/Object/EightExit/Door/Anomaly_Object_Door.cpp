@@ -84,7 +84,7 @@ void AAnomaly_Object_Door::BeginPlay()
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 		if (Sub)
 		{
-			Sub->FloorChange.AddDynamic(this, &AAnomaly_Object_Door::UpdateDoorByFloor);
+			Sub->FloorChange.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
 
 			UpdateDoorByFloor();
 		}
@@ -264,8 +264,7 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
-
-		if (DoorIndex == 8)
+		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
 		{
 			if (Sub->Floor != STARTFLOOR)
 			{
@@ -282,7 +281,6 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 void AAnomaly_Object_Door::UpdateDoorByFloor()
 {
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	if (!Sub || DoorIndex != 8) return;
 
 	if (Sub->Floor == STARTFLOOR) 
 	{
@@ -293,17 +291,19 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 		Component_Interact->Activate();
 		bIsDoorOpened = false;
 
-		if (Object)
+
+		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+
+		FVector InitialLocation = DoorInitialTransform.GetLocation();
+		FRotator InitialRotation = DoorInitialTransform.Rotator();
+		GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
+
+
+		if (Timeline_Open)
 		{
-			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-			Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-
-			FVector InitialLocation = DoorInitialTransform.GetLocation();
-			FRotator InitialRotation = DoorInitialTransform.Rotator();
-			GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
+			Timeline_Open->Stop();
 		}
-
-		if (Timeline_Open) Timeline_Open->Stop();
 	}
 }
 
@@ -442,7 +442,7 @@ void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* Overlapp
 	if (OtherActor == Player && bIsDoorOpened)
 	{
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub &&Sub->Floor == STARTFLOOR)
+		if (Sub->Floor == STARTFLOOR)
 		{
 			return;
 		}
