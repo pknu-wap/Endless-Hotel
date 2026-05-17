@@ -56,13 +56,13 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	class UTexture2D* NormalTexture;
+	TObjectPtr<UTexture2D> NormalTexture;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	class UTexture2D* AnomalyTexture;
+	TObjectPtr<UTexture2D> AnomalyTexture;
 
 	UPROPERTY()
-	class UMaterialInstanceDynamic* DynamicMaterial;
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
 
 	FName TextureParameterName;
 
