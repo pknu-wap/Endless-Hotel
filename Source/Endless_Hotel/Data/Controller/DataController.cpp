@@ -31,7 +31,7 @@ void UDataController::GetAnomalyEntries()
 	TArray<uint8> AnomalyList;
 	OriginAnomaly.Empty();
 
-	if (!DataTable_Anomaly) 
+	if (!DataTable_Anomaly)
 	{
 		return;
 	}
@@ -39,7 +39,7 @@ void UDataController::GetAnomalyEntries()
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
-		AnomalyList.Add(Data->AnomalyID);
+		AnomalyList.Add(static_cast<uint8>(Data->AnomalyID));
 	}
 
 	if (AnomalyList.IsEmpty())
@@ -60,7 +60,7 @@ void UDataController::GetAnomalyEntries()
 		}
 
 		FAnomalyEntry Entry;
-		Entry.AnomalyID = static_cast<uint8>(PDA->ID);
+		Entry.AnomalyID = PDA->ID;
 		Entry.AnomalyClass = PDA->Anomaly;
 		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
 		{
@@ -74,7 +74,7 @@ void UDataController::GetAnomalyEntries()
 	}
 }
 
-TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(uint8 AnomalyID)
+TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomalyID AnomalyID)
 {
 	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
 	for (const FAnomalyEntry& Entry : OriginAnomaly)

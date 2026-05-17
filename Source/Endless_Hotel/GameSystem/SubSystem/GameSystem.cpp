@@ -47,11 +47,11 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
 	{
-		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+		const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
 		auto* DataC = GameInstance->GetSubsystem<UDataController>();
 
 		DataC->ClearedAnomalySet.Reset();
-		for (uint8 ID : LoadedHistory)
+		for (const auto& ID : LoadedHistory)
 		{
 			DataC->ClearedAnomalySet.Add(ID);
 		}

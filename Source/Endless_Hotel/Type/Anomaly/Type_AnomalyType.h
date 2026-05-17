@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Anomaly/Type_AnomalyID.h"
 #include <CoreMinimal.h>
 #include <Type_AnomalyType.generated.h>
 
@@ -11,7 +12,7 @@ struct FAnomalyEntry
 	GENERATED_BODY()
 
 	UPROPERTY()
-	uint8 AnomalyID = 0;
+	EAnomalyID AnomalyID = EAnomalyID::None;
 
 	UPROPERTY()
 	TSoftClassPtr<class AAnomaly_Event> AnomalyClass;

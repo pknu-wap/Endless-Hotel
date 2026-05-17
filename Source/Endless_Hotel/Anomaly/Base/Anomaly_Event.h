@@ -50,9 +50,6 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
-	uint8 AnomalyID = -1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyID AnomalyName;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")

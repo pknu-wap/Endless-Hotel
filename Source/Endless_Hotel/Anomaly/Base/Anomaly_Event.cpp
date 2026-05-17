@@ -65,7 +65,6 @@ void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 void AAnomaly_Event::SetAnomalyState()
 {
-	AnomalyName = static_cast<EAnomalyID>(AnomalyID);
 	TargetAnomalyObjects.Empty();
 	for (auto* FoundActor : LinkedObjects)
 	{
