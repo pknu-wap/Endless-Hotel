@@ -87,7 +87,12 @@ void AAnomaly_Event::SetAnomalyState()
 
 void AAnomaly_Event::DisableAnomaly()
 {
+	for (const auto& Object : TargetAnomalyObjects)
+	{
+		Object->Reset();
+	}
 	this->LinkedObjects.Empty();
+	this->TargetAnomalyObjects.Empty();
 	this->Destroy();
 }
 

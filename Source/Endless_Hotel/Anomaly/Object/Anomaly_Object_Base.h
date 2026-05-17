@@ -20,6 +20,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	void Reset();
+
+#pragma endregion
+
 #pragma region Anomaly
 
 public:
