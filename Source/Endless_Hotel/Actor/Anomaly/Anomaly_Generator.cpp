@@ -57,16 +57,19 @@ void AAnomaly_Generator::BeginPlay()
 void AAnomaly_Generator::SpawnAnomaly()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	int32 IsNormal = FMath::RandRange(1, 10);
 
-	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
-	{
-		SpawnNormal(SpawnedLevel);
-		return;
-	}
-	
-	SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
+	CurrentAnomaly = (IsNormal > 8 || Subsystem->Floor == STARTFLOOR) ? SpawnNormal(SpawnedLevel) : SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
+
+	Subsystem->CurrentAnomaly = CurrentAnomaly;
+	Subsystem->CurrentAnomalyID = CurrentAnomaly->AnomalyName;
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
+	AnomalyObjectLinker(TargetClasses);
+	Subsystem->CurrentAnomaly->SetAnomalyState();
 	Subsystem->ActIndex++;
+	Subsystem->SetTargetElevator();
+	Subsystem->OnAnomalySpawned.Broadcast();
 }
 
 // Spawn Anomaly at Specific Index
@@ -115,21 +118,8 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 	}
 
 	Spawned->AnomalyName = DataC->ActAnomaly[Index].AnomalyID;
-	CurrentAnomaly = Spawned;
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
-	AnomalyObjectLinker(TargetClasses);
-
-	// Start
-	CurrentAnomaly->SetAnomalyState();
-
-	// EventBroadCast
-	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyName;
-	Sub->CurrentAnomaly = CurrentAnomaly;
-	Sub->SetTargetElevator();
-	Sub->OnAnomalySpawned.Broadcast();
-
-	return CurrentAnomaly;
+	return Spawned;
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
@@ -151,10 +141,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 		return nullptr;
 	}
 
-	CurrentAnomaly = Spawned;
-	Sub->CurrentAnomaly = Spawned;
-	Sub->SetTargetElevator();
-	Sub->OnAnomalySpawned.Broadcast();
+	Spawned->AnomalyName = EAnomalyID::None;
 
 	return Spawned;
 }

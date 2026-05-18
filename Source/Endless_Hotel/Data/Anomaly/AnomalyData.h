@@ -11,6 +11,6 @@ struct FAnomalyData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere)
 	EAnomalyID AnomalyID = EAnomalyID::None;
 };
