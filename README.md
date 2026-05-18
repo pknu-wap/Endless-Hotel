@@ -1,7 +1,6 @@
 # 🏨 **Endless Hotel** 🏨
 
-<img width="768" height="432" alt="스플래쉬 이미지" src="https://github.com/user-attachments/assets/dc9f079c-7d54-458c-bbc9-104f7d8886c6" />
-
+<img width="768" height="432" alt="T_Cover" src="https://github.com/user-attachments/assets/fd875cdc-dde0-4553-b624-79b9b5a0af58" />
 
 ### 📒 **스토리**
 > **1901년, 이탈리아. 한 인물이 외딴 시골 호텔에서 눈을 뜬다. 곧 호텔 곳곳에서 기묘한 이상 현상이 나타나고,**  
