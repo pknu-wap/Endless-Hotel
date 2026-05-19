@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapol
 
 public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
+	virtual void Reset() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Painting")
@@ -63,10 +64,6 @@ protected:
 
 public:
 	void BlurPaint();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "PaintingBlur")
