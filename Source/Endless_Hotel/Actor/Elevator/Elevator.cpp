@@ -171,7 +171,11 @@ void AElevator::OnButtonClicked(bool bIsOpening)
     MoveDoors(bIsOpening);
     if (!bIsOpening)
     {
-        MoveElevator(MapPos, EndPos, false);
+        FTimerHandle DoorHandle;
+        GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+            {
+                MoveElevator(MapPos, EndPos, false);
+            }), DoorDuration, false);
     }
 }
 
