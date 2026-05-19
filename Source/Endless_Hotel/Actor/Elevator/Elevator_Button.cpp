@@ -107,7 +107,7 @@ void AElevator_Button::OnMoveCompleted()
         {
             if (OnButtonPressed.IsBound())
             {
-                OnButtonPressed.Broadcast();
+                OnButtonPressed.Broadcast(bIsOpeningButton);
             }
 
             EHPC->OnEVButtonPressCompleted();

@@ -19,19 +19,9 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    UFUNCTION()
-    void OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION()
-    void OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Exterior_Structure;
-
-protected:
-    UPROPERTY(VisibleAnywhere, Category = "Frame")
-    TObjectPtr<UStaticMeshComponent> Entrance;
 
     UPROPERTY(VisibleAnywhere, Category = "Frame")
     TObjectPtr<UStaticMeshComponent> Car;
@@ -55,13 +45,7 @@ protected:
     TObjectPtr<class UPointLightComponent> ElevatorLight;
 
     UPROPERTY(VisibleAnywhere, Category = "Trigger")
-    TObjectPtr<class UBoxComponent> InsideTrigger;
-
-    UPROPERTY(VisibleAnywhere, Category = "Trigger")
     TObjectPtr<class UBoxComponent> TriggerBlockBox;
-
-    UPROPERTY(VisibleAnywhere, Category = "UI")
-    TObjectPtr<UStaticMeshComponent> StickerPannel;
 
     UPROPERTY(EditAnywhere, Category = "Teleport")
     TObjectPtr<USceneComponent> TeleportAnchor;
@@ -145,16 +129,11 @@ protected:
 
 private:
     FTimerHandle MoveHandle;
+    FVector ReferencePosition;
+    FRotator ReferenceRotation;
 
     bool bIsDoorOpened = false;
     bool bIsDoorMoving = false;
-
-#pragma endregion
-
-#pragma region Player
-
-private:
-    bool bIsPlayerAlreadyInside = false;
 
 #pragma endregion
 
@@ -162,11 +141,14 @@ private:
 
 public:
     UFUNCTION()
-    void OnButtonClicked();
+    void OnButtonClicked(bool bIsOpening);
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Button")
-    TObjectPtr<class AElevator_Button> AttachedButton;
+    TObjectPtr<class AElevator_Button> InsideButton;
+
+    UPROPERTY(EditAnywhere, Category = "Elevator|Button")
+    TObjectPtr<class AElevator_Button> EntranceButton;
 
 #pragma endregion
 
@@ -208,9 +190,6 @@ public:
 #pragma region Trigger
 
 protected:
-    UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
-    FVector InsideTriggerActiveExtent = FVector(120.f, 20.f, 120.f);
-
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
     FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);
 

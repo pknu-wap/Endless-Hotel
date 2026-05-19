@@ -6,7 +6,7 @@
 #include <CoreMinimal.h>
 #include <Elevator_Button.generated.h>
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnElevatorButtonPressed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnElevatorButtonPressed, bool, bIsOpeningDoor);
 
 UCLASS()
 class ENDLESS_HOTEL_API AElevator_Button : public AInteractBase
@@ -40,6 +40,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, Category = "Button")
     TObjectPtr<UStaticMeshComponent> Down_ButtonRing;
+
+    UPROPERTY(EditAnywhere, Category = "Button|State")
+    bool bIsOpeningButton = true;
 
 #pragma endregion
 
