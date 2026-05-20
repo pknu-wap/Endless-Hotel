@@ -112,7 +112,8 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
-		FloorChange.Broadcast();
+		FloorChange_Disable.Broadcast();
+		FloorChange_Reset.Broadcast();
 	}
 }
 
