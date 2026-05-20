@@ -131,7 +131,8 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 {
 	auto* TargetCamera = Cameras.Find(CameraType);
 
-	PossessCamera(Cast<AActor>(TargetCamera), BlendTime);
+	auto* PC = GetOwningPlayerController();
+	PC->SetViewTargetWithBlend(TargetCamera->Get(), BlendTime);
 }
 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)

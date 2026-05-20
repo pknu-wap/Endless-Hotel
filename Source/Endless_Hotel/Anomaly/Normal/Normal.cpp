@@ -8,7 +8,7 @@
 void ANormal::BeginPlay()
 {
     Super::BeginPlay();
-    UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyName);
+    UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyID);
     SetVerdictMode(EAnomalyVerdictMode::Normal); // VerdictMode Setting
 }
 
@@ -20,7 +20,7 @@ void ANormal::BeginPlay()
 void ANormal::SetAnomalyState()
 {
     // Activites
-	AnomalyName = EAnomalyID::None;
-    UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyName);
+	AnomalyID = 0;
+    UE_LOG(LogTemp, Log, TEXT("[EightExit] It's Normal"), AnomalyID);
 }
 #pragma endregion

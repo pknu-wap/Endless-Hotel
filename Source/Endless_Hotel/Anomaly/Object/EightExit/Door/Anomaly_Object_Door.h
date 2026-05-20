@@ -153,6 +153,12 @@ protected:
 #pragma endregion
 	
 #pragma region Interact
+
+public:
+	// 플레이어를 밀어낼 때 사용할 X축 보정값
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Door")
+	float PushOffsetX = 30.0f;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_HandleTwist;
@@ -161,6 +167,10 @@ protected:
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+
+protected:
+	UFUNCTION()
+	void UpdateDoorByFloor();	
 
 #pragma endregion
 

@@ -5,7 +5,6 @@
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Asset/Manager/EHAssetManager.h"
-#include "Type/Anomaly/Type_AnomalyType.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include <GameSystem/SubSystem/GameSystem.h>
 
@@ -31,7 +30,7 @@ void UDataController::GetAnomalyEntries()
 	TArray<uint8> AnomalyList;
 	OriginAnomaly.Empty();
 
-	if (!DataTable_Anomaly)
+	if (!DataTable_Anomaly) 
 	{
 		return;
 	}
@@ -39,7 +38,7 @@ void UDataController::GetAnomalyEntries()
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
-		AnomalyList.Add(static_cast<uint8>(Data->AnomalyID));
+		AnomalyList.Add(Data->AnomalyID);
 	}
 
 	if (AnomalyList.IsEmpty())
@@ -60,13 +59,13 @@ void UDataController::GetAnomalyEntries()
 		}
 
 		FAnomalyEntry Entry;
-		Entry.AnomalyID = PDA->ID;
+		Entry.AnomalyID = static_cast<uint8>(PDA->ID);
 		Entry.AnomalyClass = PDA->Anomaly;
 		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
 		{
-			if (!SoftClassPtr.IsNull())
+			if (UClass* LoadedClass = SoftClassPtr.LoadSynchronous())
 			{
-				Entry.ObjectClasses.Add(SoftClassPtr);
+				Entry.ObjectClasses.Add(LoadedClass);
 			}
 		}
 
@@ -74,19 +73,16 @@ void UDataController::GetAnomalyEntries()
 	}
 }
 
-TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomalyID AnomalyID)
+TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(uint8 AnomalyID)
 {
 	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
 	for (const FAnomalyEntry& Entry : OriginAnomaly)
 	{
 		if (Entry.AnomalyID == AnomalyID)
 		{
-			for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClass : Entry.ObjectClasses)
+			for (UClass* ObjClass : Entry.ObjectClasses)
 			{
-				if (UClass* LoadedClass = SoftClass.LoadSynchronous())
-				{
-					ResultArray.Add(LoadedClass);
-				}
+				ResultArray.Add(ObjClass);
 			}
 			break;
 		}

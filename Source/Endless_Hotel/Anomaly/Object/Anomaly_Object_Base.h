@@ -34,7 +34,7 @@ public:
 	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyID>(AnomalyID); }
 
 public:
-	EAnomalyID AnomalyID;
+	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
