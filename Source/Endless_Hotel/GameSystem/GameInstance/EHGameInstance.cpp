@@ -2,32 +2,16 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "UI/Controller/UI_Controller.h"
-#include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Level/PDA_Level.h"
 #include <Kismet/GameplayStatics.h>
+#include <WorldPartition/WorldPartitionSubsystem.h>
+#include <WorldPartition/DataLayer/DataLayerSubsystem.h>
 
 #pragma region Game
 
 void UEHGameInstance::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(this, UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
-}
-
-#pragma endregion
-
-#pragma region Data
-
-void UEHGameInstance::LoadMapDataAsset(const FName& BundleName)
-{
-	FPrimaryAssetId DataAssetID = PDA_Map->GetPrimaryAssetId();
-
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.LoadPrimaryAsset(DataAssetID, {BundleName}, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedLevelDataAsset, DataAssetID));
-}
-
-void UEHGameInstance::OnLoadedLevelDataAsset(FPrimaryAssetId DataAssetID)
-{
-	
 }
 
 #pragma endregion
@@ -66,12 +50,56 @@ void UEHGameInstance::OpenLevel()
 
 void UEHGameInstance::LoadDataLayer(const EHotelDataLayer& Layer)
 {
+	LoadLayer = Layer;
 
+	TargetDataLayer = GetDataLayerAsset(LoadLayer);
+
+	auto* DLSubsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
+	auto* DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
+	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Loaded);
 }
 
-void UEHGameInstance::SwitchDataLayer()
+bool UEHGameInstance::SwitchDataLayer()
 {
+	auto* WPSubsystem = GetWorld()->GetSubsystem<UWorldPartitionSubsystem>();
 
+	if (!WPSubsystem->IsStreamingCompleted())
+	{
+		return false;
+	}
+
+	auto* DLSubsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
+	auto* DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
+	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Activated);
+
+	TargetDataLayer = GetDataLayerAsset(UnloadLayer);
+
+	DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
+	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Unloaded);
+
+	UnloadLayer = LoadLayer;
+
+	return true;
+}
+
+UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EHotelDataLayer& Target)
+{
+	switch (Target)
+	{
+	case EHotelDataLayer::Hotel:
+		return PDA_Map->DL_Hotel.LoadSynchronous();
+
+	case EHotelDataLayer::Fire:
+		return PDA_Map->DL_Fire.LoadSynchronous();
+
+	case EHotelDataLayer::Maze:
+		return PDA_Map->DL_Maze.LoadSynchronous();
+
+	case EHotelDataLayer::Choice:
+		return PDA_Map->DL_Choice.LoadSynchronous();
+	}
+
+	return nullptr;
 }
 
 #pragma endregion
