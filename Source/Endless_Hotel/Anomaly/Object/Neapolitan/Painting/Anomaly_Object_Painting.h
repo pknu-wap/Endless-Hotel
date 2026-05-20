@@ -28,9 +28,6 @@ protected:
 
 #pragma endregion
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma region EyeMove
 
 public:
@@ -45,26 +42,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EyeRotate")
 	float Sensitivity;
-
-#pragma endregion
-
-#pragma region TextureSwap
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Painting")
-	void ActivePicture();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	TObjectPtr<UTexture2D> NormalTexture;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	TObjectPtr<UTexture2D> AnomalyTexture;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
-
-	FName TextureParameterName;
 
 #pragma endregion
 

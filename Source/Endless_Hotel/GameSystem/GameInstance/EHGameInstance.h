@@ -22,12 +22,6 @@ public:
 
 #pragma region Data
 
-private:
-	void LoadMapDataAsset(const FName& BundleName);
-
-	UFUNCTION()
-	void OnLoadedLevelDataAsset(FPrimaryAssetId DataAssetID);
-
 protected:
 	UPROPERTY(EditAnywhere, Category = "DataAsset")
 	TObjectPtr<class UPDA_Level> PDA_Map;
@@ -40,8 +34,14 @@ public:
 	void LoadLevel(const ELevelType& LevelType);
 	void OpenLevel();
 
+	// 타겟이 되는 레이어을 미리 로딩시킴
 	void LoadDataLayer(const EHotelDataLayer& Layer);
-	void SwitchDataLayer();
+
+	// 로딩된 레이어을 활성화하고, 기존 레이어를 언로드 시킴
+	bool SwitchDataLayer();
+
+private:
+	UDataLayerAsset* GetDataLayerAsset(const EHotelDataLayer& Target);
 
 public:
 	ELevelType CurrentLevelType = ELevelType::MainMenu;
@@ -51,6 +51,13 @@ public:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, const ELevelType&, LevelType);
 	FOnLevelOpened OnLevelOpened;
+
+private:
+	EHotelDataLayer LoadLayer = EHotelDataLayer::Hotel;
+	EHotelDataLayer UnloadLayer = EHotelDataLayer::Hotel;
+
+	UPROPERTY()
+	TObjectPtr<UDataLayerAsset> TargetDataLayer;
 
 #pragma endregion
 

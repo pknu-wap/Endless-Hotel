@@ -10,19 +10,6 @@
 
 #pragma region AnomalyObject
 
-void AAnomaly_Generator::SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TSubclassOf<AAnomaly_Object_Base> TargetClass)
-{
-	if (!TargetClass)
-	{
-		return;
-	}
-
-	auto* NewObj = GetWorld()->SpawnActor<AAnomaly_Object_Base>(TargetClass, SpawnTransform, Params);
-	const EAnomalyID AnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
-	NewObj->ExecuteAnomalies.Add(AnomalyName);
-	NewObj->bIsDynamicallySpawned = true;
-}
-
 void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses)
 {
 	if (TargetClasses.IsEmpty())
@@ -33,7 +20,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto ObjectPool = Sub->GetAnomalyObject();
 
-	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
+	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyName);
 
 	for (const auto& TargetClass : TargetClasses)
 	{
@@ -47,7 +34,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 				}
 				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
 				{
-					AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyID;
+					AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyName;
 					AnomalyObject->SetAnomalyName();
 					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 				}
@@ -70,16 +57,19 @@ void AAnomaly_Generator::BeginPlay()
 void AAnomaly_Generator::SpawnAnomaly()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	int32 IsNormal = FMath::RandRange(1, 10);
 
-	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
-	{
-		SpawnNormal(SpawnedLevel);
-		return;
-	}
-	
-	SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
+	CurrentAnomaly = (IsNormal > 8 || Subsystem->Floor == STARTFLOOR) ? SpawnNormal(SpawnedLevel) : SpawnAnomalyAtIndex(Subsystem->ActIndex, SpawnedLevel);
+
+	Subsystem->CurrentAnomaly = CurrentAnomaly;
+	Subsystem->CurrentAnomalyID = CurrentAnomaly->AnomalyName;
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
+	AnomalyObjectLinker(TargetClasses);
+	Subsystem->CurrentAnomaly->SetAnomalyState();
 	Subsystem->ActIndex++;
+	Subsystem->SetTargetElevator();
+	Subsystem->OnAnomalySpawned.Broadcast();
 }
 
 // Spawn Anomaly at Specific Index
@@ -113,7 +103,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 
 	UE_LOG(LogTemp, Warning, TEXT("클래스 이름: %s"), *AnomalyClass->GetName());
 
-	// Spawn
+	// 이거 상혁이형이 한대로 수정하기
 	const FTransform SpawnTransform(FVector::ZeroVector);
 
 	FActorSpawnParameters Params;
@@ -127,29 +117,9 @@ AAnomaly_Event* AAnomaly_Generator::SpawnAnomalyAtIndex(uint8 Index, ULevel* Spa
 		return nullptr;
 	}
 
-	Spawned->AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
-	CurrentAnomaly = Spawned;
+	Spawned->AnomalyName = DataC->ActAnomaly[Index].AnomalyID;
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
-
-	INT32 CurrentIndex = 0;
-
-	for (auto& SpawnObjectTransform : CurrentAnomaly->ObjectSpawnTransform)
-	{
-		SpawnAnomalyObject(CurrentAnomaly->AnomalyID, SpawnObjectTransform, Params, TargetClasses[CurrentIndex]);
-		Index++;
-	}
-
-	AnomalyObjectLinker(TargetClasses);
-
-	// Start
-	CurrentAnomaly->SetAnomalyState();
-
-	// EventBroadCast
-	Sub->CurrentAnomalyID = CurrentAnomaly->AnomalyID;
-	Sub->CurrentAnomaly = CurrentAnomaly;
-	Sub->SetTargetElevator();
-	return CurrentAnomaly;
+	return Spawned;
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
@@ -171,9 +141,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnNormal(ULevel* SpawnLevel)
 		return nullptr;
 	}
 
-	CurrentAnomaly = Spawned;
-	Sub->CurrentAnomaly = Spawned;
-	Sub->SetTargetElevator();
+	Spawned->AnomalyName = EAnomalyID::None;
 
 	return Spawned;
 }
