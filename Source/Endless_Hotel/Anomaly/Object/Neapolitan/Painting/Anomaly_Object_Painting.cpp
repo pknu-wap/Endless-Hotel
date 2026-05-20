@@ -40,6 +40,7 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 void AAnomaly_Object_Painting::Reset()
 {
 	Super::Reset();
+	Object->SetMaterial(1, OriginalMaterial);
 	Mesh_LeftEye->SetVisibleFlag(false);
 	Mesh_RightEye->SetVisibleFlag(false);
 

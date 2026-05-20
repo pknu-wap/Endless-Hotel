@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
 
+	UPROPERTY(EditAnywhere, Category = "Original")
+	TObjectPtr<class UMaterialInterface> OriginalMaterial;
+
 #pragma endregion
 
 #pragma region EyeMove

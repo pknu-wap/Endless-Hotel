@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Rug : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
+
 #pragma region Color Change
 
 public:
@@ -19,6 +26,9 @@ public:
 public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UMaterialInterface> ChangedMaterial;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UMaterialInterface> OriginalMaterial;
 
 #pragma endregion
 
