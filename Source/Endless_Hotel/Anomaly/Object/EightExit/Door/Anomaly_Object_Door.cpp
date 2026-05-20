@@ -82,11 +82,21 @@ void AAnomaly_Object_Door::BeginPlay()
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub)
+		if (Sub && Sub->Floor != 9)
 		{
-			Sub->FloorChange.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
+			Component_Interact->Deactivate();
 
-			UpdateDoorByFloor();
+			if (Object)
+			{
+				Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+				Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore); 
+			}
+
+			if (Mesh_Handle)
+			{
+				Mesh_Handle->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+				Mesh_Handle->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+			}
 		}
 	}
 }
@@ -262,47 +272,21 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	{
 	case EInteractType::DoorOpen:
 
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-
-		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
+		if (Info.InteractType == EInteractType::DoorOpen)
 		{
-			if (Sub->Floor != STARTFLOOR)
+			UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+			if (!Sub) return;
+
+			if (DoorIndex == 8)
 			{
-				return;
+				if (Sub->Floor != 9)
+				{
+					return;
+				}
 			}
-		}
-		MoveToHandlePlayer();
-		PlayHandleTwistSound();
-		break;
-	}
-	
-}
-
-void AAnomaly_Object_Door::UpdateDoorByFloor()
-{
-	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-
-	if (Sub->Floor == STARTFLOOR) 
-	{
-		Component_Interact->Deactivate();
-	}
-	else 
-	{
-		Component_Interact->Activate();
-		bIsDoorOpened = false;
-
-
-		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-
-		FVector InitialLocation = DoorInitialTransform.GetLocation();
-		FRotator InitialRotation = DoorInitialTransform.Rotator();
-		GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
-
-
-		if (Timeline_Open)
-		{
-			Timeline_Open->Stop();
+			MoveToHandlePlayer();
+			PlayHandleTwistSound();
+			break;
 		}
 	}
 }
@@ -366,7 +350,7 @@ void AAnomaly_Object_Door::OnPushMoveStarted()
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
 
 	FVector TargetLocation = PushPlayerTransform.GetLocation();
-	TargetLocation.X -= PushOffsetX; 
+	TargetLocation.X -= 30.0f;
 	FRotator TargetRotation = PushPlayerTransform.Rotator();
 	EHPC->SetControlRotation(TargetRotation);
 
@@ -441,11 +425,6 @@ void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* Overlapp
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (OtherActor == Player && bIsDoorOpened)
 	{
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub->Floor == STARTFLOOR)
-		{
-			return;
-		}
 		CloseFirstDoor();
 	}
 }

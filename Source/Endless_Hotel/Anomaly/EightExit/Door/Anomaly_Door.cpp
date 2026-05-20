@@ -2,7 +2,6 @@
 
 #include "Anomaly/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
@@ -55,12 +54,13 @@ void AAnomaly_Door::SetupDoorTrigger()
 
 	for (AActor* Found : LinkedObjects)
 	{
-		if (AAnomaly_Object_Door* Door = Cast<AAnomaly_Object_Door>(Found))
+		AAnomaly_Object_Door* Door = Cast<AAnomaly_Object_Door>(Found);
+		if (Door->DoorIndex == 8)
 		{
 			TriggerTargetDoor = Door;
 			break;
 		}
-	}
+	}	// 이 부분 필요한가? 어차피 ExecuteAnomalies 쓰면 되는 거 아닌가?
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	TriggerBox->SetBoxExtent(FVector(100.f, 100.f, 100.f));

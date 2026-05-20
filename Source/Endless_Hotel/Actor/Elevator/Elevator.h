@@ -154,7 +154,7 @@ private:
 #pragma region Player
 
 private:
-    bool bIsPlayerAlreadyInside = true;
+    bool bIsPlayerAlreadyInside = false;
 
 #pragma endregion
 
