@@ -80,7 +80,7 @@ void AElevator::BeginPlay()
     FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->OnAnomalySpawned.AddDynamic(this, &ThisClass::StartElevator);
+    Sub->FloorChange.AddDynamic(this, &ThisClass::StartElevator);
     Sub->RegisterElevator(this);
 
     UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
@@ -189,6 +189,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     Exterior_Structure->SetRelativeLocation(Start);
     Elevator_AC->Activate(true);
     Elevator_AC->Play();
+    ElevatorLight->SetIntensity(LightOnIntensity);
 
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
@@ -267,9 +268,8 @@ void AElevator::StartElevator()
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if (Sub->IsTargetElevator(this))
+    if (Sub->IsTargetElevator(this) && Sub->Floor < STARTFLOOR)
     {
-        ElevatorLight->SetIntensity(LightOnIntensity);
         Exterior_Structure->SetRelativeLocation(StartPos);
         bIsPlayerAlreadyInside = true;
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);

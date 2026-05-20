@@ -20,13 +20,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Reset
-
-public:
-	void Reset();
-
-#pragma endregion
-
 #pragma region Anomaly
 
 public:
@@ -34,7 +27,7 @@ public:
 	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyID>(AnomalyID); }
 
 public:
-	EAnomalyID AnomalyID;
+	uint8 AnomalyID;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;

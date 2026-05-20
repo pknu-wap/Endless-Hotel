@@ -47,11 +47,11 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
 	{
-		const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+		const TArray<uint8> LoadedHistory = USaveManager::LoadClearedAnomalyID();
 		auto* DataC = GameInstance->GetSubsystem<UDataController>();
 
 		DataC->ClearedAnomalySet.Reset();
-		for (const auto& ID : LoadedHistory)
+		for (uint8 ID : LoadedHistory)
 		{
 			DataC->ClearedAnomalySet.Add(ID);
 		}
@@ -66,6 +66,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UGameSystem::OpenedLevel(const ELevelType& LevelType)
 {
 	SetVerdictMode();
+	ApplyVerdict();
 }
 
 #pragma endregion
@@ -83,7 +84,7 @@ bool UGameSystem::ComputeVerdict() const
 	case EAnomalyVerdictMode::Normal:
 		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
-		return true;
+		return false;
 	}
 }
 
@@ -112,6 +113,7 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
+		CurrentAnomaly = nullptr;
 		FloorChange.Broadcast();
 	}
 }

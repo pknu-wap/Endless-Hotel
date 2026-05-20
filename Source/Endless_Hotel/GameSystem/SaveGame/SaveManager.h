@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Type/Save/Type_Save.h"
-#include "Type/Anomaly/Type_AnomalyID.h"
 #include <CoreMinimal.h>
 #include <GameFramework/SaveGame.h>
 #include <Kismet/GameplayStatics.h>
@@ -84,11 +83,11 @@ protected:
 #pragma region Anomaly
 
 public:
-	DATA_SAVE_DEFINITION(TArray<EAnomalyID>, ClearedAnomalyID);
+	DATA_SAVE_DEFINITION(TArray<uint8>, ClearedAnomalyID);
 
 protected:
 	UPROPERTY(SaveGame)
-	TArray<EAnomalyID> ClearedAnomalyID;
+	TArray<uint8> ClearedAnomalyID;
 
 #pragma endregion
 

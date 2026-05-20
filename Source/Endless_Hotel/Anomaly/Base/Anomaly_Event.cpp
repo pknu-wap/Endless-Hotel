@@ -65,6 +65,7 @@ void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 
 void AAnomaly_Event::SetAnomalyState()
 {
+	AnomalyName = static_cast<EAnomalyID>(AnomalyID);
 	TargetAnomalyObjects.Empty();
 	for (auto* FoundActor : LinkedObjects)
 	{
@@ -86,12 +87,19 @@ void AAnomaly_Event::SetAnomalyState()
 
 void AAnomaly_Event::DisableAnomaly()
 {
-	for (const auto& Object : TargetAnomalyObjects)
+	for (auto Object : LinkedObjects)
 	{
-		Object->Reset();
+		auto BaseObj = Cast<AAnomaly_Object_Base>(Object);
+
+		if (BaseObj && BaseObj->IsValidLowLevel())
+		{
+			if (BaseObj->bIsDynamicallySpawned)
+			{
+				Object->Destroy();
+			}
+		}
 	}
 	this->LinkedObjects.Empty();
-	this->TargetAnomalyObjects.Empty();
 	this->Destroy();
 }
 

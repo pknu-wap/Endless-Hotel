@@ -25,13 +25,6 @@ void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
-void AAnomaly_Object_Base::Reset()
-{
-    bSolved = true;
-    SetActorTransform(OriginalTransform);
-    Component_Interact->bIsInteracted = false;
-}
-
 #pragma endregion
 
 #pragma region Interact

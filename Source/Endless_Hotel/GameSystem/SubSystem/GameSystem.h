@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyRule.h"
-#include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
@@ -113,7 +112,7 @@ public:
 	uint8 AnomalyCount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
-	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
+	uint8 CurrentAnomalyID = -1;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
@@ -163,8 +162,6 @@ public:
 
 #pragma region Elevator
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
-
 public:
 	void RegisterElevator(class AElevator* Elevator);
 	void SetTargetElevator();
@@ -178,10 +175,6 @@ public:
 	FRotator GetElevatorOffset() { return ElevatorOffset; }
 	FTransform GetPlayerinElevatorTransform() { return RelativePlayerTransform; };
 	bool IsTargetElevator(const AElevator* Elevator);
-
-public:
-	UPROPERTY(BlueprintAssignable)
-	FAnomalySpawned OnAnomalySpawned;
 
 private:
 	FVector RelativePlayerLocation;
