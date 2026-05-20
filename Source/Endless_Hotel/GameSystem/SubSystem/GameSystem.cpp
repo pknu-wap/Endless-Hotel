@@ -237,6 +237,11 @@ void UGameSystem::SetTargetElevator()
 	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
 }
 
+TWeakObjectPtr<AElevator> UGameSystem::GetElevatorByID(FName TargetID)
+{
+	return Elevators.FindRef(TargetID);
+}
+
 bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
 {
 	return (TargetElevator == Elevator) ? true : false;
