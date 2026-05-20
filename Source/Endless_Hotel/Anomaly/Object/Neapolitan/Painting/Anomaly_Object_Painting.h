@@ -18,9 +18,6 @@ public:
 	virtual void Reset() override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Painting")
-	TObjectPtr<class USceneComponent> Root;
-
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
