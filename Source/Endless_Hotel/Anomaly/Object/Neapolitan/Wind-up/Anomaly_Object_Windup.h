@@ -11,6 +11,14 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Windup : public AAnomaly_Object_Doll
 {
 	GENERATED_BODY()
 
+protected:
+	enum class EWindupInteractStep : uint8
+	{
+		NeedStopSound,
+		NeedBurn,
+		Finished
+	};
+
 #pragma region Base
 
 public:
@@ -31,26 +39,27 @@ protected:
 	TObjectPtr<USoundWave> Sound_Windup;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	int32 MaxWindupPlayCount = 5;
+	uint8 MaxWindupPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float WindupPlayInterval = 4.0f;
 
-	int32 CurrentWindupPlayCount = 0;
+	uint8 CurrentWindupPlayCount = 0;
 
 	FTimerHandle WindupPlayHandle;
 	
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	int32 WrongPlayCount = 5;
+	int WrongPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	float WrongPlayInterval = 1.0f;
 
-	int32 CurrentWrongPlayCount = 0;
+	uint8
+		CurrentWrongPlayCount = 0;
 
 	FTimerHandle WrongPlayHandle;
 
-protected:
+public:
 	void WindupPlay();
 
 	void StopWindup();
@@ -63,22 +72,12 @@ protected:
 	
 	void WrongLoopTick();
 
-	void FinishWrongLoop();
-
 #pragma endregion
 
 #pragma region Interact
 
 public:
 	virtual void Interact_Implementation(class AEHCharacter* Interacter) override;
-
-protected:
-	enum class EWindupInteractStep : uint8
-	{
-		NeedStopSound,
-		NeedBurn,
-		Finished
-	};
 
 	EWindupInteractStep CurrentInteractStep = EWindupInteractStep::NeedStopSound;
 

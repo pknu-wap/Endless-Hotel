@@ -60,7 +60,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
 
-private:
+public:
 	// 현재 선택된 상호작용 번호
 	int8 CurrentIndex = 0;
 
