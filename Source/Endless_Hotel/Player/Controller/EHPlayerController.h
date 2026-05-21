@@ -152,6 +152,9 @@ protected:
 #pragma region State
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "State")
+	void ResetPlayerState();
+
 	bool bIsFaceCovering = false;
 	bool bIsCameraFixed = false;
 	bool bCanMove = true;
