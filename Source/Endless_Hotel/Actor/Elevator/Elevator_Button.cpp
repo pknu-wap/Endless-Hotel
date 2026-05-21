@@ -3,6 +3,7 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include <Components/ArrowComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
@@ -24,6 +25,11 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 
     Down_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_ButtonRing"));
     Down_ButtonRing->SetupAttachment(Object);
+
+    InteractAnchor = CreateDefaultSubobject<UArrowComponent>(TEXT("InteractAnchor"));
+    InteractAnchor->SetupAttachment(RootComponent); // (또는 Object에 부착)
+    InteractAnchor->ArrowColor = FColor::Green;
+    InteractAnchor->SetArrowSize(2.0f);
 }
 
 void AElevator_Button::BeginPlay()
@@ -59,24 +65,24 @@ void AElevator_Button::MoveToButtonPlayer()
     if (!Player) return;
 
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-    PC->SetPlayerInputAble(false);
-    PC->SetIgnoreLookInput(true);
+    if (PC)
+    {
+        PC->SetPlayerInputAble(false);
+        PC->SetIgnoreLookInput(true);
+    }
 
-    FVector ButtonLocation = GetActorLocation();
-    FVector ButtonForward = GetActorForwardVector();
-    FVector ButtonRight = GetActorRightVector();
+    // [핵심 변경] 에디터에서 세팅한 화살표의 월드 위치와 회전값을 그대로 가져옴
+    FVector TargetLocation = InteractAnchor->GetComponentLocation();
+    FRotator TargetRotation = InteractAnchor->GetComponentRotation();
 
-    FVector TargetLocation = ButtonLocation
-        + (ButtonForward * PlayerToElevatorDistance)
-        - (ButtonRight * PlayerToElevatorSideOffset);
-    TargetLocation.Z = Player->GetActorLocation().Z;
+    // 플레이어를 해당 위치에 강제로 박아버림 (밀어내기 버그 방지를 위해 ETeleportType::None 사용)
+    Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::None);
 
-    FRotator TargetRotation = (-ButtonForward).Rotation();
-    TargetRotation.Pitch = 0.0f;
-    TargetRotation.Roll = 0.0f;
+    if (PC)
+    {
+        PC->SetControlRotation(TargetRotation);
+    }
 
-    Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::TeleportPhysics);
-    PC->SetControlRotation(TargetRotation);
     OnMoveCompleted();
 }
 
