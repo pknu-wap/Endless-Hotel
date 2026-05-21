@@ -45,6 +45,26 @@ protected:
 
 #pragma endregion
 
+#pragma region TextureSwap
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Painting")
+	void ActivePicture();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
+	TObjectPtr<UTexture2D> NormalTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
+	TObjectPtr<UTexture2D> AnomalyTexture;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
+
+	FName TextureParameterName;
+
+#pragma endregion
+
 #pragma region Blood
 
 public:

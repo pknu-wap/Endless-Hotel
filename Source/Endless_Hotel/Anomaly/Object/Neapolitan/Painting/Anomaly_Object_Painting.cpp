@@ -12,6 +12,8 @@
 #include <Components/SceneComponent.h>
 #include <Kismet/KismetMathLibrary.h>
 #include <Components/AudioComponent.h>
+#include <Materials/MaterialInstanceDynamic.h>
+#include <Engine/Texture2D.h>
 
 #pragma region Base
 
@@ -35,6 +37,8 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
+
+	TextureParameterName = FName("Diffuse Texture");
 }
 
 #pragma endregion
