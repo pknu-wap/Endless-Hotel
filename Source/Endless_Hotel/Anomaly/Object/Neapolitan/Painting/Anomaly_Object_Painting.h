@@ -28,6 +28,10 @@ protected:
 
 #pragma endregion
 
+protected:
+	virtual void BeginPlay() override;
+
+
 #pragma region EyeMove
 
 public:
