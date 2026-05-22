@@ -83,7 +83,7 @@ void AAnomaly_Object_Door::BeginPlay()
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 		
-		Sub->FloorChange.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
+		Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
 
 		UpdateDoorByFloor();
 	}

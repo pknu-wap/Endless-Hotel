@@ -10,6 +10,7 @@ UCLASS()
 class ENDLESS_HOTEL_API AElevator_Entrance : public AEHActor
 {
 	GENERATED_BODY()
+
 #pragma region Base
 	
 public:
