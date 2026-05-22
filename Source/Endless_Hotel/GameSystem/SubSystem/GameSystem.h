@@ -176,7 +176,7 @@ public:
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
 
-	TWeakObjectPtr<AElevator> GetElevatorByID(FName TargetID);
+	AElevator* GetElevatorByID(FName TargetID);
 	float GetPlayerVelocity() { return PlayerVelocity; }
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }

@@ -81,11 +81,11 @@ void AElevator::BeginPlay()
     FinishedFunc.BindUFunction(this, FName("OnDoorTimelineFinished"));
     DoorTimeline->SetTimelineFinishedFunc(FinishedFunc);
     
-    if(InsideButton.Get())
+    if(InsideButton.IsValid())
     {
         InsideButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
-    if (EntranceButton.Get())
+    if (EntranceButton.IsValid())
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
