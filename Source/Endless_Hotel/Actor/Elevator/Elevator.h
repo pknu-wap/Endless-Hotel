@@ -145,10 +145,10 @@ public:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Button")
-    TObjectPtr<class AElevator_Button> InsideButton;
+    TWeakObjectPtr<class AElevator_Button> InsideButton;
 
     UPROPERTY(EditAnywhere, Category = "Elevator|Button")
-    TObjectPtr<class AElevator_Button> EntranceButton;
+    TWeakObjectPtr<class AElevator_Button> EntranceButton;
 
 #pragma endregion
 
