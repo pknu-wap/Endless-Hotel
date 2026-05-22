@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	FTransform StartTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 1100, 680), FVector(0.75f, 0.75f, 0.75f));
 
+public:
+	FVector GetStartScale() const { return StartTransform.GetScale3D(); }
+
 #pragma endregion
 
 #pragma region Component

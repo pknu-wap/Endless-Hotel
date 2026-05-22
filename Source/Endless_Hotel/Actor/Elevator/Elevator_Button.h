@@ -58,6 +58,9 @@ public:
 
 public:
     virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
+    class UArrowComponent* InteractAnchor;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Interact")
