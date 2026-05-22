@@ -3,6 +3,7 @@
 #include "Anomaly/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
@@ -52,13 +53,17 @@ void AAnomaly_Door::SetAnomalyState()
 void AAnomaly_Door::SetupDoorTrigger()
 {
 	TriggerTargetDoor = nullptr;
+	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
 	for (AActor* Found : LinkedObjects)
 	{
 		if (AAnomaly_Object_Door* Door = Cast<AAnomaly_Object_Door>(Found))
 		{
-			TriggerTargetDoor = Door;
-			break;
+			if (Sub->Floor == STARTFLOOR)
+			{
+				TriggerTargetDoor = Door;
+				break;
+			}
 		}
 	}	
 

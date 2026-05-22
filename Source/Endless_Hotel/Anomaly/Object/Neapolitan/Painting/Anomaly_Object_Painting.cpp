@@ -38,8 +38,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
 
-	bIsDynamicallySpawned = false;
-
 	TextureParameterName = FName("Diffuse Texture");
 }
 
@@ -49,15 +47,11 @@ void AAnomaly_Object_Painting::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Object)
-	{
-		DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(1);
-
-		if (DynamicMaterial && NormalTexture)
-		{
-			DynamicMaterial->SetTextureParameterValue(TextureParameterName, NormalTexture);
-		}
-	}
+	DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(1);
+	DynamicMaterial&& NormalTexture;
+	DynamicMaterial->SetTextureParameterValue(TextureParameterName, NormalTexture);
+		
+	
 }
 
 
@@ -200,10 +194,7 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 
 void AAnomaly_Object_Painting::ActivePicture()
 {
-	if (DynamicMaterial && AnomalyTexture)
-	{
-		DynamicMaterial->SetTextureParameterValue(TextureParameterName, AnomalyTexture);
-	}
+	DynamicMaterial->SetTextureParameterValue(TextureParameterName, AnomalyTexture);
 }
 
 #pragma region Die

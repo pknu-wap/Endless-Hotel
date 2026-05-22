@@ -62,37 +62,26 @@ void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
 void AElevator_Button::MoveToButtonPlayer()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    if (!Player) return;
 
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-    if (PC)
-    {
-        PC->SetPlayerInputAble(false);
-        PC->SetIgnoreLookInput(true);
-    }
 
-    // [핵심 변경] 에디터에서 세팅한 화살표의 월드 위치와 회전값을 그대로 가져옴
+    PC->SetPlayerInputAble(false);
+    PC->SetIgnoreLookInput(true);
+
     FVector TargetLocation = InteractAnchor->GetComponentLocation();
     FRotator TargetRotation = InteractAnchor->GetComponentRotation();
 
-    // 플레이어를 해당 위치에 강제로 박아버림 (밀어내기 버그 방지를 위해 ETeleportType::None 사용)
     Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::None);
 
-    if (PC)
-    {
-        PC->SetControlRotation(TargetRotation);
-    }
-
+    PC->SetControlRotation(TargetRotation);
+   
     OnMoveCompleted();
 }
 
 void AElevator_Button::OnMoveCompleted()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    if (!Player) return;
-
     AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
-    if (!EHPC) return;
 
     EHPC->SetControlRotation(Player->GetActorRotation());
     EHPC->OnEVButtonPressStarted();

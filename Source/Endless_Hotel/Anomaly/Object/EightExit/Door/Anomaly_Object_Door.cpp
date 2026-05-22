@@ -83,7 +83,6 @@ void AAnomaly_Object_Door::BeginPlay()
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 		
-
 		Sub->FloorChange.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
 
 		UpdateDoorByFloor();
@@ -289,19 +288,15 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 		Component_Interact->Activate();
 		bIsDoorOpened = false;
 
-
 		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 
 		FVector InitialLocation = DoorInitialTransform.GetLocation();
 		FRotator InitialRotation = DoorInitialTransform.Rotator();
 		GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
-
-
-		if (Timeline_Open)
-		{
-			Timeline_Open->Stop();
-		}
+	
+		Timeline_Open->Stop();
+		
 	}
 }
 
@@ -312,8 +307,6 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 void AAnomaly_Object_Door::MoveToHandlePlayer()
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (!Player) return;
-
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);
 	PC->SetIgnoreLookInput(true);
