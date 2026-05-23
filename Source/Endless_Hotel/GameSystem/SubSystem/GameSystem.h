@@ -112,6 +112,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
+	void PendingLoadDataLayer();
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
@@ -123,9 +125,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
 	EAnomalyID NextAnomalyID = EAnomalyID::None;
 
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
+	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
+	EHotelDataLayer NextAnomalyMap = EHotelDataLayer::Hotel;
 
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
 	FOnFloorChange_Disable FloorChange_Disable;
+	EHotelDataLayer CurrentDataLayer;
 
 #pragma endregion
 

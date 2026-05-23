@@ -6,6 +6,7 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <EngineUtils.h>
 
 #pragma region AnomalyObject
@@ -67,7 +68,8 @@ void AAnomaly_Generator::SpawnAnomaly()
 		CurrentData.bIsNormal = true;
 		CurrentData.AnomalyID = EAnomalyID::None;
 	}
-
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	//GameInstance->SwitchDataLayer();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, SpawnedLevel);
 
 	Subsystem->CurrentAnomaly = CurrentAnomaly;
@@ -75,12 +77,17 @@ void AAnomaly_Generator::SpawnAnomaly()
 	AnomalyObjectLinker(TargetClasses);
 	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName);
 	NextAnomalyData = DecideNext();
-	Subsystem->NextAnomalyID = NextAnomalyData->AnomalyID;
-	if (!bIsInitialFloor)
+	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+	//Subsystem->PendingLoadDataLayer();
+	if (bIsInitialFloor)
+	{
+		bIsInitialFloor = false;
+		//GameInstance->SwitchDataLayer();
+	}
+	else
 	{
 		Subsystem->OnAnomalySpawned.Broadcast();
 	}
-	bIsInitialFloor = false;
 }
 
 FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
@@ -96,6 +103,7 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 	Info.bIsNormal = false;
 	Info.Index = Index;
 	Info.AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
+	Info.DataLayer = DataC->ActAnomaly[Index].DataLayer;
 	return Info;
 }
 
@@ -104,11 +112,12 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	int32 IsNormal = FMath::RandRange(1, 10);
 
-	if (IsNormal > 8 || Subsystem->Floor == STARTFLOOR)
+	if (IsNormal > 8)
 	{
 		FAnomalySpawnInfo Info;
 		Info.bIsNormal = true;
 		Info.AnomalyID = EAnomalyID::None;
+		Info.DataLayer = EHotelDataLayer::Hotel;
 		return Info;
 	}
 

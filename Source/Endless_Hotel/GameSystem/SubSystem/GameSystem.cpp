@@ -138,6 +138,19 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyN
 	SetTargetElevator();
 }
 
+void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap)
+{
+	NextAnomalyID = AnomalyName;
+	NextAnomalyMap = AnomalyMap;
+}
+
+void UGameSystem::PendingLoadDataLayer()
+{
+	// 여기서 지금 열려있는 레벨을 가져와서 비교 예정
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->LoadDataLayer(NextAnomalyMap);
+}
+
 #pragma endregion
 
 #pragma region Floor

@@ -62,6 +62,7 @@ void UDataController::GetAnomalyEntries()
 		FAnomalyEntry Entry;
 		Entry.AnomalyID = PDA->ID;
 		Entry.AnomalyClass = PDA->Anomaly;
+		Entry.DataLayer = PDA->DataLayer;
 		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
 		{
 			if (!SoftClassPtr.IsNull())

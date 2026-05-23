@@ -6,6 +6,7 @@
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Interact/Type_Interact.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Event.generated.h>
 

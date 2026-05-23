@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Generator.generated.h>
 
@@ -18,6 +19,7 @@ struct FAnomalySpawnInfo
 	bool bIsNormal = false;
 	uint8 Index = 0;
 	EAnomalyID AnomalyID = EAnomalyID::None;
+	EHotelDataLayer DataLayer = EHotelDataLayer::Hotel;
 };
 
 #pragma endregion
