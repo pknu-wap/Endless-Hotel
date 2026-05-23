@@ -27,6 +27,17 @@ void AAnomaly_Object_Ceiling::BeginPlay()
 	FOnTimelineFloat UpdateFunc;
 	UpdateFunc.BindUFunction(this, FName("CeilingRotate"));
 	Timeline->AddInterpFloat(Curve_CeilingRotate, UpdateFunc);
+	InitialRotation = Mesh_Ceiling->GetRelativeRotation();
+}
+
+void AAnomaly_Object_Ceiling::Reset()
+{
+	Super::Reset();
+	Timeline->Stop();
+	Timeline->SetNewTime(0.f);
+	Mesh_Ceiling->SetRelativeRotation(InitialRotation);
+	Niagara_Ceiling_Blood->Deactivate();
+	Niagara_Ceiling_Blood->SetVisibility(false);
 }
 
 #pragma endregion
@@ -37,7 +48,6 @@ void AAnomaly_Object_Ceiling::CeilingRotate(float Value)
 {
 	FRotator Target = Mesh_Ceiling->GetRelativeRotation();
 	Target.Yaw = Value;
-
 	Mesh_Ceiling->SetRelativeRotation(Target);
 }
 
@@ -52,7 +62,8 @@ void AAnomaly_Object_Ceiling::PlayCeilingRotate()
 
 void AAnomaly_Object_Ceiling::CeilingBloodDripping()
 {
-	Niagara_Ceiling_Blood->SetActive(true);
+	Niagara_Ceiling_Blood->SetVisibility(true);
+	Niagara_Ceiling_Blood->Activate(true);
 }
 
 #pragma endregion

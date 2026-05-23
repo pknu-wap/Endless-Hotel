@@ -41,6 +41,19 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	TextureParameterName = FName("Diffuse Texture");
 }
 
+void AAnomaly_Object_Painting::Reset()
+{
+	Super::Reset();
+	Object->SetMaterial(1, OriginalMaterial);
+	Mesh_LeftEye->SetVisibleFlag(false);
+	Mesh_RightEye->SetVisibleFlag(false);
+
+	Niagara_Blood_Left->Activate(false);
+	Niagara_Blood_Left->SetVisibility(false);
+	Niagara_Blood_Right->Activate(false);
+	Niagara_Blood_Right->SetVisibility(false);
+}
+
 #pragma endregion
 
 void AAnomaly_Object_Painting::BeginPlay()
@@ -90,10 +103,10 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	Niagara_Blood_Left->SetActive(true);
+	Niagara_Blood_Left->Activate(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
-	Niagara_Blood_Right->SetActive(true);
+	Niagara_Blood_Right->Activate(true);
 	Niagara_Blood_Right->SetVisibility(true);
 }
 

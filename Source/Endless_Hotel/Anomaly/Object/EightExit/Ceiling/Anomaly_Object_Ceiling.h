@@ -18,6 +18,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Reset() override;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -28,6 +29,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Time")
 	TObjectPtr<UCurveFloat> Curve_CeilingRotate;
+
+	FRotator InitialRotation;
 
 #pragma endregion
 

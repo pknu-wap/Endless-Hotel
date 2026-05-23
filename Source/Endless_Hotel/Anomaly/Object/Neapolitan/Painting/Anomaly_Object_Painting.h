@@ -15,16 +15,17 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapol
 
 public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
+	virtual void Reset() override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Painting")
-	TObjectPtr<class USceneComponent> Root;
-
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
+
+	UPROPERTY(EditAnywhere, Category = "Original")
+	TObjectPtr<class UMaterialInterface> OriginalMaterial;
 
 #pragma endregion
 
@@ -86,10 +87,6 @@ protected:
 
 public:
 	void BlurPaint();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "PaintingBlur")

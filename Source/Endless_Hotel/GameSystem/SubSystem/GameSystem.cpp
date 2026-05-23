@@ -112,7 +112,8 @@ void UGameSystem::ApplyVerdict()
 
 	if (!bIsClear)
 	{
-		FloorChange.Broadcast();
+		FloorChange_Disable.Broadcast();
+		FloorChange_Reset.Broadcast();
 	}
 }
 
@@ -234,6 +235,11 @@ void UGameSystem::RegisterElevator(class AElevator* Elevator)
 void UGameSystem::SetTargetElevator()
 {
 	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
+}
+
+AElevator* UGameSystem::GetElevatorByID(FName TargetID)
+{
+	return Elevators.FindRef(TargetID).Get();
 }
 
 bool UGameSystem::IsTargetElevator(const AElevator* Elevator)

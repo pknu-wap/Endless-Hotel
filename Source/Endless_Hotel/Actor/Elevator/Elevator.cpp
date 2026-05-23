@@ -6,6 +6,8 @@
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Actor/Elevator/Elevator_Wall.h"
+#include "Actor/Elevator/Elevator_Entrance.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -21,16 +23,11 @@
 AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
-    RootComponent = Entrance;
-    StickerPannel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Elevator_Sticker"));
-    StickerPannel->SetupAttachment(RootComponent);
-
     Exterior_Structure = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Exterior_Structure"));
-    Exterior_Structure->SetupAttachment(RootComponent);
+    RootComponent = Exterior_Structure;
 
     Car = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Car"));
-    Car->SetupAttachment(Exterior_Structure);
+    Car->SetupAttachment(RootComponent);
 
     LeftDoor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftDoor"));
     LeftDoor->SetupAttachment(Car);
@@ -56,26 +53,24 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     Door_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Door AC"));
     Door_AC->SetupAttachment(Car);
 
-    InsideTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("InsideTrigger"));
-    InsideTrigger->SetupAttachment(Car);
-    InsideTrigger->SetBoxExtent(InsideTriggerActiveExtent);
-    InsideTrigger->SetCollisionProfileName(TEXT("Trigger"));
-    InsideTrigger->SetGenerateOverlapEvents(true);
-
     TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
     TriggerBlockBox->SetupAttachment(Car);
-    InsideTrigger->SetCollisionProfileName(TEXT("TriggerBlockBox"));
+    TriggerBlockBox->SetCollisionProfileName(TEXT("TriggerBlockBox"));
 
     TeleportAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("TeleportAnchor"));
-    TeleportAnchor->SetupAttachment(Exterior_Structure);
+    TeleportAnchor->SetupAttachment(RootComponent);
 }
 
 void AElevator::BeginPlay()
 {
     Super::BeginPlay();
     bIsDoorMoving = false;
-
+    ReferencePosition = this->GetActorLocation();
+    ReferenceRotation = this->GetActorRotation();
+    StartPos += ReferencePosition;
+    MapPos += ReferencePosition;
+    EndPos += ReferencePosition;
     FOnTimelineFloat UpdateFunc;
     FOnTimelineEvent FinishedFunc;
 
@@ -87,56 +82,32 @@ void AElevator::BeginPlay()
     DoorTimeline->AddInterpFloat(DoorCurve, UpdateFunc);
     FinishedFunc.BindUFunction(this, FName("OnDoorTimelineFinished"));
     DoorTimeline->SetTimelineFinishedFunc(FinishedFunc);
-
-    InsideTrigger->OnComponentBeginOverlap.AddDynamic(this, &AElevator::OnInsideBegin);
-    InsideTrigger->OnComponentEndOverlap.AddDynamic(this, &AElevator::OnInsideEnd);
     
-    if(AttachedButton)
+    if(InsideButton.IsValid())
     {
-        AttachedButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
+        InsideButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
+    if (EntranceButton.IsValid())
+    {
+        EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
+    }
+    
 }
 
 #pragma endregion
 
-#pragma region Trigger
+#pragma region Light
 
-void AElevator::OnInsideBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AElevator::SetLightOn(bool bIsOn)
 {
-    if (!Cast<AEHPlayer>(OtherActor) || bIsPlayerAlreadyInside)
+    if (bIsOn)
     {
-        return;
+        ElevatorLight->SetIntensity(LightOnIntensity);
     }
-    InsideTrigger->SetBoxExtent(FVector(200.f, 200.0f, 150.0f));
-    bIsPlayerAlreadyInside = true;
-    MoveDoors(false);
-    FTimerHandle MoveDelayHandle;
-    GetWorld()->GetTimerManager().SetTimer(MoveDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-        {
-            MoveElevator(MapPos, EndPos, false);
-        }), DoorDuration, false);
-}
-
-void AElevator::OnInsideEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (!Cast<AEHPlayer>(OtherActor) || !bIsPlayerAlreadyInside)
+    else
     {
-        return;
+        ElevatorLight->SetIntensity(LightOffIntensity);
     }
-
-    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    InsideTrigger->SetBoxExtent(FVector(0, 0, 0));
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
-
-    bIsPlayerAlreadyInside = false;
-    FTimerHandle StartDelayHandle;
-
-    GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-        {
-            MoveDoors(false);
-            ElevatorLight->SetIntensity(LightOffIntensity);
-        }), DoorDelay, false);
 }
 
 #pragma endregion
@@ -154,8 +125,6 @@ void AElevator::MoveDoors(bool bWillOpen)
     Door_AC->Activate(true);
     Elevator_AC->Stop();
     Door_AC->Play();
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
 
     if (bWillOpen)
     {
@@ -186,7 +155,7 @@ void AElevator::OnDoorTimelineFinished()
 
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
-    Exterior_Structure->SetRelativeLocation(Start);
+    RootComponent->SetRelativeLocation(Start);
     Elevator_AC->Activate(true);
     Elevator_AC->Play();
 
@@ -195,23 +164,24 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     LatentInfo.UUID = __LINE__;
     LatentInfo.Linkage = 0;
     
-    UKismetSystemLibrary::MoveComponentTo(Exterior_Structure, End, FRotator::ZeroRotator, false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
+    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, ReferenceRotation, false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 
-    GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+    FTimerHandle ElevatorWallHandle;
+    FTimerHandle StartDelayHandle;
+    auto SetDelay = [this](FTimerHandle& Handle, TFunction<void()> Func, float Delay)
         {
-            if(bIsPlayerAlreadyInside)
-            {
-                MoveDoors(true);
-            }
-        }), ElevatorMoveDuration + 0.1f, false);
+            GetWorld()->GetTimerManager().SetTimer(Handle,
+                FTimerDelegate::CreateWeakLambda(this, MoveTemp(Func)), Delay, false);
+        };
 
-    if (!bIsStart)
+    if (bIsStart)
     {
-        FTimerHandle StartDelayHandle;
-        GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-            {
-                NotifySubsystem();
-            }), ElevatorMoveDuration, false);
+        SetDelay(StartDelayHandle, [this] { MoveDoors(true); }, ElevatorMoveDuration + 0.1f);
+    }
+    else
+    {
+        SetDelay(ElevatorWallHandle, [this] { ElevatorWall->MoveWall(ElevatorMoveDuration); }, ElevatorMoveDuration + 0.1f);
+        SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
     }
 }
 
@@ -219,14 +189,18 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
 #pragma region Button
 
-void AElevator::OnButtonClicked()
+void AElevator::OnButtonClicked(bool bIsOpening)
 {
-    ElevatorLight->SetIntensity(LightOnIntensity);
-    MoveDoors(true);
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
-    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    InsideTrigger->SetBoxExtent(InsideTriggerActiveExtent);
+    SetLightOn(true);
+    MoveDoors(bIsOpening);
+    if (!bIsOpening)
+    {
+        FTimerHandle DoorHandle;
+        GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+            {
+                MoveElevator(MapPos, EndPos, false);
+            }), DoorDuration, false);
+    }
 }
 
 #pragma endregion
@@ -238,7 +212,6 @@ void AElevator::NotifySubsystem()
     auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     auto* PC = Player->GetController();
     UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
-    bIsPlayerAlreadyInside = false;
 
     FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
     FVector WorldLocation = Player->GetActorLocation();
@@ -262,20 +235,19 @@ void AElevator::NotifySubsystem()
 
 void AElevator::StartElevator()
 {
-    InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
+    ElevatorWall->ResetWall();
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this))
     {
-        ElevatorLight->SetIntensity(LightOnIntensity);
-        Exterior_Structure->SetRelativeLocation(StartPos);
-        bIsPlayerAlreadyInside = true;
+        LinkedEntrance->SetTriggerActive();
+        SetLightOn(true);
+        RootComponent->SetRelativeLocation(StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
         UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
-        InsideTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         
         FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
         FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
@@ -293,20 +265,18 @@ void AElevator::StartElevator()
         FTimerHandle ReEnableHandle;
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
-                InsideTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
                 MoveElevator(StartPos, MapPos, true);
             }), 0.05f, false);
     }
     else
     {
-        InsideTrigger->SetBoxExtent(InsideTriggerActiveExtent);
+        LinkedEntrance->ResetTrigger();
         this->Exterior_Structure->SetRelativeLocation(MapPos);
-        bIsPlayerAlreadyInside = false;
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
         RightDoor->SetRelativeLocation(RightDoorClosed);
         bIsDoorOpened = false;
         bIsDoorMoving = false;
-        ElevatorLight->SetIntensity(LightOffIntensity);
+        SetLightOn(false);
     }
 }
 

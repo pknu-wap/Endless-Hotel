@@ -28,7 +28,7 @@ enum class EAnomalyVerdictMode : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChangedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 
 USTRUCT(BlueprintType)
 struct FAnomalyObjectArray
@@ -81,7 +81,7 @@ public:
 
 public:
 	uint8 Floor = STARTFLOOR;
-	FOnFloorChangedDelegate FloorChange;
+	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
 	void ResetFloor() { Floor = STARTFLOOR; };
@@ -108,6 +108,8 @@ public:
 
 #pragma region Anomaly
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
+
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 AnomalyCount = 0;
@@ -119,6 +121,8 @@ public:
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
 
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
+
+	FOnFloorChange_Disable FloorChange_Disable;
 
 #pragma endregion
 
@@ -172,6 +176,7 @@ public:
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
 
+	AElevator* GetElevatorByID(FName TargetID);
 	float GetPlayerVelocity() { return PlayerVelocity; }
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }
@@ -180,7 +185,6 @@ public:
 	bool IsTargetElevator(const AElevator* Elevator);
 
 public:
-	UPROPERTY(BlueprintAssignable)
 	FAnomalySpawned OnAnomalySpawned;
 
 private:

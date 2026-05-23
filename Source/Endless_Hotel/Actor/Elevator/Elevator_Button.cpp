@@ -39,7 +39,7 @@ void AElevator_Button::BeginPlay()
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->FloorChange.AddDynamic(this, &ThisClass::Reset);
+    Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::Reset);
 }
 #pragma endregion
 
@@ -102,7 +102,7 @@ void AElevator_Button::OnMoveCompleted()
         {
             if (OnButtonPressed.IsBound())
             {
-                OnButtonPressed.Broadcast();
+                OnButtonPressed.Broadcast(bIsOpeningButton);
             }
 
             EHPC->OnEVButtonPressCompleted();
