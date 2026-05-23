@@ -6,6 +6,8 @@
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Actor/Elevator/Elevator_Wall.h"
+#include "Actor/Elevator/Elevator_Entrance.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -89,6 +91,23 @@ void AElevator::BeginPlay()
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
+    
+}
+
+#pragma endregion
+
+#pragma region Light
+
+void AElevator::SetLightOn(bool bIsOn)
+{
+    if (bIsOn)
+    {
+        ElevatorLight->SetIntensity(LightOnIntensity);
+    }
+    else
+    {
+        ElevatorLight->SetIntensity(LightOffIntensity);
+    }
 }
 
 #pragma endregion
@@ -147,18 +166,23 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     
     UKismetSystemLibrary::MoveComponentTo(RootComponent, End, ReferenceRotation, false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 
+    FTimerHandle ElevatorWallHandle;
     FTimerHandle StartDelayHandle;
-    GetWorld()->GetTimerManager().SetTimer(StartDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart]()
+    auto SetDelay = [this](FTimerHandle& Handle, TFunction<void()> Func, float Delay)
         {
-            if (bIsStart)
-            {
-                MoveDoors(true);
-            }
-            else
-            {
-                NotifySubsystem();
-            }
-        }), ElevatorMoveDuration + 0.1f, false);
+            GetWorld()->GetTimerManager().SetTimer(Handle,
+                FTimerDelegate::CreateWeakLambda(this, MoveTemp(Func)), Delay, false);
+        };
+
+    if (bIsStart)
+    {
+        SetDelay(StartDelayHandle, [this] { MoveDoors(true); }, ElevatorMoveDuration + 0.1f);
+    }
+    else
+    {
+        SetDelay(ElevatorWallHandle, [this] { ElevatorWall->MoveWall(ElevatorMoveDuration); }, ElevatorMoveDuration + 0.1f);
+        SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
+    }
 }
 
 #pragma endregion
@@ -167,7 +191,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
 void AElevator::OnButtonClicked(bool bIsOpening)
 {
-    ElevatorLight->SetIntensity(LightOnIntensity);
+    SetLightOn(true);
     MoveDoors(bIsOpening);
     if (!bIsOpening)
     {
@@ -213,11 +237,13 @@ void AElevator::StartElevator()
 {
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
+    ElevatorWall->ResetWall();
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this))
     {
-        ElevatorLight->SetIntensity(LightOnIntensity);
+        LinkedEntrance->SetTriggerActive();
+        SetLightOn(true);
         RootComponent->SetRelativeLocation(StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
@@ -244,12 +270,13 @@ void AElevator::StartElevator()
     }
     else
     {
+        LinkedEntrance->ResetTrigger();
         this->Exterior_Structure->SetRelativeLocation(MapPos);
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
         RightDoor->SetRelativeLocation(RightDoorClosed);
         bIsDoorOpened = false;
         bIsDoorMoving = false;
-        ElevatorLight->SetIntensity(LightOffIntensity);
+        SetLightOn(false);
     }
 }
 

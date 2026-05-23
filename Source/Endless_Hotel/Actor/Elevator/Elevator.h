@@ -54,6 +54,9 @@ public:
 
 #pragma region LightSettings
 
+public:
+    void SetLightOn(bool bIsOn);
+
 protected:
     UPROPERTY(EditAnywhere, Category = "Setting|LightSettings")
     float LightOnIntensity = 100000.f;
@@ -109,9 +112,6 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Movement|Door")
     float DoorDuration = 1.0f;
 
-    UPROPERTY(EditAnywhere, Category = "Movement|Door")
-    float DoorDelay = 2.0f;
-
     UPROPERTY(EditAnywhere, Category = "Movement|Door|Closed")
     FVector LeftDoorClosed;
 
@@ -149,6 +149,22 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Elevator|Button")
     TWeakObjectPtr<class AElevator_Button> EntranceButton;
+
+#pragma endregion
+
+#pragma region Entrance
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Elevator")
+    TObjectPtr<class AElevator_Entrance> LinkedEntrance;
+
+#pragma endregion
+
+#pragma region Wall
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Elevator|Wall")
+    TWeakObjectPtr<class AElevator_Wall> ElevatorWall;
 
 #pragma endregion
 
