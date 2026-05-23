@@ -116,6 +116,12 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 		UI_InGame->EyeEffectBlur(false);
 		TimeLine_Eye->ReverseFromEnd();
 	}
+
+	FTimerHandle StopHandle;
+	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			TimeLine_Eye->Stop();
+		}), 5.f, false);
 }
 
 void AEHPlayerCameraManager::OnValueChangedEyeEffect(float Value)
