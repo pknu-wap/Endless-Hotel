@@ -13,6 +13,13 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+public:
+	virtual void Init() override;
+
+#pragma endregion
+
 #pragma region Game
 
 public:

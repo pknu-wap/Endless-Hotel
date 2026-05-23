@@ -3,9 +3,39 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Asset/DataAsset/Level/PDA_Level.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Kismet/GameplayStatics.h>
 #include <WorldPartition/WorldPartitionSubsystem.h>
 #include <WorldPartition/DataLayer/DataLayerSubsystem.h>
+#include <GameFramework/GameUserSettings.h>
+#include <Internationalization/Internationalization.h>
+
+#pragma region Base
+
+void UEHGameInstance::Init()
+{
+	Super::Init();
+
+	auto* Settings = GEngine->GetGameUserSettings();
+	Settings->LoadSettings();
+	Settings->ApplySettings(false);
+
+	auto Data_Setting = USaveManager::LoadData_Setting();
+	auto& CultureSetting = FInternationalization::Get();
+
+	switch (Data_Setting.Language)
+	{
+	case EOptionValue::English:
+		CultureSetting.SetCurrentCulture(TEXT("en-US"));
+		break;
+
+	case EOptionValue::Korean:
+		CultureSetting.SetCurrentCulture(TEXT("ko-KR"));
+		break;
+	}
+}
+
+#pragma endregion
 
 #pragma region Game
 
