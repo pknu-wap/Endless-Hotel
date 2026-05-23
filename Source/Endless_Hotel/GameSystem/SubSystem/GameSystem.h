@@ -111,14 +111,17 @@ public:
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+
+public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 AnomalyCount = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
-	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
-
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
+	EAnomalyID NextAnomalyID = EAnomalyID::None;
 
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
 

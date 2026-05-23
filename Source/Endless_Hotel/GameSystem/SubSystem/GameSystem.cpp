@@ -97,7 +97,7 @@ void UGameSystem::ApplyVerdict()
 
 		if (bExceptClearedAnomaly)
 		{
-			DataC->ClearedAnomalySet.Add(CurrentAnomalyID);
+			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyName);
 			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
@@ -123,6 +123,19 @@ void UGameSystem::TryInteractSolveVerdict()
 	{
 		Neo->InteractSolveVerdict();
 	}
+}
+
+#pragma endregion
+
+#pragma region Anomaly
+
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName)
+{
+	CurrentAnomaly = Anomaly;
+	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentAnomaly->SetAnomalyState();
+	ActIndex++;
+	SetTargetElevator();
 }
 
 #pragma endregion
