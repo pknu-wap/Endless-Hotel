@@ -113,6 +113,8 @@ bool UEHGameInstance::SwitchDataLayer()
 
 	UnloadLayer = LoadLayer;
 
+	OnDataLayerChanged.Broadcast(UnloadLayer);
+
 	return true;
 }
 

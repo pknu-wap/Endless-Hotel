@@ -64,6 +64,10 @@ public:
 private:
 	UDataLayerAsset* GetDataLayerAsset(const EHotelDataLayer& Target);
 
+public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EHotelDataLayer&, DataLayer);
+	FOnDataLayerChanged OnDataLayerChanged;
+
 private:
 	EHotelDataLayer LoadLayer = EHotelDataLayer::Hotel;
 	EHotelDataLayer UnloadLayer = EHotelDataLayer::Hotel;
