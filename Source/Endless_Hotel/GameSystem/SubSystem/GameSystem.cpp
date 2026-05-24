@@ -97,7 +97,7 @@ void UGameSystem::ApplyVerdict()
 
 		if (bExceptClearedAnomaly)
 		{
-			DataC->ClearedAnomalySet.Add(CurrentAnomalyID);
+			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyName);
 			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
@@ -123,6 +123,32 @@ void UGameSystem::TryInteractSolveVerdict()
 	{
 		Neo->InteractSolveVerdict();
 	}
+}
+
+#pragma endregion
+
+#pragma region Anomaly
+
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName)
+{
+	CurrentAnomaly = Anomaly;
+	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentAnomaly->SetAnomalyState();
+	ActIndex++;
+	SetTargetElevator();
+}
+
+void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap)
+{
+	NextAnomalyID = AnomalyName;
+	NextAnomalyMap = AnomalyMap;
+}
+
+void UGameSystem::PendingLoadDataLayer()
+{
+	// 여기서 지금 열려있는 레벨을 가져와서 비교 예정
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->LoadDataLayer(NextAnomalyMap);
 }
 
 #pragma endregion

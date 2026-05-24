@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <AnomalyData.generated.h>
 
 USTRUCT(BlueprintType)
@@ -13,4 +14,7 @@ struct FAnomalyData : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere)
 	EAnomalyID AnomalyID = EAnomalyID::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EHotelDataLayer Map = EHotelDataLayer::Hotel;
 };
