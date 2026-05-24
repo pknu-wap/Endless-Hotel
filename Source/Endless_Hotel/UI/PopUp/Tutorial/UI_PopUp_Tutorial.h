@@ -18,12 +18,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Tutorial
-
-private:
-	UFUNCTION()
-	void OpenTutorialWidget(const ELevelType& LevelType);
-
-#pragma endregion
-
 };
