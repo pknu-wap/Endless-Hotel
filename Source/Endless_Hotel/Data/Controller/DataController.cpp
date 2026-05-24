@@ -5,7 +5,6 @@
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Asset/Manager/EHAssetManager.h"
-#include "Type/Anomaly/Type_AnomalyType.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include <GameSystem/SubSystem/GameSystem.h>
 
@@ -59,29 +58,18 @@ void UDataController::GetAnomalyEntries()
 			continue;
 		}
 
-		FAnomalyEntry Entry;
-		Entry.AnomalyID = PDA->ID;
-		Entry.AnomalyClass = PDA->Anomaly;
-		for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClassPtr : PDA->Objects)
-		{
-			if (!SoftClassPtr.IsNull())
-			{
-				Entry.ObjectClasses.Add(SoftClassPtr);
-			}
-		}
-
-		OriginAnomaly.Add(Entry);
+		OriginAnomaly.Add(PDA);
 	}
 }
 
 TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomalyID AnomalyID)
 {
 	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
-	for (const FAnomalyEntry& Entry : OriginAnomaly)
+	for (const auto& Entry : OriginAnomaly)
 	{
-		if (Entry.AnomalyID == AnomalyID)
+		if (Entry->ID == AnomalyID)
 		{
-			for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClass : Entry.ObjectClasses)
+			for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClass : Entry->Objects)
 			{
 				if (UClass* LoadedClass = SoftClass.LoadSynchronous())
 				{
@@ -96,9 +84,9 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomal
 
 void UDataController::RemoveClearedAnomaly()
 {
-	ActAnomaly.RemoveAll([this](const FAnomalyEntry& Entry)
+	ActAnomaly.RemoveAll([this](const auto& Entry)
 		{
-			return ClearedAnomalySet.Contains(Entry.AnomalyID);
+			return ClearedAnomalySet.Contains(Entry->ID);
 		});
 }
 
@@ -111,9 +99,9 @@ void UDataController::RemoveNoRuleAnomaly()
 {
 	// Temp Logic : Remove Anomaly By Rule
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	ActAnomaly.RemoveAll([GameSystem](const FAnomalyEntry& Entry)
+	ActAnomaly.RemoveAll([GameSystem](const auto& Entry)
 		{
-			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry.AnomalyClass.Get());
+			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry->Anomaly.Get());
 			return !GameSystem->AnomalyRules.Contains(DefaultObj->AnomalyRule);
 		});
 }

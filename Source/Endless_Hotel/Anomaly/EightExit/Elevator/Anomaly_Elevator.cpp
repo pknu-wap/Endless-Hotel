@@ -2,6 +2,7 @@
 
 #include "Anomaly/EightExit/Elevator/Anomaly_Elevator.h"
 #include "Actor/Elevator/Elevator.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
 
@@ -11,13 +12,8 @@ void AAnomaly_Elevator::BeginPlay()
 {
     Super::BeginPlay();
     
-    for (TActorIterator<AElevator> Iter(GetWorld()); Iter; ++Iter)
-    {
-        if (Iter->ElevatorID == TargetAnomalyElevatorID)
-        {
-            TargetElevator = *Iter;
-        }
-    }
+    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    TargetElevator = SubSystem->GetElevatorByID(TargetAnomalyElevatorID);
 }
 
 #pragma endregion

@@ -3,6 +3,7 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include <Components/ArrowComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
@@ -24,6 +25,11 @@ AElevator_Button::AElevator_Button(const FObjectInitializer& ObjectInitializer)
 
     Down_ButtonRing = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Down_ButtonRing"));
     Down_ButtonRing->SetupAttachment(Object);
+
+    InteractAnchor = CreateDefaultSubobject<UArrowComponent>(TEXT("InteractAnchor"));
+    InteractAnchor->SetupAttachment(RootComponent); // (또는 Object에 부착)
+    InteractAnchor->ArrowColor = FColor::Green;
+    InteractAnchor->SetArrowSize(2.0f);
 }
 
 void AElevator_Button::BeginPlay()
@@ -33,7 +39,7 @@ void AElevator_Button::BeginPlay()
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->FloorChange.AddDynamic(this, &ThisClass::Reset);
+    Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::Reset);
 }
 #pragma endregion
 
@@ -56,37 +62,26 @@ void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
 void AElevator_Button::MoveToButtonPlayer()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    if (!Player) return;
 
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+
     PC->SetPlayerInputAble(false);
     PC->SetIgnoreLookInput(true);
 
-    FVector ButtonLocation = GetActorLocation();
-    FVector ButtonForward = GetActorForwardVector();
-    FVector ButtonRight = GetActorRightVector();
+    FVector TargetLocation = InteractAnchor->GetComponentLocation();
+    FRotator TargetRotation = InteractAnchor->GetComponentRotation();
 
-    FVector TargetLocation = ButtonLocation
-        + (ButtonForward * PlayerToElevatorDistance)
-        - (ButtonRight * PlayerToElevatorSideOffset);
-    TargetLocation.Z = Player->GetActorLocation().Z;
+    Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::None);
 
-    FRotator TargetRotation = (-ButtonForward).Rotation();
-    TargetRotation.Pitch = 0.0f;
-    TargetRotation.Roll = 0.0f;
-
-    Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::TeleportPhysics);
     PC->SetControlRotation(TargetRotation);
+   
     OnMoveCompleted();
 }
 
 void AElevator_Button::OnMoveCompleted()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    if (!Player) return;
-
     AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
-    if (!EHPC) return;
 
     EHPC->SetControlRotation(Player->GetActorRotation());
     EHPC->OnEVButtonPressStarted();
@@ -107,7 +102,7 @@ void AElevator_Button::OnMoveCompleted()
         {
             if (OnButtonPressed.IsBound())
             {
-                OnButtonPressed.Broadcast();
+                OnButtonPressed.Broadcast(bIsOpeningButton);
             }
 
             EHPC->OnEVButtonPressCompleted();

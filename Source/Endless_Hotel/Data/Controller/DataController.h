@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Type/Anomaly/Type_AnomalyType.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
@@ -30,14 +29,14 @@ public:
 	void RemoveNoRuleAnomaly();
 	uint8 GetRemainingAnomalyCounts();
 	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(EAnomalyID AnomalyID);
-	TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
+	TArray<TSoftObjectPtr<class UPDA_Anomaly>> GetOriginAnomaly() { return OriginAnomaly; }
 
 public:
 	UPROPERTY()
 	TSet<EAnomalyID> ClearedAnomalySet;
 
 	UPROPERTY()
-	TArray<FAnomalyEntry> ActAnomaly;
+	TArray<TSoftObjectPtr<class UPDA_Anomaly>> ActAnomaly;
 
 	const uint8 MaxIndex = 255;
 
@@ -47,7 +46,7 @@ protected:
 
 private:
 	UPROPERTY()
-	TArray<FAnomalyEntry> OriginAnomaly;
+	TArray<TSoftObjectPtr<class UPDA_Anomaly>> OriginAnomaly;
 
 #pragma endregion
 

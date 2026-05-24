@@ -15,18 +15,22 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapol
 
 public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
+	virtual void Reset() override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Painting")
-	TObjectPtr<class USceneComponent> Root;
-
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_LeftEye;
 
 	UPROPERTY(EditAnyWhere, Category = "Eye")
 	TObjectPtr<class UStaticMeshComponent> Mesh_RightEye;
 
+	UPROPERTY(EditAnywhere, Category = "Original")
+	TObjectPtr<class UMaterialInterface> OriginalMaterial;
+
 #pragma endregion
+
+protected:
+	virtual void BeginPlay() override;
 
 #pragma region EyeMove
 
@@ -42,6 +46,26 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "EyeRotate")
 	float Sensitivity;
+
+#pragma endregion
+
+#pragma region TextureSwap
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Anomaly|Painting")
+	void ActivePicture();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
+	TObjectPtr<UTexture2D> NormalTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
+	TObjectPtr<UTexture2D> AnomalyTexture;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
+
+	FName TextureParameterName;
 
 #pragma endregion
 
@@ -63,10 +87,6 @@ protected:
 
 public:
 	void BlurPaint();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TObjectPtr<class UWidgetComponent> Widget_PaintingBlur;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "PaintingBlur")

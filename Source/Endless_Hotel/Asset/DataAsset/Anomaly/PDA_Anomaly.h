@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Engine/DataAsset.h>
 #include <PDA_Anomaly.generated.h>
@@ -24,6 +25,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
 	TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
+
+	UPROPERTY(EditAnywhere, Category = "InGame|Data")
+	EHotelDataLayer DataLayer = EHotelDataLayer::Hotel;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (AssetBundles = "UI"))

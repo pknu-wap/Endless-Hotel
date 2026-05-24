@@ -12,6 +12,8 @@
 #include <Components/SceneComponent.h>
 #include <Kismet/KismetMathLibrary.h>
 #include <Components/AudioComponent.h>
+#include <Materials/MaterialInstanceDynamic.h>
+#include <Engine/Texture2D.h>
 
 #pragma region Base
 
@@ -35,9 +37,36 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
+
+	TextureParameterName = FName("Diffuse Texture");
+}
+
+void AAnomaly_Object_Painting::Reset()
+{
+	Super::Reset();
+	Object->SetMaterial(1, OriginalMaterial);
+	Mesh_LeftEye->SetVisibleFlag(false);
+	Mesh_RightEye->SetVisibleFlag(false);
+
+	Niagara_Blood_Left->Activate(false);
+	Niagara_Blood_Left->SetVisibility(false);
+	Niagara_Blood_Right->Activate(false);
+	Niagara_Blood_Right->SetVisibility(false);
 }
 
 #pragma endregion
+
+void AAnomaly_Object_Painting::BeginPlay()
+{
+	Super::BeginPlay();
+
+	DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(1);
+	DynamicMaterial&& NormalTexture;
+	DynamicMaterial->SetTextureParameterValue(TextureParameterName, NormalTexture);
+		
+	
+}
+
 
 #pragma region EyeMove
 
@@ -74,10 +103,10 @@ void AAnomaly_Object_Painting::EyeFollowing()
 
 void AAnomaly_Object_Painting::BloodDropping()
 {
-	Niagara_Blood_Left->SetActive(true);
+	Niagara_Blood_Left->Activate(true);
 	Niagara_Blood_Left->SetVisibility(true);
 
-	Niagara_Blood_Right->SetActive(true);
+	Niagara_Blood_Right->Activate(true);
 	Niagara_Blood_Right->SetVisibility(true);
 }
 
@@ -173,6 +202,13 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 }
 
 #pragma endregion
+
+#pragma region TextureSwap
+
+void AAnomaly_Object_Painting::ActivePicture()
+{
+	DynamicMaterial->SetTextureParameterValue(TextureParameterName, AnomalyTexture);
+}
 
 #pragma region Die
 

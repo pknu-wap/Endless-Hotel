@@ -23,7 +23,7 @@ protected:
 #pragma region Reset
 
 public:
-	void Reset();
+	virtual void Reset();
 
 #pragma endregion
 

@@ -20,7 +20,7 @@ void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Sub->FloorChange.AddDynamic(this, &ThisClass::Reset);
+	Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::Reset);
 	SaveOriginalTransform();
 }
 

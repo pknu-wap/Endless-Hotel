@@ -28,7 +28,7 @@ enum class EAnomalyVerdictMode : uint8
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChangedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 
 USTRUCT(BlueprintType)
 struct FAnomalyObjectArray
@@ -81,7 +81,7 @@ public:
 
 public:
 	uint8 Floor = STARTFLOOR;
-	FOnFloorChangedDelegate FloorChange;
+	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
 	void ResetFloor() { Floor = STARTFLOOR; };
@@ -108,17 +108,29 @@ public:
 
 #pragma region Anomaly
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
+
+public:
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
+	void PendingLoadDataLayer();
+
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 AnomalyCount = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Count")
-	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
-
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
+	EAnomalyID NextAnomalyID = EAnomalyID::None;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
+	EHotelDataLayer NextAnomalyMap = EHotelDataLayer::Hotel;
+
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
+	FOnFloorChange_Disable FloorChange_Disable;
+	EHotelDataLayer CurrentDataLayer;
 
 #pragma endregion
 
@@ -172,6 +184,7 @@ public:
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
 
+	AElevator* GetElevatorByID(FName TargetID);
 	float GetPlayerVelocity() { return PlayerVelocity; }
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }
@@ -180,7 +193,6 @@ public:
 	bool IsTargetElevator(const AElevator* Elevator);
 
 public:
-	UPROPERTY(BlueprintAssignable)
 	FAnomalySpawned OnAnomalySpawned;
 
 private:

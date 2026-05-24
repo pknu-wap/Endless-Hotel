@@ -602,3 +602,55 @@ void AEHPlayerController::SetKeyMapping(FKeySettingInfo NewInfo, FKey OldKey)
 }
 
 #pragma endregion
+
+#pragma region State_Reset
+
+void AEHPlayerController::ResetPlayerState()
+{
+	SetPlayerInputAble(true);
+	bCanRun = true;
+	bCanCrouch = true;
+	bCanFaceCover = true;
+	bIsPlayerDead = false;
+
+	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
+	{
+		if (bIsRunning)
+		{
+			MovementComp->MaxWalkSpeed = RunSpeed;
+		}
+		else
+		{
+			MovementComp->MaxWalkSpeed = WalkSpeed;
+		}
+	}
+
+	if (bIsCrouching)
+	{
+		EHPlayer->Crouch();
+		EHPlayer->CrouchDelegate.Broadcast(true);
+	}
+	else
+	{
+		EHPlayer->UnCrouch();
+		EHPlayer->CrouchDelegate.Broadcast(false);
+	}
+
+	if (bIsFaceCovering || bIsFaceCoverTransitioning)
+	{
+		bIsFaceCovering = false;
+		bIsFaceCoverTransitioning = false;
+		if (SpringArm)
+		{
+			SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f)); 
+		}
+	}
+
+	bIsButtonPressing = false;
+	bIsPlayerDoorOpening = false;
+	bIsPlayerPushingDoor = false;
+
+	EHPlayer->SetActorScale3D(EHPlayer->GetStartScale());
+}
+
+#pragma endregion
