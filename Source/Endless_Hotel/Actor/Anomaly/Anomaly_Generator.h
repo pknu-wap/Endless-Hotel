@@ -63,14 +63,12 @@ public:
 	FAnomalySpawnInfo DecideAnomaly(uint8 Index);
 	FAnomalySpawnInfo DecideNext();
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel);
-	void SetSpawnLevel(ULevel* CurrentLevel) { SpawnedLevel = CurrentLevel; };
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
 	TSoftClassPtr<AAnomaly_Event> NormalClass;
 
 private:
-	TObjectPtr<class ULevel> SpawnedLevel;
 	bool bIsInitialFloor = true;
 
 #pragma endregion

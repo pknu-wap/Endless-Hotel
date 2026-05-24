@@ -3,6 +3,7 @@
 #include "Anomaly_Generator.h"
 #include "Anomaly/Base/Anomaly_Event.h"
 #include "Data/Anomaly/AnomalyData.h"
+#include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Data/Controller/DataController.h"
@@ -70,7 +71,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	//GameInstance->SwitchDataLayer();
-	CurrentAnomaly = SpawnFromInfo(CurrentData, SpawnedLevel);
+	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
 	Subsystem->CurrentAnomaly = CurrentAnomaly;
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
@@ -102,8 +103,8 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 	FAnomalySpawnInfo Info;
 	Info.bIsNormal = false;
 	Info.Index = Index;
-	Info.AnomalyID = DataC->ActAnomaly[Index].AnomalyID;
-	Info.DataLayer = DataC->ActAnomaly[Index].DataLayer;
+	Info.AnomalyID = DataC->ActAnomaly[Index]->ID;
+	Info.DataLayer = DataC->ActAnomaly[Index]->DataLayer;
 	return Info;
 }
 
@@ -134,7 +135,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 	else
 	{
 		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index].AnomalyClass;
+		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index]->Anomaly;
 		AnomalyClass = SoftClass.LoadSynchronous();
 
 		if (!IsValid(AnomalyClass))
