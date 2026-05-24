@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Actor/EHActor.h"
+#include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Generator.generated.h>
 
@@ -11,6 +13,14 @@
 // Forward Declaration
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
+
+struct FAnomalySpawnInfo
+{
+	bool bIsNormal = false;
+	uint8 Index = 0;
+	EAnomalyID AnomalyID = EAnomalyID::None;
+	EHotelDataLayer DataLayer = EHotelDataLayer::Hotel;
+};
 
 #pragma endregion
 
@@ -37,31 +47,29 @@ protected:
 #pragma region Generate & State
 
 public:
-	UPROPERTY(VisibleInstanceOnly)
-	bool bDidInitialSpawn = false;
-
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Anomaly|State")
 	TObjectPtr<AAnomaly_Event> CurrentAnomaly;
 
+	TOptional<FAnomalySpawnInfo> NextAnomalyData;
+
 #pragma endregion
 
-#pragma region Generate Anomaly
+#pragma region SpawnAnomaly
 
 public:
 	UFUNCTION()
 	void SpawnAnomaly();
 
-	AAnomaly_Event* SpawnAnomalyAtIndex(uint8 Index, ULevel* SpawnLevel);
-	AAnomaly_Event* SpawnNormal(ULevel* SpawnLevel);
-
-	void SetSpawnLevel(ULevel* CurrentLevel) { SpawnedLevel = CurrentLevel; };
+	FAnomalySpawnInfo DecideAnomaly(uint8 Index);
+	FAnomalySpawnInfo DecideNext();
+	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
 	TSoftClassPtr<AAnomaly_Event> NormalClass;
 
 private:
-	TObjectPtr<class ULevel> SpawnedLevel;
+	bool bIsInitialFloor = true;
 
 #pragma endregion
 

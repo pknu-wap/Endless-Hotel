@@ -8,6 +8,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -193,6 +194,9 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 {
     SetLightOn(true);
     MoveDoors(bIsOpening);
+    UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+    //auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    //SubSystem->PendingLoadDataLayer();
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
@@ -222,6 +226,9 @@ void AElevator::NotifySubsystem()
     FVector PreVelocity = CMC->Velocity;
     float HorizontalSpeed = FVector(PreVelocity.X, PreVelocity.Y, 0.f).Size();
     FVector PreForward = Player->GetActorForwardVector();
+
+    //auto* GameInstance = GetGameInstance<UEHGameInstance>();
+    //GameInstance->SwitchDataLayer();
 
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {
