@@ -96,7 +96,8 @@ void UUI_Controller::ClearAllWidget()
 
 void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	UUI_Base* TopWidget = PopUpWidgets.Top();
 
 	switch (InputMode)
 	{
@@ -109,7 +110,7 @@ void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 	case EWidgetInputMode::UIOnly:
 	{
 		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
+		InputMode.SetWidgetToFocus(TopWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -117,7 +118,7 @@ void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 	case EWidgetInputMode::GameAndUI:
 	{
 		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
+		InputMode.SetWidgetToFocus(TopWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;

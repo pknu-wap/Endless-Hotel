@@ -2,7 +2,6 @@
 
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Character/EHPlayer.h"
@@ -32,14 +31,6 @@ void UUI_HUD_InGame::NativeConstruct()
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
 
 	EyeEffectBlur(true);
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
-
-	if (GameInstance->CurrentLevelType == ELevelType::Hotel && USaveManager::LoadData_Tutorial().bIsFirstPlay)
-	{
-		UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
-	}
 }
 
 #pragma endregion

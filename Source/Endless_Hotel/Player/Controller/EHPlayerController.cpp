@@ -60,12 +60,19 @@ void AEHPlayerController::BeginPlay()
 	switch (GameInstance->CurrentLevelType)
 	{
 	case ELevelType::Hotel:
+	{
 		UICon->OpenWidget(EWidgetType::HUD_InGame);
+		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
+		{
+			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
+		}
 		break;
-
+	}
 	case ELevelType::MainMenu:
+	{
 		UICon->OpenWidget(EWidgetType::HUD_Title);
 		break;
+	}
 	}
 }
 
