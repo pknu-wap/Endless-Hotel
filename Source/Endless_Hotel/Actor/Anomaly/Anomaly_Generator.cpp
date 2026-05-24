@@ -70,7 +70,6 @@ void AAnomaly_Generator::SpawnAnomaly()
 		CurrentData.AnomalyID = EAnomalyID::None;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	//GameInstance->SwitchDataLayer();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
 	Subsystem->CurrentAnomaly = CurrentAnomaly;
@@ -79,11 +78,9 @@ void AAnomaly_Generator::SpawnAnomaly()
 	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName);
 	NextAnomalyData = DecideNext();
 	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
-	//Subsystem->PendingLoadDataLayer();
 	if (bIsInitialFloor)
 	{
 		bIsInitialFloor = false;
-		//GameInstance->SwitchDataLayer();
 	}
 	else
 	{
