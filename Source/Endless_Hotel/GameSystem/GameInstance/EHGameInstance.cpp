@@ -78,6 +78,10 @@ void UEHGameInstance::OpenLevel()
 	OnLevelOpened.Broadcast(CurrentLevelType);
 }
 
+#pragma endregion
+
+#pragma region Data Layer
+
 void UEHGameInstance::LoadDataLayer(const EHotelDataLayer& Layer)
 {
 	LoadLayer = Layer;
