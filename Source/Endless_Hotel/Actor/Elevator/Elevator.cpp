@@ -294,7 +294,7 @@ void AElevator::StartElevator()
 
 void AElevator::SetActiveBlockBox(bool bIsActive)
 {
-    TriggerBlockBox->SetCollisionEnabled(bIsActive ? ECollisionEnabled::PhysicsOnly : ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetCollisionEnabled(bIsActive ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(bIsActive ? BlockBoxActiveExtent : FVector(0, 0, 0));
 }
 
