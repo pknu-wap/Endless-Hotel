@@ -246,6 +246,8 @@ void AElevator::NotifySubsystem()
 void AElevator::StartElevator()
 {
     ElevatorWall->ResetWall();
+    Floor->SetVisibility(false);
+    Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this))
