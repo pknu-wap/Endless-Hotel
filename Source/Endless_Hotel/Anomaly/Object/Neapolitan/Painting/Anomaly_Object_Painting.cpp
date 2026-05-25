@@ -57,8 +57,6 @@ void AAnomaly_Object_Painting::Reset()
 void AAnomaly_Object_Painting::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ActivePicture();
 }
 
 
@@ -199,10 +197,11 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 
 #pragma region TextureSwap
 
-void AAnomaly_Object_Painting::ActivePicture()
+void AAnomaly_Object_Painting::ChangePicture()
 {
 	Object->SetMaterial(1, AnomalyMaterial);
 }
+
 
 #pragma region Die
 

@@ -48,5 +48,5 @@ enum class EAnomalyID : uint8
 	Doll				= 98	UMETA(DisplayName = "Doll"),
 	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye"),
 	Radio				= 100	UMETA(DisplayName = "Radio"),
-	Picture				= 87	UMETA(DisplayName = "Picture")
+	Painting_Picture	= 87	UMETA(DisplayName = "Painting_Picture")
 };

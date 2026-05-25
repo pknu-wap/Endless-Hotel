@@ -52,20 +52,15 @@ protected:
 #pragma region TextureSwap
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "Anomaly|Painting")
-	void ActivePicture();
-
+	void ChangePicture();
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	TObjectPtr<UMaterialInterface> NormalMaterial;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Painting")
-	TObjectPtr<UMaterialInterface> AnomalyMaterial;
+	TObjectPtr<class UMaterialInterface> AnomalyMaterial;
 
 #pragma endregion
 
 #pragma region Blood
-
+	
 public:
 	void BloodDropping();
 
