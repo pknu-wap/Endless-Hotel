@@ -49,12 +49,14 @@ void UTutorialComponent::ShowTutorialWidget()
 	{
 		Comp_Interact->ShowInteractingHighlight(true);
 	}
-
-	FTimerHandle DisappearHandle;
-	GetWorld()->GetTimerManager().SetTimer(DisappearHandle, this, &ThisClass::DisappearTutorialWidget, WidgetDuration, false);
+	else
+	{
+		FTimerHandle HideHandle;
+		GetWorld()->GetTimerManager().SetTimer(HideHandle, this, &ThisClass::HideTutorialWidget, 10.f, false);
+	}
 }
 
-void UTutorialComponent::DisappearTutorialWidget()
+void UTutorialComponent::HideTutorialWidget()
 {
 	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
 	Data.bIsFirstPlay = false;

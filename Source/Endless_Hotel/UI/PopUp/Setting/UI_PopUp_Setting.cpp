@@ -45,6 +45,7 @@ void UUI_PopUp_Setting::NativeConstruct()
 	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			TurnOnGearLight(true);
 		}), 1.f, false);
 
 	HighlightButtons();
@@ -60,6 +61,8 @@ void UUI_PopUp_Setting::NativeDestruct()
 	CameraManager->PossessCamera(ECameraType::Title, 1.f);
 
 	SM_Gear->SetActorRotation(OriginRot);
+
+	TurnOnGearLight(false);
 
 	Super::NativeDestruct();
 }

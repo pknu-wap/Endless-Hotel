@@ -28,8 +28,9 @@ void UUI_HUD_InGame::NativeConstruct()
 	Super::NativeConstruct();
 
 	auto Data = USaveManager::LoadData_Setting();
-
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
+
+	EyeEffectBlur(true);
 }
 
 #pragma endregion
