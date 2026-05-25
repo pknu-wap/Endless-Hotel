@@ -3,6 +3,7 @@
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Component/Interact/InteractComponent.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
@@ -259,8 +260,10 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::DoorOpen:
+		auto* GameInstance = GetGameInstance<UEHGameInstance>();
+		GameInstance->StartDemoTimer();
 
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+		UGameSystem* Sub = GameInstance->GetSubsystem<UGameSystem>();
 
 		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
 		{
