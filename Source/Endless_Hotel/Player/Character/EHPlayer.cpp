@@ -32,6 +32,10 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	HeartbeatAudioComponent->SetupAttachment(RootComponent);
 	HeartbeatAudioComponent->bAutoActivate = false;
 
+	ElevatorMoveAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ElevatorMoveAudioComponent"));
+	ElevatorMoveAudioComponent->SetupAttachment(RootComponent);
+	ElevatorMoveAudioComponent->bAutoActivate = false;
+
 	FlashLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("FlashLight"));
 	FlashLight->SetVisibility(false);
 	FlashLight->SetupAttachment(Camera);

@@ -48,9 +48,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
     ElevatorLight->SetupAttachment(Car);
 
-    Elevator_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Elevator AC"));
-    Elevator_AC->SetupAttachment(Car);
-
     Door_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Door AC"));
     Door_AC->SetupAttachment(Car);
 
@@ -124,7 +121,6 @@ void AElevator::MoveDoors(bool bWillOpen)
 
     bIsDoorOpened = bWillOpen;
     Door_AC->Activate(true);
-    Elevator_AC->Stop();
     Door_AC->Play();
 
     if (bWillOpen)
@@ -150,6 +146,12 @@ void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
     Door_AC->Stop();
+    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (Player->ElevatorMoveAudioComponent->IsPlaying())
+    {
+        Player->ElevatorMoveAudioComponent->Stop();
+        Player->ElevatorMoveAudioComponent->Activate(false);
+    }
     TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
 }
@@ -157,8 +159,12 @@ void AElevator::OnDoorTimelineFinished()
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     RootComponent->SetRelativeLocation(Start);
-    Elevator_AC->Activate(true);
-    Elevator_AC->Play();
+    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!Player->ElevatorMoveAudioComponent->IsPlaying())
+    {
+        Player->ElevatorMoveAudioComponent->Activate(true);
+        Player->ElevatorMoveAudioComponent->Play();
+    }
 
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;

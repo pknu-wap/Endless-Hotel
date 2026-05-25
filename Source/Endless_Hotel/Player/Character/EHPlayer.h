@@ -104,6 +104,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundBase> HeartbeatSound;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> ElevatorMoveAudioComponent;
+
 #pragma endregion
 
 };
