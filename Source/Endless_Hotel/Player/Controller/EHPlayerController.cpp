@@ -6,6 +6,7 @@
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
 #include "Type/Save/Type_Save.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include <EnhancedInputComponent.h>
@@ -52,6 +53,27 @@ void AEHPlayerController::BeginPlay()
 	}
 
 	IMC_Backup = IMC_Default;
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+
+	switch (GameInstance->CurrentLevelType)
+	{
+	case ELevelType::Hotel:
+	{
+		UICon->OpenWidget(EWidgetType::HUD_InGame);
+		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
+		{
+			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
+		}
+		break;
+	}
+	case ELevelType::MainMenu:
+	{
+		UICon->OpenWidget(EWidgetType::HUD_Title);
+		break;
+	}
+	}
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)

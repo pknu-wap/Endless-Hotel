@@ -2,39 +2,11 @@
 
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Widget/PDA_Widget.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/PlayerController.h>
-
-#pragma region Data
-
-void UUI_Controller::LoadWidgetDataAsset(const EWidgetType& WidgetType)
-{
-	if (IsValid(PDA_Widget))
-	{
-		return;
-	}
-
-	TArray<FPrimaryAssetId> DataIDs;
-
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.GetPrimaryAssetIdList(FPrimaryAssetType("Widget"), OUT DataIDs);
-
-	FPrimaryAssetId DataID = DataIDs[0];
-	AssetManager.LoadPrimaryAsset(DataID, { FName("") }, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedWidgetDataAsset, DataID, WidgetType));
-}
-
-void UUI_Controller::OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType)
-{
-	auto& AssetManager = UEHAssetManager::Get();
-	PDA_Widget = AssetManager.GetPrimaryAssetObject<UPDA_Widget>(DataAssetID);
-
-	OpenWidget(WidgetType);
-}
-
-#pragma endregion
 
 #pragma region Open & Close
 
@@ -124,7 +96,8 @@ void UUI_Controller::ClearAllWidget()
 
 void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	UUI_Base* TopWidget = PopUpWidgets.Top();
 
 	switch (InputMode)
 	{
@@ -137,7 +110,7 @@ void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 	case EWidgetInputMode::UIOnly:
 	{
 		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
+		InputMode.SetWidgetToFocus(TopWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -145,7 +118,7 @@ void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 	case EWidgetInputMode::GameAndUI:
 	{
 		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(PopUpWidgets.Top()->TakeWidget());
+		InputMode.SetWidgetToFocus(TopWidget->TakeWidget());
 		PC->SetInputMode(InputMode);
 		PC->bShowMouseCursor = true;
 		break;
@@ -161,6 +134,34 @@ void UUI_Controller::AdjustZOrder(bool bUp)
 {
 	int32 Value = bUp ? 1 : -1;
 	Widget_ZOrder = FMath::Clamp(Widget_ZOrder + Value, Min_ZOrder, Max_ZOrder);
+}
+
+#pragma endregion
+
+#pragma region Data
+
+void UUI_Controller::LoadWidgetDataAsset(const EWidgetType& WidgetType)
+{
+	if (IsValid(PDA_Widget))
+	{
+		return;
+	}
+
+	TArray<FPrimaryAssetId> DataIDs;
+
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.GetPrimaryAssetIdList(FPrimaryAssetType("Widget"), OUT DataIDs);
+
+	FPrimaryAssetId DataID = DataIDs[0];
+	AssetManager.LoadPrimaryAsset(DataID, { FName("") }, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedWidgetDataAsset, DataID, WidgetType));
+}
+
+void UUI_Controller::OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType)
+{
+	auto& AssetManager = UEHAssetManager::Get();
+	PDA_Widget = AssetManager.GetPrimaryAssetObject<UPDA_Widget>(DataAssetID);
+
+	OpenWidget(WidgetType);
 }
 
 #pragma endregion
