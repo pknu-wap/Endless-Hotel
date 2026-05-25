@@ -36,6 +36,7 @@ enum class EAnomalyID : uint8
 	Phone_Ringing		= 83	UMETA(DisplayName = "Phone_Ringing"),
 	Twin				= 85	UMETA(DisplayName = "Twin"),
 	SignDrop			= 86	UMETA(DisplayName = "SignDrop"),
+	Painting_Picture	= 87	UMETA(DisplayName = "Painting_Picture"),
 	Float				= 88	UMETA(DisplayName = "Float"),
 	Clock_Ringing		= 89	UMETA(DisplayName = "Clock_Ringing"),
 	MusicBox_Ringing	= 90	UMETA(DisplayName = "MusicBox_Ringing"),
@@ -48,5 +49,4 @@ enum class EAnomalyID : uint8
 	Doll				= 98	UMETA(DisplayName = "Doll"),
 	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye"),
 	Radio				= 100	UMETA(DisplayName = "Radio"),
-	Painting_Picture	= 87	UMETA(DisplayName = "Painting_Picture")
 };

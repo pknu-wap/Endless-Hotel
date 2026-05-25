@@ -54,12 +54,6 @@ void AAnomaly_Object_Painting::Reset()
 
 #pragma endregion
 
-void AAnomaly_Object_Painting::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-
 #pragma region EyeMove
 
 void AAnomaly_Object_Painting::EyeFollowing()
