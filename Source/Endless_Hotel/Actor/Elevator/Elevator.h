@@ -198,6 +198,9 @@ public:
 
 #pragma region Trigger
 
+public:
+    void SetActiveBlockBox(bool bIsActive);
+
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
     FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);

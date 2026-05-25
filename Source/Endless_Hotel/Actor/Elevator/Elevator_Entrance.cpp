@@ -49,6 +49,7 @@ void AElevator_Entrance::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActo
 		return;
 	}
 	TakeOff_Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Elevator->SetActiveBlockBox(true);
 	FTimerHandle DoorDelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DoorDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{

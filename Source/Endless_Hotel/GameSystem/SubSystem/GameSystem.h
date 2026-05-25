@@ -84,7 +84,7 @@ public:
 	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
-	void ResetFloor() { Floor = STARTFLOOR; };
+	void ResetFloor() { Floor = STARTFLOOR; NextAnomalyMap = EHotelDataLayer::Hotel; };
 	void SubFloor();
 	void AddFloor();
 
@@ -111,9 +111,10 @@ public:
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
 	void PendingLoadDataLayer();
+	void TrySwitchDataLayer();
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")

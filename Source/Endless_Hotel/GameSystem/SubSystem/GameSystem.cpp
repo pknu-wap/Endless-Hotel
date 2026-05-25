@@ -129,10 +129,11 @@ void UGameSystem::TryInteractSolveVerdict()
 
 #pragma region Anomaly
 
-void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName)
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
 	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentDataLayer = AnomalyMap;
 	CurrentAnomaly->SetAnomalyState();
 	ActIndex++;
 	SetTargetElevator();
@@ -146,9 +147,22 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer Anomaly
 
 void UGameSystem::PendingLoadDataLayer()
 {
-	// 여기서 지금 열려있는 레벨을 가져와서 비교 예정
+	if (CurrentDataLayer == NextAnomalyMap)
+	{
+		return;
+	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->LoadDataLayer(NextAnomalyMap);
+}
+
+void UGameSystem::TrySwitchDataLayer()
+{
+	if (CurrentDataLayer == NextAnomalyMap)
+	{
+		return;
+	}
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->SwitchDataLayer();
 }
 
 #pragma endregion
