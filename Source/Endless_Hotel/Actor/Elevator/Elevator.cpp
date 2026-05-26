@@ -89,7 +89,18 @@ void AElevator::BeginPlay()
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
-    
+    if (IsValid(Sub->CurrentAnomaly))
+    {
+        StartElevator();
+    }
+}
+
+void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    Subsystem->UnRegisterElevator(ElevatorID);
+    Super::EndPlay(EndPlayReason);
 }
 
 #pragma endregion
@@ -185,7 +196,13 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     }
     else
     {
-        SetDelay(ElevatorWallHandle, [this] { ElevatorWall->MoveWall(ElevatorMoveDuration); }, ElevatorMoveDuration + 0.1f);
+        SetDelay(ElevatorWallHandle, [this]
+            { 
+                if(ElevatorWall.IsValid())
+                {
+                    ElevatorWall->MoveWall(ElevatorMoveDuration);
+                }
+            }, ElevatorMoveDuration + 0.1f);
         SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
     }
 }
@@ -202,7 +219,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
     if (bIsOpening)
     {
         auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-        SubSystem->PendingLoadDataLayer();
+        bShouldChangeMap = SubSystem->PendingLoadDataLayer();
     }
     else
     {
@@ -239,20 +256,29 @@ void AElevator::NotifySubsystem()
     Sub->SetPlayerVelocity(HorizontalSpeed);
     Sub->TryInteractSolveVerdict();
     Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
+    if (bShouldChangeMap)
+    {
+        Sub->TrySwitchDataLayer();
+    }
     Sub->ApplyVerdict();
-    Sub->TrySwitchDataLayer();
 }
 
 void AElevator::StartElevator()
 {
-    ElevatorWall->ResetWall();
-    Floor->SetVisibility(false);
+    if (ElevatorWall.IsValid())
+    {
+        ElevatorWall->ResetWall();
+    }
+    Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this))
     {
-        LinkedEntrance->SetTriggerActive();
+        if(LinkedEntrance.IsValid())
+        {
+            LinkedEntrance->SetTriggerActive();
+        }
         SetLightOn(true);
         RootComponent->SetRelativeLocation(StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -280,7 +306,10 @@ void AElevator::StartElevator()
     }
     else
     {
-        LinkedEntrance->ResetTrigger();
+        if(LinkedEntrance.IsValid())
+        {
+            LinkedEntrance->ResetTrigger();
+        }
         this->Exterior_Structure->SetRelativeLocation(MapPos);
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
         RightDoor->SetRelativeLocation(RightDoorClosed);

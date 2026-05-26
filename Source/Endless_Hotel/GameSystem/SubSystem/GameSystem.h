@@ -113,7 +113,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 public:
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
-	void PendingLoadDataLayer();
+	bool PendingLoadDataLayer();
 	void TrySwitchDataLayer();
 
 public:
@@ -180,6 +180,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
 
 public:
 	void RegisterElevator(class AElevator* Elevator);
+	void UnRegisterElevator(FName ElevatorID);
 	void SetTargetElevator();
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };

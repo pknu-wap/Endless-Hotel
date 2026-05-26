@@ -145,22 +145,19 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer Anomaly
 	NextAnomalyMap = AnomalyMap;
 }
 
-void UGameSystem::PendingLoadDataLayer()
+bool UGameSystem::PendingLoadDataLayer()
 {
 	if (CurrentDataLayer == NextAnomalyMap)
 	{
-		return;
+		return false;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->LoadDataLayer(NextAnomalyMap);
+	return true;
 }
 
 void UGameSystem::TrySwitchDataLayer()
 {
-	if (CurrentDataLayer == NextAnomalyMap)
-	{
-		return;
-	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayer();
 }
@@ -270,6 +267,15 @@ void UGameSystem::GameClear()
 void UGameSystem::RegisterElevator(class AElevator* Elevator)
 {
 	Elevators.Add(Elevator->ElevatorID, Elevator);
+	if (IsValid(CurrentAnomaly) && !TargetElevator.IsValid())
+	{
+		SetTargetElevator();
+	}
+}
+
+void UGameSystem::UnRegisterElevator(FName ElevatorID)
+{
+	Elevators.Remove(ElevatorID);
 }
 
 void UGameSystem::SetTargetElevator()

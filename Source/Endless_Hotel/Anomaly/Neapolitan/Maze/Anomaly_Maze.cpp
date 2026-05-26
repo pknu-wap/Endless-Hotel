@@ -42,13 +42,15 @@ void AAnomaly_Maze::StartAnomalyAction()
 
 void AAnomaly_Maze::MazeMonster()
 {
-	const uint8 MaxIndex = LinkedObjects.Num() - 1;
+	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
-	AActor* TargetWall = LinkedObjects[PositionIndex];
-
-	TargetWall->SetActorEnableCollision(false);
-	TargetWall->SetActorHiddenInGame(true);
+	AActor* TargetWall = TargetAnomalyObjects[PositionIndex];
+	if (TargetWall)
+	{
+		TargetWall->SetActorEnableCollision(false);
+		TargetWall->SetActorHiddenInGame(true);
+	}
 
 	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
 	{

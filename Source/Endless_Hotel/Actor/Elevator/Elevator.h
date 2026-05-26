@@ -18,6 +18,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
@@ -149,7 +150,7 @@ protected:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator")
-    TObjectPtr<class AElevator_Entrance> LinkedEntrance;
+    TWeakObjectPtr<class AElevator_Entrance> LinkedEntrance;
 
 #pragma endregion
 
@@ -172,6 +173,8 @@ protected:
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")
     bool bIsNormalElevator = true;
+
+    bool bShouldChangeMap = false;
 
 #pragma endregion
 
