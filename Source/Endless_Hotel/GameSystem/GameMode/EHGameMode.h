@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <GameFramework/GameModeBase.h>
 #include <EHGameMode.generated.h>
@@ -16,17 +15,6 @@ class ENDLESS_HOTEL_API AEHGameMode : public AGameModeBase
 
 public:
 	AEHGameMode(const FObjectInitializer& ObjectInitializer);
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
-#pragma region Widget
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Widget")
-	EWidgetType WidgetType;
 
 #pragma endregion
 

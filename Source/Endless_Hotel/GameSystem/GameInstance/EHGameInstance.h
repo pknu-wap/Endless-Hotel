@@ -13,6 +13,13 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
+#pragma region Base
+
+public:
+	virtual void Init() override;
+
+#pragma endregion
+
 #pragma region Game
 
 public:
@@ -34,6 +41,20 @@ public:
 	void LoadLevel(const ELevelType& LevelType);
 	void OpenLevel();
 
+public:
+	ELevelType CurrentLevelType = ELevelType::MainMenu;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelLoaded);
+	FOnLevelLoaded OnLevelLoaded;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, const ELevelType&, LevelType);
+	FOnLevelOpened OnLevelOpened;
+
+#pragma endregion
+
+#pragma region Data Layer
+
+public:
 	// 타겟이 되는 레이어을 미리 로딩시킴
 	void LoadDataLayer(const EHotelDataLayer& Layer);
 
@@ -44,13 +65,8 @@ private:
 	UDataLayerAsset* GetDataLayerAsset(const EHotelDataLayer& Target);
 
 public:
-	ELevelType CurrentLevelType = ELevelType::MainMenu;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelLoaded);
-	FOnLevelLoaded OnLevelLoaded;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, const ELevelType&, LevelType);
-	FOnLevelOpened OnLevelOpened;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EHotelDataLayer&, DataLayer);
+	FOnDataLayerChanged OnDataLayerChanged;
 
 private:
 	EHotelDataLayer LoadLayer = EHotelDataLayer::Hotel;

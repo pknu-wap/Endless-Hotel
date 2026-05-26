@@ -12,20 +12,6 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
-#pragma region Data
-
-private:
-	void LoadWidgetDataAsset(const EWidgetType& WidgetType);
-
-	UFUNCTION()
-	void OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType);
-
-private:
-	UPROPERTY()
-	TObjectPtr<class UPDA_Widget> PDA_Widget;
-
-#pragma endregion
-
 #pragma region Open & Close
 
 public:
@@ -60,6 +46,20 @@ private:
 	const int32 Min_ZOrder = 0;
 
 	int32 Widget_ZOrder = 0;
+
+#pragma endregion
+
+#pragma region Data
+
+private:
+	void LoadWidgetDataAsset(const EWidgetType& WidgetType);
+
+	UFUNCTION()
+	void OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidgetType WidgetType);
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UPDA_Widget> PDA_Widget;
 
 #pragma endregion
 

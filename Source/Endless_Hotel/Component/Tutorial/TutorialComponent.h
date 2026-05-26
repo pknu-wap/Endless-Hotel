@@ -20,9 +20,11 @@ protected:
 
 #pragma region Widget
 
+public:
+	void HideTutorialWidget();
+
 private:
 	void ShowTutorialWidget();
-	void DisappearTutorialWidget();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Widget")
