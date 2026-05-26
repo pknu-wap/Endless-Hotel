@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Component/Interact/InteractComponent.h"
+#include "Component/Tutorial/TutorialComponent.h"
 #include "UI/Base/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
 #include <Components/WidgetComponent.h>
@@ -77,6 +78,12 @@ void UInteractComponent::Interact(AEHCharacter* Interacter)
 	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
+
+	auto* Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
+	if (IsValid(Comp_Tutorial))
+	{
+		Comp_Tutorial->HideTutorialWidget();
+	}
 
 	IInteractable::Execute_Interact(Owner.Get(), Interacter);
 }
