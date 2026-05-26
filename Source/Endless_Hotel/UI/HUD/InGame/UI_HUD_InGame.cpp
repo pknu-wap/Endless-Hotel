@@ -23,9 +23,13 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
 }
 
-void UUI_HUD_InGame::NativeConstruct()
+#pragma endregion
+
+#pragma region Show
+
+void UUI_HUD_InGame::ShowWidget()
 {
-	Super::NativeConstruct();
+	Super::ShowWidget();
 
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
@@ -156,16 +160,16 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 	FTimerHandle ShowHandle;
 	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubTitle]()
 		{
-			Image_SubTitle->SetVisibility(ESlateVisibility::Visible);
+			Image_SubTitle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Text_SubTitle->SetText(SubTitle);
-			Text_SubTitle->SetVisibility(ESlateVisibility::Visible);
+			Text_SubTitle->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		}), Delay, false);
 
 	FTimerHandle HideHandle;
 	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
-			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+			Image_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
 		}), Delay + Duration, false);
 }
 

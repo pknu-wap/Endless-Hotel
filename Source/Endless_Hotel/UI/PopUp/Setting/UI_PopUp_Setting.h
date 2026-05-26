@@ -24,9 +24,15 @@ class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
-	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+#pragma endregion
+
+#pragma region Show & Hide
+
+public:
+	virtual void ShowWidget() override;
+	virtual void HideWidget() override;
 
 #pragma endregion
 

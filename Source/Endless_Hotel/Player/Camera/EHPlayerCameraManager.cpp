@@ -101,7 +101,7 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 	UGameInstance* GameInstance = GetWorld()->GetGameInstance();
 
 	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
-	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentHUDWidget());
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
 
 	auto* SoundCon = GameInstance->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
