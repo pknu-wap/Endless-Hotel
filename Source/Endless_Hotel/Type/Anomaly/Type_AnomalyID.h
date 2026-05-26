@@ -31,11 +31,13 @@ enum class EAnomalyID : uint8
 	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color"),
 	GhostHand			= 24	UMETA(DisplayName = "GhostHand"),
 	Ghost               = 28	UMETA(DisplayName = "Ghost"),
+	Radio				= 76	UMETA(DisplayName = "Radio"),
 	CrawlChild			= 80	UMETA(DisplayName = "CrawlChild"),
 	Windup				= 82	UMETA(DisplayName = "Windup"),
 	Phone_Ringing		= 83	UMETA(DisplayName = "Phone_Ringing"),
 	Twin				= 85	UMETA(DisplayName = "Twin"),
 	SignDrop			= 86	UMETA(DisplayName = "SignDrop"),
+	Picture				= 87	UMETA(DisplayName = "Picture"),
 	Float				= 88	UMETA(DisplayName = "Float"),
 	Clock_Ringing		= 89	UMETA(DisplayName = "Clock_Ringing"),
 	MusicBox_Ringing	= 90	UMETA(DisplayName = "MusicBox_Ringing"),
@@ -46,7 +48,5 @@ enum class EAnomalyID : uint8
 	Painting_Blood		= 96	UMETA(DisplayName = "Painting_Blood"),
 	Maze_Monster		= 97	UMETA(DisplayName = "Maze_Monster"),
 	Doll				= 98	UMETA(DisplayName = "Doll"),
-	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye"),
-	Radio				= 100	UMETA(DisplayName = "Radio"),
-	Picture				= 87	UMETA(DisplayName = "Picture")
+	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye")
 };

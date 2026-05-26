@@ -195,8 +195,8 @@ void AElevator::OnButtonClicked(bool bIsOpening)
     SetLightOn(true);
     MoveDoors(bIsOpening);
     UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-    //auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    //SubSystem->PendingLoadDataLayer();
+    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    SubSystem->PendingLoadDataLayer();
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
@@ -227,8 +227,8 @@ void AElevator::NotifySubsystem()
     float HorizontalSpeed = FVector(PreVelocity.X, PreVelocity.Y, 0.f).Size();
     FVector PreForward = Player->GetActorForwardVector();
 
-    //auto* GameInstance = GetGameInstance<UEHGameInstance>();
-    //GameInstance->SwitchDataLayer();
+    auto* GameInstance = GetGameInstance<UEHGameInstance>();
+    GameInstance->SwitchDataLayer();
 
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {

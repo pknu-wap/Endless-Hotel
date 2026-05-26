@@ -1,6 +1,5 @@
 // Copyright by 2026-1 WAP Game 2 team
 
-
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
 #include "Component/Interact/InteractComponent.h"
 #include <Components/AudioComponent.h>
@@ -19,12 +18,12 @@ void AAnomaly_Object_Windup::BeginPlay()
 	Super::BeginPlay();
 
 	AC_Windup->SetSound(Sound_Windup);
-	StartWindupLoop();
 }
 
 #pragma endregion
 
 #pragma region Sound
+
 void AAnomaly_Object_Windup::StartWindupLoop()
 {
 	CurrentWindupPlayCount = 0;
