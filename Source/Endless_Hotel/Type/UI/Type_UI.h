@@ -10,7 +10,7 @@ enum class EWidgetType : uint8
 	None				UMETA(DisplayName = "None"),
 	HUD_InGame			UMETA(DisplayName = "HUD_InGame"),
 	HUD_Title			UMETA(DisplayName = "HUD_Title"),
-	PopUp_Loading		UMETA(DisplayName = "PopUp_Loading"),
+	HUD_Loading			UMETA(DisplayName = "HUD_Loading"),
 	PopUp_Escape		UMETA(DisplayName = "PopUp_Escape"),
 	PopUp_Setting		UMETA(DisplayName = "PopUp_Setting"),
 	PopUp_Read			UMETA(DisplayName = "PopUp_Read"),

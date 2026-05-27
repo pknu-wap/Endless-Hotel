@@ -53,7 +53,7 @@ void UEHGameInstance::LoadLevel(const ELevelType& LevelType)
 	CurrentLevelType = LevelType;
 
 	auto* UICon = GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_Loading);
+	UICon->OpenWidget(EWidgetType::HUD_Loading);
 
 	OnLevelLoaded.Broadcast();
 }

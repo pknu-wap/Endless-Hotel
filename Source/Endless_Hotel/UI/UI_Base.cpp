@@ -24,7 +24,7 @@ void UUI_Base::NativeConstruct()
 
 void UUI_Base::ShowWidget()
 {
-	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void UUI_Base::HideWidget()

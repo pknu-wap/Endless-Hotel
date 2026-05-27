@@ -27,6 +27,7 @@ private:
 
 public:
 	bool IsLoadingComplete() { return LoadingPercentage >= TargetPercentage; }
+	void ResetLoadingPercentage() { LoadingPercentage = 0.f; }
 
 private:
 	void SetLoadingPercentage(float InDeltaTime);

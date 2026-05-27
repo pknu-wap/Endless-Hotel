@@ -43,16 +43,15 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 	case EWidgetLayer::HUD:
 		WidgetStack.Empty();
 		break;
-
-	case EWidgetLayer::PopUp_Pause:
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
-		break;
 	}
 
 	if (!WidgetStack.Contains(WidgetType))
 	{
 		WidgetStack.Add(WidgetType);
 	}
+
+	bool bNeedPause = CreatedWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
+	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
 
 	SetInputMode(CreatedWidget->WidgetInputMode);
 
@@ -74,7 +73,8 @@ void UUI_Controller::CloseWidget()
 	TopWidget = CachedWidgets[WidgetStack.Top()];
 	TopWidget->ShowWidget();
 
-	UGameplayStatics::SetGamePaused(GetWorld(), TopWidget->WidgetLayer == EWidgetLayer::PopUp_Pause);
+	bool bNeedPause = TopWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
+	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
 
 	SetInputMode(TopWidget->WidgetInputMode);
 }
