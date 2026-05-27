@@ -27,8 +27,8 @@ void AAnomaly_Painting::SetAnomalyState()
 		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, { EInteractType::Rotate });
 		ScheduleAnomaly(10.0f);
 		break;
-	case EAnomalyID::Picture:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::ActivePicture, { EInteractType::Rotate });
+	case EAnomalyID::Painting_Picture:
+		SetupAnomalyAction(&AAnomaly_Object_Painting::ChangePicture, { EInteractType::Rotate });
 		ScheduleAnomaly();
 		break;
 	}
