@@ -108,6 +108,7 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 
 	if (bIsOpen)
 	{
+		UI_InGame->EyeEffectBlur(true);
 		TimeLine_Eye->PlayFromStart();
 	}
 	else
