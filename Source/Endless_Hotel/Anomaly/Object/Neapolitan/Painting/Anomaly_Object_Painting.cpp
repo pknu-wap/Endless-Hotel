@@ -37,8 +37,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
-
-	TextureParameterName = FName("Diffuse Texture");
 }
 
 void AAnomaly_Object_Painting::Reset()
@@ -55,18 +53,6 @@ void AAnomaly_Object_Painting::Reset()
 }
 
 #pragma endregion
-
-void AAnomaly_Object_Painting::BeginPlay()
-{
-	Super::BeginPlay();
-
-	DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(1);
-	DynamicMaterial&& NormalTexture;
-	DynamicMaterial->SetTextureParameterValue(TextureParameterName, NormalTexture);
-		
-	
-}
-
 
 #pragma region EyeMove
 
@@ -205,10 +191,11 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 
 #pragma region TextureSwap
 
-void AAnomaly_Object_Painting::ActivePicture()
+void AAnomaly_Object_Painting::ChangePicture()
 {
-	DynamicMaterial->SetTextureParameterValue(TextureParameterName, AnomalyTexture);
+	Object->SetMaterial(1, AnomalyMaterial);
 }
+
 
 #pragma region Die
 
