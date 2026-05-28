@@ -109,7 +109,7 @@ void AElevator_Button::OnMoveCompleted()
             EHPC->SetIgnoreLookInput(false);
             EHPC->SetPlayerInputAble(true);
 
-        }), 2.0f, false);
+        }), 2.5f, false);
 }
 
 #pragma endregion
