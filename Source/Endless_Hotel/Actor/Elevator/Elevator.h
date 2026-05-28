@@ -69,7 +69,8 @@ protected:
 
 #pragma region Audio
 
-protected:UPROPERTY(VisibleAnywhere, Category = "Audio")
+protected:
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
     TObjectPtr<class UAudioComponent> Door_AC;
 
     UPROPERTY(EditAnywhere, Category = "Audio")
