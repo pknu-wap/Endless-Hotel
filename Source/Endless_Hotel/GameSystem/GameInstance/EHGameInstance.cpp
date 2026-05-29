@@ -109,7 +109,7 @@ bool UEHGameInstance::SwitchDataLayer()
 	TargetDataLayer = GetDataLayerAsset(UnloadLayer);
 
 	DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
-	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Unloaded);
+	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Loaded);
 
 	UnloadLayer = LoadLayer;
 
