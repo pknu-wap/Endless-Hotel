@@ -20,9 +20,13 @@ void UUI_HUD_Title::NativeOnInitialized()
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::Click_Quit);
 }
 
-void UUI_HUD_Title::NativeConstruct()
+#pragma endregion
+
+#pragma region Show
+
+void UUI_HUD_Title::ShowWidget()
 {
-	Super::NativeConstruct();
+	Super::ShowWidget();
 
 	SetLogoImage();
 }

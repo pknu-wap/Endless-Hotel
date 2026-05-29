@@ -2,7 +2,6 @@
 
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Widget/PDA_Widget.h"
 #include <Kismet/GameplayStatics.h>
@@ -18,33 +17,42 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 		return nullptr;
 	}
 
-	auto WidgetClass = PDA_Widget->GetWidgetClass(WidgetType);
+	if (!WidgetStack.IsEmpty())
+	{
+		CachedWidgets[WidgetStack.Top()]->HideWidget();
+	}
 
-	UUI_Base* CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass.LoadSynchronous());
+	UUI_Base* CreatedWidget = nullptr;
+
+	if (CachedWidgets.Contains(WidgetType))
+	{
+		CreatedWidget = CachedWidgets[WidgetType];
+	}
+	else
+	{
+		auto WidgetClass = PDA_Widget->GetWidgetClass(WidgetType);
+		CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass.LoadSynchronous());
+		CreatedWidget->AddToViewport();
+		CachedWidgets.Add(WidgetType, CreatedWidget);
+	}
+
+	CreatedWidget->ShowWidget();
 
 	switch (CreatedWidget->WidgetLayer)
 	{
-	case EWidgetLayer::None:
-		return CreatedWidget;
-
 	case EWidgetLayer::HUD:
-		ClearAllWidget();
-		break;
-
-	case EWidgetLayer::PopUp_Pause:
-		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		WidgetStack.Empty();
 		break;
 	}
 
-	if (!PopUpWidgets.IsEmpty())
+	if (!WidgetStack.Contains(WidgetType))
 	{
-		PopUpWidgets[0]->SetVisibility(ESlateVisibility::Hidden);
+		WidgetStack.Add(WidgetType);
 	}
 
-	CreatedWidget->AddToViewport(Widget_ZOrder);
-	PopUpWidgets.Add(CreatedWidget);
+	bool bNeedPause = CreatedWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
+	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
 
-	AdjustZOrder(true);
 	SetInputMode(CreatedWidget->WidgetInputMode);
 
 	return CreatedWidget;
@@ -52,42 +60,23 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 
 void UUI_Controller::CloseWidget()
 {
-	if (PopUpWidgets.IsEmpty())
+	UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
+
+	if (WidgetStack.IsEmpty() || TopWidget->WidgetLayer == EWidgetLayer::HUD)
 	{
 		return;
 	}
 
-	switch (PopUpWidgets.Top()->WidgetLayer)
-	{
-	case EWidgetLayer::None:
-	case EWidgetLayer::HUD:
-		return;
+	TopWidget->HideWidget();
+	WidgetStack.Pop();
 
-	case EWidgetLayer::PopUp_Pause:
-		UGameplayStatics::SetGamePaused(GetWorld(), false);
-		break;
-	}
+	TopWidget = CachedWidgets[WidgetStack.Top()];
+	TopWidget->ShowWidget();
 
-	AdjustZOrder(false);
-
-	PopUpWidgets.Top()->RemoveFromViewport();
-	PopUpWidgets.Pop();
-
-	UUI_Base* TopWidget = PopUpWidgets.Top();
-	TopWidget->SetVisibility(ESlateVisibility::Visible);
+	bool bNeedPause = TopWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
+	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
 
 	SetInputMode(TopWidget->WidgetInputMode);
-}
-
-void UUI_Controller::ClearAllWidget()
-{
-	for (auto Target : PopUpWidgets)
-	{
-		Target->RemoveFromViewport();
-	}
-
-	PopUpWidgets.Empty();
-	Widget_ZOrder = 0;
 }
 
 #pragma endregion
@@ -97,7 +86,7 @@ void UUI_Controller::ClearAllWidget()
 void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 {
 	auto* PC = GetWorld()->GetFirstPlayerController();
-	UUI_Base* TopWidget = PopUpWidgets.Top();
+	UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
 
 	switch (InputMode)
 	{
@@ -124,16 +113,6 @@ void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)
 		break;
 	}
 	}
-}
-
-#pragma endregion
-
-#pragma region ZOrder
-
-void UUI_Controller::AdjustZOrder(bool bUp)
-{
-	int32 Value = bUp ? 1 : -1;
-	Widget_ZOrder = FMath::Clamp(Widget_ZOrder + Value, Min_ZOrder, Max_ZOrder);
 }
 
 #pragma endregion
@@ -170,7 +149,7 @@ void UUI_Controller::OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidge
 
 void UUI_Controller::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 {
-	auto* UI_InGame = Cast<UUI_HUD_InGame>(GetCurrentHUDWidget());
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(GetHUDWidget());
 	UI_InGame->ShowSubTitle(SubTitle, Delay, Duration);
 }
 

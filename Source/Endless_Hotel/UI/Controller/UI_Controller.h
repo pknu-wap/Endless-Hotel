@@ -17,15 +17,21 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 public:
 	class UUI_Base* OpenWidget(const EWidgetType& WidgetType);
 	void CloseWidget();
-	void ClearAllWidget();
+
+#pragma endregion
+
+#pragma region Cache
 
 public:
-	class UUI_Base* GetCurrentHUDWidget() { return PopUpWidgets[0]; }
-	class UUI_Base* GetCurrentPopUpWidget() { return PopUpWidgets.Top(); }
+	class UUI_Base* GetHUDWidget() { return CachedWidgets[WidgetStack[0]]; }
+	class UUI_Base* GetPopUpWidget() { return CachedWidgets[WidgetStack.Top()]; }
+	class UUI_Base* GetPopUpWidget(const EWidgetType& WidgetType) { return CachedWidgets[WidgetType]; }
 
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UUI_Base>> PopUpWidgets;
+	TMap<EWidgetType, TObjectPtr<class UUI_Base>> CachedWidgets;
+
+	TArray<EWidgetType> WidgetStack;
 
 #pragma endregion
 
@@ -33,19 +39,6 @@ private:
 
 private:
 	void SetInputMode(const EWidgetInputMode& InputMode);
-
-#pragma endregion
-
-#pragma region ZOrder
-
-private:
-	void AdjustZOrder(bool bUp);
-
-private:
-	const int32 Max_ZOrder = 100;
-	const int32 Min_ZOrder = 0;
-
-	int32 Widget_ZOrder = 0;
 
 #pragma endregion
 

@@ -19,3 +19,17 @@ void UUI_Base::NativeConstruct()
 }
 
 #pragma endregion
+
+#pragma region Show & Hide
+
+void UUI_Base::ShowWidget()
+{
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UUI_Base::HideWidget()
+{
+	SetVisibility(ESlateVisibility::Collapsed);
+}
+
+#pragma endregion

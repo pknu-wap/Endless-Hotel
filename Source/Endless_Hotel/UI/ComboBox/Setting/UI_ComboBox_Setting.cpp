@@ -99,7 +99,7 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 	switch (Value)
 	{
 	case EOptionValue::Custom:
-		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Hidden);
+		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Collapsed);
 		break;
 
 	default:
