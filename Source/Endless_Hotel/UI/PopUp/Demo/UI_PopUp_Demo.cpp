@@ -19,7 +19,7 @@ void UUI_PopUp_Demo::NativeOnInitialized()
 
 void UUI_PopUp_Demo::Click_Return()
 {
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->LoadLevel(ELevelType::MainMenu);
 }
 

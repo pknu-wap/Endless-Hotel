@@ -20,6 +20,14 @@ protected:
 
 #pragma endregion
 
+#pragma region Show & Hide
+
+public:
+	virtual void ShowWidget();
+	virtual void HideWidget();
+
+#pragma endregion
+
 #pragma region Type
 
 public:

@@ -53,7 +53,7 @@ void UEHGameInstance::LoadLevel(const ELevelType& LevelType)
 	CurrentLevelType = LevelType;
 
 	auto* UICon = GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_Loading);
+	UICon->OpenWidget(EWidgetType::HUD_Loading);
 
 	OnLevelLoaded.Broadcast();
 }
@@ -109,7 +109,7 @@ bool UEHGameInstance::SwitchDataLayer()
 	TargetDataLayer = GetDataLayerAsset(UnloadLayer);
 
 	DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
-	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Unloaded);
+	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Loaded);
 
 	UnloadLayer = LoadLayer;
 
@@ -136,6 +136,22 @@ UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EHotelDataLayer& Targe
 	}
 
 	return nullptr;
+}
+
+#pragma endregion
+
+#pragma region Demo Timer
+
+void UEHGameInstance::StartDemoTimer()
+{
+	FTimerHandle DemoHandle;
+	GetWorld()->GetTimerManager().SetTimer(DemoHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			auto* UICon = GetSubsystem<UUI_Controller>();
+			UICon->OpenWidget(EWidgetType::PopUp_Demo);
+
+			USaveManager::DeleteData_Tutorial();
+		}), GameplayTime, false);
 }
 
 #pragma endregion

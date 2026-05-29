@@ -85,7 +85,7 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 		Image_Brightness->SetColorAndOpacity(Color);
 
 		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetCurrentHUDWidget()))
+		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
 		{
 			UI_InGame->SetBrightness(AlphaValue);
 		}
@@ -192,12 +192,12 @@ void UUI_Slider_Setting::ShowOffImage(bool bIsCheck)
 {
 	if (bIsCheck)
 	{
-		Image_Off->SetVisibility(ESlateVisibility::Hidden);
+		Image_Off->SetVisibility(ESlateVisibility::Collapsed);
 		CheckBox_Off->SetCheckedState(ECheckBoxState::Checked);
 	}
 	else
 	{
-		Image_Off->SetVisibility(ESlateVisibility::Visible);
+		Image_Off->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		CheckBox_Off->SetCheckedState(ECheckBoxState::Unchecked);
 	}
 }

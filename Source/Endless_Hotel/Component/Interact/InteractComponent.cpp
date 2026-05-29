@@ -4,6 +4,7 @@
 #include "Component/Tutorial/TutorialComponent.h"
 #include "UI/Base/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Static
@@ -80,7 +81,7 @@ void UInteractComponent::Interact(AEHCharacter* Interacter)
 	bIsInteracted = true;
 
 	auto* Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
-	if (IsValid(Comp_Tutorial))
+	if (IsValid(Comp_Tutorial) && USaveManager::LoadData_Tutorial().bIsFirstPlay)
 	{
 		Comp_Tutorial->HideTutorialWidget();
 	}

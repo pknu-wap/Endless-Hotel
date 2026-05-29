@@ -16,7 +16,6 @@ class ENDLESS_HOTEL_API UUI_PopUp_Option : public UUI_PopUp_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
 
 #pragma endregion
 

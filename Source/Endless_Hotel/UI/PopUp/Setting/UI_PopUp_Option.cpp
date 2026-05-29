@@ -20,21 +20,12 @@ void UUI_PopUp_Option::NativeOnInitialized()
 	if (ComboBox_Default)
 	{
 		ComboBox_Default->ClearOptions();
+		ComboBox_Default->BindEvents();
 
 		for (auto Value : ComboBoxOptions)
 		{
 			ComboBox_Default->AddEnumOption<EOptionValue>(Value);
 		}
-	}
-}
-
-void UUI_PopUp_Option::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-	if (ComboBox_Default)
-	{
-		ComboBox_Default->BindEvents();
 	}
 }
 
