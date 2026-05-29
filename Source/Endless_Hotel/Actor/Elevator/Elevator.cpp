@@ -215,13 +215,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 {
     SetLightOn(true);
     MoveDoors(bIsOpening);
-    UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-    if (bIsOpening)
-    {
-        auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-        bShouldChangeMap = SubSystem->PendingLoadDataLayer();
-    }
-    else
+    if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
         GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -256,10 +250,6 @@ void AElevator::NotifySubsystem()
     Sub->SetPlayerVelocity(HorizontalSpeed);
     Sub->TryInteractSolveVerdict();
     Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
-    if (bShouldChangeMap)
-    {
-        Sub->TrySwitchDataLayer();
-    }
     Sub->ApplyVerdict();
 }
 
