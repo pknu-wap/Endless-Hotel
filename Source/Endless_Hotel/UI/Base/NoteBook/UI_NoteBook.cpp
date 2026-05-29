@@ -26,24 +26,24 @@ void UUI_NoteBook::ChangeDescription(const uint8& StartIndex)
 
 void UUI_NoteBook::HideDescription()
 {
-	Image1->SetVisibility(ESlateVisibility::Hidden);
-	Image2->SetVisibility(ESlateVisibility::Hidden);
-	Image3->SetVisibility(ESlateVisibility::Hidden);
-	Text1->SetVisibility(ESlateVisibility::Hidden);
-	Text2->SetVisibility(ESlateVisibility::Hidden);
-	Text3->SetVisibility(ESlateVisibility::Hidden);
+	Image1->SetVisibility(ESlateVisibility::Collapsed);
+	Image2->SetVisibility(ESlateVisibility::Collapsed);
+	Image3->SetVisibility(ESlateVisibility::Collapsed);
+	Text1->SetVisibility(ESlateVisibility::Collapsed);
+	Text2->SetVisibility(ESlateVisibility::Collapsed);
+	Text3->SetVisibility(ESlateVisibility::Collapsed);
 
 	constexpr float Duration = 0.5f;
 
 	FTimerHandle ShowHandle;
 	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Image1->SetVisibility(ESlateVisibility::Visible);
-			Image2->SetVisibility(ESlateVisibility::Visible);
-			Image3->SetVisibility(ESlateVisibility::Visible);
-			Text1->SetVisibility(ESlateVisibility::Visible);
-			Text2->SetVisibility(ESlateVisibility::Visible);
-			Text3->SetVisibility(ESlateVisibility::Visible);
+			Image1->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			Image2->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			Image3->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			Text1->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			Text2->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			Text3->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		}), Duration, false);
 }
 

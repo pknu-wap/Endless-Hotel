@@ -15,7 +15,13 @@ class ENDLESS_HOTEL_API UUI_HUD_InGame : public UUI_HUD_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
+
+#pragma endregion
+
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
 
 #pragma endregion
 

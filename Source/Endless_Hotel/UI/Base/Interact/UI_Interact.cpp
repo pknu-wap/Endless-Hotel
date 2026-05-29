@@ -10,7 +10,7 @@ void UUI_Interact::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	SetVisibility(ESlateVisibility::Hidden);
+	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 #pragma endregion
@@ -26,11 +26,11 @@ void UUI_Interact::ShowDescription(bool bIsShow)
 {
 	if (bIsShow)
 	{
-		SetVisibility(ESlateVisibility::Visible);
+		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	}
 	else
 	{
-		SetVisibility(ESlateVisibility::Hidden);
+		SetVisibility(ESlateVisibility::Collapsed);
 	}
 }
 
