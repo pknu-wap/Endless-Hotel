@@ -32,6 +32,28 @@ void AEHPlayerCameraManager::BeginPlay()
 
 #pragma endregion
 
+#pragma region Data Layer
+
+void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
+{
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+
+	switch (DataLayer)
+	{
+	case EMapDataLayer::Hotel:
+		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
+		StartEyeEffect(true);
+		break;
+
+	case EMapDataLayer::Lobby:
+		PossessCamera(ECameraType::Title);
+		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
+		break;
+	}
+}
+
+#pragma endregion
+
 #pragma region Data
 
 void AEHPlayerCameraManager::LoadCameraDataAsset()
@@ -59,20 +81,7 @@ void AEHPlayerCameraManager::OnLoadedCameraDataAsset(FPrimaryAssetId DataAssetID
 	Update_Open.BindUFunction(this, FName("OnValueChangedEyeEffect"));
 	TimeLine_Eye->AddInterpFloat(DataAsset->CV_EyeOpen.LoadSynchronous(), Update_Open);
 
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-
-	switch (GameInstance->CurrentLevelType)
-	{
-	case ELevelType::Hotel:
-		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
-		StartEyeEffect(true);
-		break;
-
-	case ELevelType::MainMenu:
-		PossessCamera(ECameraType::Title);
-		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
-		break;
-	}
+	OnChangedDataLayer(EMapDataLayer::Lobby);
 }
 
 #pragma endregion

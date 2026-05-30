@@ -115,7 +115,7 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 		FAnomalySpawnInfo Info;
 		Info.bIsNormal = true;
 		Info.AnomalyID = EAnomalyID::None;
-		Info.DataLayer = EHotelDataLayer::Hotel;
+		Info.DataLayer = EMapDataLayer::Hotel;
 		return Info;
 	}
 

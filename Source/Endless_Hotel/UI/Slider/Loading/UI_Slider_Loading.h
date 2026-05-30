@@ -26,7 +26,7 @@ private:
 #pragma region Loading
 
 public:
-	bool IsLoadingComplete() { return LoadingPercentage >= TargetPercentage; }
+	bool IsLoadingCompleted() { return LoadingPercentage >= TargetPercentage; }
 	void ResetLoadingPercentage() { LoadingPercentage = 0.f; }
 
 private:

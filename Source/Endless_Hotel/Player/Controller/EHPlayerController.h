@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <GameFramework/PlayerController.h>
 #include <EHPlayerController.generated.h>
@@ -129,7 +130,9 @@ protected:
 
 #pragma region Widget
 
-protected:
+private:
+	UFUNCTION()
+	void OpenHUDWidget(const EMapDataLayer& DataLayer);
 	void EscapeStarted(const struct FInputActionValue& InputValue);
 
 #pragma endregion

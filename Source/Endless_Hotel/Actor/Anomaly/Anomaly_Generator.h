@@ -19,7 +19,7 @@ struct FAnomalySpawnInfo
 	bool bIsNormal = false;
 	uint8 Index = 0;
 	EAnomalyID AnomalyID = EAnomalyID::None;
-	EHotelDataLayer DataLayer = EHotelDataLayer::Hotel;
+	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
 };
 
 #pragma endregion

@@ -55,25 +55,9 @@ void AEHPlayerController::BeginPlay()
 	IMC_Backup = IMC_Default;
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
 
-	switch (GameInstance->CurrentLevelType)
-	{
-	case ELevelType::Hotel:
-	{
-		UICon->OpenWidget(EWidgetType::HUD_InGame);
-		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
-		{
-			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
-		}
-		break;
-	}
-	case ELevelType::MainMenu:
-	{
-		UICon->OpenWidget(EWidgetType::HUD_Title);
-		break;
-	}
-	}
+	OpenHUDWidget(EMapDataLayer::Lobby);
 }
 
 void AEHPlayerController::Tick(float DeltaSeconds)
@@ -139,6 +123,29 @@ UCameraComponent* AEHPlayerController::GetPlayerCamera() const
 #pragma endregion
 
 #pragma region Widget
+
+void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
+{
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+
+	switch (DataLayer)
+	{
+	case EMapDataLayer::Hotel:
+	{
+		UICon->OpenWidget(EWidgetType::HUD_InGame);
+		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
+		{
+			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
+		}
+		break;
+	}
+	case EMapDataLayer::Lobby:
+	{
+		UICon->OpenWidget(EWidgetType::HUD_Title);
+		break;
+	}
+	}
+}
 
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Level/Type_Level.h"
 #include "UI/HUD/UI_HUD_Base.h"
 #include <CoreMinimal.h>
 #include <UI_HUD_Loading.generated.h>
@@ -20,15 +21,12 @@ public:
 
 #pragma region Loading
 
-private:
-	void WaitForLoading();
+public:
+	bool IsLoadingCompleted();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Slider_Loading> Slider_Loading;
-
-private:
-	FTimerHandle WaitHandle;
 
 #pragma endregion
 

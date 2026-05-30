@@ -23,6 +23,14 @@ protected:
 
 #pragma endregion
 
+#pragma region Data Layer
+
+private:
+	UFUNCTION()
+	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
+
+#pragma endregion
+
 #pragma region Data
 
 private:

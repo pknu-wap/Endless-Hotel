@@ -2,10 +2,9 @@
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/Loading/UI_HUD_Loading.h"
 #include "Asset/DataAsset/Level/PDA_Level.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include <Kismet/GameplayStatics.h>
-#include <WorldPartition/WorldPartitionSubsystem.h>
 #include <WorldPartition/DataLayer/DataLayerSubsystem.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Internationalization/Internationalization.h>
@@ -33,6 +32,8 @@ void UEHGameInstance::Init()
 		CultureSetting.SetCurrentCulture(TEXT("ko-KR"));
 		break;
 	}
+
+	OnDataLayerChanged.Broadcast(CurrentDataLayer);
 }
 
 #pragma endregion
@@ -46,92 +47,59 @@ void UEHGameInstance::QuitGame()
 
 #pragma endregion
 
-#pragma region Level
-
-void UEHGameInstance::LoadLevel(const ELevelType& LevelType)
-{
-	CurrentLevelType = LevelType;
-
-	auto* UICon = GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::HUD_Loading);
-
-	OnLevelLoaded.Broadcast();
-}
-
-void UEHGameInstance::OpenLevel()
-{
-	TSoftObjectPtr<UWorld> TargetWorld = nullptr;
-
-	switch (CurrentLevelType)
-	{
-	case ELevelType::Hotel:
-		TargetWorld = PDA_Map->Level_Hotel;
-		break;
-
-	case ELevelType::MainMenu:
-		TargetWorld = PDA_Map->Level_MainMenu;
-		break;
-	}
-
-	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), TargetWorld);
-
-	OnLevelOpened.Broadcast(CurrentLevelType);
-}
-
-#pragma endregion
-
 #pragma region Data Layer
 
-void UEHGameInstance::LoadDataLayer(const EHotelDataLayer& Layer)
+void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer)
 {
-	LoadLayer = Layer;
+	UDataLayerAsset* DLA_Active = GetDataLayerAsset(TargetDataLayer);
+	UDataLayerAsset* DLA_Deactive = GetDataLayerAsset(CurrentDataLayer);
 
-	TargetDataLayer = GetDataLayerAsset(LoadLayer);
+	UDataLayerSubsystem* Subsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
 
-	auto* DLSubsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
-	auto* DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
-	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Loaded);
+	UDataLayerInstance* DLI_Active = Subsystem->GetDataLayerInstance(DLA_Active);
+	UDataLayerInstance* DLI_Deactive = Subsystem->GetDataLayerInstance(DLA_Deactive);
+
+	Subsystem->SetDataLayerRuntimeState(DLI_Active, EDataLayerRuntimeState::Activated);
+	Subsystem->SetDataLayerRuntimeState(DLI_Deactive, EDataLayerRuntimeState::Loaded);
+
+	CurrentDataLayer = TargetDataLayer;
+
+	OnDataLayerChanged.Broadcast(CurrentDataLayer);
 }
 
-bool UEHGameInstance::SwitchDataLayer()
+void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer)
 {
-	auto* WPSubsystem = GetWorld()->GetSubsystem<UWorldPartitionSubsystem>();
+	auto* UICon = GetSubsystem<UUI_Controller>();
+	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading));
 
-	if (!WPSubsystem->IsStreamingCompleted())
-	{
-		return false;
-	}
-
-	auto* DLSubsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
-	auto* DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
-	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Activated);
-
-	TargetDataLayer = GetDataLayerAsset(UnloadLayer);
-
-	DLInstance = DLSubsystem->GetDataLayerInstance(TargetDataLayer);
-	DLSubsystem->SetDataLayerRuntimeState(DLInstance, EDataLayerRuntimeState::Loaded);
-
-	UnloadLayer = LoadLayer;
-
-	OnDataLayerChanged.Broadcast(UnloadLayer);
-
-	return true;
+	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, UICon, UI_Loading]()
+		{
+			if (UI_Loading->IsLoadingCompleted())
+			{
+				SwitchDataLayer(TargetDataLayer);
+				UICon->CloseWidget();
+				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
+			}
+		}), 0.1f, true);
 }
 
-UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EHotelDataLayer& Target)
+UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EMapDataLayer& Target)
 {
 	switch (Target)
 	{
-	case EHotelDataLayer::Hotel:
+	case EMapDataLayer::Lobby:
+		return PDA_Map->DL_Lobby.LoadSynchronous();
+
+	case EMapDataLayer::Hotel:
 		return PDA_Map->DL_Hotel.LoadSynchronous();
 
-	case EHotelDataLayer::Fire:
+	case EMapDataLayer::Fire:
 		return PDA_Map->DL_Fire.LoadSynchronous();
 
-	case EHotelDataLayer::Maze:
+	case EMapDataLayer::Maze:
 		return PDA_Map->DL_Maze.LoadSynchronous();
 
-	case EHotelDataLayer::Choice:
+	case EMapDataLayer::Choice:
 		return PDA_Map->DL_Choice.LoadSynchronous();
 	}
 
