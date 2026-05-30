@@ -98,6 +98,9 @@ protected:
 #pragma region Sound
 
 public:
+	void PlayElevatorSound(bool bIsPlay);
+
+public:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class UAudioComponent> HeartbeatAudioComponent;
 

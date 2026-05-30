@@ -31,7 +31,7 @@ void AAnomaly_Object_Light::BeginPlay()
 	Super::BeginPlay();
 
 	Mesh_Destroy->OnChaosBreakEvent.Clear();
-	Mesh_Destroy->OnChaosBreakEvent.AddDynamic(this, &ThisClass::LightDestroyed);
+	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::LightDestroyed);
 }
 
 #pragma endregion

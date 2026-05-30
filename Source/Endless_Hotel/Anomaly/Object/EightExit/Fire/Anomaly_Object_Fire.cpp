@@ -29,7 +29,7 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 	DeathTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathTrigger"));
 	DeathTrigger->SetupAttachment(NiagaraComponent);
 	DeathTrigger->OnComponentBeginOverlap.Clear();
-	DeathTrigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDeathRange);
+	DeathTrigger->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnDeathRange);
 }
 
 #pragma endregion

@@ -17,7 +17,7 @@ void AElevator_Wall::BeginPlay()
 {
     Super::BeginPlay();
     auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ResetWall);
+    Subsystem->OnAnomalySpawned.AddUniqueDynamic(this, &ThisClass::ResetWall);
 }
 
 void AElevator_Wall::ResetWall()

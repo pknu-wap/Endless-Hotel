@@ -62,7 +62,7 @@ void AAnomaly_Fire::SpawnFires()
 {
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	EHPlayer->CrouchDelegate.RemoveAll(this);
-	EHPlayer->CrouchDelegate.AddDynamic(this, &ThisClass::SmokeTimer);
+	EHPlayer->CrouchDelegate.AddUniqueDynamic(this, &ThisClass::SmokeTimer);
 
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{

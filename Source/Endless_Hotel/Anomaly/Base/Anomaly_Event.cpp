@@ -27,7 +27,7 @@ void AAnomaly_Event::BeginPlay()
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 
 	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	SubSystem->FloorChange_Disable.AddDynamic(this, &ThisClass::DisableAnomaly);
+	SubSystem->FloorChange_Disable.AddUniqueDynamic(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion
@@ -104,7 +104,7 @@ void AAnomaly_Event::ActiveTrigger()
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBox);
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
+	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 }
 
 void AAnomaly_Event::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

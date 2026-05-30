@@ -76,8 +76,8 @@ void AAnomaly_Door::SetupDoorTrigger()
 	TriggerBox_Close->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 	TriggerBox_Close->SetWorldLocation(FVector(-1398.0, 573.0, 600.0));
 
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBoxBeginOverlap);
-	TriggerBox_Close->OnComponentBeginOverlap.AddDynamic(this, &AAnomaly_Door::OnTriggerBox_CloseBeginOverlap);
+	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &AAnomaly_Door::OnTriggerBoxBeginOverlap);
+	TriggerBox_Close->OnComponentBeginOverlap.AddUniqueDynamic(this, &AAnomaly_Door::OnTriggerBox_CloseBeginOverlap);
 }
 
 void AAnomaly_Door::OnTriggerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -32,7 +32,7 @@ AMazeMonsterController::AMazeMonsterController()
 void AMazeMonsterController::BeginPlay()
 {
 	Super::BeginPlay();
-	Perception->OnTargetPerceptionUpdated.AddDynamic(this, &AMazeMonsterController::OnTargetDetected);
+	Perception->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &AMazeMonsterController::OnTargetDetected);
 }
 
 void AMazeMonsterController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulus)

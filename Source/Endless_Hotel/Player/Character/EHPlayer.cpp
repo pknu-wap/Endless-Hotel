@@ -141,3 +141,12 @@ void AEHPlayer::FreezeAnimation()
 }
 
 #pragma endregion
+
+#pragma region Sound
+
+void AEHPlayer::PlayElevatorSound(bool bIsPlay)
+{
+	bIsPlay ? ElevatorMoveAudioComponent->Play() : ElevatorMoveAudioComponent->Stop();
+}
+
+#pragma endregion

@@ -16,11 +16,11 @@ AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectIni
 
 	AC_TikTok = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_TikTok"));
 	AC_TikTok->SetupAttachment(Object);
-	AC_TikTok->OnAudioFinished.AddDynamic(this, &ThisClass::PlayTikTokSound);
+	AC_TikTok->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayTikTokSound);
 
 	AC_Ringing = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Ringing"));
 	AC_Ringing->SetupAttachment(Object);
-	AC_Ringing->OnAudioFinished.AddDynamic(this, &ThisClass::RingingClock);
+	AC_Ringing->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::RingingClock);
 }
 
 void AAnomaly_Object_Clock::BeginPlay()

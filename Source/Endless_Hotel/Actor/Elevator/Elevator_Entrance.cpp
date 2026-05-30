@@ -24,7 +24,7 @@ void AElevator_Entrance::BeginPlay()
 {
 	Super::BeginPlay();
 	TakeOff_Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	TakeOff_Trigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
+	TakeOff_Trigger->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 }
 
 #pragma endregion

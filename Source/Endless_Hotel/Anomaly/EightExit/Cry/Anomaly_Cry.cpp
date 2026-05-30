@@ -9,7 +9,7 @@ AAnomaly_Cry::AAnomaly_Cry(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
+	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayCrySound);
 }
 
 void AAnomaly_Cry::BeginPlay()

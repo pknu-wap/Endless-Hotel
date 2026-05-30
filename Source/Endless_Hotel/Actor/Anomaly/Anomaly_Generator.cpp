@@ -49,7 +49,7 @@ void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::SpawnAnomaly);
+	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
 	SpawnAnomaly();
 }

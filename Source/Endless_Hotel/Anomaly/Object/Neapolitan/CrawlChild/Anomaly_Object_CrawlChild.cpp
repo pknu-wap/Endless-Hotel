@@ -28,7 +28,7 @@ void AAnomaly_Object_CrawlChild::ActivePlayTrigger()
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 	TriggerBox->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnTriggerBox);
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBox);
+	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 	ShowSubTitle();
 }
 

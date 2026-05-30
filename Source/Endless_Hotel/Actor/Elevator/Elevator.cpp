@@ -73,7 +73,7 @@ void AElevator::BeginPlay()
     FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->OnAnomalySpawned.AddDynamic(this, &ThisClass::StartElevator);
+    Sub->OnAnomalySpawned.AddUniqueDynamic(this, &ThisClass::StartElevator);
     Sub->RegisterElevator(this);
 
     UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
@@ -88,10 +88,6 @@ void AElevator::BeginPlay()
     if (EntranceButton.IsValid())
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
-    }
-    if (IsValid(Sub->CurrentAnomaly))
-    {
-        StartElevator();
     }
 }
 
@@ -157,7 +153,6 @@ void AElevator::OnDoorTimelineFinished()
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Player->ElevatorMoveAudioComponent->IsPlaying())
     {
-        Player->ElevatorMoveAudioComponent->Stop();
         Player->ElevatorMoveAudioComponent->Activate(false);
     }
     SetActiveBlockBox(false);
@@ -169,8 +164,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!Player->ElevatorMoveAudioComponent->IsPlaying())
     {
-        Player->ElevatorMoveAudioComponent->Activate(true);
-        Player->ElevatorMoveAudioComponent->Play();
+        Player->PlayElevatorSound(true);
     }
 
     FLatentActionInfo LatentInfo;
