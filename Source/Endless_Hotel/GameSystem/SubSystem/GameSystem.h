@@ -4,7 +4,6 @@
 
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
-#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
@@ -57,11 +56,11 @@ private:
 
 #pragma endregion
 
-#pragma region Level
+#pragma region Data Layer
 
 private:
 	UFUNCTION()
-	void OpenedLevel(const ELevelType& LevelType);
+	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
 
 #pragma endregion
 
@@ -111,10 +110,9 @@ public:
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
-	void SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap);
-	bool PendingLoadDataLayer();
-	void TrySwitchDataLayer();
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
+	void PendingLoadDataLayer();
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
@@ -127,11 +125,11 @@ public:
 	EAnomalyID NextAnomalyID = EAnomalyID::None;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
-	EHotelDataLayer NextAnomalyMap = EHotelDataLayer::Hotel;
+	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
 
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
 	FOnFloorChange_Disable FloorChange_Disable;
-	EHotelDataLayer CurrentDataLayer;
+	EMapDataLayer CurrentDataLayer;
 
 #pragma endregion
 

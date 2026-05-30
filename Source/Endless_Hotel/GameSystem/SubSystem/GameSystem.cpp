@@ -41,8 +41,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnLevelOpened.RemoveAll(this);
-	GameInstance->OnLevelOpened.AddDynamic(this, &ThisClass::OpenedLevel);
+	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
 
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
@@ -63,7 +62,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Level
 
-void UGameSystem::OpenedLevel(const ELevelType& LevelType)
+void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
 	SetVerdictMode();
 }
@@ -139,7 +138,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyN
 	SetTargetElevator();
 }
 
-void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer AnomalyMap)
+void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
 {
 	NextAnomalyID = AnomalyName;
 	NextAnomalyMap = AnomalyMap;
@@ -147,19 +146,9 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EHotelDataLayer Anomaly
 
 bool UGameSystem::PendingLoadDataLayer()
 {
-	if (CurrentDataLayer == NextAnomalyMap)
-	{
-		return false;
-	}
-	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->LoadDataLayer(NextAnomalyMap);
-	return true;
-}
-
-void UGameSystem::TrySwitchDataLayer()
-{
-	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer();
+	// 여기서 지금 열려있는 레벨을 가져와서 비교 예정
+	//UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	//GameInstance->LoadDataLayer(NextAnomalyMap);
 }
 
 #pragma endregion

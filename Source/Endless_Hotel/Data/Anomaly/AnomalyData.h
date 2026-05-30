@@ -14,4 +14,7 @@ struct FAnomalyData : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere)
 	EAnomalyID AnomalyID = EAnomalyID::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMapDataLayer Map = EMapDataLayer::Hotel;
 };
