@@ -165,11 +165,12 @@ protected:
 
 #pragma region Subsystem
 
-protected:
-    void NotifySubsystem();
-
+public:
     UFUNCTION()
     void StartElevator();
+
+protected:
+    void NotifySubsystem();
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")

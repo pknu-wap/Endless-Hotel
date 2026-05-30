@@ -98,8 +98,6 @@ void AElevator::BeginPlay()
 void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Subsystem->UnRegisterElevator(ElevatorID);
     Super::EndPlay(EndPlayReason);
 }
 

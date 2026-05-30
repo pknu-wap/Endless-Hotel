@@ -65,6 +65,10 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
 	SetVerdictMode();
+	for (const auto& Elevator : Elevators)
+	{
+		Elevator.Value->StartElevator();
+	}
 }
 
 #pragma endregion
@@ -255,10 +259,6 @@ void UGameSystem::GameClear()
 void UGameSystem::RegisterElevator(class AElevator* Elevator)
 {
 	Elevators.Add(Elevator->ElevatorID, Elevator);
-	if (IsValid(CurrentAnomaly) && !TargetElevator.IsValid())
-	{
-		SetTargetElevator();
-	}
 }
 
 void UGameSystem::UnRegisterElevator(FName ElevatorID)
