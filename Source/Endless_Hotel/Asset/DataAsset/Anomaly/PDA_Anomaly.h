@@ -27,7 +27,7 @@ public:
 	TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data")
-	EHotelDataLayer DataLayer = EHotelDataLayer::Hotel;
+	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (AssetBundles = "UI"))

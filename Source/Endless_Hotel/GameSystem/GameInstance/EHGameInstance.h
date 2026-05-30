@@ -35,45 +35,25 @@ protected:
 
 #pragma endregion
 
-#pragma region Level
-
-public:
-	void LoadLevel(const ELevelType& LevelType);
-	void OpenLevel();
-
-public:
-	ELevelType CurrentLevelType = ELevelType::MainMenu;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelLoaded);
-	FOnLevelLoaded OnLevelLoaded;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelOpened, const ELevelType&, LevelType);
-	FOnLevelOpened OnLevelOpened;
-
-#pragma endregion
-
 #pragma region Data Layer
 
 public:
-	// 타겟이 되는 레이어을 미리 로딩시킴
-	void LoadDataLayer(const EHotelDataLayer& Layer);
+	// 로딩된 레이어을 활성화하고, 기존 레이어를 로드 상태로 변경
+	void SwitchDataLayer(const EMapDataLayer& TargetDataLayer);
 
-	// 로딩된 레이어을 활성화하고, 기존 레이어를 언로드 시킴
-	bool SwitchDataLayer();
+	// 위 함수의 로딩 있는 버전
+	void SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer);
 
 private:
-	UDataLayerAsset* GetDataLayerAsset(const EHotelDataLayer& Target);
+	UDataLayerAsset* GetDataLayerAsset(const EMapDataLayer& Target);
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EHotelDataLayer&, DataLayer);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EMapDataLayer&, DataLayer);
 	FOnDataLayerChanged OnDataLayerChanged;
 
 private:
-	EHotelDataLayer LoadLayer = EHotelDataLayer::Hotel;
-	EHotelDataLayer UnloadLayer = EHotelDataLayer::Hotel;
-
-	UPROPERTY()
-	TObjectPtr<UDataLayerAsset> TargetDataLayer;
+	FTimerHandle SwitchHandle;
+	EMapDataLayer CurrentDataLayer = EMapDataLayer::Lobby;
 
 #pragma endregion
 
@@ -83,7 +63,7 @@ public:
 	void StartDemoTimer();
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Demo Timer")
+	UPROPERTY(EditAnywhere, Category = "DemoTimer")
 	float GameplayTime = 0.f;
 
 #pragma endregion

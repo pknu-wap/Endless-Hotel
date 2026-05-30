@@ -15,15 +15,11 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("Level", GetFName()); }
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Level", meta = (AssetBundles = "Level"))
-	TSoftObjectPtr<UWorld> Level_MainMenu;
-
-	UPROPERTY(EditAnywhere, Category = "Level", meta = (AssetBundles = "Level"))
-	TSoftObjectPtr<UWorld> Level_Hotel;
-
-public:
 	UPROPERTY(EditAnywhere, Category = "DataLayer", meta = (AssetBundles = "DataLayer"))
 	TSoftObjectPtr<UDataLayerAsset> DL_Default;
+
+	UPROPERTY(EditAnywhere, Category = "DataLayer", meta = (AssetBundles = "DataLayer"))
+	TSoftObjectPtr<UDataLayerAsset> DL_Lobby;
 
 	UPROPERTY(EditAnywhere, Category = "DataLayer", meta = (AssetBundles = "DataLayer"))
 	TSoftObjectPtr<UDataLayerAsset> DL_Hotel;

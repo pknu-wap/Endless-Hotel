@@ -42,7 +42,7 @@ void UUI_HUD_Title::Click_Start()
 	Subsystem->Floor = 9;
 
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->LoadLevel(ELevelType::Hotel);
+	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
 }
 
 void UUI_HUD_Title::Click_Setting()

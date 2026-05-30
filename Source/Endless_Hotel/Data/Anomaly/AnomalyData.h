@@ -16,5 +16,5 @@ public:
 	EAnomalyID AnomalyID = EAnomalyID::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EHotelDataLayer Map = EHotelDataLayer::Hotel;
+	EMapDataLayer Map = EMapDataLayer::Hotel;
 };

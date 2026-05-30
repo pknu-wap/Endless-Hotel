@@ -195,8 +195,9 @@ void AElevator::OnButtonClicked(bool bIsOpening)
     SetLightOn(true);
     MoveDoors(bIsOpening);
     UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    SubSystem->PendingLoadDataLayer();
+    // 이제 필요 없음
+    //auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    //SubSystem->PendingLoadDataLayer();
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
@@ -228,8 +229,10 @@ void AElevator::NotifySubsystem()
     FVector PreForward = Player->GetActorForwardVector();
 
     auto* GameInstance = GetGameInstance<UEHGameInstance>();
-    GameInstance->SwitchDataLayer();
+    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>(); // 임시임 수정하삼
+    GameInstance->SwitchDataLayer(SubSystem->NextAnomalyMap);
 
+    // 이 안전 검사는 뭐임?
     if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
     {
         Sub->SetIsElevatorNormal(this->bIsNormalElevator);
