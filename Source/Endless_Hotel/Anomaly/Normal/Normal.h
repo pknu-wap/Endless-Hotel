@@ -3,7 +3,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Anomaly/Base/Anomaly_Event.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "Normal.generated.h"
 
 #pragma region Declare

@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly_Generator.h"
-#include "Anomaly/Base/Anomaly_Event.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
