@@ -48,9 +48,6 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     ElevatorLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("ElevatorLight"));
     ElevatorLight->SetupAttachment(Car);
 
-    Elevator_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Elevator AC"));
-    Elevator_AC->SetupAttachment(Car);
-
     Door_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Door AC"));
     Door_AC->SetupAttachment(Car);
 
@@ -92,7 +89,18 @@ void AElevator::BeginPlay()
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
-    
+    if (IsValid(Sub->CurrentAnomaly))
+    {
+        StartElevator();
+    }
+}
+
+void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    Subsystem->UnRegisterElevator(ElevatorID);
+    Super::EndPlay(EndPlayReason);
 }
 
 #pragma endregion
@@ -124,7 +132,6 @@ void AElevator::MoveDoors(bool bWillOpen)
 
     bIsDoorOpened = bWillOpen;
     Door_AC->Activate(true);
-    Elevator_AC->Stop();
     Door_AC->Play();
 
     if (bWillOpen)
@@ -142,23 +149,31 @@ void AElevator::OnDoorTimelineUpdate(float Alpha)
     bIsDoorMoving = true;
     LeftDoor->SetRelativeLocation(FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha));
     RightDoor->SetRelativeLocation(FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha));
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-    TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
+    SetActiveBlockBox(true);
 }
 
 void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
     Door_AC->Stop();
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
+    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (Player->ElevatorMoveAudioComponent->IsPlaying())
+    {
+        Player->ElevatorMoveAudioComponent->Stop();
+        Player->ElevatorMoveAudioComponent->Activate(false);
+    }
+    SetActiveBlockBox(false);
 }
 
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     RootComponent->SetRelativeLocation(Start);
-    Elevator_AC->Activate(true);
-    Elevator_AC->Play();
+    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!Player->ElevatorMoveAudioComponent->IsPlaying())
+    {
+        Player->ElevatorMoveAudioComponent->Activate(true);
+        Player->ElevatorMoveAudioComponent->Play();
+    }
 
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
@@ -181,7 +196,13 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     }
     else
     {
-        SetDelay(ElevatorWallHandle, [this] { ElevatorWall->MoveWall(ElevatorMoveDuration); }, ElevatorMoveDuration + 0.1f);
+        SetDelay(ElevatorWallHandle, [this]
+            { 
+                if(ElevatorWall.IsValid())
+                {
+                    ElevatorWall->MoveWall(ElevatorMoveDuration);
+                }
+            }, ElevatorMoveDuration + 0.1f);
         SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
     }
 }
@@ -194,10 +215,6 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 {
     SetLightOn(true);
     MoveDoors(bIsOpening);
-    UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-    // 이제 필요 없음
-    //auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    //SubSystem->PendingLoadDataLayer();
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
@@ -227,32 +244,31 @@ void AElevator::NotifySubsystem()
     FVector PreVelocity = CMC->Velocity;
     float HorizontalSpeed = FVector(PreVelocity.X, PreVelocity.Y, 0.f).Size();
     FVector PreForward = Player->GetActorForwardVector();
+    UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
-    auto* GameInstance = GetGameInstance<UEHGameInstance>();
-    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>(); // 임시임 수정하삼
-    GameInstance->SwitchDataLayer(SubSystem->NextAnomalyMap);
-
-    // 이 안전 검사는 뭐임?
-    if (UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>())
-    {
-        Sub->SetIsElevatorNormal(this->bIsNormalElevator);
-        Sub->SetPlayerVelocity(HorizontalSpeed);
-        Sub->TryInteractSolveVerdict();
-        Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
-        Sub->ApplyVerdict();
-    }
+    Sub->SetIsElevatorNormal(this->bIsNormalElevator);
+    Sub->SetPlayerVelocity(HorizontalSpeed);
+    Sub->TryInteractSolveVerdict();
+    Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
+    Sub->ApplyVerdict();
 }
 
 void AElevator::StartElevator()
 {
-    TriggerBlockBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(FVector(0, 0, 0));
-    ElevatorWall->ResetWall();
+    if (ElevatorWall.IsValid())
+    {
+        ElevatorWall->ResetWall();
+    }
+    Floor->SetVisibility(true);
+    Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     if (Sub->IsTargetElevator(this))
     {
-        LinkedEntrance->SetTriggerActive();
+        if(LinkedEntrance.IsValid())
+        {
+            LinkedEntrance->SetTriggerActive();
+        }
         SetLightOn(true);
         RootComponent->SetRelativeLocation(StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -280,7 +296,10 @@ void AElevator::StartElevator()
     }
     else
     {
-        LinkedEntrance->ResetTrigger();
+        if(LinkedEntrance.IsValid())
+        {
+            LinkedEntrance->ResetTrigger();
+        }
         this->Exterior_Structure->SetRelativeLocation(MapPos);
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
         RightDoor->SetRelativeLocation(RightDoorClosed);
@@ -288,6 +307,16 @@ void AElevator::StartElevator()
         bIsDoorMoving = false;
         SetLightOn(false);
     }
+}
+
+#pragma endregion
+
+#pragma region Trigger
+
+void AElevator::SetActiveBlockBox(bool bIsActive)
+{
+    TriggerBlockBox->SetCollisionEnabled(bIsActive ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+    TriggerBlockBox->SetBoxExtent(bIsActive ? BlockBoxActiveExtent : FVector(0, 0, 0));
 }
 
 #pragma endregion

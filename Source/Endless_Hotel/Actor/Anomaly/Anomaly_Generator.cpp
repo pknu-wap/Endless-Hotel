@@ -67,12 +67,11 @@ void AAnomaly_Generator::SpawnAnomaly()
 	if (Subsystem->Floor == STARTFLOOR)
 	{
 		CurrentData.bIsNormal = true;
-		CurrentData.AnomalyID = EAnomalyID::None;
+		CurrentData.AnomalyID = EAnomalyID::Normal;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
-	Subsystem->CurrentAnomaly = CurrentAnomaly;
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
 	AnomalyObjectLinker(TargetClasses);
 	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName);

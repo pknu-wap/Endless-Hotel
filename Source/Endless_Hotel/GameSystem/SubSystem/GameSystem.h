@@ -4,6 +4,7 @@
 
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
@@ -83,7 +84,7 @@ public:
 	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
-	void ResetFloor() { Floor = STARTFLOOR; };
+	void ResetFloor() { Floor = STARTFLOOR; NextAnomalyMap = EMapDataLayer::Hotel; };
 	void SubFloor();
 	void AddFloor();
 
@@ -178,6 +179,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
 
 public:
 	void RegisterElevator(class AElevator* Elevator);
+	void UnRegisterElevator(FName ElevatorID);
 	void SetTargetElevator();
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };

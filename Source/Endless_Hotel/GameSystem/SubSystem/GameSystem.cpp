@@ -255,6 +255,15 @@ void UGameSystem::GameClear()
 void UGameSystem::RegisterElevator(class AElevator* Elevator)
 {
 	Elevators.Add(Elevator->ElevatorID, Elevator);
+	if (IsValid(CurrentAnomaly) && !TargetElevator.IsValid())
+	{
+		SetTargetElevator();
+	}
+}
+
+void UGameSystem::UnRegisterElevator(FName ElevatorID)
+{
+	Elevators.Remove(ElevatorID);
 }
 
 void UGameSystem::SetTargetElevator()
