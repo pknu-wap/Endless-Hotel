@@ -28,6 +28,9 @@ void AEHPlayerCameraManager::BeginPlay()
 
 	FindPPV();
 	LoadCameraDataAsset();
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
 }
 
 #pragma endregion
