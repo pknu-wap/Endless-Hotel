@@ -68,14 +68,13 @@ void AAnomaly_Generator::SpawnAnomaly()
 	{
 		CurrentData.bIsNormal = true;
 		CurrentData.AnomalyID = EAnomalyID::Normal;
-		CurrentData.DataLayer = EHotelDataLayer::Hotel;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
 	AnomalyObjectLinker(TargetClasses);
-	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName, CurrentData.DataLayer);
+	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName);
 	NextAnomalyData = DecideNext();
 	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
 	if (bIsInitialFloor)

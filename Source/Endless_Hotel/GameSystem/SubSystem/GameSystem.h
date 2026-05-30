@@ -4,6 +4,7 @@
 
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
@@ -83,7 +84,7 @@ public:
 	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
-	void ResetFloor() { Floor = STARTFLOOR; NextAnomalyMap = EHotelDataLayer::Hotel; };
+	void ResetFloor() { Floor = STARTFLOOR; NextAnomalyMap = EMapDataLayer::Hotel; };
 	void SubFloor();
 	void AddFloor();
 
