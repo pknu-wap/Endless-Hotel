@@ -16,6 +16,7 @@ void ANormal::SetAnomalyState()
     if (Subsystem->bIsStartInBed)
     {
         Subsystem->RemoveTargetElevator();
+        Player->SetActorTransform(Player->StartTransform);
         Subsystem->bIsStartInBed = false;
     }
 }
