@@ -238,6 +238,7 @@ void AElevator::NotifySubsystem()
     FVector PreForward = Player->GetActorForwardVector();
     UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
+    Sub->LoadNextMap();
     Sub->SetIsElevatorNormal(this->bIsNormalElevator);
     Sub->SetPlayerVelocity(HorizontalSpeed);
     Sub->TryInteractSolveVerdict();

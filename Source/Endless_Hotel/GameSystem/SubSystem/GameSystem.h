@@ -110,9 +110,9 @@ public:
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
-	void PendingLoadDataLayer();
+	void LoadNextMap();
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")

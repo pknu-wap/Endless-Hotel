@@ -36,8 +36,12 @@ void AAnomaly_Elevator::SetAnomalyState()
     case EAnomalyID::ElevatorNoFloor:
         TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
         TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
-        TargetElevator->DisableElevatorFloor();
         ScheduleAnomaly();
+        FTimerHandle StartDelay;
+        GetWorld()->GetTimerManager().SetTimer(StartDelay, FTimerDelegate::CreateWeakLambda(this, [this]()
+            {
+                TargetElevator->DisableElevatorFloor();
+            }), 2, false);
         break;
     }
 }

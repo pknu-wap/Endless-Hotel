@@ -7,7 +7,6 @@
 
 #pragma region Activities
 
-// Anomaly_Event_EightExit.cpp
 void ANormal::SetAnomalyState()
 {
     SetVerdictMode(EAnomalyVerdictMode::Normal);
