@@ -96,6 +96,9 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 20.0f;
 
+	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	SubSystem->bIsStartInBed = true;
+
 	const float AnimLength = DeathAnim->GetPlayLength();
 	const float FreezeTime = FMath::Max(0.0f, AnimLength - 0.3f);
 
@@ -113,7 +116,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		}), AnimLength, false);
 
 	FTimerHandle DeathHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubSystem]()
 		{
 			GetMesh()->bNoSkeletonUpdate = false;
 			Third_Mesh->bNoSkeletonUpdate = false;
@@ -122,10 +125,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 			bIsDead = false;
 			Cast<AEHPlayerController>(GetController())->RevivePlayer();
-			
-			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
-			SubSystem->bIsStartInBed = true;
 		}), AnimLength + 5, false);
 }
 
