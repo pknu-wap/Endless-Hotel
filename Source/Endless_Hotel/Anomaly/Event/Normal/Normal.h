@@ -16,12 +16,6 @@ UCLASS()
 class ENDLESS_HOTEL_API ANormal : public AAnomaly_Event
 {
 	GENERATED_BODY()
-	
-#pragma region Base
-
-protected:
-	virtual void BeginPlay() override;
-#pragma endregion
 
 #pragma region Activities
 

@@ -65,6 +65,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
 	SetVerdictMode();
+	bIsStartInBed = DataLayer == EMapDataLayer::Lobby;
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();
@@ -86,7 +87,7 @@ bool UGameSystem::ComputeVerdict() const
 	case EAnomalyVerdictMode::Normal:
 		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
-		return true;
+		return false;
 	}
 }
 
@@ -136,9 +137,9 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyN
 {
 	CurrentAnomaly = Anomaly;
 	CurrentAnomaly->AnomalyName = AnomalyName;
+	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
 	ActIndex++;
-	SetTargetElevator();
 }
 
 void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
@@ -269,6 +270,11 @@ void UGameSystem::UnRegisterElevator(FName ElevatorID)
 void UGameSystem::SetTargetElevator()
 {
 	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
+}
+
+void UGameSystem::RemoveTargetElevator()
+{
+	TargetElevator = nullptr;
 }
 
 AElevator* UGameSystem::GetElevatorByID(FName TargetID)

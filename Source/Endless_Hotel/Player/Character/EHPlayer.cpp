@@ -125,6 +125,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			
 			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
+			SubSystem->bIsStartInBed = true;
 		}), AnimLength + 5, false);
 }
 
