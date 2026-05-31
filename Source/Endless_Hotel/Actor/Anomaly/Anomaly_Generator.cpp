@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly_Generator.h"
-#include "Anomaly/Base/Anomaly_Event.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "Data/Anomaly/AnomalyData.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
@@ -49,7 +49,7 @@ void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::SpawnAnomaly);
+	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
 	SpawnAnomaly();
 }
@@ -67,6 +67,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 	if (Subsystem->Floor == STARTFLOOR)
 	{
 		CurrentData.bIsNormal = true;
+		CurrentData.DataLayer = EMapDataLayer::Hotel;
 		CurrentData.AnomalyID = EAnomalyID::Normal;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
@@ -74,7 +75,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
 	AnomalyObjectLinker(TargetClasses);
-	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName);
+	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName, CurrentData.DataLayer);
 	NextAnomalyData = DecideNext();
 	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
 	if (bIsInitialFloor)

@@ -53,7 +53,7 @@ void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ExitTrigger->OnComponentEndOverlap.AddDynamic(this, &AAnomaly_Object_Door::OnExitTriggerEndOverlap);
+	ExitTrigger->OnComponentEndOverlap.AddUniqueDynamic(this, &AAnomaly_Object_Door::OnExitTriggerEndOverlap);
 
 	Door_Origin = GetActorLocation();
 	Handle_Origin = Mesh_Handle->GetRelativeLocation();
@@ -84,7 +84,7 @@ void AAnomaly_Object_Door::BeginPlay()
 
 		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 		
-		Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::UpdateDoorByFloor);
+		Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::UpdateDoorByFloor);
 
 		UpdateDoorByFloor();
 	}

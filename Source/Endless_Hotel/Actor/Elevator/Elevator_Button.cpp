@@ -39,7 +39,7 @@ void AElevator_Button::BeginPlay()
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->FloorChange_Reset.AddDynamic(this, &ThisClass::Reset);
+    Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
 }
 #pragma endregion
 

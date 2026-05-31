@@ -5,9 +5,9 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Data/Anomaly/AnomalyData.h"
-#include "Anomaly/Base/Anomaly_Event.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly/Base/Anomaly_Event_Neapolitan.h"
+#include "Anomaly/Event/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator.h"
@@ -65,6 +65,11 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
 	SetVerdictMode();
+	bIsStartInBed = DataLayer == EMapDataLayer::Lobby;
+	for (const auto& Elevator : Elevators)
+	{
+		Elevator.Value->StartElevator();
+	}
 }
 
 #pragma endregion
@@ -82,7 +87,7 @@ bool UGameSystem::ComputeVerdict() const
 	case EAnomalyVerdictMode::Normal:
 		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
-		return true;
+		return false;
 	}
 }
 
@@ -128,13 +133,14 @@ void UGameSystem::TryInteractSolveVerdict()
 
 #pragma region Anomaly
 
-void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName)
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
 	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentDataLayer = AnomalyMap;
+	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
 	ActIndex++;
-	SetTargetElevator();
 }
 
 void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
@@ -143,11 +149,14 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMa
 	NextAnomalyMap = AnomalyMap;
 }
 
-void UGameSystem::PendingLoadDataLayer()
+void UGameSystem::LoadNextMap()
 {
-	// 여기서 지금 열려있는 레벨을 가져와서 비교 예정
-	//UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	//GameInstance->LoadDataLayer(NextAnomalyMap);
+	if (CurrentDataLayer == NextAnomalyMap)
+	{
+		return;
+	}
+	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	GameInstance->SwitchDataLayer(NextAnomalyMap);
 }
 
 #pragma endregion
@@ -255,10 +264,6 @@ void UGameSystem::GameClear()
 void UGameSystem::RegisterElevator(class AElevator* Elevator)
 {
 	Elevators.Add(Elevator->ElevatorID, Elevator);
-	if (IsValid(CurrentAnomaly) && !TargetElevator.IsValid())
-	{
-		SetTargetElevator();
-	}
 }
 
 void UGameSystem::UnRegisterElevator(FName ElevatorID)
@@ -269,6 +274,11 @@ void UGameSystem::UnRegisterElevator(FName ElevatorID)
 void UGameSystem::SetTargetElevator()
 {
 	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
+}
+
+void UGameSystem::RemoveTargetElevator()
+{
+	TargetElevator = nullptr;
 }
 
 AElevator* UGameSystem::GetElevatorByID(FName TargetID)

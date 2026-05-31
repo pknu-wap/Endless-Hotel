@@ -3,7 +3,7 @@
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include "Anomaly/Base/Anomaly_Event.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
@@ -73,7 +73,7 @@ void AElevator::BeginPlay()
     FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->OnAnomalySpawned.AddDynamic(this, &ThisClass::StartElevator);
+    Sub->OnAnomalySpawned.AddUniqueDynamic(this, &ThisClass::StartElevator);
     Sub->RegisterElevator(this);
 
     UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
@@ -89,17 +89,11 @@ void AElevator::BeginPlay()
     {
         EntranceButton->OnButtonPressed.AddDynamic(this, &AElevator::OnButtonClicked);
     }
-    if (IsValid(Sub->CurrentAnomaly))
-    {
-        StartElevator();
-    }
 }
 
 void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Subsystem->UnRegisterElevator(ElevatorID);
     Super::EndPlay(EndPlayReason);
 }
 
@@ -159,7 +153,6 @@ void AElevator::OnDoorTimelineFinished()
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (Player->ElevatorMoveAudioComponent->IsPlaying())
     {
-        Player->ElevatorMoveAudioComponent->Stop();
         Player->ElevatorMoveAudioComponent->Activate(false);
     }
     SetActiveBlockBox(false);
@@ -171,8 +164,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!Player->ElevatorMoveAudioComponent->IsPlaying())
     {
-        Player->ElevatorMoveAudioComponent->Activate(true);
-        Player->ElevatorMoveAudioComponent->Play();
+        Player->PlayElevatorSound(true);
     }
 
     FLatentActionInfo LatentInfo;
@@ -246,6 +238,7 @@ void AElevator::NotifySubsystem()
     FVector PreForward = Player->GetActorForwardVector();
     UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
+    Sub->LoadNextMap();
     Sub->SetIsElevatorNormal(this->bIsNormalElevator);
     Sub->SetPlayerVelocity(HorizontalSpeed);
     Sub->TryInteractSolveVerdict();

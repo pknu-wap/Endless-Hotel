@@ -23,8 +23,7 @@ enum class EAnomalyVerdictMode : uint8
 {
 	SolvedOnly,
 	Both_AND,
-	Normal,
-	Reset
+	Normal
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
@@ -99,7 +98,7 @@ public:
 	bool bPassed = false;
 
 public:
-	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Reset) { VerdictMode = ENewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
@@ -111,9 +110,9 @@ public:
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 
 public:
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName);
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
-	void PendingLoadDataLayer();
+	void LoadNextMap();
 
 public:
 	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
@@ -131,6 +130,7 @@ public:
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
 	FOnFloorChange_Disable FloorChange_Disable;
 	EMapDataLayer CurrentDataLayer;
+	bool bIsStartInBed = false;
 
 #pragma endregion
 
@@ -181,6 +181,7 @@ public:
 	void RegisterElevator(class AElevator* Elevator);
 	void UnRegisterElevator(FName ElevatorID);
 	void SetTargetElevator();
+	void RemoveTargetElevator();
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }

@@ -125,6 +125,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			
 			auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 			SubSystem->ApplyVerdict();
+			SubSystem->bIsStartInBed = true;
 		}), AnimLength + 5, false);
 }
 
@@ -138,6 +139,15 @@ void AEHPlayer::FreezeAnimation()
 	{
 		Third_Mesh->bNoSkeletonUpdate = true;
 	}
+}
+
+#pragma endregion
+
+#pragma region Sound
+
+void AEHPlayer::PlayElevatorSound(bool bIsPlay)
+{
+	bIsPlay ? ElevatorMoveAudioComponent->Play() : ElevatorMoveAudioComponent->Stop();
 }
 
 #pragma endregion

@@ -33,7 +33,7 @@ protected:
 
 #pragma region Start
 
-protected:
+public:
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	FTransform StartTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 1100, 680), FVector(0.75f, 0.75f, 0.75f));
 
@@ -96,6 +96,9 @@ protected:
 #pragma endregion
 
 #pragma region Sound
+
+public:
+	void PlayElevatorSound(bool bIsPlay);
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Sound")
