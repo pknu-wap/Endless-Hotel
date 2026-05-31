@@ -41,7 +41,7 @@ private:
 #pragma region Elevator
 
 private:
-	void SetElevatorPos();
+	void SetElevator();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Elevator")

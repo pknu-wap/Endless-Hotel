@@ -280,7 +280,12 @@ void AElevator::StartElevator()
         Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
         Player->SetActorRotation(SavedRotation);
         PC->SetControlRotation(SavedRotation);
-        ElevatorOverWall->MoveWall(ElevatorMoveDuration);
+
+        if (ElevatorOverWall.IsValid())
+        {
+            ElevatorOverWall->MoveWall(ElevatorMoveDuration / 2);
+        }
+
         Player->SetBase(nullptr);
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
@@ -289,7 +294,7 @@ void AElevator::StartElevator()
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
                 MoveElevator(StartPos, MapPos, true);
-            }), ElevatorMoveDuration, false);
+            }), ElevatorMoveDuration / 2, false);
     }
     else
     {

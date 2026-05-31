@@ -4,6 +4,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include "Character/AI/MazeMonster/MazeMonster.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Kismet/GameplayStatics.h>
 
 #pragma region MazeMonster
@@ -14,7 +15,7 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	FTimerHandle DelayHandle;
 
-	SetElevatorPos();
+	SetElevator();
 	StartAI();
 	
 	if (MazeMonster.IsValid())
@@ -36,6 +37,7 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 void AAnomaly_Object_Maze::StartAI()
 {
 	MazeMonster->ActivateMob();
+	MazeMonster->SetActorLocation(FVector((-4773, -706, -2768)));
 	MazeMonster->bIsAttacked = false;
 }
 
@@ -43,8 +45,9 @@ void AAnomaly_Object_Maze::StartAI()
 
 #pragma region Elevator
 
-void AAnomaly_Object_Maze::SetElevatorPos()
+void AAnomaly_Object_Maze::SetElevator()
 {
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Elevator->SetActorLocation(ElevatorPoint.Location);
 	Elevator->SetActorRotation(ElevatorPoint.Rotation);
 }
