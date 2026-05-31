@@ -159,7 +159,10 @@ protected:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Wall")
-    TWeakObjectPtr<class AElevator_Wall> ElevatorWall;
+    TWeakObjectPtr<class AElevator_Wall> ElevatorUnderWall;
+
+    UPROPERTY(EditAnywhere, Category = "Elevator|Wall")
+    TWeakObjectPtr<class AElevator_Wall> ElevatorOverWall;
 
 #pragma endregion
 

@@ -190,9 +190,9 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     {
         SetDelay(ElevatorWallHandle, [this]
             { 
-                if(ElevatorWall.IsValid())
+                if(ElevatorUnderWall.IsValid())
                 {
-                    ElevatorWall->MoveWall(ElevatorMoveDuration);
+                    ElevatorUnderWall->MoveWall(ElevatorMoveDuration);
                 }
             }, ElevatorMoveDuration + 0.1f);
         SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
@@ -248,9 +248,13 @@ void AElevator::NotifySubsystem()
 
 void AElevator::StartElevator()
 {
-    if (ElevatorWall.IsValid())
+    if (ElevatorUnderWall.IsValid())
     {
-        ElevatorWall->ResetWall();
+        ElevatorUnderWall->ResetWall();
+    }
+    if (ElevatorOverWall.IsValid())
+    {
+        ElevatorOverWall->ResetWall();
     }
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -276,7 +280,7 @@ void AElevator::StartElevator()
         Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
         Player->SetActorRotation(SavedRotation);
         PC->SetControlRotation(SavedRotation);
-
+        ElevatorOverWall->MoveWall(ElevatorMoveDuration);
         Player->SetBase(nullptr);
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
@@ -285,7 +289,7 @@ void AElevator::StartElevator()
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
                 MoveElevator(StartPos, MapPos, true);
-            }), 0.05f, false);
+            }), ElevatorMoveDuration, false);
     }
     else
     {
