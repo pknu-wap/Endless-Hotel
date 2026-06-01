@@ -51,6 +51,11 @@ void UEHGameInstance::QuitGame()
 
 void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer)
 {
+	if (CurrentDataLayer == TargetDataLayer)
+	{
+		return;
+	}
+
 	UDataLayerAsset* DLA_Active = GetDataLayerAsset(TargetDataLayer);
 	UDataLayerAsset* DLA_Deactive = GetDataLayerAsset(CurrentDataLayer);
 
@@ -69,6 +74,11 @@ void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer)
 
 void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer)
 {
+	if (CurrentDataLayer == TargetDataLayer)
+	{
+		return;
+	}
+
 	auto* UICon = GetSubsystem<UUI_Controller>();
 	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading));
 
