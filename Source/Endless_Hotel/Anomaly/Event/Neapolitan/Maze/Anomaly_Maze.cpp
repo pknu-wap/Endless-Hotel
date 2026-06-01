@@ -21,6 +21,7 @@ void AAnomaly_Maze::SetAnomalyState()
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Maze_Doll:
+		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
 		ScheduleAnomaly();
 	}
 }
@@ -33,7 +34,7 @@ void AAnomaly_Maze::StartAnomalyAction()
 		MazeMonster();
 		break;
 	case EAnomalyID::Maze_Doll:
-		MazeDoll();
+		Super::StartAnomalyAction();
 		break;
 	}
 }
@@ -59,34 +60,6 @@ void AAnomaly_Maze::MazeMonster()
 		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 		MazeObject->SetElevator(Subsystem->GetElevatorByID(TakeOnElevatorID));
 		MazeObject->StartMazeMonster();
-	}
-}
-
-#pragma endregion
-
-
-#pragma region MazeDoll
-
-void AAnomaly_Maze::MazeDoll()
-{
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-	FTimerHandle DelayHandle;
-
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
-		{
-			PC->SetPlayerInputAble(true);
-			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
-		}), 1.5f, false);
-
-	for (AAnomaly_Object_Base* TargetActor : TargetAnomalyObjects)
-	{
-		if (!TargetActor->ExecuteAnomalies.Contains(AnomalyName))
-		{
-			continue;
-		}
-
-		Cast<AAnomaly_Object_Doll>(TargetActor)->ActivateDoll_Show();
 	}
 }
 
