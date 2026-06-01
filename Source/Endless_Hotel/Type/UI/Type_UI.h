@@ -20,7 +20,8 @@ enum class EWidgetType : uint8
 	PopUp_MainMenuCheck	UMETA(DisplayName = "PopUp_MainMenuCheck"),
 	PopUp_QuitCheck		UMETA(DisplayName = "PopUp_QuitCheck"),
 	PopUp_Tutorial		UMETA(DisplayName = "PopUp_Tutorial"),
-	PopUp_Demo			UMETA(DisplayName = "PopUp_Demo")
+	PopUp_Demo			UMETA(DisplayName = "PopUp_Demo"),
+	PopUp_Demo_QR		UMETA(DisplayName = "PopUp_Demo_QR")
 };
 
 UENUM(BlueprintType)
