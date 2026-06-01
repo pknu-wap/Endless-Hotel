@@ -12,12 +12,24 @@ USTRUCT(BlueprintType)
 struct FMazeElevatorSetting
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere) FVector ElevatorLocation = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere) FRotator ElevatorRotation = FRotator::ZeroRotator;
-	UPROPERTY(EditAnywhere) FVector ElevatorWallLocation = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere) FRotator ElevatorWallRotation = FRotator::ZeroRotator;
-	UPROPERTY(EditAnywhere) FVector ElevatorEntranceLocation = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere) FRotator ElevatorEntranceRotation = FRotator::ZeroRotator;
+	
+	UPROPERTY(EditAnywhere)
+	FVector ElevatorLocation = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere)
+	FRotator ElevatorRotation = FRotator::ZeroRotator;
+	
+	UPROPERTY(EditAnywhere)
+	FVector ElevatorWallLocation = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere)
+	FRotator ElevatorWallRotation = FRotator::ZeroRotator;
+	
+	UPROPERTY(EditAnywhere)
+	FVector ElevatorEntranceLocation = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere)
+	FRotator ElevatorEntranceRotation = FRotator::ZeroRotator;
 };
 
 #pragma endregion
