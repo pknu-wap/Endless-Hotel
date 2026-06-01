@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Button.h>
@@ -16,7 +17,7 @@
 
 #pragma region Declare
 
-FSettingHighlight UUI_PopUp_Setting::Highlight;
+UUI_PopUp_Setting::FSettingHighlight UUI_PopUp_Setting::Highlight;
 
 #pragma endregion
 
@@ -55,26 +56,64 @@ void UUI_PopUp_Setting::ShowWidget()
 
 	SetVisibility(ESlateVisibility::Collapsed);
 
-	FTimerHandle ShowHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-			TurnOnGearLight(true);
-		}), 1.f, false);
-
-	HighlightButtons();
-	FindGearActor();
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	WidgetOpenedDataLayer = GameInstance->GetCurrentDataLayer();
+	GameInstance->SwitchDataLayer(EMapDataLayer::Lobby, false);
 
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::Gear, 1.f);
+
+	switch (WidgetOpenedDataLayer)
+	{
+	case EMapDataLayer::Lobby:
+	{
+		FTimerHandle ShowHandle;
+		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				HighlightButtons();
+				FindGearActor();
+				SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+				TurnOnGearLight(true);
+			}), 1.f, false);
+
+		CameraManager->PossessCamera(ECameraType::Gear, 1.f);
+		break;
+	}
+	default:
+	{
+		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+
+		FTimerHandle ShowHandle;
+		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				HighlightButtons();
+				FindGearActor();
+				TurnOnGearLight(true);
+			}), 1.f, false);
+
+		CameraManager->PossessCamera(ECameraType::Gear, 0.f);
+		break;
+	}
+	}
 }
 
 void UUI_PopUp_Setting::HideWidget()
 {
 	Super::HideWidget();
 
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::Title, 1.f);
+
+	switch (WidgetOpenedDataLayer)
+	{
+	case EMapDataLayer::Lobby:
+		CameraManager->PossessCamera(ECameraType::Title, 1.f);
+		break;
+
+	default:
+		GameInstance->SwitchDataLayer(WidgetOpenedDataLayer, false);
+		CameraManager->PossessCameraToPlayer(0.f);
+		break;
+	}
 
 	SM_Gear->SetActorRotation(OriginRot);
 

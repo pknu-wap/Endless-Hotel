@@ -49,7 +49,7 @@ void UEHGameInstance::QuitGame()
 
 #pragma region Data Layer
 
-void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer)
+void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
 {
 	if (CurrentDataLayer == TargetDataLayer)
 	{
@@ -69,10 +69,13 @@ void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer)
 
 	CurrentDataLayer = TargetDataLayer;
 
-	OnDataLayerChanged.Broadcast(CurrentDataLayer);
+	if (bNotifyDelegate)
+	{
+		OnDataLayerChanged.Broadcast(CurrentDataLayer);
+	}
 }
 
-void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer)
+void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
 {
 	if (CurrentDataLayer == TargetDataLayer)
 	{
@@ -82,11 +85,11 @@ void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetData
 	auto* UICon = GetSubsystem<UUI_Controller>();
 	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading));
 
-	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, UICon, UI_Loading]()
+	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UICon, UI_Loading]()
 		{
 			if (UI_Loading->IsLoadingCompleted())
 			{
-				SwitchDataLayer(TargetDataLayer);
+				SwitchDataLayer(TargetDataLayer, bNotifyDelegate);
 				UICon->CloseWidget();
 				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
 			}
