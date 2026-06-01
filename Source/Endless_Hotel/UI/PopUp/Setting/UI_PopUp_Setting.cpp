@@ -289,7 +289,7 @@ const int32 UUI_PopUp_Setting::GetShortestAdditionAngle(int32 Cur, int32 Tar)
 
 void UUI_PopUp_Setting::TurnOnGearLight(bool bOn)
 {
-	const float LightValue = bOn ? 200.f : 0.f;
+	const float LightValue = bOn ? 100.f : 0.f;
 	const float FogValue = bOn ? 2.f : 0.f;
 	constexpr float Speed = 1000.f;
 
