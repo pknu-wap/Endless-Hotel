@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Character/Character/EHCharacter.h"
-#include "BaseAI.generated.h"
+#include <CoreMinimal.h>
+#include <Character/Character/EHCharacter.h>
+#include <BaseAI.generated.h>
 
 
 UCLASS()
@@ -17,9 +17,9 @@ class ENDLESS_HOTEL_API ABaseAI : public AEHCharacter
 public:
 	ABaseAI(const FObjectInitializer& ObjectInitializer);
 
-	void ActivateMob();
+	virtual void ActivateMob();
 
-	void DeActivateMob();
+	virtual void DeActivateMob();
 
 #pragma endregion
 

@@ -5,6 +5,9 @@
 #include "Character/AI/MazeMonster/MazeMonster.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "Character/AI/BaseAIController.h"
+#include "Actor/Elevator/Elevator_Wall.h"
+#include "Actor/Elevator/Elevator_Entrance.h"
 #include <Kismet/GameplayStatics.h>
 
 #pragma region MazeMonster
@@ -15,7 +18,7 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	FTimerHandle DelayHandle;
 
-	SetElevator();
+	SetElevatorPos();
 	StartAI();
 	
 	if (MazeMonster.IsValid())
@@ -36,8 +39,12 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 
 void AAnomaly_Object_Maze::StartAI()
 {
+	if (!MazeMonster->GetController())
+	{
+		MazeMonster->SpawnDefaultController();
+	}
 	MazeMonster->ActivateMob();
-	MazeMonster->SetActorLocation(FVector((-4773, -706, -2768)));
+	MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
 	MazeMonster->bIsAttacked = false;
 }
 
@@ -45,11 +52,23 @@ void AAnomaly_Object_Maze::StartAI()
 
 #pragma region Elevator
 
-void AAnomaly_Object_Maze::SetElevator()
+void AAnomaly_Object_Maze::SetElevator(AElevator* TargetElevator)
+{
+	Elevator = TargetElevator;
+	ElevatorWall = Elevator->ElevatorUnderWall;
+	ElevatorEntrance = Elevator->LinkedEntrance;
+}
+
+void AAnomaly_Object_Maze::SetElevatorPos()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Elevator->SetActorLocation(ElevatorPoint.Location);
-	Elevator->SetActorRotation(ElevatorPoint.Rotation);
+	Elevator->SetActorLocation(ElevatorPoint.ElevatorLocation);
+	Elevator->SetActorRotation(ElevatorPoint.ElevatorRotation);
+	ElevatorWall->SetActorLocation(ElevatorPoint.ElevatorWallLocation);
+	ElevatorWall->SetActorRotation(ElevatorPoint.ElevatorWallRotation);
+	ElevatorWall->StandardLocation = ElevatorPoint.ElevatorWallLocation;
+	ElevatorEntrance->SetActorLocation(ElevatorPoint.ElevatorEntranceLocation);
+	ElevatorEntrance->SetActorRotation(ElevatorPoint.ElevatorEntranceRotation);
 }
 
 #pragma endregion

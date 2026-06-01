@@ -323,12 +323,17 @@ void AElevator::SetActiveBlockBox(bool bIsActive)
 
 #pragma endregion
 
-#pragma region ElevatorFloor
+#pragma region Anomaly
 
 void AElevator::DisableElevatorFloor()
 {
     Floor->SetVisibility(false);
     Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AElevator::DisableElevator()
+{
+    RootComponent->SetVisibility(false);
 }
 
 #pragma endregion

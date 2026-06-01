@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
-#include "Anomaly_Object_Maze.generated.h"
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Maze.generated.h>
 
 #pragma region Declare
 
@@ -12,8 +12,12 @@ USTRUCT(BlueprintType)
 struct FMazeElevatorSetting
 {
 	GENERATED_BODY()
-	UPROPERTY(EditAnywhere) FVector Location = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere) FRotator Rotation = FRotator::ZeroRotator;
+	UPROPERTY(EditAnywhere) FVector ElevatorLocation = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere) FRotator ElevatorRotation = FRotator::ZeroRotator;
+	UPROPERTY(EditAnywhere) FVector ElevatorWallLocation = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere) FRotator ElevatorWallRotation = FRotator::ZeroRotator;
+	UPROPERTY(EditAnywhere) FVector ElevatorEntranceLocation = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere) FRotator ElevatorEntranceRotation = FRotator::ZeroRotator;
 };
 
 #pragma endregion
@@ -40,12 +44,21 @@ private:
 
 #pragma region Elevator
 
+public:
+	void SetElevator(class AElevator* TargetElevator);
+
 private:
-	void SetElevator();
+	void SetElevatorPos();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	TWeakObjectPtr<class AElevator> Elevator;
+
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	TWeakObjectPtr<class AElevator_Wall> ElevatorWall;
+
+	UPROPERTY(EditAnywhere, Category = "Elevator")
+	TWeakObjectPtr<class AElevator_Entrance> ElevatorEntrance;
 
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	FMazeElevatorSetting ElevatorPoint;

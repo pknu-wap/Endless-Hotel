@@ -33,6 +33,10 @@ protected:
 public:
 	void MoveWall(float MoveDuration);
 
+public:
+	UPROPERTY(EditAnywhere, Category = "Move")
+	FVector StandardLocation;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
 	FVector Start;

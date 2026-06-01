@@ -4,6 +4,8 @@
 #include "Anomaly/Object/Neapolitan/Maze/Anomaly_Object_Maze.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
+#include "GameSystem/SubSystem/GameSystem.h"
+#include "Actor/Elevator/Elevator_Wall.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -45,7 +47,7 @@ void AAnomaly_Maze::MazeMonster()
 	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
-	AActor* TargetWall = TargetAnomalyObjects[PositionIndex];
+	AAnomaly_Object_Base* TargetWall = TargetAnomalyObjects[PositionIndex];
 	if (TargetWall)
 	{
 		TargetWall->SetActorEnableCollision(false);
@@ -54,6 +56,8 @@ void AAnomaly_Maze::MazeMonster()
 
 	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
 	{
+		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+		MazeObject->SetElevator(Subsystem->GetElevatorByID(TakeOnElevatorID));
 		MazeObject->StartMazeMonster();
 	}
 }

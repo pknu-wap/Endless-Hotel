@@ -26,6 +26,10 @@ protected:
 protected:
 	void MazeMonster();
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "MazeTakeonElevatorID")
+	FName TakeOnElevatorID;
+
 #pragma endregion
 
 #pragma region MazeDoll

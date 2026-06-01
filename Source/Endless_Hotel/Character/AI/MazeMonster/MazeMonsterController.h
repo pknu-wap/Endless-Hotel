@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Character/AI/BaseAIController.h"
-#include "MazeMonsterController.generated.h"
+#include <CoreMinimal.h>
+#include <MazeMonsterController.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AMazeMonsterController : public ABaseAIController

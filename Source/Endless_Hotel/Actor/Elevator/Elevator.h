@@ -149,7 +149,7 @@ protected:
 
 #pragma region Entrance
 
-protected:
+public:
     UPROPERTY(EditAnywhere, Category = "Elevator")
     TWeakObjectPtr<class AElevator_Entrance> LinkedEntrance;
 
@@ -157,7 +157,7 @@ protected:
 
 #pragma region Wall
 
-protected:
+public:
     UPROPERTY(EditAnywhere, Category = "Elevator|Wall")
     TWeakObjectPtr<class AElevator_Wall> ElevatorUnderWall;
 
@@ -197,10 +197,11 @@ public:
 
 #pragma endregion
 
-#pragma region ElevatorFloor
+#pragma region Anomaly
 
 public:
     void DisableElevatorFloor();
+    void DisableElevator();
 
 #pragma endregion
 

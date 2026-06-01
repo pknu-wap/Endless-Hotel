@@ -3,7 +3,7 @@
 #include "Character/AI/BaseAI.h"
 #include "Character/AI/BaseAIController.h"
 #include "Character/Character/EHCharacter.h"
-#include "BaseAIAnimInstance.h"
+#include "Character/AI/BaseAIAnimInstance.h"
 
 ABaseAI::ABaseAI(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
