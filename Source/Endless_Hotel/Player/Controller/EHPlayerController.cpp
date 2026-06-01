@@ -4,7 +4,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
-#include "Type/UI/Type_UI_Key.h"
+#include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"

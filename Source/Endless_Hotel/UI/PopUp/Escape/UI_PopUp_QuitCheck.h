@@ -3,9 +3,19 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "Type/UI/Type_UI_Quit.h"
 #include <CoreMinimal.h>
 #include <UI_PopUp_QuitCheck.generated.h>
+
+#pragma region Declare
+
+UENUM(BlueprintType)
+enum class EQuitButtonType : uint8
+{
+	Quit		UMETA(DisplayName = "Quit"),
+	MainMenu	UMETA(DisplayName = "MainMenu")
+};
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_QuitCheck : public UUI_PopUp_Base
@@ -23,7 +33,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Type")
-	EQuitType QuitType;
+	EQuitButtonType QuitType;
 
 #pragma endregion
 

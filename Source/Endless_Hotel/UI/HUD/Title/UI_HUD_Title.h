@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/HUD/UI_HUD_Base.h"
-#include "Type/UI/Type_UI_Title.h"
+#include "Type/UI/Type_Title.h"
 #include <CoreMinimal.h>
 #include <UI_HUD_Title.generated.h>
 

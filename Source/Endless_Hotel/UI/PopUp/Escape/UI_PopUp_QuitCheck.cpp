@@ -25,11 +25,11 @@ void UUI_PopUp_QuitCheck::Click_Yes()
 
 	switch (QuitType)
 	{
-	case EQuitType::Quit:
+	case EQuitButtonType::Quit:
 		GameInstance->QuitGame();
 		break;
 
-	case EQuitType::MainMenu:
+	case EQuitButtonType::MainMenu:
 		GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Lobby);
 		break;
 	}
