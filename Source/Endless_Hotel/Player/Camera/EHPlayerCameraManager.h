@@ -75,6 +75,7 @@ private:
 public:
 	void PossessCamera(const ECameraType& CameraType, const float& BlendTime = 0.f);
 	void PossessCamera(AActor* CameraOwner, const float& BlendTime = 0.f);
+	void PossessCameraToPlayer(const float& BlendTime = 0.f);
 
 #pragma endregion
 

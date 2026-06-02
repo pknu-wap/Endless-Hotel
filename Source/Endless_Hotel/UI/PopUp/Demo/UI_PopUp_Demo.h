@@ -18,15 +18,33 @@ protected:
 
 #pragma endregion
 
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
+
+#pragma endregion
+
 #pragma region Button
 
 protected:
 	UFUNCTION()
-	void Click_Return();
+	void Click_QRCode();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Return;
+	TObjectPtr<class UButton> Button_Faker;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_Karina;
+
+#pragma endregion
+
+#pragma region I See Dae Ru
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_ISeeDaeRu;
 
 #pragma endregion
 

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/ComboBox/UI_ComboBox_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_ComboBox_Setting.generated.h>
 

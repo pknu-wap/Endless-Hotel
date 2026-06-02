@@ -3,17 +3,12 @@
 #pragma once
 
 #include "UI/PopUp/UI_PopUp_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
 #include <UI_PopUp_Setting.generated.h>
-
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingHighlight);
-
-#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Setting : public UUI_PopUp_Base
@@ -36,9 +31,17 @@ public:
 
 #pragma endregion
 
+#pragma region Data Layer
+
+private:
+	EMapDataLayer WidgetOpenedDataLayer = EMapDataLayer::None;
+
+#pragma endregion
+
 #pragma region Delegate
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingHighlight);
 	static FSettingHighlight Highlight;
 
 #pragma endregion

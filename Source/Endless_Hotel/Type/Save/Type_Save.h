@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI_Setting.h"
-#include "Type/UI/Type_UI_Key.h"
+#include "Type/UI/Type_Setting.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
