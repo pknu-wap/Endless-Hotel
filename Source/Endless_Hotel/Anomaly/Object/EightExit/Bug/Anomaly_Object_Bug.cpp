@@ -11,12 +11,32 @@ AAnomaly_Object_Bug::AAnomaly_Object_Bug(const FObjectInitializer& ObjectInitial
 {
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 	NiagaraComponent->SetupAttachment(RootComponent);
-	NiagaraComponent->SetAutoActivate(false);
-	NiagaraComponent->Deactivate();
+	SetNiagaraComponent();
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->SetAutoActivate(false);
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void AAnomaly_Object_Bug::Reset()
+{
+	Super::Reset();
+
+	auto* Asset = NiagaraComponent->GetAsset();
+	NiagaraComponent->DeactivateImmediate();
+	NiagaraComponent->DestroyComponent();
+	NiagaraComponent = NewObject<UNiagaraComponent>();
+	NiagaraComponent->SetAsset(Asset);
+	NiagaraComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SetNiagaraComponent();
+
+	AudioComponent->Stop();
+	
+	Destroy();
 }
 
 #pragma endregion
@@ -27,6 +47,12 @@ void AAnomaly_Object_Bug::ActiveBug()
 {
 	NiagaraComponent->Activate();
 	AudioComponent->Play();
+}
+
+void AAnomaly_Object_Bug::SetNiagaraComponent()
+{
+	NiagaraComponent->SetAutoActivate(false);
+	NiagaraComponent->Deactivate();
 }
 
 #pragma endregion

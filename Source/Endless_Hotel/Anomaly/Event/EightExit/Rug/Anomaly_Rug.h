@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Anomaly/Event/Anomaly_Event_EightExit.h"
+#include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Rug.generated.h>
 

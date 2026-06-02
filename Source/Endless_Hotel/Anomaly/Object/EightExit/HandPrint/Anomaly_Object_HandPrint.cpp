@@ -23,6 +23,19 @@ AAnomaly_Object_HandPrint::AAnomaly_Object_HandPrint(const FObjectInitializer& O
 
 #pragma endregion
 
+#pragma region Reset
+
+void AAnomaly_Object_HandPrint::Reset()
+{
+	bIsFirstHandPrint = true;
+
+	TurnLights(true);
+	
+	Destroy();
+}
+
+#pragma endregion
+
 #pragma region Cong
 
 void AAnomaly_Object_HandPrint::ReserveCongCong()
@@ -31,12 +44,10 @@ void AAnomaly_Object_HandPrint::ReserveCongCong()
 
 	if (bIsFirstHandPrint)
 	{
-		bIsFirstHandPrint = false;
-
 		AC->Sound = Sound_First;
 		AC->Play();
 
-		TurnOffLights();
+		TurnLights(false);
 
 		FTimerHandle FirstHandle;
 		GetWorld()->GetTimerManager().SetTimer(FirstHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -58,12 +69,19 @@ void AAnomaly_Object_HandPrint::ShowHandPrint()
 	AC->Play();
 }
 
-void AAnomaly_Object_HandPrint::TurnOffLights()
+void AAnomaly_Object_HandPrint::TurnLights(bool bOn)
 {
+	if (!bIsFirstHandPrint)
+	{
+		return;
+	}
+
 	for (TActorIterator<AAnomaly_Object_Light> Iter(GetWorld()); Iter; ++Iter)
 	{
-		Iter->TurnLight(false);
+		Iter->TurnLight(bOn);
 	}
+
+	bIsFirstHandPrint = false;
 }
 
 #pragma endregion
