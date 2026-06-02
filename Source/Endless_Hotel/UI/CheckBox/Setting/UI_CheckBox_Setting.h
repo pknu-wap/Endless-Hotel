@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/CheckBox/UI_CheckBox_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_CheckBox_Setting.generated.h>
 

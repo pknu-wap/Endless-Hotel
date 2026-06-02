@@ -3,6 +3,7 @@
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameFramework/Character.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Camera/PDA_Camera.h"
 #include "UI/Controller/UI_Controller.h"
@@ -11,6 +12,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
+
 
 #pragma region Base
 
@@ -156,6 +158,11 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 {
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime);
+}
+
+void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
+{
+	PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)), BlendTime);
 }
 
 #pragma endregion

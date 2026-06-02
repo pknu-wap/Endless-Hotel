@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/Button/UI_Button_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Setting.generated.h>

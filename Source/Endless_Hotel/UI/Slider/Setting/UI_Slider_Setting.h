@@ -3,7 +3,7 @@
 #pragma once
 
 #include "UI/Slider/UI_Slider_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_Slider_Setting.generated.h>
 

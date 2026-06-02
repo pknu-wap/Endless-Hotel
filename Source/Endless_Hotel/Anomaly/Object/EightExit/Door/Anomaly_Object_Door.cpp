@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/GameSystem.h"
@@ -281,9 +282,15 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 void AAnomaly_Object_Door::UpdateDoorByFloor()
 {
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
 
 	if (Sub->Floor == STARTFLOOR)
 	{
+		if (Sub->bIsStartInBed && EHPC->bRevive)
+		{
+			DoorRotateStarted();
+		}
 		Component_Interact->Deactivate();
 	}
 	else

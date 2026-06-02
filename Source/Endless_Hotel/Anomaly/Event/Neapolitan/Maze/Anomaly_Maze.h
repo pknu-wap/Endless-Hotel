@@ -16,23 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Maze : public AAnomaly_Event_Neapolitan
 public:
 	virtual void SetAnomalyState() override;
 
-protected:
-	virtual void StartAnomalyAction() override;
-
-#pragma endregion
-
-#pragma region MazeMonster
-
-protected:
-	void MazeMonster();
-
-#pragma endregion
-
-#pragma region MazeDoll
-
-protected:
-	void MazeDoll();
-
 #pragma endregion
 
 };

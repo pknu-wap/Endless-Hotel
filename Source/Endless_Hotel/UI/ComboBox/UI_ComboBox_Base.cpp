@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/ComboBox/UI_ComboBox_Base.h"
-#include "Type/UI/Type_UI_Setting.h"
+#include "Type/UI/Type_Setting.h"
 #include <Components/TextBlock.h>
 
 #pragma region Generate
