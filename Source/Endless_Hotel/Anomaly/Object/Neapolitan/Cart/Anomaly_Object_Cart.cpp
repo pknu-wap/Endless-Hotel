@@ -2,8 +2,9 @@
 
 #include "Anomaly/Object/Neapolitan/Cart/Anomaly_Object_Cart.h"
 #include <Components/StaticMeshComponent.h>
-#include <Kismet/GameplayStatics.h>
 #include <Components/TimelineComponent.h>
+#include <Components/AudioComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -14,6 +15,9 @@ AAnomaly_Object_Cart::AAnomaly_Object_Cart(const FObjectInitializer& ObjectIniti
 	SM_Cart_Wheel->SetupAttachment(Object);
 
 	Timeline_WheelSpin = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_WheelSpin"));
+
+	AC_Move = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Move"));
+	AC_Move->SetupAttachment(Object);
 }
 
 void AAnomaly_Object_Cart::BeginPlay()
@@ -29,6 +33,8 @@ void AAnomaly_Object_Cart::BeginPlay()
 	FOnTimelineEvent Finish_WheelSpin;
 	Finish_WheelSpin.BindUFunction(this, "StartWheelSpin");
 	Timeline_WheelSpin->SetTimelineFinishedFunc(Finish_WheelSpin);
+
+	AC_Move->SetSound(Sound_Move);
 }
 
 #pragma endregion
@@ -40,6 +46,8 @@ void AAnomaly_Object_Cart::CartMoving()
 	bIsPlaying = true;
 
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound_Move, GetActorLocation());
+
+	AC_Move->Play();
 
 	StartLocation = GetActorLocation();
 	StartYaw = GetActorRotation().Yaw;
@@ -82,6 +90,8 @@ void AAnomaly_Object_Cart::FinishMove()
 	bIsPlaying = false;
 
 	Timeline_WheelSpin->Stop();
+
+	AC_Move->Stop();
 }
 
 #pragma endregion
