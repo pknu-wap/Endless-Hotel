@@ -27,4 +27,5 @@ protected:
 	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
 #pragma endregion 
+
 };

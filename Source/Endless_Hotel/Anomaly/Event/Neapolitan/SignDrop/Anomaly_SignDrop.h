@@ -6,16 +6,12 @@
 #include <CoreMinimal.h>
 #include <Anomaly_SignDrop.generated.h>
 
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_SignDrop : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 	
 #pragma region Base
-
-public:
-	AAnomaly_SignDrop(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
