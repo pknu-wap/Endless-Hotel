@@ -52,9 +52,10 @@ void AAnomaly_Object_Maze::StartAI()
 
 #pragma region Elevator
 
-void AAnomaly_Object_Maze::SetElevator(AElevator* TargetElevator)
+void AAnomaly_Object_Maze::SetElevator()
 {
-	Elevator = TargetElevator;
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	Elevator = Subsystem->GetElevatorByID(TakeOnElevatorID);
 	ElevatorWall = Elevator->ElevatorUnderWall;
 	ElevatorEntrance = Elevator->LinkedEntrance;
 }

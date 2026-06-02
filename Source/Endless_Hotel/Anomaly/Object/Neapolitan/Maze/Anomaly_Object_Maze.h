@@ -57,12 +57,15 @@ private:
 #pragma region Elevator
 
 public:
-	void SetElevator(class AElevator* TargetElevator);
+	void SetElevator();
 
 private:
 	void SetElevatorPos();
 
 protected:
+	UPROPERTY(EditAnywhere, Category = "MazeTakeonElevatorID")
+	FName TakeOnElevatorID;
+
 	UPROPERTY(EditAnywhere, Category = "Elevator")
 	TWeakObjectPtr<class AElevator> Elevator;
 

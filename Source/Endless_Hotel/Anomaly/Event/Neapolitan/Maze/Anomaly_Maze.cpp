@@ -15,36 +15,8 @@ void AAnomaly_Maze::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
-	{
-	case EAnomalyID::Maze_Monster:
-		ScheduleAnomaly();
-		break;
-	case EAnomalyID::Maze_Doll:
-		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
-		ScheduleAnomaly();
-	}
-}
+	SetupAnomalyAction(&AAnomaly_Object_Maze::SetElevator);
 
-void AAnomaly_Maze::StartAnomalyAction()
-{
-	switch (AnomalyName)
-	{
-	case EAnomalyID::Maze_Monster:
-		MazeMonster();
-		break;
-	case EAnomalyID::Maze_Doll:
-		Super::StartAnomalyAction();
-		break;
-	}
-}
-
-#pragma endregion
-
-#pragma region MazeMonster
-
-void AAnomaly_Maze::MazeMonster()
-{
 	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
@@ -55,11 +27,15 @@ void AAnomaly_Maze::MazeMonster()
 		TargetWall->SetActorHiddenInGame(true);
 	}
 
-	if (AAnomaly_Object_Maze* MazeObject = Cast<AAnomaly_Object_Maze>(TargetWall))
+	switch (AnomalyName)
 	{
-		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-		MazeObject->SetElevator(Subsystem->GetElevatorByID(TakeOnElevatorID));
-		MazeObject->StartMazeMonster();
+	case EAnomalyID::Maze_Monster:
+		SetupAnomalyAction(&AAnomaly_Object_Maze::StartMazeMonster);
+		ScheduleAnomaly();
+		break;
+	case EAnomalyID::Maze_Doll:
+		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
+		ScheduleAnomaly();
 	}
 }
 
