@@ -7,8 +7,6 @@
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
 #include "Type/Save/Type_Save.h"
-#include "GameSystem/SubSystem/GameSystem.h"
-#include "GameFramework/GameModeBase.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
@@ -22,6 +20,8 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
+#include <GameSystem/SubSystem/GameSystem.h>
+#include <GameFramework/GameModeBase.h>
 
 #pragma region Base
 
@@ -37,32 +37,32 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	bIsPlayerDead = false;
 }
 
-	void AEHPlayerController::BeginPlay()
+void AEHPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	EHPlayer = Cast<AEHPlayer>(GetCharacter());
+	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
+
+	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
+
+	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
+
+	PlayerCameraManager->ViewPitchMin = -70.0f;
+	PlayerCameraManager->ViewPitchMax = 70.0f;
+
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Super::BeginPlay();
-
-		EHPlayer = Cast<AEHPlayer>(GetCharacter());
-		UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
-
-		EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
-
-		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-
-		PlayerCameraManager->ViewPitchMin = -70.0f;
-		PlayerCameraManager->ViewPitchMax = 70.0f;
-
-		if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(IMC_Default, 0);
-		}
-
-		IMC_Backup = IMC_Default;
-
-		auto* GameInstance = GetGameInstance<UEHGameInstance>();
-		GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
-
-		OpenHUDWidget(EMapDataLayer::Lobby);
+		Subsystem->AddMappingContext(IMC_Default, 0);
 	}
+
+	IMC_Backup = IMC_Default;
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
+
+	OpenHUDWidget(EMapDataLayer::Lobby);
+}
 
 void AEHPlayerController::Tick(float DeltaSeconds)
 {

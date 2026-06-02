@@ -19,7 +19,7 @@
 AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	TimeLine_Eye = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Eye"));
 }
