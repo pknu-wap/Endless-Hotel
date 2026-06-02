@@ -35,10 +35,20 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
+
 #pragma region Light
 
 public:
 	void TurnLight(bool bIsOn);
+
+private:
+	void SetGeometryCollection();
 
 #pragma endregion
 
@@ -64,6 +74,9 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_LightBlue;
+
+private:
+	FLinearColor OriginalColor;
 
 #pragma endregion
 

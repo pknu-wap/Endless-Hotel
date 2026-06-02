@@ -21,10 +21,20 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override { InteractPhone(EInteractType::TurnOff); }
+
+#pragma endregion
+
 #pragma region Interact
 
 protected:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+
+private:
+	void InteractPhone(const EInteractType& Type);
 
 #pragma endregion
 

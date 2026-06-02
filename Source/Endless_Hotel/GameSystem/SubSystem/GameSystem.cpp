@@ -7,7 +7,7 @@
 #include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly/Event/Anomaly_Event_Neapolitan.h"
+#include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator.h"

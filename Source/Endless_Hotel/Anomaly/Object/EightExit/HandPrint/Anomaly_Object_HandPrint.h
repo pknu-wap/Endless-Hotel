@@ -18,6 +18,13 @@ public:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
+
 #pragma region Cong
 
 public:
@@ -25,7 +32,7 @@ public:
 
 protected:
 	void ShowHandPrint();
-	void TurnOffLights();
+	void TurnLights(bool bOn);
 
 public:
 	static bool bIsFirstHandPrint;

@@ -21,6 +21,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override { StopRinging(); }
+
+#pragma endregion
+
 #pragma region Clock
 
 protected:

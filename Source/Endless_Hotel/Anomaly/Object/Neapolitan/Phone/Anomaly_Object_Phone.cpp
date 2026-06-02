@@ -47,6 +47,12 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 {
 	Super::Interact_Implementation(Interacter);
 
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+	InteractPhone(Info.InteractType);
+}
+
+void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
+{
 	SM_Receiver->SetRelativeTransform(OriginalTrans);
 
 	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
@@ -57,9 +63,7 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 	AC->Stop();
 
-	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-
-	switch (Info.InteractType)
+	switch (Type)
 	{
 	case EInteractType::TurnOff:
 		break;
