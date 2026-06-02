@@ -15,6 +15,7 @@ void AAnomaly_Maze::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
+	SetupAnomalyAction(&AAnomaly_Object_Maze::ResetAI);
 	SetupAnomalyAction(&AAnomaly_Object_Maze::SetElevator);
 
 	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
