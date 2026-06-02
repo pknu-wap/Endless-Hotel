@@ -16,11 +16,6 @@ void AAnomaly_Shelf::SetAnomalyState()
 		SetupAnomalyAction(&AAnomaly_Object_Shelf::StartChange);
 		ScheduleAnomaly();
 		break;
-
-	case EAnomalyID::Shelf_Book:
-		SetupAnomalyAction(&AAnomaly_Object_Shelf::FallSound);
-		ActiveTrigger();
-		break;
 	}
 }
 #pragma endregion
