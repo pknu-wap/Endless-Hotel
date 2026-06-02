@@ -283,7 +283,7 @@ void AElevator::StartElevator()
 
         if (ElevatorOverWall.IsValid())
         {
-            ElevatorOverWall->MoveWall(ElevatorMoveDuration / 2);
+            ElevatorOverWall->MoveWall(ElevatorMoveDuration);
         }
 
         Player->SetBase(nullptr);

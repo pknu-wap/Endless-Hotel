@@ -21,13 +21,19 @@ void AElevator_Wall::BeginPlay()
 
 void AElevator_Wall::ResetWall()
 {
+    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    FVector StartLocation = Subsystem->bIsStartInBed && bIsOver ? StandardLocation + End : StandardLocation + Start;
+    if(bIsOver)
+    {
+        Subsystem->bIsStartInBed = false;
+    }
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = 1000;
     LatentInfo.Linkage = 0;
 
     UKismetSystemLibrary::MoveComponentTo(RootComponent, StandardLocation + End, RootComponent->GetRelativeRotation(), false, false, 0.0f, false, EMoveComponentAction::Stop, LatentInfo);
-    SetActorLocation(StandardLocation + Start);
+    SetActorLocation(StartLocation);
 }
 
 #pragma endregion

@@ -44,6 +44,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
 	FVector End;
 
+	UPROPERTY(EditAnywhere, Category = "Move")
+	bool bIsOver;
+
 #pragma endregion
 
 };
