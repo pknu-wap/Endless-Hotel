@@ -379,17 +379,6 @@ void AEHPlayerController::PlayDeathSequence()
 
 void AEHPlayerController::RevivePlayer()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->bIsClear = false;
-	Subsystem->Floor = STARTFLOOR;
-	Subsystem->InitializePool();
-	Subsystem->bIsStartInBed = true;
-
-	if (auto* GameMode = GetWorld()->GetAuthGameMode())
-	{
-		GameMode->RestartPlayer(this);
-	}
-
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn)
 	{
