@@ -17,7 +17,6 @@ void AElevator_Wall::BeginPlay()
 {
     Super::BeginPlay();
     auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Subsystem->OnAnomalySpawned.AddUniqueDynamic(this, &ThisClass::ResetWall);
 }
 
 void AElevator_Wall::ResetWall()
@@ -27,8 +26,8 @@ void AElevator_Wall::ResetWall()
     LatentInfo.UUID = 1000;
     LatentInfo.Linkage = 0;
 
-    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, RootComponent->GetRelativeRotation(), false, false, 0.0f, false, EMoveComponentAction::Stop, LatentInfo);
-    SetActorLocation(Start);
+    UKismetSystemLibrary::MoveComponentTo(RootComponent, StandardLocation + End, RootComponent->GetRelativeRotation(), false, false, 0.0f, false, EMoveComponentAction::Stop, LatentInfo);
+    SetActorLocation(StandardLocation + Start);
 }
 
 #pragma endregion
@@ -42,7 +41,7 @@ void AElevator_Wall::MoveWall(float MoveDuration)
     LatentInfo.UUID = 1000;
     LatentInfo.Linkage = 0;
 
-    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, RootComponent->GetRelativeRotation(), false, false, MoveDuration, false, EMoveComponentAction::Move, LatentInfo);
+    UKismetSystemLibrary::MoveComponentTo(RootComponent, StandardLocation + End, RootComponent->GetRelativeRotation(), false, false, MoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 }
 
 #pragma endregion
