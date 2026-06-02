@@ -190,9 +190,9 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     {
         SetDelay(ElevatorWallHandle, [this]
             { 
-                if(ElevatorWall.IsValid())
+                if(ElevatorUnderWall.IsValid())
                 {
-                    ElevatorWall->MoveWall(ElevatorMoveDuration);
+                    ElevatorUnderWall->MoveWall(ElevatorMoveDuration);
                 }
             }, ElevatorMoveDuration + 0.1f);
         SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
@@ -248,9 +248,13 @@ void AElevator::NotifySubsystem()
 
 void AElevator::StartElevator()
 {
-    if (ElevatorWall.IsValid())
+    if (ElevatorUnderWall.IsValid())
     {
-        ElevatorWall->ResetWall();
+        ElevatorUnderWall->ResetWall();
+    }
+    if (ElevatorOverWall.IsValid())
+    {
+        ElevatorOverWall->ResetWall();
     }
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -277,6 +281,11 @@ void AElevator::StartElevator()
         Player->SetActorRotation(SavedRotation);
         PC->SetControlRotation(SavedRotation);
 
+        if (ElevatorOverWall.IsValid())
+        {
+            ElevatorOverWall->MoveWall(ElevatorMoveDuration / 2);
+        }
+
         Player->SetBase(nullptr);
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
@@ -285,7 +294,7 @@ void AElevator::StartElevator()
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
                 MoveElevator(StartPos, MapPos, true);
-            }), 0.05f, false);
+            }), ElevatorMoveDuration / 2, false);
     }
     else
     {
@@ -314,12 +323,17 @@ void AElevator::SetActiveBlockBox(bool bIsActive)
 
 #pragma endregion
 
-#pragma region ElevatorFloor
+#pragma region Anomaly
 
 void AElevator::DisableElevatorFloor()
 {
     Floor->SetVisibility(false);
     Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AElevator::DisableElevator()
+{
+    RootComponent->SetVisibility(false);
 }
 
 #pragma endregion

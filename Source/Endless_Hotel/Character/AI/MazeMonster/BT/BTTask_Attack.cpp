@@ -36,8 +36,13 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
 
 	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
-	if (!Player || MazeMonster->bIsAttacked) return EBTNodeResult::Failed;
+	if (!Player || MazeMonster->bIsAttacked) 
+	{
+		return EBTNodeResult::Failed;
+	}
 
+	AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
+	BaseAIController->DeActiveAI();
 	Player->DieDelegate.Broadcast(EDeathReason::Attack);
 	return EBTNodeResult::Succeeded;
 }

@@ -136,13 +136,8 @@ void AAnomaly_Event::InteractSolveVerdict()
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	bool bAllSolved = true;
 
-	for (TActorIterator<AAnomaly_Object_Base> Iter(GetWorld()); Iter; ++Iter)
+	for (const auto& AnomalyObject : TargetAnomalyObjects)
 	{
-		auto* AnomalyObject = *Iter;
-		if (!IsValid(AnomalyObject) || AnomalyObject->GetLevel() != this->GetLevel())
-		{
-			continue;
-		}
 		if (!AnomalyObject->bSolved)
 		{
 			bAllSolved = false;

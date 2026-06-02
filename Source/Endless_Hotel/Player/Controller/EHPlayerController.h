@@ -170,6 +170,7 @@ public:
 	bool bIsPlayerDoorOpening = false;
 	bool bIsPlayerPushingDoor = false;
 	bool bHasFlash = false;
+	bool bRevive = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }

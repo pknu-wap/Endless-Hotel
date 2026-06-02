@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AIController.h"
-#include "BaseAIController.generated.h"
+#include <CoreMinimal.h>
+#include <AIController.h>
+#include <BaseAIController.generated.h>
 
 #pragma region Declare
 
@@ -24,9 +24,8 @@ class ENDLESS_HOTEL_API ABaseAIController : public AAIController
 public:
 	ABaseAIController();
 
-	void ActiveAI();
-
-	void DeActiveAI();
+	virtual void ActiveAI();
+	virtual void DeActiveAI();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

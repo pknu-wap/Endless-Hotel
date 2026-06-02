@@ -64,6 +64,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
+	// 상혁이 형 1차 PR 받으면 바뀔 예정
 	SetVerdictMode();
 	bIsStartInBed = (bIsStartInBed) ? bIsStartInBed : DataLayer == EMapDataLayer::Lobby;
 	for (const auto& Elevator : Elevators)
