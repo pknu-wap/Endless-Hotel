@@ -12,6 +12,17 @@ AAnomaly_Object_Candle::AAnomaly_Object_Candle(const FObjectInitializer& ObjectI
 
 #pragma endregion
 
+#pragma region Reset
+
+void AAnomaly_Object_Candle::Reset()
+{
+	Object->SetSimulatePhysics(false);
+
+	Super::Reset();
+}
+
+#pragma endregion
+
 #pragma region Fall
 
 void AAnomaly_Object_Candle::FallCandle()

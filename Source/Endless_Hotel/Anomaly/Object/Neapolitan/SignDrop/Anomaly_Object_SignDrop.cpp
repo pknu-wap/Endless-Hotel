@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Actor/RoomSign/RoomSignActor.h"
@@ -18,7 +17,6 @@ void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
         {
             RootPrim->SetSimulatePhysics(false);
         }
-
 
         FAttachmentTransformRules AttachRules(
             EAttachmentRule::KeepWorld,
@@ -48,7 +46,6 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
         PC->ClientStartCameraShake(CameraShakeClass, 0.3f);
     }
     TargetSign->DropSign();
-
 
     FTimerHandle AttachTimerHandle;
     GetWorld()->GetTimerManager().SetTimer(AttachTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetSign]()

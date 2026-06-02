@@ -19,11 +19,4 @@ void AAnomaly_Cong::SetAnomalyState()
 	}
 }
 
-void AAnomaly_Cong::DisableAnomaly()
-{
-	Super::DisableAnomaly();
-
-	AAnomaly_Object_HandPrint::bIsFirstHandPrint = true;
-}
-
 #pragma endregion

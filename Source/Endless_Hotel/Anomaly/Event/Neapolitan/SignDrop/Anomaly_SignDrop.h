@@ -2,10 +2,9 @@
 
 #pragma once
 
-#include "Anomaly/Event/Anomaly_Event_EightExit.h"
+#include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_SignDrop.generated.h>
-
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_SignDrop : public AAnomaly_Event_EightExit
@@ -13,9 +12,6 @@ class ENDLESS_HOTEL_API AAnomaly_SignDrop : public AAnomaly_Event_EightExit
 	GENERATED_BODY()
 	
 #pragma region Base
-
-public:
-	AAnomaly_SignDrop(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;

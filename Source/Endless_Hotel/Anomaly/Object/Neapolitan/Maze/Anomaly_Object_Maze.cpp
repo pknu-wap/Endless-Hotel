@@ -37,6 +37,16 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 
 #pragma region AI
 
+void AAnomaly_Object_Maze::ResetAI()
+{
+	if (AController* MonsterController = MazeMonster->GetController())
+	{
+		MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
+		MonsterController->UnPossess();
+		MonsterController->Destroy();
+	}
+}
+
 void AAnomaly_Object_Maze::StartAI()
 {
 	if (!MazeMonster->GetController())
