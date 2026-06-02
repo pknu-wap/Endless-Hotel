@@ -2,6 +2,7 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
@@ -19,6 +20,8 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
+#include <GameSystem/SubSystem/GameSystem.h>
+#include <GameFramework/GameModeBase.h>
 
 #pragma region Base
 
@@ -27,6 +30,7 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bRevive = false;
 	bCanMove = true;
 	bCanFaceCover = true;
 	bIsCameraFixed = false;
@@ -368,15 +372,46 @@ void AEHPlayerController::PlayDeathSequence()
 {
 	if (!EHPlayer.IsValid()) return;
 
+	bRevive = false;
 	bIsPlayerDead = true;
 	SetPlayerInputAble(false);
 }
 
 void AEHPlayerController::RevivePlayer()
 {
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn)
+	{
+		const FVector ReviveLocation = FVector(-1327.0f, 1148.0f, -100.0f);
+		const FRotator ReviveRotation = FRotator(0.0f, 0.0f, 0.0f);
+		ControlledPawn->SetActorLocationAndRotation(ReviveLocation, ReviveRotation, false, nullptr, ETeleportType::TeleportPhysics);
+		SetControlRotation(ReviveRotation);
+	}
+
+	bRevive = true;
 	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
+
+	TWeakObjectPtr<AEHPlayerController> WeakThis(this);
+	TWeakObjectPtr<APawn> WeakPawn(ControlledPawn);
+
+	FTimerHandle EyeDelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(EyeDelayHandle, [WeakThis, WeakPawn]()
+		{
+			AEHPlayerController* StrongThis = WeakThis.Get();
+			APawn* StrongPawn = WeakPawn.Get();
+
+			if (StrongThis && StrongPawn)
+			{
+				if (AEHPlayerCameraManager* EHCameraManager = Cast<AEHPlayerCameraManager>(StrongThis->PlayerCameraManager))
+				{
+					EHCameraManager->PossessCamera(StrongPawn);
+					EHCameraManager->StartEyeEffect(true);
+				}
+			}
+		}, 3.0f, false);
 }
+
 #pragma endregion
 
 #pragma region State_FirstDoorOpen
