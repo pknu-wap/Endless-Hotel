@@ -48,11 +48,14 @@ public:
 
 #pragma region AI
 
+public:
+	UFUNCTION()
+	void ResetAI();
+
 private:
 	void StartAI();
 
 #pragma endregion
-
 
 #pragma region Elevator
 
