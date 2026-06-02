@@ -4,20 +4,6 @@
 #include "Anomaly/Event/Neapolitan/Twin/Anomaly_Twin.h"
 #include "Anomaly/Object/Neapolitan/Twin/Anomaly_Object_Twin.h"
 
-#pragma region Base
-
-AAnomaly_Twin::AAnomaly_Twin(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
-
-void AAnomaly_Twin::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-#pragma endregion
-
 #pragma region Twin
 
 void AAnomaly_Twin::SetAnomalyState()
@@ -27,9 +13,17 @@ void AAnomaly_Twin::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Twin:
+		SetupAnomalyAction(&AAnomaly_Object_Twin::StartTwin);
 		break;
 	}
-	//ActiveTrigger();
+	ActiveTrigger();
+}
+
+void AAnomaly_Twin::DisableAnomaly()
+{
+	AAnomaly_Object_Twin* TwinObject = Cast<AAnomaly_Object_Twin>(TargetAnomalyObjects[0]);
+	TwinObject->SetActorLocation(FVector(0, 0, 0));
+	Super::DisableAnomaly();
 }
 
 #pragma endregion
