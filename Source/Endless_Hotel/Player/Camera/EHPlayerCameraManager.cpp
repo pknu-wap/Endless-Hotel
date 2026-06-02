@@ -3,6 +3,7 @@
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameFramework/Character.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Camera/PDA_Camera.h"
 #include "UI/Controller/UI_Controller.h"
@@ -12,12 +13,13 @@
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
 
+
 #pragma region Base
 
 AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	TimeLine_Eye = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Eye"));
 }

@@ -2,10 +2,13 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_UI_Key.h"
 #include "Type/Save/Type_Save.h"
+#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameFramework/GameModeBase.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
@@ -27,38 +30,39 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bRevive = false;
 	bCanMove = true;
 	bCanFaceCover = true;
 	bIsCameraFixed = false;
 	bIsPlayerDead = false;
 }
 
-void AEHPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-
-	EHPlayer = Cast<AEHPlayer>(GetCharacter());
-	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
-
-	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
-
-	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-
-	PlayerCameraManager->ViewPitchMin = -70.0f;
-	PlayerCameraManager->ViewPitchMax = 70.0f;
-
-	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	void AEHPlayerController::BeginPlay()
 	{
-		Subsystem->AddMappingContext(IMC_Default, 0);
+		Super::BeginPlay();
+
+		EHPlayer = Cast<AEHPlayer>(GetCharacter());
+		UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
+
+		EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
+
+		SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
+
+		PlayerCameraManager->ViewPitchMin = -70.0f;
+		PlayerCameraManager->ViewPitchMax = 70.0f;
+
+		if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(IMC_Default, 0);
+		}
+
+		IMC_Backup = IMC_Default;
+
+		auto* GameInstance = GetGameInstance<UEHGameInstance>();
+		GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
+
+		OpenHUDWidget(EMapDataLayer::Lobby);
 	}
-
-	IMC_Backup = IMC_Default;
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
-
-	OpenHUDWidget(EMapDataLayer::Lobby);
-}
 
 void AEHPlayerController::Tick(float DeltaSeconds)
 {
@@ -368,15 +372,57 @@ void AEHPlayerController::PlayDeathSequence()
 {
 	if (!EHPlayer.IsValid()) return;
 
+	bRevive = false;
 	bIsPlayerDead = true;
 	SetPlayerInputAble(false);
 }
 
 void AEHPlayerController::RevivePlayer()
 {
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	Subsystem->bIsClear = false;
+	Subsystem->Floor = STARTFLOOR;
+	Subsystem->InitializePool();
+	Subsystem->bIsStartInBed = true;
+
+	if (auto* GameMode = GetWorld()->GetAuthGameMode())
+	{
+		GameMode->RestartPlayer(this);
+	}
+
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn)
+	{
+		const FVector ReviveLocation = FVector(-1327.0f, 1148.0f, -100.0f);
+		const FRotator ReviveRotation = FRotator(0.0f, 0.0f, 0.0f);
+		ControlledPawn->SetActorLocationAndRotation(ReviveLocation, ReviveRotation, false, nullptr, ETeleportType::TeleportPhysics);
+		SetControlRotation(ReviveRotation);
+	}
+
+	bRevive = true;
 	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
+
+	TWeakObjectPtr<AEHPlayerController> WeakThis(this);
+	TWeakObjectPtr<APawn> WeakPawn(ControlledPawn);
+
+	FTimerHandle EyeDelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(EyeDelayHandle, [WeakThis, WeakPawn]()
+		{
+			AEHPlayerController* StrongThis = WeakThis.Get();
+			APawn* StrongPawn = WeakPawn.Get();
+
+			if (StrongThis && StrongPawn)
+			{
+				if (AEHPlayerCameraManager* EHCameraManager = Cast<AEHPlayerCameraManager>(StrongThis->PlayerCameraManager))
+				{
+					EHCameraManager->PossessCamera(StrongPawn);
+					EHCameraManager->StartEyeEffect(true);
+				}
+			}
+		}, 3.0f, false);
 }
+
 #pragma endregion
 
 #pragma region State_FirstDoorOpen
