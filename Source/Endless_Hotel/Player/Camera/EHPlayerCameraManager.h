@@ -29,15 +29,8 @@ private:
 	UFUNCTION()
 	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
 
-#pragma endregion
-
-#pragma region Data
-
 private:
-	void LoadCameraDataAsset();
-
-	UFUNCTION()
-	void OnLoadedCameraDataAsset(FPrimaryAssetId DataAssetID);
+	bool bIsFirstHotel = true;
 
 #pragma endregion
 
@@ -61,8 +54,17 @@ public:
 	void StartEyeEffect(bool bIsOpen);
 
 private:
+	void SetEyeEffect();
+
 	UFUNCTION()
 	void OnValueChangedEyeEffect(float Value);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "EyeEffect", meta = (AssetBundles = "EyeEffect"))
+	TObjectPtr<UMaterial> M_EyeEffect;
+
+	UPROPERTY(EditAnywhere, Category = "EyeEffect", meta = (AssetBundles = "EyeEffect"))
+	TObjectPtr<UCurveFloat> CV_EyeOpen;
 
 private:
 	UPROPERTY()
