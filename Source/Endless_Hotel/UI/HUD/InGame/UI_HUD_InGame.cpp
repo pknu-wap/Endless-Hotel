@@ -86,8 +86,14 @@ void UUI_HUD_InGame::SetBrightness(float Value)
 
 #pragma region Blur
 
-void UUI_HUD_InGame::AnomalyBlur()
+void UUI_HUD_InGame::AnomalyBlur(bool bIsStart)
 {
+	if (!bIsStart)
+	{
+		BackBlur->SetBlurStrength(0.f);
+		return;
+	}
+
 	const float TargetStrength = 20;
 	float CurrentStrength = 0;
 
