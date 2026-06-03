@@ -20,7 +20,7 @@ void UUI_PopUp_DemoQR::NativeOnInitialized()
 void UUI_PopUp_DemoQR::Click_Return()
 {
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Lobby);
+	GameInstance->QuitGame();
 }
 
 #pragma endregion
