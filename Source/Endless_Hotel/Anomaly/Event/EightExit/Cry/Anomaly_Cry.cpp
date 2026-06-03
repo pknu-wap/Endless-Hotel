@@ -35,6 +35,13 @@ void AAnomaly_Cry::SetAnomalyState()
 	}
 }
 
+void AAnomaly_Cry::DisableAnomaly()
+{
+	Super::DisableAnomaly();
+
+	AC->Stop();
+}
+
 void AAnomaly_Cry::StartAnomalyAction()
 {
 	PlayCrySound();

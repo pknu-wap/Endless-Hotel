@@ -30,20 +30,33 @@ void AAnomaly_Blur::SetAnomalyState()
 	}
 }
 
+void AAnomaly_Blur::DisableAnomaly()
+{
+	Super::DisableAnomaly();
+
+	ShowBlurWiget(false);
+}
+
 void AAnomaly_Blur::StartAnomalyAction()
 {
-	ShowBlurWiget();
+	ShowBlurWiget(true);
 }
 
 #pragma endregion
 
 #pragma region Blur
 
-void AAnomaly_Blur::ShowBlurWiget()
+void AAnomaly_Blur::ShowBlurWiget(bool bIsStart)
 {
 	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UUI_Base* BlurWidget = UICon->GetHUDWidget();
-	Cast<UUI_HUD_InGame>(BlurWidget)->AnomalyBlur();
+	Cast<UUI_HUD_InGame>(BlurWidget)->AnomalyBlur(bIsStart);
+
+	if (!bIsStart)
+	{
+		AC->Stop();
+		return;
+	}
 
 	AC->Sound = Sound_Blur;
 	AC->Play();

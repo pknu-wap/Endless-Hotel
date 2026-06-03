@@ -67,7 +67,7 @@ protected:
 #pragma region Blur
 
 public:
-	void AnomalyBlur();
+	void AnomalyBlur(bool bIsStart);
 	void EyeEffectBlur(bool bIsStart);
 
 protected:

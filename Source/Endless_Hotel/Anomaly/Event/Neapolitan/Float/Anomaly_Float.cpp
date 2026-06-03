@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/Neapolitan/Float/Anomaly_Float.h"
 #include "Anomaly/Object/Neapolitan/Float/Anomaly_Object_Float.h"
 #include "Component/Float/FloatComponent.h"
@@ -31,6 +30,18 @@ void AAnomaly_Float::SetAnomalyState()
 	}
 }
 
+void AAnomaly_Float::DisableAnomaly()
+{
+    Super::DisableAnomaly();
+
+    for (auto* Obj : LinkedObjects)
+    {
+        UFloatComponent* FloatComp = Obj->FindComponentByClass<UFloatComponent>();
+        if (FloatComp)
+        {
+            FloatComp->ResetFloating();
+        }
+    }
+}
+
 #pragma endregion
-
-

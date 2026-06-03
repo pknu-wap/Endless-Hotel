@@ -29,6 +29,18 @@ AAnomaly_Object_Doll::AAnomaly_Object_Doll(const FObjectInitializer& ObjectIniti
 
 #pragma endregion
 
+#pragma region Reset
+
+void AAnomaly_Object_Doll::Reset()
+{
+	Super::Reset();
+
+	Object->SetVisibility(false);
+	Object->SetHiddenInGame(true);
+}
+
+#pragma endregion
+
 #pragma region Doll
 
 void AAnomaly_Object_Doll::ActivateDoll_Show()
