@@ -33,6 +33,18 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 		}), 1.5f, false);
 }
 
+void AAnomaly_Object_Maze::SetDeactiveWall()
+{
+	Object->SetVisibility(false);
+	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AAnomaly_Object_Maze::Reset()
+{
+	Object->SetVisibility(true);
+	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
 #pragma endregion
 
 #pragma region AI
@@ -75,6 +87,7 @@ void AAnomaly_Object_Maze::SetElevatorPos()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Elevator->SetActorLocation(ElevatorPoint.ElevatorLocation);
 	Elevator->SetActorRotation(ElevatorPoint.ElevatorRotation);
+	Elevator->StandardPos = ElevatorPoint.ElevatorLocation;
 	ElevatorWall->SetActorLocation(ElevatorPoint.ElevatorWallLocation);
 	ElevatorWall->SetActorRotation(ElevatorPoint.ElevatorWallRotation);
 	ElevatorWall->StandardLocation = ElevatorPoint.ElevatorWallLocation;

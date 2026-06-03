@@ -124,8 +124,6 @@ protected:
 
 private:
     FTimerHandle MoveHandle;
-    FVector ReferencePosition;
-    FRotator ReferenceRotation;
 
     bool bIsDoorOpened = false;
     bool bIsDoorMoving = false;
@@ -186,14 +184,17 @@ protected:
 #pragma region Position
 
 public:
-    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector StartPos;
 
-    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector MapPos;
 
-    UPROPERTY(EditAnywhere, Category = "Position|Elevator")
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector EndPos;
+
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
+    FVector StandardPos;
 
 #pragma endregion
 
