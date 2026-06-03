@@ -29,7 +29,7 @@ public:
 	void RemoveNoRuleAnomaly();
 	uint8 GetRemainingAnomalyCounts();
 	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(EAnomalyID AnomalyID);
-	TArray<TSoftObjectPtr<class UPDA_Anomaly>> GetOriginAnomaly() { return OriginAnomaly; }
+	const TArray<TSoftObjectPtr<class UPDA_Anomaly>>& GetOriginAnomaly() { return OriginAnomaly; }
 
 public:
 	UPROPERTY()
