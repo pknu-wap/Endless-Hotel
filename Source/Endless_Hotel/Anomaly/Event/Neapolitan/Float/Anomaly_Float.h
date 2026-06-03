@@ -11,11 +11,12 @@ class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 
-
 #pragma region Activity
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 #pragma endregion
+
 };
