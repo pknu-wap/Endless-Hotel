@@ -45,6 +45,18 @@ void UFloatComponent::StartFloating()
     GetWorld()->GetTimerManager().SetTimer(StopFloatTimer, this, &UFloatComponent::StopFloating, 10.0f, false);
 }
 
+void UFloatComponent::ResetFloating()
+{
+    bIsFloatStarted = false;
+    bIsFloating = false;
+
+    TargetMesh->SetSimulatePhysics(false);
+    TargetMesh->SetEnableGravity(false);
+    TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+
+    GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
 void UFloatComponent::FloatTick()
 {
     if (!bIsFloating || !TargetMesh) return;

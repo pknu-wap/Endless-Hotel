@@ -22,6 +22,7 @@ public:
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 protected:
 	virtual void StartAnomalyAction() override;
@@ -31,7 +32,7 @@ protected:
 #pragma region Blur
 
 protected:
-	void ShowBlurWiget();
+	void ShowBlurWiget(bool bIsStart);
 
 protected:
 	UPROPERTY()
