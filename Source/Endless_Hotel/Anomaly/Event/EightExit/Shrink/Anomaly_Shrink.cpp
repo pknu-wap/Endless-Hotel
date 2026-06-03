@@ -53,6 +53,8 @@ void AAnomaly_Shrink::StartAnomalyAction()
 
 void AAnomaly_Shrink::DisableAnomaly()
 {
+	Super::DisableAnomaly();
+
 	Timeline_Shrink->Stop();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

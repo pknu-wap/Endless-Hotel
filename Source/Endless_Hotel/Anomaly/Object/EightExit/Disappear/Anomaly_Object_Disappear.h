@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -15,6 +15,13 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Disappear : public AAnomaly_Object_Eight
 
 public:
 	void StartDisappear();
+
+#pragma endregion
+
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
 
 #pragma endregion
 
