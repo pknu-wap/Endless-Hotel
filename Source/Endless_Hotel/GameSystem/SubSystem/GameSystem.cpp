@@ -172,7 +172,7 @@ void UGameSystem::LoadNextMap()
 
 void UGameSystem::SubFloor()
 {
-	if (Floor > 2)
+	if (Floor > 1)
 	{
 		Floor--;
 	}

@@ -43,6 +43,8 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Maze : public AAnomaly_Object_Neapolitan
 
 public:
 	void StartMazeMonster();
+	void SetDeactiveWall();
+	virtual void Reset() override;
 
 #pragma endregion
 

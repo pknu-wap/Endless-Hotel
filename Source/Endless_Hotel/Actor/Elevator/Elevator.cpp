@@ -64,11 +64,6 @@ void AElevator::BeginPlay()
 {
     Super::BeginPlay();
     bIsDoorMoving = false;
-    ReferencePosition = this->GetActorLocation();
-    ReferenceRotation = this->GetActorRotation();
-    StartPos += ReferencePosition;
-    MapPos += ReferencePosition;
-    EndPos += ReferencePosition;
     FOnTimelineFloat UpdateFunc;
     FOnTimelineEvent FinishedFunc;
 
@@ -130,11 +125,11 @@ void AElevator::MoveDoors(bool bWillOpen)
 
     if (bWillOpen)
     {
-        DoorTimeline->Play();
+        DoorTimeline->PlayFromStart();
     }
     else
     {
-        DoorTimeline->Reverse();
+        DoorTimeline->ReverseFromEnd();
     }
 }
 
@@ -172,7 +167,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     LatentInfo.UUID = __LINE__;
     LatentInfo.Linkage = 0;
     
-    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, ReferenceRotation, false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
+    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, RootComponent->GetComponentRotation(), false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 
     FTimerHandle ElevatorWallHandle;
     FTimerHandle StartDelayHandle;
@@ -212,7 +207,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
         FTimerHandle DoorHandle;
         GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
-                MoveElevator(MapPos, EndPos, false);
+                MoveElevator(StandardPos + MapPos, StandardPos + EndPos, false);
             }), DoorDuration, false);
     }
 }
@@ -256,6 +251,13 @@ void AElevator::StartElevator()
     {
         ElevatorOverWall->ResetWall();
     }
+
+    DoorTimeline->Stop();
+    bIsDoorOpened = false;
+    bIsDoorMoving = false;
+    LeftDoor->SetRelativeLocation(LeftDoorClosed);
+    RightDoor->SetRelativeLocation(RightDoorClosed);
+
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
@@ -267,7 +269,7 @@ void AElevator::StartElevator()
             LinkedEntrance->SetTriggerActive();
         }
         SetLightOn(true);
-        RootComponent->SetRelativeLocation(StartPos);
+        RootComponent->SetRelativeLocation(StandardPos + StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         auto* PC = Player->GetController();
         UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
@@ -293,7 +295,7 @@ void AElevator::StartElevator()
         FTimerHandle ReEnableHandle;
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
-                MoveElevator(StartPos, MapPos, true);
+                MoveElevator(StandardPos + StartPos, StandardPos + MapPos, true);
             }), ElevatorMoveDuration / 2, false);
     }
     else
@@ -302,7 +304,7 @@ void AElevator::StartElevator()
         {
             LinkedEntrance->ResetTrigger();
         }
-        this->Exterior_Structure->SetRelativeLocation(MapPos);
+        this->Exterior_Structure->SetRelativeLocation(StandardPos + MapPos);
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
         RightDoor->SetRelativeLocation(RightDoorClosed);
         bIsDoorOpened = false;
