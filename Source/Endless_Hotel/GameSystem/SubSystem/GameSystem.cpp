@@ -199,7 +199,8 @@ void UGameSystem::InitializePool()
 	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	AnomalyCount = DataC->GetOriginAnomaly().Num();
-	DataC->ActAnomaly = DataC->GetOriginAnomaly();
+	DataC->ActAnomaly.Empty();
+	DataC->ActAnomaly.Append(DataC->GetOriginAnomaly());
 
 	ActIndex = 0;
 
