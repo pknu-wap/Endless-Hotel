@@ -4,15 +4,12 @@
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameFramework/Character.h"
-#include "Asset/Manager/EHAssetManager.h"
-#include "Asset/DataAsset/Camera/PDA_Camera.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
-
 
 #pragma region Base
 
@@ -29,10 +26,16 @@ void AEHPlayerCameraManager::BeginPlay()
 	Super::BeginPlay();
 
 	FindPPV();
-	LoadCameraDataAsset();
+	SetEyeEffect();
+
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			OnChangedDataLayer(EMapDataLayer::Lobby);
+		}), 0.1f, false);
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
+	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 }
 
 #pragma endregion
@@ -46,47 +49,22 @@ void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	switch (DataLayer)
 	{
 	case EMapDataLayer::Hotel:
+	{
 		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
-		StartEyeEffect(true);
+		if (bIsFirstHotel)
+		{
+			StartEyeEffect(true);
+			bIsFirstHotel = false;
+		}
 		break;
-
+	}
 	case EMapDataLayer::Lobby:
+	{
 		PossessCamera(ECameraType::Title);
 		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 		break;
 	}
-}
-
-#pragma endregion
-
-#pragma region Data
-
-void AEHPlayerCameraManager::LoadCameraDataAsset()
-{
-	TArray<FPrimaryAssetId> DataIDs;
-
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.GetPrimaryAssetIdList(FPrimaryAssetType("Camera"), OUT DataIDs);
-
-	FPrimaryAssetId DataID = DataIDs[0];
-	AssetManager.LoadPrimaryAsset(DataID, { FName("EyeEffect") }, FStreamableDelegate::CreateUObject(this, &ThisClass::OnLoadedCameraDataAsset, DataID));
-}
-
-void AEHPlayerCameraManager::OnLoadedCameraDataAsset(FPrimaryAssetId DataAssetID)
-{
-	auto& AssetManager = UEHAssetManager::Get();
-	auto* DataAsset = AssetManager.GetPrimaryAssetObject<UPDA_Camera>(DataAssetID);
-
-	DM_EyeEffect = UMaterialInstanceDynamic::Create(DataAsset->M_EyeEffect.LoadSynchronous(), this);
-
-	PPV_EyeEffect->Settings.WeightedBlendables.Array.Empty();
-	PPV_EyeEffect->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DM_EyeEffect.Get()));
-
-	FOnTimelineFloat Update_Open;
-	Update_Open.BindUFunction(this, FName("OnValueChangedEyeEffect"));
-	TimeLine_Eye->AddInterpFloat(DataAsset->CV_EyeOpen.LoadSynchronous(), Update_Open);
-
-	OnChangedDataLayer(EMapDataLayer::Lobby);
+	}
 }
 
 #pragma endregion
@@ -136,6 +114,18 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 		{
 			TimeLine_Eye->Stop();
 		}), 5.f, false);
+}
+
+void AEHPlayerCameraManager::SetEyeEffect()
+{
+	DM_EyeEffect = UMaterialInstanceDynamic::Create(M_EyeEffect, this);
+
+	PPV_EyeEffect->Settings.WeightedBlendables.Array.Empty();
+	PPV_EyeEffect->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DM_EyeEffect.Get()));
+
+	FOnTimelineFloat Update_Open;
+	Update_Open.BindUFunction(this, FName("OnValueChangedEyeEffect"));
+	TimeLine_Eye->AddInterpFloat(CV_EyeOpen, Update_Open);
 }
 
 void AEHPlayerCameraManager::OnValueChangedEyeEffect(float Value)
