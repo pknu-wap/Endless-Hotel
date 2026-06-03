@@ -2,35 +2,34 @@
 
 #include "Anomaly/Object/EightExit/FootStep/Anomaly_Object_FootStep.h"
 #include "Player/AnimInstance/EHPlayerAnimInstance.h"
-#include "Actor/Elevator/Elevator.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Components/SkeletalMeshComponent.h>
 
-#pragma region Activity
+#pragma region Reset
 
-void AAnomaly_Object_FootStep::BeginPlay()
+void AAnomaly_Object_FootStep::Reset()
 {
-	Super::BeginPlay();
+	Super::Reset();
 
-	//AElevator::ElevatorDelegate.AddDynamic(this, &AAnomaly_Object_FootStep::ResetFootStep);
+    ChangeFootStep(false);
 }
 
-void AAnomaly_Object_FootStep::ChangeFootStep()
+#pragma endregion
+
+#pragma region FootStep
+
+void AAnomaly_Object_FootStep::StartFootStep()
+{
+    ChangeFootStep(true);
+}
+
+void AAnomaly_Object_FootStep::ChangeFootStep(bool bIsStart)
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     USkeletalMeshComponent* Mesh = Player->GetMesh();
     UEHPlayerAnimInstance* Anim = Cast<UEHPlayerAnimInstance>(Mesh->GetAnimInstance());
 
-    Anim->bIsAnomalyGenerated = true;
-}
-
-void AAnomaly_Object_FootStep::ResetFootStep(bool bIsStart)
-{
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    USkeletalMeshComponent* Mesh = Player->GetMesh();
-    UEHPlayerAnimInstance* Anim = Cast<UEHPlayerAnimInstance>(Mesh->GetAnimInstance());
-
-    Anim->bIsAnomalyGenerated = false;
+    Anim->bIsAnomalyGenerated = bIsStart;
 }
 #pragma endregion
