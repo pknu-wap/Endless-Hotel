@@ -108,9 +108,9 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	int32 IsNormal = FMath::RandRange(1, 10);
+	int32 IsNormal = FMath::RandRange(1, 100);
 
-	if (IsNormal > 8)
+	if (IsNormal > 85)
 	{
 		FAnomalySpawnInfo Info;
 		Info.bIsNormal = true;
