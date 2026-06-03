@@ -18,10 +18,20 @@ public:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
+
 #pragma region Bug
 
 public:
 	void ActiveBug();
+
+private:
+	void SetNiagaraComponent();
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -29,6 +39,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AudioComponent;
+
 
 #pragma endregion
 

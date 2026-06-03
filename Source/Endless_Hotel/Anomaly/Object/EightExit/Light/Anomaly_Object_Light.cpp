@@ -14,10 +14,7 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 {
 	Mesh_Destroy = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("Mesh_Destroy"));
 	Mesh_Destroy->SetupAttachment(RootComponent);
-	Mesh_Destroy->SetVisibility(false);
-	Mesh_Destroy->SetSimulatePhysics(false);
-	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh_Destroy->SetNotifyBreaks(true);
+	SetGeometryCollection();
 	
 	PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
 	PointLight->SetupAttachment(RootComponent);
@@ -30,8 +27,29 @@ void AAnomaly_Object_Light::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Mesh_Destroy->OnChaosBreakEvent.Clear();
+	OriginalColor = PointLight->GetLightColor();
+
 	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::LightDestroyed);
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void AAnomaly_Object_Light::Reset()
+{
+	Object->SetSimulatePhysics(false);
+
+	Mesh_Destroy->DestroyComponent();
+	Mesh_Destroy = NewObject<UGeometryCollectionComponent>();
+	Mesh_Destroy->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SetGeometryCollection();
+
+	PointLight->SetLightColor(OriginalColor);
+
+	TurnLight(true);
+
+	Super::Reset();
 }
 
 #pragma endregion
@@ -44,6 +62,14 @@ void AAnomaly_Object_Light::TurnLight(bool bIsOn)
 	PointLight->SetActive(bIsOn);
 	PointLight->bAffectsWorld = bIsOn;
 	PointLight->MarkRenderStateDirty();
+}
+
+void AAnomaly_Object_Light::SetGeometryCollection()
+{
+	Mesh_Destroy->SetVisibility(false);
+	Mesh_Destroy->SetSimulatePhysics(false);
+	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh_Destroy->SetNotifyBreaks(true);
 }
 
 #pragma endregion

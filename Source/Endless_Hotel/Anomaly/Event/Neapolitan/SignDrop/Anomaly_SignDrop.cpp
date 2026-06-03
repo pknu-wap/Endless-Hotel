@@ -1,15 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/Neapolitan/SignDrop/Anomaly_SignDrop.h"
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
 
 #pragma region Base
-
-AAnomaly_SignDrop::AAnomaly_SignDrop(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
 
 void AAnomaly_SignDrop::BeginPlay()
 {

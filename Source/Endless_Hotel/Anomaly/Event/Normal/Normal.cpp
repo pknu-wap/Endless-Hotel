@@ -17,7 +17,6 @@ void ANormal::SetAnomalyState()
     {
         Subsystem->RemoveTargetElevator();
         Player->SetActorTransform(Player->StartTransform);
-        Subsystem->bIsStartInBed = false;
     }
 }
 #pragma endregion

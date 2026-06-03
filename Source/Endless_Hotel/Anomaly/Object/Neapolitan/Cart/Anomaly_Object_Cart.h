@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<USoundBase> Sound_Move = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> AC_Move = nullptr;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_Cart_Wheel;
 
