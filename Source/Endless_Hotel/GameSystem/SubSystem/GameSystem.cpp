@@ -112,6 +112,12 @@ void UGameSystem::ApplyVerdict()
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
 		ResetFloor();
+		if (CurrentDataLayer != EMapDataLayer::Hotel)
+		{
+			UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+			GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
+			CurrentDataLayer = EMapDataLayer::Hotel;
+		}
 	}
 	bIsAnomalySolved = false;
 
