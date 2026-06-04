@@ -16,15 +16,27 @@ void AAnomaly_Maze::SetAnomalyState()
 	Super::SetAnomalyState();
 
 	SetupAnomalyAction(&AAnomaly_Object_Maze::ResetAI);
-	SetupAnomalyAction(&AAnomaly_Object_Maze::SetElevator);
 
-	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
+	TArray<AAnomaly_Object_Maze*> TargetWalls;
+
+	for (const auto& TargetObject : TargetAnomalyObjects)
+	{
+		auto* Target = Cast<AAnomaly_Object_Maze>(TargetObject);
+		if (Target)
+		{
+			TargetWalls.Add(Target);
+		}
+	}
+
+	const uint8 MaxIndex = TargetWalls.Num() - 1;
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
-	AAnomaly_Object_Maze* TargetWall = Cast<AAnomaly_Object_Maze>(TargetAnomalyObjects[PositionIndex]);
+	AAnomaly_Object_Maze* TargetWall = TargetWalls[PositionIndex];
+
 	if (TargetWall)
 	{
 		TargetWall->SetDeactiveWall();
+		TargetWall->SetElevator();
 	}
 
 	switch (AnomalyName)
