@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -38,6 +38,8 @@ public:
 
     bool bIsFloating;
     bool bIsFloatStarted;
+
+    void ResetFloating();
 
 private:
     void FloatTick();

@@ -25,6 +25,7 @@ protected:
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 protected:
 	virtual void StartAnomalyAction() override;

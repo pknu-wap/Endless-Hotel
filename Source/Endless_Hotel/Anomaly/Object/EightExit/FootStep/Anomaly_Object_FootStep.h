@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -11,16 +11,20 @@ class ENDLESS_HOTEL_API AAnomaly_Object_FootStep : public AAnomaly_Object_EightE
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void BeginPlay() override;
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
 
 #pragma region FootStep
 
 public:
-	void ChangeFootStep();
+	void StartFootStep();
 
-	UFUNCTION()
-	void ResetFootStep(bool bIsStart);
+private:
+	void ChangeFootStep(bool bIsStart);
 
 #pragma endregion
 

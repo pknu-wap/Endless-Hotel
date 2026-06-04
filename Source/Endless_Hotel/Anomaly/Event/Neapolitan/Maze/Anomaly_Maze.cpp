@@ -21,11 +21,10 @@ void AAnomaly_Maze::SetAnomalyState()
 	const uint8 MaxIndex = TargetAnomalyObjects.Num() - 1;
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
-	AAnomaly_Object_Base* TargetWall = TargetAnomalyObjects[PositionIndex];
+	AAnomaly_Object_Maze* TargetWall = Cast<AAnomaly_Object_Maze>(TargetAnomalyObjects[PositionIndex]);
 	if (TargetWall)
 	{
-		TargetWall->SetActorEnableCollision(false);
-		TargetWall->SetActorHiddenInGame(true);
+		TargetWall->SetDeactiveWall();
 	}
 
 	switch (AnomalyName)

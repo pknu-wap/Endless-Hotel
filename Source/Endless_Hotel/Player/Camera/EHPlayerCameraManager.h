@@ -67,6 +67,8 @@ protected:
 	TObjectPtr<UCurveFloat> CV_EyeOpen;
 
 private:
+	FTimerHandle WaitHandle;
+
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Eye;
 

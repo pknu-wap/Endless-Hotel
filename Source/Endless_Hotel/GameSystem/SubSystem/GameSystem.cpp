@@ -172,7 +172,7 @@ void UGameSystem::LoadNextMap()
 
 void UGameSystem::SubFloor()
 {
-	if (Floor > 2)
+	if (Floor > 1)
 	{
 		Floor--;
 	}
@@ -199,7 +199,8 @@ void UGameSystem::InitializePool()
 	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	AnomalyCount = DataC->GetOriginAnomaly().Num();
-	DataC->ActAnomaly = DataC->GetOriginAnomaly();
+	DataC->ActAnomaly.Empty();
+	DataC->ActAnomaly.Append(DataC->GetOriginAnomaly());
 
 	ActIndex = 0;
 
