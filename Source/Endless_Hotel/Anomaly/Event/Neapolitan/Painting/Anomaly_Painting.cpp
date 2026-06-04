@@ -9,6 +9,8 @@ void AAnomaly_Painting::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
+	SetupAnomalyAction(&AAnomaly_Object_Painting::DieWatchingPainting);
+
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Painting_Eye:
@@ -32,7 +34,6 @@ void AAnomaly_Painting::SetAnomalyState()
 		ScheduleAnomaly();
 		break;
 	}
-	SetupAnomalyAction(&AAnomaly_Object_Painting::DieWatchingPainting);
 }
 
 #pragma endregion
