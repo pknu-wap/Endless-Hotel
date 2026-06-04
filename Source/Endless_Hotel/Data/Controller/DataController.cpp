@@ -41,6 +41,8 @@ void UDataController::GetAnomalyEntries()
 		AnomalyList.Add(static_cast<uint8>(Data->AnomalyID));
 	}
 
+	AnomalyList.Add(255);
+
 	if (AnomalyList.IsEmpty())
 	{
 		for (int index = 0; index < MaxIndex; ++index)
@@ -53,11 +55,15 @@ void UDataController::GetAnomalyEntries()
 	
 	for (UPDA_Anomaly* PDA : Datas)
 	{
-		if (!PDA) 
+		if (!PDA)
 		{
 			continue;
 		}
-
+		if (PDA->ID == EAnomalyID::Normal)
+		{
+			NormalAnomalyData = PDA;
+			continue;
+		}
 		OriginAnomaly.Add(PDA);
 	}
 }
@@ -65,20 +71,32 @@ void UDataController::GetAnomalyEntries()
 TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomalyID AnomalyID)
 {
 	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
-	for (const auto& Entry : OriginAnomaly)
-	{
-		if (Entry->ID == AnomalyID)
+
+	auto LoadObjects = [&ResultArray](const TArray<TSoftClassPtr<AAnomaly_Object_Base>>& SoftClasses)
 		{
-			for (const TSoftClassPtr<AAnomaly_Object_Base>& SoftClass : Entry->Objects)
+			for (const auto& SoftClass : SoftClasses)
 			{
-				if (UClass* LoadedClass = SoftClass.LoadSynchronous())
+				if (UClass* Loaded = SoftClass.LoadSynchronous())
 				{
-					ResultArray.Add(LoadedClass);
+					ResultArray.Add(Loaded);
 				}
 			}
-			break;
+		};
+
+	if (AnomalyID == EAnomalyID::Normal)
+	{
+		if (NormalAnomalyData)
+		{
+			LoadObjects(NormalAnomalyData->Objects);
 		}
+		return ResultArray;
 	}
+
+	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E->ID == AnomalyID; }))
+	{
+		LoadObjects((*Entry)->Objects);
+	}
+
 	return ResultArray;
 }
 
