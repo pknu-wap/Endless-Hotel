@@ -90,30 +90,37 @@ void AEHPlayerCameraManager::FindPPV()
 
 void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 {
-	UGameInstance* GameInstance = GetWorld()->GetGameInstance();
-
-	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
-	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
-
-	auto* SoundCon = GameInstance->GetSubsystem<USoundController>();
-	SoundCon->FadeSFXSound(bIsOpen);
-
-	if (bIsOpen)
-	{
-		UI_InGame->EyeEffectBlur(true);
-		TimeLine_Eye->PlayFromStart();
-	}
-	else
-	{
-		UI_InGame->EyeEffectBlur(false);
-		TimeLine_Eye->ReverseFromEnd();
-	}
-
-	FTimerHandle StopHandle;
-	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	FTimerHandle WaitHandle;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, WaitHandle, bIsOpen]() mutable
 		{
-			TimeLine_Eye->Stop();
-		}), 5.f, false);
+			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+			auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+
+			if (IsValid(UI_InGame))
+			{
+				if (bIsOpen)
+				{
+					UI_InGame->EyeEffectBlur(true);
+					TimeLine_Eye->PlayFromStart();
+				}
+				else
+				{
+					UI_InGame->EyeEffectBlur(false);
+					TimeLine_Eye->ReverseFromEnd();
+				}
+
+				auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+				SoundCon->FadeSFXSound(bIsOpen);
+
+				FTimerHandle StopHandle;
+				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+					{
+						TimeLine_Eye->Stop();
+					}), 5.f, false);
+
+				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+			}
+		}), 0.01f, true);
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()
