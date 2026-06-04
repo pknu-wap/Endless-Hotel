@@ -15,6 +15,7 @@ void AAnomaly_Object_Base::BeginPlay()
     SaveOriginalTransform();
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     Sub->RegisterAnomalyObject(this);
+    Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
 }
 
 void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)

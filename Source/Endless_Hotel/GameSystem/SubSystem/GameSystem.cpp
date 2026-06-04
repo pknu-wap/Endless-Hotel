@@ -64,8 +64,6 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	// 상혁이 형 1차 PR 받으면 바뀔 예정
-	SetVerdictMode();
 	bIsStartInBed = (bIsStartInBed) ? bIsStartInBed : DataLayer == EMapDataLayer::Lobby;
 	for (const auto& Elevator : Elevators)
 	{
@@ -112,20 +110,11 @@ void UGameSystem::ApplyVerdict()
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
 		ResetFloor();
-		if (CurrentDataLayer != EMapDataLayer::Hotel)
-		{
-			UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-			GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
-			CurrentDataLayer = EMapDataLayer::Hotel;
-		}
+
+		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+		NextAnomalyMap = EMapDataLayer::Hotel;
 	}
 	bIsAnomalySolved = false;
-
-	if (!bIsClear)
-	{
-		FloorChange_Disable.Broadcast();
-		FloorChange_Reset.Broadcast();
-	}
 }
 
 void UGameSystem::TryInteractSolveVerdict()
@@ -158,12 +147,13 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMa
 
 void UGameSystem::LoadNextMap()
 {
-	if (CurrentDataLayer == NextAnomalyMap)
-	{
-		return;
-	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayer(NextAnomalyMap);
+	if (!bIsClear)
+	{
+		FloorChange_Disable.Broadcast();
+		FloorChange_Reset.Broadcast();
+	}
 }
 
 #pragma endregion

@@ -23,6 +23,7 @@ protected:
 #pragma region Reset
 
 public:
+	UFUNCTION()
 	virtual void Reset();
 
 #pragma endregion
@@ -70,7 +71,6 @@ public:
 public:
 	void StartRestoring(float Duration = 2.5f);
 	void SaveOriginalTransform();
-	
 	bool bIsRestored = false;
 
 private:

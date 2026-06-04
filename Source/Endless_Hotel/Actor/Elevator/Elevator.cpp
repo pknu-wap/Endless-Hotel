@@ -233,12 +233,12 @@ void AElevator::NotifySubsystem()
     FVector PreForward = Player->GetActorForwardVector();
     UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
-    Sub->LoadNextMap();
     Sub->SetIsElevatorNormal(this->bIsNormalElevator);
     Sub->SetPlayerVelocity(HorizontalSpeed);
     Sub->TryInteractSolveVerdict();
     Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
     Sub->ApplyVerdict();
+    Sub->LoadNextMap();
 }
 
 void AElevator::StartElevator()
