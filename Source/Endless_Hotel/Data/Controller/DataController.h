@@ -44,6 +44,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
 
+	TSoftObjectPtr<class UPDA_Anomaly> NormalAnomalyData;
+
 private:
 	UPROPERTY()
 	TArray<TSoftObjectPtr<class UPDA_Anomaly>> OriginAnomaly;
