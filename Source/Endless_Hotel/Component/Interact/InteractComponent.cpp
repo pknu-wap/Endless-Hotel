@@ -81,7 +81,7 @@ void UInteractComponent::Interact(AEHCharacter* Interacter)
 	bIsInteracted = true;
 
 	auto* Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
-	if (IsValid(Comp_Tutorial) && USaveManager::LoadData_Tutorial().bIsFirstPlay)
+	if (IsValid(Comp_Tutorial))
 	{
 		Comp_Tutorial->HideTutorialWidget();
 	}

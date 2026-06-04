@@ -43,6 +43,11 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
+	if (!USaveManager::LoadData_Tutorial().bIsFirstPlay)
+	{
+		return;
+	}
+
 	UI_Tutorial->ShowTutorialAnimation(true);
 
 	if (Comp_Interact.IsValid())
