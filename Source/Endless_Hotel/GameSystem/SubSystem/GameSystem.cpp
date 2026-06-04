@@ -64,7 +64,6 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	SetVerdictMode();
 	bIsStartInBed = (bIsStartInBed) ? bIsStartInBed : DataLayer == EMapDataLayer::Lobby;
 	for (const auto& Elevator : Elevators)
 	{
