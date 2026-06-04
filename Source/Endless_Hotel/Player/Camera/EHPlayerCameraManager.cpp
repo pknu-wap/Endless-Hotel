@@ -109,18 +109,18 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 					TimeLine_Eye->ReverseFromEnd();
 				}
 
+				auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+				SoundCon->FadeSFXSound(bIsOpen);
+
+				FTimerHandle StopHandle;
+				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+					{
+						TimeLine_Eye->Stop();
+					}), 5.f, false);
+
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
-
-	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-	SoundCon->FadeSFXSound(bIsOpen);
-
-	FTimerHandle StopHandle;
-	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			TimeLine_Eye->Stop();
-		}), 5.f, false);
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()
