@@ -41,8 +41,6 @@ void UDataController::GetAnomalyEntries()
 		AnomalyList.Add(static_cast<uint8>(Data->AnomalyID));
 	}
 
-	AnomalyList.Add(255);
-
 	if (AnomalyList.IsEmpty())
 	{
 		for (int index = 0; index < MaxIndex; ++index)
@@ -50,6 +48,8 @@ void UDataController::GetAnomalyEntries()
 			AnomalyList.Add(index);
 		}
 	}
+
+	AnomalyList.Add(255);
 
 	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset(AnomalyList);
 	
