@@ -90,8 +90,7 @@ void AEHPlayerCameraManager::FindPPV()
 
 void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 {
-	FTimerHandle WaitHandle;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, WaitHandle, bIsOpen]() mutable
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsOpen]()
 		{
 			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 			auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
@@ -109,18 +108,18 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 					TimeLine_Eye->ReverseFromEnd();
 				}
 
-				auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-				SoundCon->FadeSFXSound(bIsOpen);
-
-				FTimerHandle StopHandle;
-				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-					{
-						TimeLine_Eye->Stop();
-					}), 5.f, false);
-
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
+
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(bIsOpen);
+
+	FTimerHandle StopHandle;
+	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			TimeLine_Eye->Stop();
+		}), 5.1f, false);
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()
