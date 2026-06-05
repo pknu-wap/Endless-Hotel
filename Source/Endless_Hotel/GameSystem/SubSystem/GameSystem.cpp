@@ -10,6 +10,7 @@
 #include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
 #include "Data/Controller/DataController.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
@@ -113,6 +114,10 @@ void UGameSystem::ApplyVerdict()
 
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		NextAnomalyMap = EMapDataLayer::Hotel;
+		if(Cast<AEHPlayer>(Player)->bIsDead)
+		{
+			LoadNextMap();
+		}
 	}
 	bIsAnomalySolved = false;
 }
