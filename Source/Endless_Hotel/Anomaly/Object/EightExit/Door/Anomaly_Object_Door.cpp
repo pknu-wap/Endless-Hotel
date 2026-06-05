@@ -264,11 +264,14 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 		auto* GameInstance = GetGameInstance<UEHGameInstance>();
 		GameInstance->StartDemoTimer();
 
+		APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
+
 		UGameSystem* Sub = GameInstance->GetSubsystem<UGameSystem>();
 
 		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
 		{
-			if (Sub->Floor != STARTFLOOR)
+			if (Sub->Floor != STARTFLOOR || EHPC->bRevive)
 			{
 				return;
 			}
@@ -287,26 +290,33 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 
 	if (Sub->Floor == STARTFLOOR)
 	{
-		if (Sub->bIsStartInBed && EHPC->bRevive)
+		if (EHPC->bRevive || !Sub->bIsStartInBed)
 		{
 			DoorRotateStarted();
+			Component_Interact->Deactivate();
+			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 		}
-		Component_Interact->Deactivate();
+		else
+		{
+			Component_Interact->Activate();
+			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		}
+
+		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	}
 	else
 	{
-		Component_Interact->Activate();
+		Component_Interact->Deactivate();
 		bIsDoorOpened = false;
 
-		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 
 		FVector InitialLocation = DoorInitialTransform.GetLocation();
 		FRotator InitialRotation = DoorInitialTransform.Rotator();
 		GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
-	
+
 		Timeline_Open->Stop();
-		
 	}
 }
 
