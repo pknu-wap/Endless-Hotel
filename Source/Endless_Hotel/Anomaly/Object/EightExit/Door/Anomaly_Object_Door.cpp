@@ -287,22 +287,18 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
+	Component_Interact->bIsInteracted = true;
 
 	if (Sub->Floor == STARTFLOOR)
 	{
-		if (EHPC->bRevive || !Sub->bIsStartInBed)
+		if (Sub->bIsStartInBed && !EHPC->bRevive)
 		{
-			DoorRotateStarted();
-			Component_Interact->Deactivate();
-			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+			Component_Interact->bIsInteracted = false;
 		}
 		else
 		{
-			Component_Interact->Activate();
-			Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+			DoorRotateStarted();
 		}
-
-		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	}
 	else
 	{
