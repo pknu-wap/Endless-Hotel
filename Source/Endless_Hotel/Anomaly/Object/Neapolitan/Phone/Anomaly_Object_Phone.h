@@ -24,7 +24,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void Reset() override { InteractPhone(EInteractType::TurnOff); }
+	virtual void Reset() override;
 
 #pragma endregion
 
