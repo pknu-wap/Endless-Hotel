@@ -23,7 +23,8 @@ enum class EAnomalyVerdictMode : uint8
 {
 	SolvedOnly,
 	Both_AND,
-	Normal
+	Normal,
+	Fail
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
@@ -98,7 +99,7 @@ public:
 	bool bPassed = false;
 
 public:
-	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Fail) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
