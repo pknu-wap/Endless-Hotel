@@ -385,7 +385,7 @@ void AEHPlayerController::RevivePlayer()
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn)
 	{
-		const FVector ReviveLocation = FVector(-1327.0f, 1148.0f, -100.0f);
+		const FVector ReviveLocation = FVector(-1327.0f, 1148.0f, 680.0f);
 		const FRotator ReviveRotation = FRotator(0.0f, 0.0f, 0.0f);
 		ControlledPawn->SetActorLocationAndRotation(ReviveLocation, ReviveRotation, false, nullptr, ETeleportType::TeleportPhysics);
 		SetControlRotation(ReviveRotation);
