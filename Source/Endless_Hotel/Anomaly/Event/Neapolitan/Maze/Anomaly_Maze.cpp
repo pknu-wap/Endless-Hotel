@@ -32,17 +32,16 @@ void AAnomaly_Maze::SetAnomalyState()
 	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
 
 	AAnomaly_Object_Maze* TargetWall = TargetWalls[PositionIndex];
-
 	if (TargetWall)
 	{
-		TargetWall->SetDeactiveWall();
 		TargetWall->SetElevator();
+		TargetWall->SetDeactiveWall();
+		TargetWall->StartMazeMonster();
 	}
 
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Maze_Monster:
-		SetupAnomalyAction(&AAnomaly_Object_Maze::StartMazeMonster);
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Maze_Doll:

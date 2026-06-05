@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/WidgetComponent.h>
 #include <Kismet/GameplayStatics.h>
@@ -28,7 +29,11 @@ void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AAnomaly_Object_Base::Reset()
 {
-    bSolved = true;
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    if(!Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    {
+        bSolved = true;
+    }
     SetActorTransform(OriginalTransform);
     Component_Interact->bIsInteracted = false;
 }
