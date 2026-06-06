@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Maze : public AAnomaly_Event_Neapolitan
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void InteractSolveVerdict() override;
 
 #pragma endregion
 

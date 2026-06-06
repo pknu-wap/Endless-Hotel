@@ -37,7 +37,7 @@ public:
 	TArray<AActor*> LinkedObjects;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsEightExitObject = false;
+	bool bIsEightExit = false;
 
 	TArray<TObjectPtr<AAnomaly_Object_Base>> TargetAnomalyObjects;
 

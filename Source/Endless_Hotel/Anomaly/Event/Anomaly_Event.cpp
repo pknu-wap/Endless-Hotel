@@ -75,7 +75,7 @@ void AAnomaly_Event::SetAnomalyState()
 			continue;
 		}
 
-		if(!bIsEightExitObject)
+		if(!bIsEightExit && !AnomalyObject->bIsEightExitObject)
 		{
 			AnomalyObject->SetSolvedFalse();
 		}
