@@ -18,7 +18,6 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	FTimerHandle DelayHandle;
 
-	SetElevatorPos();
 	StartAI();
 	
 	if (MazeMonster.IsValid())
@@ -37,6 +36,7 @@ void AAnomaly_Object_Maze::SetDeactiveWall()
 {
 	Object->SetVisibility(false);
 	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetElevatorPos();
 }
 
 void AAnomaly_Object_Maze::Reset()
@@ -80,6 +80,9 @@ void AAnomaly_Object_Maze::SetElevator()
 	Elevator = Subsystem->GetElevatorByID(TakeOnElevatorID);
 	ElevatorWall = Elevator->ElevatorUnderWall;
 	ElevatorEntrance = Elevator->LinkedEntrance;
+	Elevator->SetActorLocation(FVector(-5210, 1435, -2927));
+	ElevatorEntrance->SetActorLocation(FVector(-5210, 1435, -2927));
+	Elevator->StandardPos = FVector(-5210, 1435, -2927);
 }
 
 void AAnomaly_Object_Maze::SetElevatorPos()
