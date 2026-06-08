@@ -10,9 +10,6 @@
 AAnomaly_Object_Ceiling::AAnomaly_Object_Ceiling(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	Mesh_Ceiling = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Ceiling"));
-	Mesh_Ceiling->SetupAttachment(RootComponent);
-
 	Niagara_Ceiling_Blood = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Ceiling_Blood"));
 	Niagara_Ceiling_Blood->SetupAttachment(RootComponent);
 	Niagara_Ceiling_Blood->SetAutoActivate(false);
@@ -27,7 +24,7 @@ void AAnomaly_Object_Ceiling::BeginPlay()
 	FOnTimelineFloat UpdateFunc;
 	UpdateFunc.BindUFunction(this, FName("CeilingRotate"));
 	Timeline->AddInterpFloat(Curve_CeilingRotate, UpdateFunc);
-	InitialRotation = Mesh_Ceiling->GetRelativeRotation();
+	InitialRotation = GetActorRotation();
 }
 
 void AAnomaly_Object_Ceiling::Reset()
@@ -35,7 +32,7 @@ void AAnomaly_Object_Ceiling::Reset()
 	Super::Reset();
 	Timeline->Stop();
 	Timeline->SetNewTime(0.f);
-	Mesh_Ceiling->SetRelativeRotation(InitialRotation);
+	SetActorRotation(InitialRotation);
 	Niagara_Ceiling_Blood->Deactivate();
 	Niagara_Ceiling_Blood->SetVisibility(false);
 }
@@ -46,9 +43,9 @@ void AAnomaly_Object_Ceiling::Reset()
 
 void AAnomaly_Object_Ceiling::CeilingRotate(float Value)
 {
-	FRotator Target = Mesh_Ceiling->GetRelativeRotation();
-	Target.Yaw = Value;
-	Mesh_Ceiling->SetRelativeRotation(Target);
+	FRotator Target = GetActorRotation();
+	Target.Pitch = Value;
+	SetActorRotation(Target);
 }
 
 void AAnomaly_Object_Ceiling::PlayCeilingRotate()
@@ -62,6 +59,7 @@ void AAnomaly_Object_Ceiling::PlayCeilingRotate()
 
 void AAnomaly_Object_Ceiling::CeilingBloodDripping()
 {
+	Niagara_Ceiling_Blood->SetRelativeLocation(BloodLocation);
 	Niagara_Ceiling_Blood->SetVisibility(true);
 	Niagara_Ceiling_Blood->Activate(true);
 }
