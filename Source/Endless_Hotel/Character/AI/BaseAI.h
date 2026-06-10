@@ -2,10 +2,9 @@
 
 #pragma once
 
+#include "Character/EHCharacter.h"
 #include <CoreMinimal.h>
-#include <Character/Character/EHCharacter.h>
 #include <BaseAI.generated.h>
-
 
 UCLASS()
 class ENDLESS_HOTEL_API ABaseAI : public AEHCharacter

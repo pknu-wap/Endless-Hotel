@@ -1,6 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-#include "Character/Character/EHCharacter.h"
+#include "Character/EHCharacter.h"
 
 #pragma region Base
 

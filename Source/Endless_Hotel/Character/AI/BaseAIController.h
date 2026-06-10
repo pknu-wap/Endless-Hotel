@@ -13,7 +13,6 @@ class UAISenseConfig_Sight;
 
 #pragma endregion
 
-
 UCLASS()
 class ENDLESS_HOTEL_API ABaseAIController : public AAIController
 {
