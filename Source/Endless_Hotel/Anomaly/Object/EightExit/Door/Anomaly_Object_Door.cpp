@@ -4,7 +4,6 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
@@ -261,13 +260,10 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::DoorOpen:
-		auto* GameInstance = GetGameInstance<UEHGameInstance>();
-		GameInstance->StartDemoTimer();
-
 		APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 		AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
 
-		UGameSystem* Sub = GameInstance->GetSubsystem<UGameSystem>();
+		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 
 		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
 		{

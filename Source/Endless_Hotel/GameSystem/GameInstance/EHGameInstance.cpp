@@ -120,19 +120,3 @@ UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EMapDataLayer& Target)
 }
 
 #pragma endregion
-
-#pragma region Demo Timer
-
-void UEHGameInstance::StartDemoTimer()
-{
-	FTimerHandle DemoHandle;
-	GetWorld()->GetTimerManager().SetTimer(DemoHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			auto* UICon = GetSubsystem<UUI_Controller>();
-			UICon->OpenWidget(EWidgetType::PopUp_Demo);
-
-			USaveManager::DeleteData_Tutorial();
-		}), GameplayTime, false);
-}
-
-#pragma endregion
