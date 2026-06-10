@@ -21,4 +21,15 @@ protected:
 
 #pragma endregion
 
+#pragma region Setting
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	float DieDelay = 2;
+
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	FVector Offset = FVector(0, 0, 0);
+
+#pragma endregion
+
 };

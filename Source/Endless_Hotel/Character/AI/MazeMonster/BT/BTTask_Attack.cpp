@@ -5,9 +5,13 @@
 #include "Player/Character/EHPlayer.h"
 #include "Character/AI/MazeMonster/MazeMonsterController.h"
 #include "Character/AI/MazeMonster/MazeMonster.h"
+#include "Player/Controller/EHPlayerController.h"
 #include <AIController.h>
 #include <GameFramework/Character.h>
 #include <BehaviorTree/BlackboardComponent.h>
+#include <Kismet/KismetMathLibrary.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/CapsuleComponent.h>
 
 #pragma region Base
 
@@ -41,11 +45,35 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		return EBTNodeResult::Failed;
 	}
 
-	AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
-	BaseAIController->DeActiveAI();
-	Player->DieDelegate.Broadcast(EDeathReason::Attack);
-	return EBTNodeResult::Succeeded;
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	PC->SetPlayerInputAble(false);
+
+	FVector ForwardVector = Player->GetActorForwardVector();
+	FVector RightVector = Player->GetActorRightVector();
+	FVector UpVector = Player->GetActorUpVector();
+
+	FVector TargetLocation = Player->GetActorLocation() + ForwardVector * Offset.X + RightVector * Offset.Y + UpVector * Offset.Z;
+	MazeMonster->SetActorLocation(TargetLocation);
+	MazeMonster->GetCharacterMovement()->GravityScale = 0.f;
+	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MazeMonster->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(MazeMonster->GetActorLocation(), Player->GetActorLocation());
+	MazeMonster->SetActorRotation(LookAtRot);
+	LookAtRot = UKismetMathLibrary::FindLookAtRotation(Player->GetActorLocation(), MazeMonster->GetActorLocation());
+	PC->SetControlRotation(LookAtRot);
+
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController,  &OwnerComp]()
+		{
+			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
+			BaseAIController->DeActiveAI();
+			Player->DieDelegate.Broadcast(EDeathReason::Attack);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}), DieDelay, false);
+
+	return EBTNodeResult::InProgress;
 }
 
 #pragma endregion
-
