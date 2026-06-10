@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #pragma once
 
@@ -17,4 +17,5 @@ public:
 	virtual void SetAnomalyState() override;
 
 #pragma endregion
+
 };

@@ -21,7 +21,7 @@ public:
 	EAnomalyID ID = EAnomalyID::None;
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-	TSoftClassPtr<class AAnomaly_Event> Anomaly;
+	TSoftClassPtr<class AAnomaly_Event> Event;
 
 	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
 	TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;

@@ -132,7 +132,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 	else
 	{
 		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index]->Anomaly;
+		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index]->Event;
 		AnomalyClass = SoftClass.LoadSynchronous();
 
 		if (!IsValid(AnomalyClass))

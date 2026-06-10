@@ -12,7 +12,7 @@ void AAnomaly_Cong::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyID::Cong:
+	case EAnomalyID::Handprint:
 		SetupAnomalyAction(&AAnomaly_Object_HandPrint::ReserveCongCong);
 		ActiveTrigger();
 		break;

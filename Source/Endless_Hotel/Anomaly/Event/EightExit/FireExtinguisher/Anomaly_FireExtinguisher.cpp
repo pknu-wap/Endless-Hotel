@@ -17,7 +17,7 @@ void AAnomaly_FireExtinguisher::SetAnomalyState()
 
 	switch (AnomalyName)
 	{
-	case EAnomalyID::Blur:
+	case EAnomalyID::FireExt_Explode:
 		SetupAnomalyAction(&AAnomaly_Object_FireExtinguisher::Explode);
 		ActiveTrigger();
 		break;
