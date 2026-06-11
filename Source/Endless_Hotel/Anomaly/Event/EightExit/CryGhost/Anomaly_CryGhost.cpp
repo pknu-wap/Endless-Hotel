@@ -83,6 +83,13 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 	case ECryGhostState::JumpScare:
 	{
 		CryGhost->PlayJumpScareSound();
+
+		FTimerHandle DisableHandle;
+		GetWorld()->GetTimerManager().SetTimer(DisableHandle, FTimerDelegate::CreateWeakLambda(this, [this]
+			{
+				CryGhost->Destroy();
+			}), 0.1f, false);
+
 		break;
 	}
 	}
