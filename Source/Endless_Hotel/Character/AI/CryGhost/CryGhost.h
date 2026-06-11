@@ -75,4 +75,17 @@ protected:
 
 #pragma endregion
 
+#pragma region Targeting
+
+private:
+	void AdjustGhostRotation();
+
+private:
+	FTimerHandle TargetingHandle;
+
+	UPROPERTY()
+	TWeakObjectPtr<ACharacter> TargetPlayer;
+
+#pragma endregion
+
 };

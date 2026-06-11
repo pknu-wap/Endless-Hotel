@@ -59,12 +59,12 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 		CryGhost->PlayCrySound();
 		TriggerBox->SetWorldTransform(StandTrans);
 
+		constexpr float Delay = 0.1f;
 		FTimerHandle DisableHandle;
 		GetWorld()->GetTimerManager().SetTimer(DisableHandle, FTimerDelegate::CreateWeakLambda(this, [this]
 			{
 				TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			}), 0.1f, false);
-
+			}), Delay, false);
 		break;
 	}
 	case ECryGhostState::Stand:
@@ -72,24 +72,24 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 		CryGhost->PlayStandSound();
 		TriggerBox->SetWorldTransform(JumpScareTrans);
 
+		constexpr float Delay = 0.1f;
 		FTimerHandle DisableHandle;
 		GetWorld()->GetTimerManager().SetTimer(DisableHandle, FTimerDelegate::CreateWeakLambda(this, [this]
 			{
 				TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			}), 0.1f, false);
-
+			}), Delay, false);
 		break;
 	}
 	case ECryGhostState::JumpScare:
 	{
 		CryGhost->PlayJumpScareSound();
 
+		constexpr float Delay = 1.33f;
 		FTimerHandle DisableHandle;
 		GetWorld()->GetTimerManager().SetTimer(DisableHandle, FTimerDelegate::CreateWeakLambda(this, [this]
 			{
 				CryGhost->Destroy();
-			}), 0.1f, false);
-
+			}), Delay, false);
 		break;
 	}
 	}

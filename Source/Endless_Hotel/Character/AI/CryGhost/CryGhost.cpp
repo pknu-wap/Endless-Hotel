@@ -3,6 +3,7 @@
 #include "Character/AI/CryGhost/CryGhost.h"
 #include "Character/AI/CryGhost/CryGhostAnimInstance.h"
 #include <Components/AudioComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -33,6 +34,9 @@ void ACryGhost::AdvanceCryGhostState()
 
 	case ECryGhostState::JumpScare:
 		AnimInstance->bIsJumpScare = true;
+		UWorld* World = GetWorld();
+		TargetPlayer = UGameplayStatics::GetPlayerCharacter(World, 0);
+		World->GetTimerManager().SetTimer(TargetingHandle, this, &ThisClass::AdjustGhostRotation, World->GetDeltaSeconds(), true);
 		break;
 	}
 }
@@ -69,6 +73,20 @@ void ACryGhost::PlaySound(USoundWave* SoundWave)
 	AudioComponent->Stop();
 	AudioComponent->SetSound(SoundWave);
 	AudioComponent->Play();
+}
+
+#pragma endregion
+
+#pragma region Targeting
+
+void ACryGhost::AdjustGhostRotation()
+{
+	FVector Direction = TargetPlayer->GetActorLocation() - GetActorLocation();
+	Direction.Z = 0.f;
+
+	FRotator TargetRotator = Direction.Rotation();
+
+	SetActorRotation(TargetRotator);
 }
 
 #pragma endregion
