@@ -11,4 +11,15 @@ class ENDLESS_HOTEL_API UCryGhostAnimInstance : public UBaseAIAnimInstance
 {
 	GENERATED_BODY()
 	
+#pragma region State
+
+public:
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsStand = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsJumpScare = false;
+
+#pragma endregion
+
 };

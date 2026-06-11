@@ -12,7 +12,7 @@ enum class EAnomalyID : uint8
 	Light_Destroy		= 2		UMETA(DisplayName = "Light_Destroy"),
 	Light_Blue			= 3		UMETA(DisplayName = "Light_Blue"),
 	Door_Shake			= 4		UMETA(DisplayName = "Door_Shake"),
-	Cry					= 5		UMETA(DisplayName = "Cry"),
+	CryGhost			= 5		UMETA(DisplayName = "CryGhost"),
 	Handprint			= 6		UMETA(DisplayName = "Handprint"),
 	Shrink				= 7		UMETA(DisplayName = "Shrink"),
 	FireExt_Explode		= 8		UMETA(DisplayName = "FireExtinguisher_Explode"),

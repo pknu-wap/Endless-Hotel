@@ -11,7 +11,8 @@
 
 #pragma region Base
 
-ABaseAIController::ABaseAIController()
+ABaseAIController::ABaseAIController(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	Perception = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
