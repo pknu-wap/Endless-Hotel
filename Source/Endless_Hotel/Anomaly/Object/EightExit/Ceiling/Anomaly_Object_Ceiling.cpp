@@ -24,7 +24,6 @@ void AAnomaly_Object_Ceiling::BeginPlay()
 	FOnTimelineFloat UpdateFunc;
 	UpdateFunc.BindUFunction(this, FName("CeilingRotate"));
 	Timeline->AddInterpFloat(Curve_CeilingRotate, UpdateFunc);
-	InitialRotation = GetActorRotation();
 }
 
 void AAnomaly_Object_Ceiling::Reset()
@@ -32,7 +31,6 @@ void AAnomaly_Object_Ceiling::Reset()
 	Super::Reset();
 	Timeline->Stop();
 	Timeline->SetNewTime(0.f);
-	SetActorRotation(InitialRotation);
 	Niagara_Ceiling_Blood->Deactivate();
 	Niagara_Ceiling_Blood->SetVisibility(false);
 }

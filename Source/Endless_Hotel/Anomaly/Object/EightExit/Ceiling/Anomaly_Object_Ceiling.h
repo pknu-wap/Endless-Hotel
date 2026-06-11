@@ -27,8 +27,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Time")
 	TObjectPtr<UCurveFloat> Curve_CeilingRotate;
 
-	FRotator InitialRotation;
-
 #pragma endregion
 
 #pragma region Ceiling Rotate
