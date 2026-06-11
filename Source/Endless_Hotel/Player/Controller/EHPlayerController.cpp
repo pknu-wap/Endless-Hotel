@@ -718,6 +718,7 @@ void AEHPlayerController::ResetPlayerState()
 	bIsPlayerPushingDoor = false;
 
 	EHPlayer->SetActorScale3D(EHPlayer->GetStartScale());
+	
 }
 
 #pragma endregion
