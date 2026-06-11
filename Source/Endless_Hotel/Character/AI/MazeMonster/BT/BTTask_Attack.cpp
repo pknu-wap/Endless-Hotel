@@ -45,31 +45,23 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		return EBTNodeResult::Failed;
 	}
 
+	MazeMonster->bIsAttacked = true;
+
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);
 
-	FVector ForwardVector = Player->GetActorForwardVector();
-	FVector RightVector = Player->GetActorRightVector();
-	FVector UpVector = Player->GetActorUpVector();
-
-	FVector TargetLocation = Player->GetActorLocation() + ForwardVector * Offset.X + RightVector * Offset.Y + UpVector * Offset.Z;
-	MazeMonster->SetActorLocation(TargetLocation);
-	MazeMonster->GetCharacterMovement()->GravityScale = 0.f;
-	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	MazeMonster->GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(MazeMonster->GetActorLocation(), Player->GetActorLocation());
-	MazeMonster->SetActorRotation(LookAtRot);
-	LookAtRot = UKismetMathLibrary::FindLookAtRotation(Player->GetActorLocation(), MazeMonster->GetActorLocation());
-	PC->SetControlRotation(LookAtRot);
+	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
+	MazeMonster->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
+	MazeMonster->PlayAttackSound();
 
 	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController,  &OwnerComp]()
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController, MazeMonster, &OwnerComp]()
 		{
 			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
 			BaseAIController->DeActiveAI();
 			Player->DieDelegate.Broadcast(EDeathReason::Attack);
+			MazeMonster->StopAttackSound();
+			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}), DieDelay, false);
 
