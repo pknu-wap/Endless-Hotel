@@ -4,10 +4,10 @@
 
 #include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Cong.generated.h>
+#include <Anomaly_HandPrint.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Cong : public AAnomaly_Event_EightExit
+class ENDLESS_HOTEL_API AAnomaly_HandPrint : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
