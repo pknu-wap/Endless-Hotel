@@ -2,10 +2,15 @@
 
 #pragma once
 
+#include "CoreMinimal.h"
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
-#include <CoreMinimal.h>
-#include <Anomaly_Object_Hair.generated.h>
+#include "Anomaly_Object_Hair.generated.h"
 
+class AActor;
+class UCameraComponent;
+class UCurveFloat;
+class UMaterialParameterCollection;
+class UStaticMeshComponent;
 class UTimelineComponent;
 
 UCLASS()
@@ -32,6 +37,18 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> HairMesh;
 
+	UPROPERTY()
+	TObjectPtr<AActor> SpawnedHairActor;
+
+	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
+	TSubclassOf<AActor> HairActorClass;
+
+	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
+	FVector HairRelativeLocation = FVector(30.f, 0.f, 0.f);
+
+	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
+	FRotator HairRelativeRotation = FRotator::ZeroRotator;
+
 	UPROPERTY(EditAnywhere, Category = "Hair")
 	TObjectPtr<UMaterialParameterCollection> HairMPC;
 
@@ -42,19 +59,29 @@ protected:
 	TObjectPtr<UCurveFloat> Curve_HairLocation;
 
 	UPROPERTY(EditAnywhere, Category = "Hair")
-	FName Param_Opacity = "Scalar";
+	FName Param_Opacity = TEXT("MP_HairOpacity");
+
+	UPROPERTY(EditAnywhere, Category = "Hair")
+	float ScheduleAnomaly = 0.5f;
+
+	UPROPERTY()
+	FVector InitialHairLocation;
+
+	UFUNCTION()
+	void SpawnHair();
 
 	UFUNCTION()
 	void UpdateHair(float Value);
 
 	UFUNCTION()
-	void ResetHair(bool bIsStart) {}
+	void ResetHair(bool bIsStart);
 
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	float ScheduleAnomaly = 0.5f;
-
-	FVector InitialHairLocation;
+	bool bHairActive = false;
 
 public:
 	void StartHair();
+
+	virtual void Reset() override;
+
+#pragma endregion
 };

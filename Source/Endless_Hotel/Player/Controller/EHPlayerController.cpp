@@ -379,9 +379,6 @@ void AEHPlayerController::PlayDeathSequence()
 
 void AEHPlayerController::RevivePlayer()
 {
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
-
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn)
 	{
@@ -718,6 +715,7 @@ void AEHPlayerController::ResetPlayerState()
 	bIsPlayerPushingDoor = false;
 
 	EHPlayer->SetActorScale3D(EHPlayer->GetStartScale());
+	
 }
 
 #pragma endregion
