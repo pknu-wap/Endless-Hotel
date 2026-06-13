@@ -21,7 +21,6 @@ void ARoomSignActor::BeginPlay()
 	Super::BeginPlay();
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
-	SaveOriginalTransform();
 }
 
 #pragma endregion
@@ -73,11 +72,6 @@ void ARoomSignActor::DropSign()
 		1.0f,
 		false
 	);
-}
-
-void ARoomSignActor::SaveOriginalTransform()
-{
-	OriginalTransform = GetActorTransform();
 }
 
 #pragma endregion
