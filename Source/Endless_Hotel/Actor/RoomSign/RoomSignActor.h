@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Actor/EHActor.h"
-#include "RoomSignActor.generated.h"
+#include <CoreMinimal.h>
+#include <RoomSignActor.generated.h>
 
 #pragma region Declare
 
@@ -79,16 +79,12 @@ private:
 
 public:
 	void DropSign();
-	void SaveOriginalTransform();
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Drop|Sound")
 	TObjectPtr<USoundBase> DropSound;
 
 	bool bDropped = false;
-
-public:
-	FTransform OriginalTransform;
 
 #pragma endregion
 
