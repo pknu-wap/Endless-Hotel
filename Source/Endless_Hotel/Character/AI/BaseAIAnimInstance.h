@@ -6,7 +6,6 @@
 #include <Animation/AnimInstance.h>
 #include <BaseAIAnimInstance.generated.h>
 
-
 UENUM(BlueprintType)
 enum class EAIAnimState : uint8
 {

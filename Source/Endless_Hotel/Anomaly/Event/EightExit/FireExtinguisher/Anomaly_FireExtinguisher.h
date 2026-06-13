@@ -4,19 +4,12 @@
 
 #include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Blur.generated.h>
+#include <Anomaly_FireExtinguisher.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Blur : public AAnomaly_Event_EightExit
+class ENDLESS_HOTEL_API AAnomaly_FireExtinguisher : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
-
-#pragma region Base
-
-public:
-	AAnomaly_Blur(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
 
 #pragma region Activity
 
@@ -35,11 +28,25 @@ protected:
 	void ShowBlurWiget(bool bIsStart);
 
 protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_Blur;
+
+private:
+	FTimerHandle FadeOutHandle;
+
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC;
 
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_Blur;
+#pragma endregion
+
+#pragma region Down
+
+private:
+	void PlayDownAnimMontage();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> AM_DownUp;
 
 #pragma endregion
 

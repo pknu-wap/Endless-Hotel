@@ -119,7 +119,7 @@ void UDataController::RemoveNoRuleAnomaly()
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	ActAnomaly.RemoveAll([GameSystem](const auto& Entry)
 		{
-			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry->Anomaly.Get());
+			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry->Event.Get());
 			return !GameSystem->AnomalyRules.Contains(DefaultObj->AnomalyRule);
 		});
 }

@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AMazeMonsterController : public ABaseAIController
 #pragma region Base
 
 public:
-	AMazeMonsterController();
+	AMazeMonsterController(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;

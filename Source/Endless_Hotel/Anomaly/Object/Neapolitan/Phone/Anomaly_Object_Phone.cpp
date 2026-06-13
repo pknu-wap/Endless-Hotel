@@ -70,7 +70,13 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
 {
-	Reset();
+	SM_Receiver->SetRelativeTransform(OriginalTrans);
+
+	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+	GetWorld()->GetTimerManager().ClearTimer(ShakeHandle);
+
+	Timeline_Move->Stop();
+	Timeline_Ringing->Stop();
 
 	AC->Stop();
 
