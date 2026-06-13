@@ -21,4 +21,12 @@ protected:
 
 #pragma endregion
 
+#pragma region Setting
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	float DieDelay = 2;
+
+#pragma endregion
+
 };

@@ -17,36 +17,37 @@ void AAnomaly_Maze::SetAnomalyState()
 
 	SetupAnomalyAction(&AAnomaly_Object_Maze::ResetAI);
 
-	TArray<AAnomaly_Object_Maze*> TargetWalls;
-
-	for (const auto& TargetObject : TargetAnomalyObjects)
-	{
-		auto* Target = Cast<AAnomaly_Object_Maze>(TargetObject);
-		if (Target)
-		{
-			TargetWalls.Add(Target);
-		}
-	}
-
-	const uint8 MaxIndex = TargetWalls.Num() - 1;
-	const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
-
-	AAnomaly_Object_Maze* TargetWall = TargetWalls[PositionIndex];
-	if (TargetWall)
-	{
-		TargetWall->SetElevator();
-		TargetWall->SetDeactiveWall();
-		TargetWall->StartMazeMonster();
-	}
-
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Maze_Monster:
-		ScheduleAnomaly();
-		break;
-	case EAnomalyID::Maze_Doll:
+		SetupAnomalyAction(&AAnomaly_Object_Maze::StartMazeMonster);
 		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
 		ScheduleAnomaly();
+		break;
+	}
+}
+
+void AAnomaly_Maze::InteractSolveVerdict()
+{
+	Super::InteractSolveVerdict();
+	if (bIsSolved)
+	{
+		TArray<AAnomaly_Object_Maze*> Walls;
+		for(const auto& Wall : TargetAnomalyObjects)
+		{
+			if(Cast<AAnomaly_Object_Maze>(Wall))
+			{
+				Walls.Add(Cast<AAnomaly_Object_Maze>(Wall));
+			}
+		}
+		const uint8 MaxIndex = Walls.Num() - 1;
+		const uint8 PositionIndex = FMath::RandRange(0, MaxIndex);
+
+		AAnomaly_Object_Maze* TargetWall = Walls[PositionIndex];
+		if (TargetWall)
+		{
+			TargetWall->SetDeactiveWall();
+		}
 	}
 }
 

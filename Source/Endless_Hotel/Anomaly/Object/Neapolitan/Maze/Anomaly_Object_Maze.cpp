@@ -9,6 +9,8 @@
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include <Kismet/GameplayStatics.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/CapsuleComponent.h>
 
 #pragma region MazeMonster
 
@@ -18,7 +20,6 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	FTimerHandle DelayHandle;
 
-	SetElevatorPos();
 	StartAI();
 	
 	if (MazeMonster.IsValid())
@@ -37,6 +38,7 @@ void AAnomaly_Object_Maze::SetDeactiveWall()
 {
 	Object->SetVisibility(false);
 	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetElevatorPos();
 }
 
 void AAnomaly_Object_Maze::Reset()
@@ -67,6 +69,10 @@ void AAnomaly_Object_Maze::StartAI()
 	}
 	MazeMonster->ActivateMob();
 	MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
+	MazeMonster->GetCharacterMovement()->GravityScale = 1.f;
+	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	MazeMonster->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MazeMonster->bIsAttacked = false;
 }
 
@@ -80,6 +86,9 @@ void AAnomaly_Object_Maze::SetElevator()
 	Elevator = Subsystem->GetElevatorByID(TakeOnElevatorID);
 	ElevatorWall = Elevator->ElevatorUnderWall;
 	ElevatorEntrance = Elevator->LinkedEntrance;
+	Elevator->SetActorLocation(FVector(-5210, 1435, -2927));
+	ElevatorEntrance->SetActorLocation(FVector(-5210, 1435, -2927));
+	Elevator->StandardPos = FVector(-5210, 1435, -2927);
 }
 
 void AAnomaly_Object_Maze::SetElevatorPos()

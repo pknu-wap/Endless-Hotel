@@ -2,6 +2,8 @@
 
 
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
+#include "Anomaly/Event/Anomaly_Event.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/AudioComponent.h>
@@ -147,6 +149,11 @@ void AAnomaly_Object_Doll::FinishBurning()
 {
 	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
 	bIsBurning = false;
-	Destroy();
+	Object->SetVisibility(false);
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (Subsystem->CurrentAnomaly->AnomalyName == EAnomalyID::Maze_Monster)
+	{
+		Subsystem->CurrentAnomaly->InteractSolveVerdict();
+	}
 }
 #pragma endregion

@@ -5,9 +5,13 @@
 #include "Player/Character/EHPlayer.h"
 #include "Character/AI/MazeMonster/MazeMonsterController.h"
 #include "Character/AI/MazeMonster/MazeMonster.h"
+#include "Player/Controller/EHPlayerController.h"
 #include <AIController.h>
 #include <GameFramework/Character.h>
 #include <BehaviorTree/BlackboardComponent.h>
+#include <Kismet/KismetMathLibrary.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/CapsuleComponent.h>
 
 #pragma region Base
 
@@ -41,11 +45,27 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		return EBTNodeResult::Failed;
 	}
 
-	AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
-	BaseAIController->DeActiveAI();
-	Player->DieDelegate.Broadcast(EDeathReason::Attack);
-	return EBTNodeResult::Succeeded;
+	MazeMonster->bIsAttacked = true;
+
+	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+	PC->SetPlayerInputAble(false);
+
+	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
+	MazeMonster->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
+	MazeMonster->PlayAttackSound();
+
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController, MazeMonster, &OwnerComp]()
+		{
+			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
+			BaseAIController->DeActiveAI();
+			Player->DieDelegate.Broadcast(EDeathReason::Attack);
+			MazeMonster->StopAttackSound();
+			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}), DieDelay, false);
+
+	return EBTNodeResult::InProgress;
 }
 
 #pragma endregion
-
