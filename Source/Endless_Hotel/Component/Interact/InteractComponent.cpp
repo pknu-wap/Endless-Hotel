@@ -100,27 +100,3 @@ FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 }
 
 #pragma endregion
-
-#pragma region Hightight
-
-void UInteractComponent::ShowInteractingHighlight(bool bActive)
-{
-	if (!CanInteract())
-	{
-		return;
-	}
-
-	TArray<UMeshComponent*> Comps;
-	Owner->GetComponents<UMeshComponent>(OUT Comps);
-
-	for (auto Target : Comps)
-	{
-		if (Target->ComponentHasTag(HighlightTag))
-		{
-			Target->SetRenderCustomDepth(bActive);
-			Target->MarkRenderStateDirty();
-		}
-	}
-}
-
-#pragma endregion

@@ -35,7 +35,7 @@ void AAnomaly_Object_Base::Reset()
         bSolved = true;
     }
     SetActorTransform(OriginalTransform);
-    Component_Interact->bIsInteracted = false;
+    Component_Interact->RestoreInteract();
 }
 
 #pragma endregion
@@ -54,7 +54,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
             {
                 bSolved = !bSolved;
             }
-            Component_Interact->bIsInteracted = false;
+            Component_Interact->RestoreInteract();
         }
         else
         {
