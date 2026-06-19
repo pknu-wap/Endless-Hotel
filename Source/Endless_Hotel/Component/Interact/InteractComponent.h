@@ -7,6 +7,12 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+#pragma region Declare
+
+#define HIGHLIGHT_TAG TEXT("Highlight")
+
+#pragma endregion
+
 UCLASS(ClassGroup = (Custom))
 class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 {
@@ -74,10 +80,6 @@ private:
 public:
 	// 상호작용 윤곽선을 보여주는 함수
 	void ShowInteractingHighlight(bool bActive);
-
-private:
-	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
-	static const FName HighlightTag;
 
 #pragma endregion
 

@@ -7,12 +7,6 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/WidgetComponent.h>
 
-#pragma region Static
-
-const FName UInteractComponent::HighlightTag = TEXT("Highlight");
-
-#pragma endregion
-
 #pragma region Base
 
 void UInteractComponent::BeginPlay()
@@ -97,6 +91,30 @@ FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 	}
 
 	return List_Interact[CurrentIndex];
+}
+
+#pragma endregion
+
+#pragma region Hightight
+
+void UInteractComponent::ShowInteractingHighlight(bool bActive)
+{
+	if (!CanInteract())
+	{
+		return;
+	}
+
+	TArray<UMeshComponent*> Comps;
+	Owner->GetComponents<UMeshComponent>(OUT Comps);
+
+	for (auto Target : Comps)
+	{
+		if (Target->ComponentHasTag(HIGHLIGHT_TAG))
+		{
+			Target->SetRenderCustomDepth(bActive);
+			Target->MarkRenderStateDirty();
+		}
+	}
 }
 
 #pragma endregion

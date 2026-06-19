@@ -2,6 +2,7 @@
 
 #include "Component/Tutorial/TutorialComponent.h"
 #include "Component/Interact/InteractComponent.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include <Components/WidgetComponent.h>
@@ -22,6 +23,9 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial = Cast<UUI_Tutorial>(Comp_Widget->GetUserWidgetObject());
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
+
+	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
 
 	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
 
