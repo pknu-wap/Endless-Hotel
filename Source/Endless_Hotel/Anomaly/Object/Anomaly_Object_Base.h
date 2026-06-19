@@ -69,24 +69,20 @@ public:
 
 #pragma endregion
 
+#pragma region Floating
+
+public:
+	void StartFloating();
+
+#pragma endregion
+
 #pragma region Restore
 
 public:
 	void StartRestoring(float Duration = 2.5f);
-	void SaveOriginalTransform();
-	bool bIsRestored = false;
-
-private:
-	void RestoreTick();
-	void FinishRestoring();
-
-	float RestoreDuration = 2.5f;
-	float RestoreCurrentTime = 0.f;
 
 public:
 	FTransform OriginalTransform;
-	FTransform StartTransform;
-	FTimerHandle RestoreHandle;
 
 #pragma endregion
 

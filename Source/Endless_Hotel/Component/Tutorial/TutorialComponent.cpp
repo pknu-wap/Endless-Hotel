@@ -72,7 +72,10 @@ void UTutorialComponent::HideTutorialWidget()
 
 	USaveManager::SaveData_Tutorial(Data);
 
-	UI_Tutorial->ShowTutorialAnimation(false);
+	if (Data.bIsFirstPlay)
+	{
+		UI_Tutorial->ShowTutorialAnimation(false);
+	}
 
 	if (Comp_Interact.IsValid())
 	{
