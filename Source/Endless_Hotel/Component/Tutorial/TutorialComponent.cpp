@@ -76,6 +76,10 @@ void UTutorialComponent::HideTutorialWidget()
 	{
 		UI_Tutorial->ShowTutorialAnimation(false);
 	}
+	else
+	{
+		UI_Tutorial->HideWidget();
+	}
 
 	if (Comp_Interact.IsValid())
 	{

@@ -94,10 +94,17 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 void AAnomaly_Object_Base::StartFloating()
 {
     auto* Comp_Float = FindComponentByClass<UFloatComponent>();
-    if (IsValid(Comp_Float))
+    if (!IsValid(Comp_Float))
     {
-        Comp_Float->StartFloating();
+        return;
     }
+
+    constexpr float StartDuration = 2.5f;
+    FTimerHandle StartHandle;
+    GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this, Comp_Float]
+        {
+            Comp_Float->StartFloating();
+        }), StartDuration, false);
 }
 
 #pragma endregion

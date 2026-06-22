@@ -21,14 +21,14 @@ void UFloatComponent::StartFloating()
 	TargetMesh->SetEnableGravity(false);
 	TargetMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
-	FVector FloatVelocity = FVector(FMath::RandRange(-30.f, 30.f), FMath::RandRange(-30.f, 30.f), FMath::RandRange(50.f, 150.f));
+	FVector FloatVelocity = FVector(FMath::RandRange(-50.f, 50.f), FMath::RandRange(-50.f, 50.f), FMath::RandRange(100.f, 170.f));
 	FVector RotationVelocity = FVector(FMath::RandRange(-30.f, 30.f), FMath::RandRange(-30.f, 30.f), FMath::RandRange(-30.f, 30.f));
 
 	TargetMesh->SetPhysicsLinearVelocity(FloatVelocity);
 	TargetMesh->SetPhysicsAngularVelocityInDegrees(RotationVelocity);
 
 	FTimerHandle StopFloatTimer;
-	GetWorld()->GetTimerManager().SetTimer(StopFloatTimer, this, &ThisClass::StopFloating, 6.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(StopFloatTimer, this, &ThisClass::StopFloating, 3.0f, false);
 }
 
 void UFloatComponent::StopFloating()
@@ -37,7 +37,7 @@ void UFloatComponent::StopFloating()
 	TargetMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 
 	FTimerHandle FreezeTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(FreezeTimerHandle, this, &ThisClass::DropObject, 1.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(FreezeTimerHandle, this, &ThisClass::DropObject, 1.0f, false);
 }
 
 void UFloatComponent::DropObject()
