@@ -217,7 +217,7 @@ void AAnomaly_Object_Painting::DieWatchingPainting()
 				return;
 			}
 
-			if (PC->bIsWatchingPainting && !bSolved)
+			if (PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved)
 			{
 				if (CurrentWatchTime >= MaxWatchTime)
 				{

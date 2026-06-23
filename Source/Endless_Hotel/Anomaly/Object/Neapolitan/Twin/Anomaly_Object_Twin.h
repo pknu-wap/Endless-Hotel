@@ -25,6 +25,7 @@ protected:
 
 public:
 	void StartTwin();
+	void FreezeWhenObserved();
 
 protected:
 	UFUNCTION()
