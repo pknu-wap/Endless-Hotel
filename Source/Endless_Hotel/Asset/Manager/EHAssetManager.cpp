@@ -13,9 +13,12 @@ TArray<UPDA_Anomaly*> UEHAssetManager::GetAnomalyDataAsset(const TArray<uint8>& 
 
 	for (const uint8& Index : Indexes)
 	{
-		auto FoundPDA = DA_Anomalies.FindByPredicate([Index](const UPDA_Anomaly* Item)
+		auto FoundPDA = DA_Anomalies.FindByPredicate([Index](const TObjectPtr<UPDA_Anomaly>& Item)
 			{
-				return Item && static_cast<uint8>(Item->ID) == Index;
+				return Item->Entries.ContainsByPredicate([Index](const FAnomalyEntry& Entry)
+					{
+						return static_cast<uint8>(Entry.ID) == Index;
+					});
 			});
 
         if (FoundPDA && *FoundPDA)
@@ -43,9 +46,23 @@ void UEHAssetManager::LoadAnomalyDataAsset()
 		DA_Anomalies.Add(GetPrimaryAssetObject<UPDA_Anomaly>(ID));
 	}
 
-	DA_Anomalies.Sort([](const UPDA_Anomaly& First, const UPDA_Anomaly& Second)
+	DA_Anomalies.RemoveAll([](const TObjectPtr<UPDA_Anomaly>& PDA)
 		{
-			return First.ID < Second.ID;
+			return !PDA || PDA->Entries.IsEmpty();
+		});
+
+	for (auto& PDA : DA_Anomalies)
+	{
+		if (!PDA) continue;
+		PDA->Entries.Sort([](const FAnomalyEntry& A, const FAnomalyEntry& B)
+			{
+				return A.ID < B.ID;
+			});
+	}
+
+	DA_Anomalies.Sort([](const TObjectPtr<UPDA_Anomaly> First, const TObjectPtr<UPDA_Anomaly> Second)
+		{
+			return First->Entries[0].ID < Second->Entries[0].ID;
 		});
 }
 

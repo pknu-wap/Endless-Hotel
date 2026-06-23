@@ -3,6 +3,7 @@
 #include "UI/Base/NoteBook/UI_NoteBook.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <Components/Image.h>
 #include <Components/TextBlock.h>
 
@@ -17,7 +18,14 @@ void UUI_NoteBook::ChangeDescription(const uint8& StartIndex)
 	uint8 Index3 = StartIndex + 2;
 
 	auto& AssetManager = UEHAssetManager::Get();
-	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset({ Index1,Index2,Index3 });
+	TArray<UPDA_Anomaly*> PDAs = AssetManager.GetAnomalyDataAsset({ Index1,Index2,Index3 });
+
+	TArray<FAnomalyEntry> Datas;
+	for (UPDA_Anomaly* PDA : PDAs)
+	{
+		if (!PDA) continue;
+		Datas.Append(PDA->Entries);
+	}
 
 	SetDescription(Datas, Image1, Text1, 0);
 	SetDescription(Datas, Image2, Text2, 1);
@@ -47,12 +55,12 @@ void UUI_NoteBook::HideDescription()
 		}), Duration, false);
 }
 
-void UUI_NoteBook::SetDescription(TArray<UPDA_Anomaly*>& Datas, UImage* Image, UTextBlock* Text, uint8 Index)
+void UUI_NoteBook::SetDescription(TArray<FAnomalyEntry>& Datas, UImage* Image, UTextBlock* Text, uint8 Index)
 {
 	if (Datas.IsValidIndex(Index))
 	{
-		Image->SetBrushFromTexture(Datas[Index]->Image_Description.LoadSynchronous());
-		Text->SetText(Datas[Index]->Text_Description);
+		Image->SetBrushFromTexture(Datas[Index].Image_Description.LoadSynchronous());
+		Text->SetText(Datas[Index].Text_Description);
 	}
 	else
 	{
