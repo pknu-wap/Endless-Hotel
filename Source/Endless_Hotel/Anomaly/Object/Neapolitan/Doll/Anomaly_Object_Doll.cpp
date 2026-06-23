@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include "Anomaly/Event/Anomaly_Event.h"
+#include "Character/AI/ComingDoll/ComingDoll.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
@@ -16,7 +16,8 @@
 AAnomaly_Object_Doll::AAnomaly_Object_Doll(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	Object->SetVisibility(false);
+	Object->SetHiddenInGame(true);
+	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Niagara_Fire = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara_Fire"));
 	Niagara_Fire->SetupAttachment(Object);
@@ -37,8 +38,18 @@ void AAnomaly_Object_Doll::Reset()
 {
 	Super::Reset();
 
-	Object->SetVisibility(false);
 	Object->SetHiddenInGame(true);
+	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	if (BurnNiagara.IsValid())
+	{
+		BurnNiagara->Deactivate();
+	}
+
+	if (IsValid(BurnMID))
+	{
+		BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
+	}
 }
 
 #pragma endregion
@@ -47,8 +58,8 @@ void AAnomaly_Object_Doll::Reset()
 
 void AAnomaly_Object_Doll::ActivateDoll_Show()
 {
-	Object->SetVisibility(true);
 	Object->SetHiddenInGame(false);
+	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 #pragma endregion
@@ -63,10 +74,11 @@ void AAnomaly_Object_Doll::Interact_Implementation(AEHCharacter* Interacter)
 
 	switch (Info.InteractType)
 	{
-		case EInteractType::Burn:
-			SetupBurnTargets();
-			StartBurning(BurnDuration);
-			break;
+	case EInteractType::Burn:
+		SetupBurnTargets();
+		StartBurning(BurnDuration);
+		TryBurnComingDolls();
+		break;
 	}
 }
 
@@ -83,7 +95,7 @@ void AAnomaly_Object_Doll::SetupBurnTargets()
 	{
 		BurnMID = BurnMesh->CreateDynamicMaterialInstance(0);
 
-		if(BurnMID)
+		if (BurnMID)
 		{
 			BurnMesh->SetMaterial(0, BurnMID);
 
@@ -104,7 +116,7 @@ void AAnomaly_Object_Doll::StartBurning(float Duration)
 	{
 		return;
 	}
-	
+
 	bIsBurning = true;
 	BurnCurrentTime = 0.f;
 	BurnDuration = Duration;
@@ -115,7 +127,7 @@ void AAnomaly_Object_Doll::StartBurning(float Duration)
 		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
 		BurnNiagara->Activate();
 	}
-	
+
 	AC->Sound = Sound_Doll_Fire;
 	AC->Play();
 
@@ -149,11 +161,42 @@ void AAnomaly_Object_Doll::FinishBurning()
 {
 	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
 	bIsBurning = false;
-	Object->SetVisibility(false);
+	Object->SetHiddenInGame(true);
+	BurnNiagara->Deactivate();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	if (Subsystem->CurrentAnomaly->AnomalyName == EAnomalyID::Maze_Monster)
 	{
 		Subsystem->CurrentAnomaly->InteractSolveVerdict();
 	}
 }
+
+#pragma endregion
+
+#pragma region Coming
+
+void AAnomaly_Object_Doll::SpawnComingDolls()
+{
+	UWorld* World = GetWorld();
+
+	for (FTransform Trans : SpawnTrans)
+	{
+		ComingDoll.Add(World->SpawnActor<AComingDoll>(ComingDollClass, Trans));
+	}
+}
+
+void AAnomaly_Object_Doll::TryBurnComingDolls()
+{
+	if (ComingDoll.IsEmpty())
+	{
+		return;
+	}
+
+	for (AComingDoll* Doll : ComingDoll)
+	{
+		Doll->StartBurning();
+	}
+
+	ComingDoll.Empty();
+}
+
 #pragma endregion

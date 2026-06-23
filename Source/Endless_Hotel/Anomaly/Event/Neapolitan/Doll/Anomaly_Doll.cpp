@@ -15,6 +15,12 @@ void AAnomaly_Doll::SetAnomalyState()
 		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
 		ScheduleAnomaly();
 		break;
+
+	case EAnomalyID::Doll_Coming:
+		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show);
+		SetupAnomalyAction(&AAnomaly_Object_Doll::SpawnComingDolls, { EInteractType::Burn });
+		ActiveTrigger();
+		break;
 	}
 }
 

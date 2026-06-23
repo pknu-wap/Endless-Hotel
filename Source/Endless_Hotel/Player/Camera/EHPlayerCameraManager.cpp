@@ -117,7 +117,7 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 					{
 						TimeLine_Eye->Stop();
-					}), 7.5f, false);
+					}), 6.0f, false);
 
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
