@@ -47,11 +47,25 @@ public:
 	void CeilingBloodDripping();
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Blood")
 	TObjectPtr<class UNiagaraComponent> Niagara_Ceiling_Blood;
 
-	UPROPERTY(EditAnywhere)
-	FVector BloodLocation;
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMin1;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMax1;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMin2;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMax2;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	float BloodInterval = 1;
+
+	FTimerHandle BloodHandle;
 
 #pragma endregion
 
