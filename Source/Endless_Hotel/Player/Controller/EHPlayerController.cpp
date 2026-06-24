@@ -512,7 +512,10 @@ void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
 
 bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor, float Distance)
 {
-	if (!TargetActor) return false;
+	if (!TargetActor)
+	{
+		return false;
+	}
 	return GetLookedAtActor(Distance) == TargetActor;
 }
 
