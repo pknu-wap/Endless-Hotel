@@ -33,7 +33,7 @@ void UUI_Button_Setting::ReleaseSlateResources(bool bReleaseChildren)
 
 #pragma region Click
 
-void UUI_Button_Setting::Click_Button()
+void UUI_Button_Setting::ClickCategoryButton()
 {
 	if (!bIsSideButton)
 	{
@@ -46,6 +46,11 @@ void UUI_Button_Setting::Click_Button()
 	SettingWidget->StartRotateGear(SettingInfo.Angle);
 
 	HighlightSetting.Broadcast(SettingInfo);
+}
+
+void UUI_Button_Setting::Click_Button()
+{
+	ClickCategoryButton();
 }
 
 #pragma endregion

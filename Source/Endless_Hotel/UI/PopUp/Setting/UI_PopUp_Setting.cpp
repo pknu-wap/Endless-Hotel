@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "UI/Button/Setting/UI_Button_Setting.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
@@ -11,6 +12,7 @@
 #include <Components/AudioComponent.h>
 #include <Components/SpotLightComponent.h>
 #include <Components/ExponentialHeightFogComponent.h>
+#include <Components/CanvasPanel.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/StaticMeshActor.h>
@@ -34,6 +36,16 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 
 	Highlight.AddDynamic(this, &ThisClass::HighlightButtons);
+
+	CategoryButtons.Empty();
+
+	for (auto* Check : UI_Gear->GetAllChildren())
+	{
+		if (auto* Target = Cast<UUI_Button_Setting>(Check))
+		{
+			CategoryButtons.Add(Target);
+		}
+	}
 }
 
 void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -362,6 +374,45 @@ void UUI_PopUp_Setting::Click_Apply()
 	USaveManager::SaveData_Setting(Data_Setting);
 
 	Input_ESC();
+}
+
+FReply UUI_PopUp_Setting::NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (bRotateGear)
+	{
+		return FReply::Handled();
+	}
+
+	const float WheelDelta = InMouseEvent.GetWheelDelta();
+
+	if (WheelDelta > 0.f)
+	{
+		AdjustCategoryIndex(true);
+	}
+	else if (WheelDelta < 0.f)
+	{
+		AdjustCategoryIndex(false);
+	}
+
+	CategoryButtons[CategoryIndex]->ClickCategoryButton();
+
+	return Super::NativeOnMouseWheel(InGeometry, InMouseEvent);
+}
+
+void UUI_PopUp_Setting::AdjustCategoryIndex(bool bUp)
+{
+	CategoryIndex = bUp ? CategoryIndex + 1 : CategoryIndex - 1;
+
+	int32 MaxIndex = CategoryButtons.Num() - 1;
+
+	if (CategoryIndex < 0)
+	{
+		CategoryIndex = MaxIndex;
+	}
+	else if (CategoryIndex > MaxIndex)
+	{
+		CategoryIndex = 0;
+	}
 }
 
 #pragma endregion
