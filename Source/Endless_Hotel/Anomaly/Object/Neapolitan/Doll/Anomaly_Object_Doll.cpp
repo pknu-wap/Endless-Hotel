@@ -50,6 +50,8 @@ void AAnomaly_Object_Doll::Reset()
 	{
 		BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
 	}
+
+	TryBurnComingDolls();
 }
 
 #pragma endregion

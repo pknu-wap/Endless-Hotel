@@ -1,7 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Character/AI/ComingDoll/ComingDoll.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
+#include <Components/CapsuleComponent.h>
 #include <NiagaraComponent.h>
 
 #pragma region Base
@@ -11,6 +13,10 @@ AComingDoll::AComingDoll(const FObjectInitializer& ObjectInitializer)
 {
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetAutoActivate(false);
+
+	DeathTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DeathTrigger"));
+	DeathTrigger->SetupAttachment(GetMesh());
+	DeathTrigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDeathTrigger);
 }
 
 #pragma endregion
@@ -48,6 +54,19 @@ void AComingDoll::BurnTick()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
 		Destroy();
+	}
+}
+
+#pragma endregion
+
+#pragma region Death
+
+void AComingDoll::OnDeathTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (auto* Player = Cast<AEHPlayer>(OtherActor))
+	{
+		Player->DieDelegate.Broadcast(EDeathReason::Doll);
+		DeathTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
 
