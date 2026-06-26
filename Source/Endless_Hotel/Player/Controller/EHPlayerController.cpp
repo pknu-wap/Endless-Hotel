@@ -433,7 +433,6 @@ void AEHPlayerController::OnFirstDoorOpenCompleted()
 	bIsPlayerDoorOpening = false;
 	SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 
-	SetPlayerInputAble(true);
 }
 
 void AEHPlayerController::OnPushDoorStarted()
