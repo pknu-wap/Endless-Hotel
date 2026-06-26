@@ -297,7 +297,23 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 		}
 		else
 		{
-			DoorRotateStarted();
+			FVector TargetLocation = DoorOpenTransform.GetLocation();
+			FRotator TargetRotation = DoorOpenTransform.Rotator();
+
+			FLatentActionInfo LatentInfo;
+			LatentInfo.CallbackTarget = this;
+			LatentInfo.ExecutionFunction = FName("DoorRotateCompleted");
+			LatentInfo.UUID = __LINE__ + 200;
+			LatentInfo.Linkage = 0;
+
+			UKismetSystemLibrary::MoveComponentTo(
+				GetRootComponent(),
+				TargetLocation,
+				TargetRotation,
+				true, true, RotationSpeed, false,
+				EMoveComponentAction::Move,
+				LatentInfo
+			);
 		}
 	}
 	else
