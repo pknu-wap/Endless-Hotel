@@ -119,7 +119,7 @@ protected:
 	TWeakObjectPtr<class UInteractComponent> CachedInteractComp;
 
 protected:
-	const float TraceDistance = 100.f;
+	const float TraceDistance = 160.f;
 
 protected:
 	void CheckForInteractables();
