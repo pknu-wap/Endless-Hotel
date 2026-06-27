@@ -148,6 +148,9 @@ public:
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;
+
+	UPROPERTY(SaveGame)
+	bool bReadManual = false;
 };
 
 USTRUCT()

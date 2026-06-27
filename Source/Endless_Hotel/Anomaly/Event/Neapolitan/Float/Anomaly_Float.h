@@ -15,7 +15,18 @@ class ENDLESS_HOTEL_API AAnomaly_Float : public AAnomaly_Event_Neapolitan
 
 public:
 	virtual void SetAnomalyState() override;
-	virtual void DisableAnomaly() override;
+	virtual void StartAnomalyAction() override;
+
+#pragma endregion
+
+#pragma region Sound
+
+private:
+	void PlayGravitySound();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_Gravity;
 
 #pragma endregion
 

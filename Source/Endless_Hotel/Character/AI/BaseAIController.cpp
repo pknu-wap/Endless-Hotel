@@ -47,7 +47,8 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 
 		if (BrainComponent)
 		{
-			BrainComponent->StopLogic(TEXT("Wait for Activation"));
+			// 무슨 의도?
+			//BrainComponent->StopLogic(TEXT("Wait for Activation"));
 		}
 	}
 }

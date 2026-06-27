@@ -11,4 +11,11 @@ class ENDLESS_HOTEL_API AManual : public AInteractRead
 {
 	GENERATED_BODY()
 
+#pragma region Interact
+
+public:
+	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+
+#pragma endregion
+
 };

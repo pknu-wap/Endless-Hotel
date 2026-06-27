@@ -7,12 +7,6 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/WidgetComponent.h>
 
-#pragma region Static
-
-const FName UInteractComponent::HighlightTag = TEXT("Highlight");
-
-#pragma endregion
-
 #pragma region Base
 
 void UInteractComponent::BeginPlay()
@@ -115,7 +109,7 @@ void UInteractComponent::ShowInteractingHighlight(bool bActive)
 
 	for (auto Target : Comps)
 	{
-		if (Target->ComponentHasTag(HighlightTag))
+		if (Target->ComponentHasTag(HIGHLIGHT_TAG))
 		{
 			Target->SetRenderCustomDepth(bActive);
 			Target->MarkRenderStateDirty();
