@@ -1,9 +1,9 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/Neapolitan/Float/Anomaly_Float.h"
-#include "Anomaly/Object/Neapolitan/Float/Anomaly_Object_Float.h"
-#include "Component/Float/FloatComponent.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 #include <Kismet/GameplayStatics.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Activity
 
@@ -14,34 +14,27 @@ void AAnomaly_Float::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Float:
-		AnomalyActions.Add([this](AAnomaly_Object_Base* Float)
-			{
-                for (auto* Obj : LinkedObjects)
-                {
-                    UFloatComponent* FloatComp = Obj->FindComponentByClass<UFloatComponent>();
-                    if (FloatComp)
-                    {
-                        FloatComp->StartFloating();
-                    }
-                }
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Base::StartFloating, { EInteractType::Restore });
 		ScheduleAnomaly(10);
 		break;
 	}
 }
 
-void AAnomaly_Float::DisableAnomaly()
+void AAnomaly_Float::StartAnomalyAction()
 {
-    Super::DisableAnomaly();
+	Super::StartAnomalyAction();
 
-    for (auto* Obj : LinkedObjects)
-    {
-        UFloatComponent* FloatComp = Obj->FindComponentByClass<UFloatComponent>();
-        if (FloatComp)
-        {
-            FloatComp->ResetFloating();
-        }
-    }
+	PlayGravitySound();
+}
+
+#pragma endregion
+
+#pragma region Sound
+
+void AAnomaly_Float::PlayGravitySound()
+{
+	auto* AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gravity);
+	AC->Play();
 }
 
 #pragma endregion

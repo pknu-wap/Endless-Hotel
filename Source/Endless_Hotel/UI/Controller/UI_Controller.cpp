@@ -41,7 +41,7 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 	switch (CreatedWidget->WidgetLayer)
 	{
 	case EWidgetLayer::HUD:
-		WidgetStack.Empty();
+		CloseAllWidgets();
 		break;
 	}
 
@@ -77,6 +77,16 @@ void UUI_Controller::CloseWidget()
 	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
 
 	SetInputMode(TopWidget->WidgetInputMode);
+}
+
+void UUI_Controller::CloseAllWidgets()
+{
+	for (const EWidgetType& Target : WidgetStack)
+	{
+		CachedWidgets[Target]->HideWidget();
+	}
+
+	WidgetStack.Empty();
 }
 
 #pragma endregion

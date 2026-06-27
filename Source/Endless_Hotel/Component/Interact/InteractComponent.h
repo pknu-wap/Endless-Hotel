@@ -7,6 +7,12 @@
 #include <CoreMinimal.h>
 #include <InteractComponent.generated.h>
 
+#pragma region Declare
+
+#define HIGHLIGHT_TAG TEXT("Highlight")
+
+#pragma endregion
+
 UCLASS(ClassGroup = (Custom))
 class ENDLESS_HOTEL_API UInteractComponent : public UEHComponent
 {
@@ -60,11 +66,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
 
-public:
+private:
 	// 해당 물체를 한번이라도 상호작용 했는지 여부
 	bool bIsInteracted = false;
 
-private:
 	// 현재 선택된 상호작용 번호
 	int8 CurrentIndex = 0;
 
@@ -75,10 +80,6 @@ private:
 public:
 	// 상호작용 윤곽선을 보여주는 함수
 	void ShowInteractingHighlight(bool bActive);
-
-private:
-	// 해당 값을 똑같이 윤곽선 적용할 컴포넌트의 태그에 넣기
-	static const FName HighlightTag;
 
 #pragma endregion
 

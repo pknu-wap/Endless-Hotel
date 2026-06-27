@@ -127,7 +127,7 @@ private:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UUserWidget> UI_Gear;
+	TObjectPtr<class UCanvasPanel> UI_Gear;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_Gear;
@@ -178,12 +178,22 @@ private:
 	UFUNCTION()
 	void Click_Apply();
 
+	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	void AdjustCategoryIndex(bool bUp);
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class UUI_Button_Setting>> CategoryButtons;
+
+	int8 CategoryIndex = 0;
 
 #pragma endregion
 

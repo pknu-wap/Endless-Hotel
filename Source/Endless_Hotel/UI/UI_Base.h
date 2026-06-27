@@ -26,6 +26,8 @@ public:
 	virtual void ShowWidget();
 	virtual void HideWidget();
 
+	bool IsActivatedWidget() { return GetVisibility() == ESlateVisibility::SelfHitTestInvisible; }
+
 #pragma endregion
 
 #pragma region Type

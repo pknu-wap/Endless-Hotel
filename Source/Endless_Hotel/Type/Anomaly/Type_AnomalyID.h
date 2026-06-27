@@ -32,6 +32,7 @@ enum class EAnomalyID : uint8
 	GhostHand			= 24	UMETA(DisplayName = "GhostHand"),
 	Ghost               = 28	UMETA(DisplayName = "Ghost"),
 	Radio				= 76	UMETA(DisplayName = "Radio"),
+	Doll_Coming			= 79	UMETA(DisplayName = "Doll_Coming"),
 	CrawlChild			= 80	UMETA(DisplayName = "CrawlChild"),
 	Windup				= 82	UMETA(DisplayName = "Windup"),
 	Phone_Ringing		= 83	UMETA(DisplayName = "Phone_Ringing"),

@@ -11,5 +11,6 @@ enum class EDeathReason : uint8
 	Smoke	UMETA(DisplayName = "Smoke"),
 	Attack	UMETA(DisplayName = "Attack"),
 	Music   UMETA(DisplayName = "MusicBox"),
-	Fall	UMETA(DisplayName = "Fall")
+	Fall	UMETA(DisplayName = "Fall"),
+	Doll	UMETA(DisplayName = "Doll")
 };

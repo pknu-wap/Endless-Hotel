@@ -18,6 +18,9 @@ public:
 	class UUI_Base* OpenWidget(const EWidgetType& WidgetType);
 	void CloseWidget();
 
+private:
+	void CloseAllWidgets();
+
 #pragma endregion
 
 #pragma region Cache

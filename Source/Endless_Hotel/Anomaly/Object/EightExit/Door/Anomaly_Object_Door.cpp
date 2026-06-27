@@ -5,6 +5,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
@@ -255,6 +256,12 @@ void AAnomaly_Object_Door::PlayHandleTwistSound()
 
 void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 {
+	if (!USaveManager::LoadData_Tutorial().bReadManual)
+	{
+		Component_Interact->RestoreInteract();
+		return;
+	}
+
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
 	switch (Info.InteractType)
@@ -283,13 +290,13 @@ void AAnomaly_Object_Door::UpdateDoorByFloor()
 	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
-	Component_Interact->bIsInteracted = true;
+	//Component_Interact->bIsInteracted = true;
 
 	if (Sub->Floor == STARTFLOOR)
 	{
 		if (Sub->bIsStartInBed && !EHPC->bRevive)
 		{
-			Component_Interact->bIsInteracted = false;
+			Component_Interact->RestoreInteract();
 		}
 		else
 		{

@@ -23,11 +23,15 @@ protected:
 public:
 	virtual void ShowWidget() override;
 
+	void StartInGameHUD(bool bIsStart);
+
 #pragma endregion
 
 #pragma region Crosshair
 
-protected:
+private:
+	void ShowCrosshair(bool bIsStart);
+
 	UFUNCTION()
 	void ChangeCrosshair(bool bCanInteract);
 
@@ -35,11 +39,6 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Crosshair_Center;
 
-protected:
-	UFUNCTION()
-	void ShowCrosshair(bool bIsShow);
-
-protected:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_ShowCrosshair;
 
@@ -49,6 +48,7 @@ protected:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_Normal;
 
+private:
 	bool bIsCrosshairInteractMode = false;
 
 #pragma endregion
@@ -68,6 +68,8 @@ protected:
 
 public:
 	void AnomalyBlur(bool bIsStart);
+
+private:
 	void EyeEffectBlur(bool bIsStart);
 
 protected:

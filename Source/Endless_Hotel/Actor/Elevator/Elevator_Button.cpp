@@ -47,7 +47,7 @@ void AElevator_Button::BeginPlay()
 
 void AElevator_Button::Reset()
 {
-    Component_Interact->bIsInteracted = false;
+    Component_Interact->RestoreInteract();
 }
 
 #pragma endregion

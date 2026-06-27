@@ -6,9 +6,6 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Doll.generated.h>
 
-class UStaticMeshComponent;
-class AActor;
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Doll : public AAnomaly_Object_Neapolitan
 {
@@ -65,7 +62,7 @@ protected:
 	bool bIsBurning = false;
 
 	TWeakObjectPtr<UStaticMeshComponent> BurnMesh;
-	TWeakObjectPtr<UNiagaraComponent> BurnNiagara;
+	TWeakObjectPtr<class UNiagaraComponent> BurnNiagara;
 
 	UPROPERTY()
 	TObjectPtr<UMaterialInstanceDynamic> BurnMID = nullptr;
@@ -93,4 +90,26 @@ protected:
 	void FinishBurning();
 
 #pragma endregion
+
+#pragma region Coming
+
+public:
+	void SpawnComingDolls();
+
+private:
+	void TryBurnComingDolls();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Coming")
+	TSubclassOf<class AComingDoll> ComingDollClass;
+
+	UPROPERTY(EditAnywhere, Category = "Coming")
+	TArray<FTransform> SpawnTrans;
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class AComingDoll>> ComingDoll;
+
+#pragma endregion
+
 };

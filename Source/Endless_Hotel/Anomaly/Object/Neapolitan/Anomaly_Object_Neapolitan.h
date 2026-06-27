@@ -11,11 +11,4 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Neapolitan : public AAnomaly_Object_Base
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
 };

@@ -3,8 +3,8 @@
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include <Components/WidgetComponent.h>
-#include <Kismet/GameplayStatics.h>
+#include "Component/Float/FloatComponent.h"
+#include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
 
@@ -13,7 +13,7 @@ void AAnomaly_Object_Base::BeginPlay()
 	Super::BeginPlay();
 
     bSolved = true;
-    SaveOriginalTransform();
+    OriginalTransform = GetActorTransform();
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
     Sub->RegisterAnomalyObject(this);
     Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
@@ -34,8 +34,14 @@ void AAnomaly_Object_Base::Reset()
     {
         bSolved = true;
     }
+
     SetActorTransform(OriginalTransform);
-    Component_Interact->bIsInteracted = false;
+
+    Component_Interact->RestoreInteract();
+
+    Object->SetSimulatePhysics(false);
+    Object->SetEnableGravity(false);
+    Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
 }
 
 #pragma endregion
@@ -54,7 +60,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
             {
                 bSolved = !bSolved;
             }
-            Component_Interact->bIsInteracted = false;
+            Component_Interact->RestoreInteract();
         }
         else
         {
@@ -83,50 +89,41 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 
 #pragma endregion
 
-#pragma region Restore
+#pragma region Floating
 
-void AAnomaly_Object_Base::SaveOriginalTransform()
+void AAnomaly_Object_Base::StartFloating()
 {
-    OriginalTransform = GetActorTransform();
+    auto* Comp_Float = FindComponentByClass<UFloatComponent>();
+    if (!IsValid(Comp_Float))
+    {
+        return;
+    }
+
+    constexpr float StartDuration = 2.5f;
+    FTimerHandle StartHandle;
+    GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this, Comp_Float]
+        {
+            Comp_Float->StartFloating();
+        }), StartDuration, false);
 }
+
+#pragma endregion
+
+#pragma region Restore
 
 void AAnomaly_Object_Base::StartRestoring(float Duration)
 {
-    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
+    constexpr float RestoreDuration = 1.0f;
 
-    RestoreDuration = FMath::Max(Duration, 0.01f);
-    RestoreCurrentTime = 0.f;
+    Object->SetSimulatePhysics(false);
+    Object->SetEnableGravity(false);
+    Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
 
-    GetWorld()->GetTimerManager().SetTimer(RestoreHandle, this, &ThisClass::RestoreTick, 0.01f, true);
-}
+    FLatentActionInfo LatentInfo;
+    LatentInfo.UUID = __LINE__;
+    LatentInfo.CallbackTarget = this;
 
-void AAnomaly_Object_Base::RestoreTick()
-{
-    RestoreCurrentTime += GetWorld()->GetDeltaSeconds();
-    float RawAlpha = FMath::Clamp(RestoreCurrentTime / RestoreDuration, 0.f, 1.f);
-    float Alpha = FMath::InterpEaseInOut(0.f, 1.f, RawAlpha, 2.f);
-
-    FTransform CurrentTransform = GetActorTransform();
-    FTransform NewTransform;
-    NewTransform.Blend(CurrentTransform, OriginalTransform, Alpha);
-    SetActorTransform(NewTransform);
-
-    if (RawAlpha >= 1.0f)
-    {
-        FinishRestoring();
-    }
-}
-
-void AAnomaly_Object_Base::FinishRestoring()
-{
-    GetWorld()->GetTimerManager().ClearTimer(RestoreHandle);
-
-    SetActorTransform(OriginalTransform);
-
-    if (UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(GetRootComponent()))
-    {
-        RootPrim->SetSimulatePhysics(false);
-    }
+    UKismetSystemLibrary::MoveComponentTo(Object, OriginalTransform.GetLocation(), OriginalTransform.Rotator(), true, true, RestoreDuration, true, EMoveComponentAction::Move, LatentInfo);
 }
 
 #pragma endregion
