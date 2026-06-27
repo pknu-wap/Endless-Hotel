@@ -66,7 +66,10 @@ void UDataController::GetAnomalyEntries()
 				NormalAnomalyData = Entry;
 				continue;
 			}
-			OriginAnomaly.Add(Entry);
+			if (AnomalyList.Contains(static_cast<uint8>(Entry.ID)))
+			{
+				OriginAnomaly.Add(Entry);
+			}
 		}
 	}
 }

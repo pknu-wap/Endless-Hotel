@@ -23,7 +23,7 @@ TArray<UPDA_Anomaly*> UEHAssetManager::GetAnomalyDataAsset(const TArray<uint8>& 
 
         if (FoundPDA && *FoundPDA)
         {
-            ReturnArray.Add(*FoundPDA);
+            ReturnArray.AddUnique(*FoundPDA);
         }
 	}
 
