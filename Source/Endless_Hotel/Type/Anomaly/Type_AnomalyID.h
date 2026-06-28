@@ -44,7 +44,6 @@ enum class EAnomalyID : uint8
 	MusicBox_Ringing	= 90	UMETA(DisplayName = "MusicBox_Ringing"),
 	Cart_Moving			= 91	UMETA(DisplayName = "Cart_Moving"),
 	Painting_Tilt		= 92	UMETA(DisplayName = "Painting_Tilt"),
-	Maze_Doll			= 93	UMETA(DisplayName = "Maze_Doll"),
 	Painting_Blur		= 95	UMETA(DisplayName = "Painting_Blur"),
 	Painting_Blood		= 96	UMETA(DisplayName = "Painting_Blood"),
 	Maze_Monster		= 97	UMETA(DisplayName = "Maze_Monster"),

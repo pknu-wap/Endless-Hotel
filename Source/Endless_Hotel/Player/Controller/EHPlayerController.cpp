@@ -456,27 +456,12 @@ void AEHPlayerController::OnPushDoorCompleted()
 
 void AEHPlayerController::CheckForInteractables()
 {
-	UCameraComponent* Camera = GetPlayerCamera();
-	if (!Camera) return;
-
-	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + Camera->GetForwardVector() * TraceDistance;
-
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(EHPlayer.Get());
-
-	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
-
-	auto* HitActor = HitResult.GetActor();
+	auto* HitActor = GetLookedAtActor(TraceDistance);
 	UInteractComponent* HitComp = nullptr;
 	if (HitActor)
 	{
 		HitComp = HitActor->FindComponentByClass<UInteractComponent>();
 	}
-
-	AAnomaly_Object_Painting* AnomalyPainting = Cast<AAnomaly_Object_Painting>(HitActor);
-	bIsWatchingPainting = IsValid(AnomalyPainting) && AnomalyPainting->bIsAnomaly;
 
 	if (CachedInteractComp.Get())
 	{
@@ -519,6 +504,41 @@ void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
 	bool bIsUp = WheelValue >= 0 ? true : false;
 
 	CachedInteractComp->ChangeIndex(bIsUp);
+}
+
+#pragma endregion
+
+#pragma region Watching
+
+bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor, float Distance)
+{
+	if (!TargetActor)
+	{
+		return false;
+	}
+	return GetLookedAtActor(Distance) == TargetActor;
+}
+
+bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor)
+{
+	return IsLookingAtActor(TargetActor, TraceDistance);
+}
+
+AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
+{
+	UCameraComponent* Camera = GetPlayerCamera();
+	if (!Camera) return nullptr;
+
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + Camera->GetForwardVector() * Distance;
+
+	FHitResult HitResult;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(EHPlayer.Get());
+
+	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
+
+	return HitResult.GetActor();
 }
 
 #pragma endregion

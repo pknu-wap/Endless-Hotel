@@ -33,6 +33,7 @@ void AAnomaly_Object_Ceiling::Reset()
 	Timeline->SetNewTime(0.f);
 	Niagara_Ceiling_Blood->Deactivate();
 	Niagara_Ceiling_Blood->SetVisibility(false);
+	GetWorld()->GetTimerManager().ClearTimer(BloodHandle);
 }
 
 #pragma endregion
@@ -57,9 +58,30 @@ void AAnomaly_Object_Ceiling::PlayCeilingRotate()
 
 void AAnomaly_Object_Ceiling::CeilingBloodDripping()
 {
-	Niagara_Ceiling_Blood->SetRelativeLocation(BloodLocation);
 	Niagara_Ceiling_Blood->SetVisibility(true);
 	Niagara_Ceiling_Blood->Activate(true);
+
+	GetWorld()->GetTimerManager().SetTimer(BloodHandle, FTimerDelegate::CreateWeakLambda(this, [this]
+		{
+			FVector Size1 = BloodLocationMax1 - BloodLocationMin1;
+			FVector Size2 = BloodLocationMax2 - BloodLocationMin2;
+			float Volume1 = Size1.X * Size1.Y * 1;
+			float Volume2 = Size2.X * Size2.Y * 1;
+			float TotalVolume = Volume1 + Volume2;
+			FVector RandomLocation = FMath::FRandRange(0.f, TotalVolume) < Volume1 ?
+				FVector(
+					FMath::FRandRange(BloodLocationMin1.X, BloodLocationMax1.X),
+					FMath::FRandRange(BloodLocationMin1.Y, BloodLocationMax1.Y),
+					FMath::FRandRange(BloodLocationMin1.Z, BloodLocationMax1.Z)
+				) :
+				FVector(
+					FMath::FRandRange(BloodLocationMin2.X, BloodLocationMax2.X),
+					FMath::FRandRange(BloodLocationMin2.Y, BloodLocationMax2.Y),
+					FMath::FRandRange(BloodLocationMin2.Z, BloodLocationMax2.Z)
+				);
+			Niagara_Ceiling_Blood->SetRelativeLocation(RandomLocation);
+		}
+	), BloodInterval, true);
 }
 
 #pragma endregion

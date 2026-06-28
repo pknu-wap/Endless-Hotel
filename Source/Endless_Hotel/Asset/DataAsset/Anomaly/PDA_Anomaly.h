@@ -4,6 +4,7 @@
 
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Level/Type_Level.h"
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <Engine/DataAsset.h>
 #include <PDA_Anomaly.generated.h>
@@ -17,22 +18,6 @@ public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("Anomaly", GetFName()); }
 
 public:
-	UPROPERTY(EditAnywhere, Category = "InGame|Data")
-	EAnomalyID ID = EAnomalyID::None;
-
-	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-	TSoftClassPtr<class AAnomaly_Event> Event;
-
-	UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-	TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
-
-	UPROPERTY(EditAnywhere, Category = "InGame|Data")
-	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
-
-public:
-	UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (AssetBundles = "UI"))
-	TSoftObjectPtr<class UTexture2D> Image_Description;
-
-	UPROPERTY(EditAnywhere, Category = "UI|Description")
-	FText Text_Description;
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	TArray<FAnomalyEntry> Entries;
 };

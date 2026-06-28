@@ -100,8 +100,8 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 	FAnomalySpawnInfo Info;
 	Info.bIsNormal = false;
 	Info.Index = Index;
-	Info.AnomalyID = DataC->ActAnomaly[Index]->ID;
-	Info.DataLayer = DataC->ActAnomaly[Index]->DataLayer;
+	Info.AnomalyID = DataC->ActAnomaly[Index].ID;
+	Info.DataLayer = DataC->ActAnomaly[Index].DataLayer;
 	return Info;
 }
 
@@ -132,7 +132,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 	else
 	{
 		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index]->Event;
+		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index].Event;
 		AnomalyClass = SoftClass.LoadSynchronous();
 
 		if (!IsValid(AnomalyClass))

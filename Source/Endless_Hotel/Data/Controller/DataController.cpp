@@ -59,12 +59,18 @@ void UDataController::GetAnomalyEntries()
 		{
 			continue;
 		}
-		if (PDA->ID == EAnomalyID::Normal)
+		for (const auto& Entry : PDA->Entries)
 		{
-			NormalAnomalyData = PDA;
-			continue;
+			if (Entry.ID == EAnomalyID::Normal)
+			{
+				NormalAnomalyData = Entry;
+				continue;
+			}
+			if (AnomalyList.Contains(static_cast<uint8>(Entry.ID)))
+			{
+				OriginAnomaly.Add(Entry);
+			}
 		}
-		OriginAnomaly.Add(PDA);
 	}
 }
 
@@ -85,16 +91,13 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomal
 
 	if (AnomalyID == EAnomalyID::Normal)
 	{
-		if (NormalAnomalyData)
-		{
-			LoadObjects(NormalAnomalyData->Objects);
-		}
+		LoadObjects(NormalAnomalyData.Objects);
 		return ResultArray;
 	}
 
-	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E->ID == AnomalyID; }))
+	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E.ID == AnomalyID; }))
 	{
-		LoadObjects((*Entry)->Objects);
+		LoadObjects(Entry->Objects);
 	}
 
 	return ResultArray;
@@ -104,7 +107,7 @@ void UDataController::RemoveClearedAnomaly()
 {
 	ActAnomaly.RemoveAll([this](const auto& Entry)
 		{
-			return ClearedAnomalySet.Contains(Entry->ID);
+			return ClearedAnomalySet.Contains(Entry.ID);
 		});
 }
 
@@ -119,7 +122,7 @@ void UDataController::RemoveNoRuleAnomaly()
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	ActAnomaly.RemoveAll([GameSystem](const auto& Entry)
 		{
-			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry->Event.Get());
+			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry.Event.Get());
 			return !GameSystem->AnomalyRules.Contains(DefaultObj->AnomalyRule);
 		});
 }

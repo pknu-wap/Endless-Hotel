@@ -50,6 +50,9 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);
 
+	FVector DirectionToPlayer = Player->GetActorLocation() - MazeMonster->GetActorLocation();
+	FRotator LookAtRotation = DirectionToPlayer.Rotation();
+	MazeMonster->SetActorRotation(LookAtRotation);
 	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
 	MazeMonster->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
 	MazeMonster->PlayAttackSound();

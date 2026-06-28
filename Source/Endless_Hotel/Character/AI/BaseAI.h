@@ -15,9 +15,7 @@ class ENDLESS_HOTEL_API ABaseAI : public AEHCharacter
 
 public:
 	ABaseAI(const FObjectInitializer& ObjectInitializer);
-
 	virtual void ActivateMob();
-
 	virtual void DeActivateMob();
 
 #pragma endregion
