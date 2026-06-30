@@ -27,9 +27,19 @@ private:
     void StopFloating();
     void DropObject();
 
+    UFUNCTION()
+    void OnObjectDropped(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<class USoundWave> SW_Drop;
+
 private:
     UPROPERTY()
     TWeakObjectPtr<UPrimitiveComponent> TargetMesh;
+
+    UPROPERTY()
+    TWeakObjectPtr<class UAudioComponent> Comp_Audio;
 
 #pragma endregion
 
