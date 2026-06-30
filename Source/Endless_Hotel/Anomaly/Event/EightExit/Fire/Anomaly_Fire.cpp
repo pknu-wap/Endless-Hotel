@@ -115,7 +115,7 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 
 void AAnomaly_Fire::SpawnSmokes()
 {
-	constexpr float FireSpawnDuration = 1.0f;
+	constexpr float FireSpawnDuration = 5.0f;
 	GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			auto* NS = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_Smoke, SmokeTransform[SmokeSpawnIndex].GetLocation(), SmokeTransform[SmokeSpawnIndex].Rotator());
