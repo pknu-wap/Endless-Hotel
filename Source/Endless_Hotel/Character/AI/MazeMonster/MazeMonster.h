@@ -22,7 +22,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Patrol")
-	TArray<TObjectPtr<AActor>> PatrolPoints;
+	TArray<FTransform> PatrolPoints;
 
 	UPROPERTY(EditAnywhere, Category = "Patrol")
 	uint8 CurrentIndex;

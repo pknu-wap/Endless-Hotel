@@ -16,6 +16,11 @@ class ENDLESS_HOTEL_API AAnomaly_Maze : public AAnomaly_Event_Neapolitan
 public:
 	virtual void SetAnomalyState() override;
 	virtual void InteractSolveVerdict() override;
+	virtual void DisableAnomaly() override;
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "AI|Wall")
+	TWeakObjectPtr<class AAnomaly_Object_Maze> TargetWall;
 
 #pragma endregion
 
