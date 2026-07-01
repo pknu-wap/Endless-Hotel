@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Character/Character/EHCharacter.h"
+#include "Character/EHCharacter.h"
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
 #include <Interactable.generated.h>

@@ -2,21 +2,12 @@
 
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Candle.h"
 
-#pragma region Base
-
-AAnomaly_Object_Candle::AAnomaly_Object_Candle(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	Object->SetSimulatePhysics(false);
-}
-
-#pragma endregion
-
 #pragma region Reset
 
 void AAnomaly_Object_Candle::Reset()
 {
 	Object->SetSimulatePhysics(false);
+	Object->SetEnableGravity(false);
 
 	Super::Reset();
 }
@@ -28,6 +19,7 @@ void AAnomaly_Object_Candle::Reset()
 void AAnomaly_Object_Candle::FallCandle()
 {
 	Object->SetSimulatePhysics(true);
+	Object->SetEnableGravity(true);
 	Object->AddImpulse(ImpulseDirection.GetSafeNormal() * ImpulseStrength);
 }
 

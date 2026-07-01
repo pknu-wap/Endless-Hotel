@@ -70,7 +70,13 @@ void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
 {
-	Reset();
+	SM_Receiver->SetRelativeTransform(OriginalTrans);
+
+	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+	GetWorld()->GetTimerManager().ClearTimer(ShakeHandle);
+
+	Timeline_Move->Stop();
+	Timeline_Ringing->Stop();
 
 	AC->Stop();
 
@@ -82,13 +88,13 @@ void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
 	case EInteractType::Call:
 		AC->SetSound(SW_Voice);
 		AC->Play();
+
+		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+		UICon->ShowSubTitle(CallText, 0.1f, 2.f);
 		break;
 	}
 
 	bIsInteracted = true;
-
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->ShowSubTitle(CallText, 0.1f, 2.f);
 }
 
 #pragma endregion

@@ -23,19 +23,16 @@ protected:
 
 public:
 	virtual void SetAnomalyState() override;
-
-protected:
 	virtual void DisableAnomaly() override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Activity")
-	float FireDuration;
+	virtual void StartAnomalyAction() override;
 
 #pragma endregion
 
 #pragma region Fire
 
-protected:
+private:
 	void SpawnFires();
 
 protected:
@@ -46,31 +43,56 @@ protected:
 	TArray<FVector> FireSpawnPositions;
 
 	UPROPERTY(EditAnywhere, Category = "Fire")
-	TArray<TObjectPtr<class UNiagaraSystem>> NS_Fires;
+	TObjectPtr<class UNiagaraSystem> NS_Fire;
 
+private:
 	UPROPERTY()
 	TArray<TObjectPtr<class AAnomaly_Object_Fire>> SpawnedFires;
 
 	FTimerHandle FireHandle;
 
-	UPROPERTY(EditAnywhere, Category = "Fire")
-	float FireSpawnDuration;
-
-	uint8 CurrentSpawnIndex = 0;
+	uint8 FireSpawnIndex = 0;
 
 #pragma endregion
 
 #pragma region Smoke
 
-protected:
+private:
 	UFUNCTION()
 	void SmokeTimer(bool bIsCrouch);
 
-protected:
-	FTimerHandle SmokeHandle;
+	void SpawnSmokes();
 
-	UPROPERTY(EditAnywhere)
-	float JilsikDuration = 10.f;
+protected:
+	UPROPERTY(EditAnywhere, Category = "Smoke")
+	TObjectPtr<class UNiagaraSystem> NS_Smoke;
+
+	UPROPERTY(EditAnywhere, Category = "Smoke")
+	TArray<FTransform> SmokeTransform;
+
+private:
+	FTimerHandle SmokeHandle;
+	FTimerHandle JilsikHandle;
+
+	uint8 SmokeSpawnIndex = 0;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UNiagaraComponent>> SpawnedSmokes;
+
+#pragma endregion
+
+#pragma region Sound
+
+private:
+	void PlayCoughSound();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_Cough;
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
 
 #pragma endregion
 

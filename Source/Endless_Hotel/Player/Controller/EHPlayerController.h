@@ -288,10 +288,14 @@ protected:
 
 #pragma endregion
 
-#pragma region PaintingAnomaly
-	
+#pragma region Watching
+
 public:
-	bool bIsWatchingPainting = false;
+	bool IsLookingAtActor(AActor* TargetActor, float Distance);
+	bool IsLookingAtActor(AActor* TargetActor);
+
+private:
+	AActor* GetLookedAtActor(float Distance) const;
 
 #pragma endregion
 

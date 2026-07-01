@@ -9,6 +9,8 @@
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include <Kismet/GameplayStatics.h>
+#include <GameFramework/CharacterMovementComponent.h>
+#include <Components/CapsuleComponent.h>
 
 #pragma region MazeMonster
 
@@ -67,6 +69,10 @@ void AAnomaly_Object_Maze::StartAI()
 	}
 	MazeMonster->ActivateMob();
 	MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
+	MazeMonster->GetCharacterMovement()->GravityScale = 1.f;
+	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	MazeMonster->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MazeMonster->bIsAttacked = false;
 }
 

@@ -28,4 +28,11 @@ protected:
 
 #pragma endregion 
 
+#pragma region Interact
+
+public:
+	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+
+#pragma endregion
+
 };

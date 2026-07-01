@@ -37,9 +37,7 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
     int32 RandomIndex = FMath::RandRange(0, RoomSigns.Num() - 1);
     ARoomSignActor* TargetSign = RoomSigns[RandomIndex];
 
-    if (!TargetSign) return;
-
-    OriginalTransform = TargetSign->OriginalTransform;
+    OriginalTransform = TargetSign->GetTransform();
 
     if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
     {
@@ -56,6 +54,24 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
         }), 1.0f, false);
 
     RoomSigns.RemoveAt(RandomIndex);
+}
+
+#pragma endregion
+
+#pragma region Interact
+
+void AAnomaly_Object_SignDrop::Interact_Implementation(AEHCharacter* Interacter)
+{
+    Super::Interact_Implementation(Interacter);
+
+    auto Info = Component_Interact->GetSelectedInteractInfo();
+
+    switch (Info.InteractType)
+    {
+    case EInteractType::Restore:
+        StartRestoring();
+        break;
+    }
 }
 
 #pragma endregion

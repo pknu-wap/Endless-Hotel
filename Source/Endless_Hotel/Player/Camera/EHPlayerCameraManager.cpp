@@ -56,11 +56,13 @@ void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 			StartEyeEffect(true);
 			bIsFirstHotel = false;
 		}
+		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
 		break;
 	}
 	case EMapDataLayer::Lobby:
 	{
 		PossessCamera(ECameraType::Title);
+		bIsFirstHotel = true;
 		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 		break;
 	}
@@ -95,31 +97,31 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 			auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
 
-			if (IsValid(UI_InGame))
+			if (IsValid(UI_InGame) && UI_InGame->IsActivatedWidget())
 			{
 				if (bIsOpen)
 				{
-					UI_InGame->EyeEffectBlur(true);
+					UI_InGame->StartInGameHUD(true);
 					TimeLine_Eye->PlayFromStart();
 				}
 				else
 				{
-					UI_InGame->EyeEffectBlur(false);
+					UI_InGame->StartInGameHUD(false);
 					TimeLine_Eye->ReverseFromEnd();
 				}
+
+				auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+				SoundCon->FadeSFXSound(bIsOpen);
+
+				FTimerHandle StopHandle;
+				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+					{
+						TimeLine_Eye->Stop();
+					}), 6.0f, false);
 
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
-
-	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-	SoundCon->FadeSFXSound(bIsOpen);
-
-	FTimerHandle StopHandle;
-	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			TimeLine_Eye->Stop();
-		}), 5.1f, false);
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()

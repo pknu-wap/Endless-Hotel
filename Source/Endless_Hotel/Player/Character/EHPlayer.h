@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Character/Character/EHCharacter.h"
+#include "Character/EHCharacter.h"
 #include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
 #include <Delegates/DelegateCombinations.h>

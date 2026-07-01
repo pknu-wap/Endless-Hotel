@@ -11,13 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Candle : public AAnomaly_Object_EightExi
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-public:
-	AAnomaly_Object_Candle(const FObjectInitializer& ObjectInitializer);
-
-#pragma endregion
-
 #pragma region Reset
 
 public:
@@ -32,10 +25,10 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Fall")
-	FVector ImpulseDirection;
+	FVector ImpulseDirection = FVector::ZeroVector;
 
 	UPROPERTY(EditAnywhere, Category = "Fall")
-	float ImpulseStrength;
+	float ImpulseStrength = 0.f;
 
 #pragma endregion
 

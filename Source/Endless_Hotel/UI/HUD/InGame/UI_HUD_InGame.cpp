@@ -35,6 +35,12 @@ void UUI_HUD_InGame::ShowWidget()
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
 }
 
+void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
+{
+	ShowCrosshair(bIsStart);
+	EyeEffectBlur(bIsStart);
+}
+
 #pragma endregion
 
 #pragma region Crosshair
@@ -59,9 +65,9 @@ void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 	}
 }
 
-void UUI_HUD_InGame::ShowCrosshair(bool bIsShow)
+void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
 {
-	if (bIsShow)
+	if (bIsStart)
 	{
 		PlayAnimation(WidgetAnim_ShowCrosshair);
 	}

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/UI_Base.h"
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <UI_NoteBook.generated.h>
 
@@ -18,7 +19,7 @@ public:
 
 private:
 	void HideDescription();
-	void SetDescription(TArray<class UPDA_Anomaly*>& Datas, class UImage* Image, class UTextBlock* Text, uint8 Index);
+	void SetDescription(TArray<FAnomalyEntry>& Datas, class UImage* Image, class UTextBlock* Text, uint8 Index);
 
 protected:
 	UPROPERTY(meta = (BindWidget))

@@ -37,6 +37,9 @@ public:
 
 #pragma region Click
 
+public:
+	void ClickCategoryButton();
+
 protected:
 	UFUNCTION()
 	void Click_Button();

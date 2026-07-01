@@ -274,6 +274,8 @@ void AElevator::StartElevator()
         auto* PC = Player->GetController();
         UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
         
+        Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        Car->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
         FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
         SavedRotation -= Sub->GetElevatorOffset() - this->GetActorRotation();
@@ -289,8 +291,17 @@ void AElevator::StartElevator()
         }
 
         Player->SetBase(nullptr);
+        Player->SetActorEnableCollision(true);
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
+
+        FTimerHandle RestoreHandle;
+        GetWorld()->GetTimerManager().SetTimer(RestoreHandle, FTimerDelegate::CreateWeakLambda(this, [this]
+            {
+                Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+                Car->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+            }), 0.05f, false);
+
         CMC->SetMovementMode(MOVE_Falling);
         FTimerHandle ReEnableHandle;
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

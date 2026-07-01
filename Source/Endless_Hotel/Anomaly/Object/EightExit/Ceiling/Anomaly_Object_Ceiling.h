@@ -21,16 +21,11 @@ protected:
 	virtual void Reset() override;
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> Mesh_Ceiling;
-
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline;
 
 	UPROPERTY(EditAnywhere, Category = "Time")
 	TObjectPtr<UCurveFloat> Curve_CeilingRotate;
-
-	FRotator InitialRotation;
 
 #pragma endregion
 
@@ -52,8 +47,25 @@ public:
 	void CeilingBloodDripping();
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Blood")
 	TObjectPtr<class UNiagaraComponent> Niagara_Ceiling_Blood;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMin1;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMax1;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMin2;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	FVector BloodLocationMax2;
+
+	UPROPERTY(EditAnywhere, Category = "Blood")
+	float BloodInterval = 1;
+
+	FTimerHandle BloodHandle;
 
 #pragma endregion
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <DataController.generated.h>
@@ -29,14 +30,14 @@ public:
 	void RemoveNoRuleAnomaly();
 	uint8 GetRemainingAnomalyCounts();
 	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(EAnomalyID AnomalyID);
-	const TArray<TSoftObjectPtr<class UPDA_Anomaly>>& GetOriginAnomaly() { return OriginAnomaly; }
+	const TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
 
 public:
 	UPROPERTY()
 	TSet<EAnomalyID> ClearedAnomalySet;
 
 	UPROPERTY()
-	TArray<TSoftObjectPtr<class UPDA_Anomaly>> ActAnomaly;
+	TArray<FAnomalyEntry> ActAnomaly;
 
 	const uint8 MaxIndex = 255;
 
@@ -44,11 +45,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
 
-	TSoftObjectPtr<class UPDA_Anomaly> NormalAnomalyData;
+	FAnomalyEntry NormalAnomalyData;
 
 private:
 	UPROPERTY()
-	TArray<TSoftObjectPtr<class UPDA_Anomaly>> OriginAnomaly;
+	TArray<FAnomalyEntry> OriginAnomaly;
 
 #pragma endregion
 

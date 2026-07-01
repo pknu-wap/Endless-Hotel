@@ -14,7 +14,8 @@ const FName AMazeMonsterController::Key_PatrolPos = TEXT("PatrolPos");
 
 #pragma endregion
 
-AMazeMonsterController::AMazeMonsterController()
+AMazeMonsterController::AMazeMonsterController(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	SightConfig->SightRadius = 800.f;
 	SightConfig->LoseSightRadius = 900.f;

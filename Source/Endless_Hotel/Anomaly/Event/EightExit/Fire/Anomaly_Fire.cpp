@@ -5,6 +5,9 @@
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
+#include <NiagaraFunctionLibrary.h>
+#include <NiagaraComponent.h>
+#include <Components/AudioComponent.h>
 
 #pragma region Activity
 
@@ -15,43 +18,50 @@ void AAnomaly_Fire::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Fire:
-		AnomalyActions.Add([this](AAnomaly_Object_Base* Candle)
-			{
-				Cast<AAnomaly_Object_Candle>(Candle)->FallCandle();
-
-				GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-					{
-						SpawnFires();
-					}), FireDuration, false);
-
-				GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-					{
-						SmokeTimer(false);
-					}), FireDuration, false);
-			});
+		SetupAnomalyAction(&AAnomaly_Object_Candle::FallCandle);
 		ActiveTrigger();
 		break;
 	}
+}
+
+void AAnomaly_Fire::StartAnomalyAction()
+{
+	Super::StartAnomalyAction();
+
+	FTimerHandle SpawnHandle;
+	GetWorld()->GetTimerManager().SetTimer(SpawnHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			SpawnFires();
+			SpawnSmokes();
+			SmokeTimer(false);
+		}), 0.5f, false);
 }
 
 void AAnomaly_Fire::DisableAnomaly()
 {
 	Super::DisableAnomaly();
 
-	if (IsValid(EHPlayer.Get()))
+	if (EHPlayer.IsValid())
 	{
 		EHPlayer->CrouchDelegate.RemoveDynamic(this, &ThisClass::SmokeTimer);
 	}
 
 	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
 	GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
+	GetWorld()->GetTimerManager().ClearTimer(JilsikHandle);
 
 	for (auto Target : SpawnedFires)
 	{
 		Target->Destroy();
 	}
 
+	for (auto Target : SpawnedSmokes)
+	{
+		Target->DestroyComponent();
+	}
+
 	SpawnedFires.Empty();
+	SpawnedSmokes.Empty();
 }
 
 #pragma endregion
@@ -61,19 +71,17 @@ void AAnomaly_Fire::DisableAnomaly()
 void AAnomaly_Fire::SpawnFires()
 {
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->CrouchDelegate.RemoveAll(this);
 	EHPlayer->CrouchDelegate.AddUniqueDynamic(this, &ThisClass::SmokeTimer);
 
+	constexpr float FireSpawnDuration = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			int32 RandomIndex = FMath::RandRange(0, NS_Fires.Num() - 1);
-
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[CurrentSpawnIndex++], FRotator::ZeroRotator);
-			SpawnedFire->StartFire(NS_Fires[RandomIndex]);
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator);
+			SpawnedFire->StartFire(NS_Fire);
 
 			SpawnedFires.Add(SpawnedFire);
 
-			if (!FireSpawnPositions.IsValidIndex(CurrentSpawnIndex))
+			if (!FireSpawnPositions.IsValidIndex(FireSpawnIndex))
 			{
 				GetWorld()->GetTimerManager().ClearTimer(FireHandle);
 			}
@@ -86,24 +94,57 @@ void AAnomaly_Fire::SpawnFires()
 
 void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 {
-	UWorld* World = GetWorld();
-	if (!IsValid(World))
-	{
-		return;
-	}
-
-	FTimerManager& TimerManager = World->GetTimerManager();
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
 
 	if (bIsCrouch)
 	{
-		TimerManager.ClearTimer(SmokeHandle);
+		TimerManager.ClearTimer(JilsikHandle);
 		return;
 	}
 
-	TimerManager.SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	FTimerHandle CoughHandle;
+	TimerManager.SetTimer(CoughHandle, this, &ThisClass::PlayCoughSound, 2.f, false);
+
+	constexpr float JilsikDuration = 10.f;
+	TimerManager.SetTimer(JilsikHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
+			PlayCoughSound();
 			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
 		}), JilsikDuration, false);
+}
+
+void AAnomaly_Fire::SpawnSmokes()
+{
+	constexpr float FireSpawnDuration = 1.0f;
+	GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			auto* NS = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_Smoke, SmokeTransform[SmokeSpawnIndex].GetLocation(), SmokeTransform[SmokeSpawnIndex].Rotator());
+			SpawnedSmokes.Add(NS);
+
+			++SmokeSpawnIndex;
+
+			if (!SmokeTransform.IsValidIndex(SmokeSpawnIndex))
+			{
+				GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
+			}
+		}), FireSpawnDuration, true);
+}
+
+#pragma endregion
+
+#pragma region Sound
+
+void AAnomaly_Fire::PlayCoughSound()
+{
+	if (!IsValid(AC))
+	{
+		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_Cough);
+	}
+
+	if (!AC->IsPlaying())
+	{
+		AC->Play();
+	}
 }
 
 #pragma endregion

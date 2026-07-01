@@ -85,12 +85,11 @@ void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetData
 	auto* UICon = GetSubsystem<UUI_Controller>();
 	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading));
 
-	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UICon, UI_Loading]()
+	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UI_Loading]()
 		{
 			if (UI_Loading->IsLoadingCompleted())
 			{
 				SwitchDataLayer(TargetDataLayer, bNotifyDelegate);
-				UICon->CloseWidget();
 				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
 			}
 		}), 0.1f, true);
@@ -117,22 +116,6 @@ UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EMapDataLayer& Target)
 	}
 
 	return nullptr;
-}
-
-#pragma endregion
-
-#pragma region Demo Timer
-
-void UEHGameInstance::StartDemoTimer()
-{
-	FTimerHandle DemoHandle;
-	GetWorld()->GetTimerManager().SetTimer(DemoHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			auto* UICon = GetSubsystem<UUI_Controller>();
-			UICon->OpenWidget(EWidgetType::PopUp_Demo);
-
-			USaveManager::DeleteData_Tutorial();
-		}), GameplayTime, false);
 }
 
 #pragma endregion

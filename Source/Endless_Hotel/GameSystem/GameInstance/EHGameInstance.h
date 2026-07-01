@@ -60,15 +60,4 @@ private:
 
 #pragma endregion
 
-#pragma region Demo Timer
-
-public:
-	void StartDemoTimer();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "DemoTimer")
-	float GameplayTime = 0.f;
-
-#pragma endregion
-
 };

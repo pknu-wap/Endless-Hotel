@@ -34,6 +34,14 @@ public:
 public:
 	bool bIsAttacked = false;
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound|Attack")
+	TObjectPtr<class UAudioComponent> AttackAC;
+
+public:
+	void PlayAttackSound();
+	void StopAttackSound();
+
 #pragma endregion
 
 };

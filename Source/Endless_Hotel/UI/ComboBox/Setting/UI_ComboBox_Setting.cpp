@@ -103,6 +103,12 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 		break;
 
 	default:
+		Data.AntiAliasing = Value;
+		Data.Shadow = Value;
+		Data.Texture = Value;
+		Data.PostProcessing = Value;
+		Data.Shading = Value;
+
 		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
 
