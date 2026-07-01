@@ -26,9 +26,6 @@ public:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image_Key_E;
-
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Description;
 
 #pragma endregion
