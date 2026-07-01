@@ -30,4 +30,18 @@ protected:
 
 #pragma endregion
 
+#pragma region Animation
+
+public:
+	void PlayChangeAnimation(bool bUp);
+
+protected:
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Left;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Right;
+
+#pragma endregion
+
 };

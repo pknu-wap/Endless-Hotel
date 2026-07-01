@@ -35,3 +35,13 @@ void UUI_Interact::ShowDescription(bool bIsShow)
 }
 
 #pragma endregion
+
+#pragma region Animation
+
+void UUI_Interact::PlayChangeAnimation(bool bUp)
+{
+	UWidgetAnimation* Anim = bUp ? Anim_Left : Anim_Right;
+	PlayAnimation(Anim);
+}
+
+#pragma endregion
