@@ -18,7 +18,7 @@ ABaseAIController::ABaseAIController(const FObjectInitializer& ObjectInitializer
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 }
 
-void ABaseAIController::ActiveAI()
+void ABaseAIController::ResumeAI()
 {
 	if (BrainComponent)
 	{
@@ -26,11 +26,12 @@ void ABaseAIController::ActiveAI()
 	}
 }
 
-void ABaseAIController::DeActiveAI()
+void ABaseAIController::StopAI(const FString& Reason)
 {
 	if (BrainComponent)
 	{
-		BrainComponent->StartLogic();
+		BrainComponent->StopLogic(Reason);
+		StopMovement();
 	}
 }
 
@@ -44,11 +45,5 @@ void ABaseAIController::OnPossess(APawn* InPawn)
 	if (UseBlackboard(BBAsset, RawBB))
 	{
 		RunBehaviorTree(BTAsset);
-
-		if (BrainComponent)
-		{
-			// 무슨 의도?
-			//BrainComponent->StopLogic(TEXT("Wait for Activation"));
-		}
 	}
 }

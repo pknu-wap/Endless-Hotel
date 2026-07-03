@@ -22,9 +22,8 @@ class ENDLESS_HOTEL_API ABaseAIController : public AAIController
 
 public:
 	ABaseAIController(const FObjectInitializer& ObjectInitializer);
-
-	virtual void ActiveAI();
-	virtual void DeActiveAI();
+	void ResumeAI();
+	void StopAI(const FString& Reason);
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

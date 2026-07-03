@@ -61,7 +61,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController, MazeMonster, &OwnerComp]()
 		{
 			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
-			BaseAIController->DeActiveAI();
+			BaseAIController->StopAI(TEXT("Attack"));
 			Player->DieDelegate.Broadcast(EDeathReason::Attack);
 			MazeMonster->StopAttackSound();
 			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);

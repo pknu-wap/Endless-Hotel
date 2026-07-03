@@ -10,21 +10,3 @@ ABaseAI::ABaseAI(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
-
-void ABaseAI::ActivateMob()
-{
-    ABaseAIController* AIC = Cast<ABaseAIController>(GetController());
-    if (AIC)
-    {
-        AIC->ActiveAI();
-    }
-}
-
-void ABaseAI::DeActivateMob()
-{
-    ABaseAIController* AIC = Cast<ABaseAIController>(GetController());
-    if (AIC)
-    {
-        AIC->DeActiveAI();
-    }
-}
