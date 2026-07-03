@@ -49,6 +49,8 @@ void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 
 void UInteractComponent::ChangeIndex(bool bUp)
 {
+	UI_Interact->PlayChangeAnimation(bUp);
+
 	if (bUp)
 	{
 		CurrentIndex++;
