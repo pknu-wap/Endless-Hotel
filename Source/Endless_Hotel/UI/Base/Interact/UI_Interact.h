@@ -26,10 +26,21 @@ public:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image_Key_E;
-
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Description;
+
+#pragma endregion
+
+#pragma region Animation
+
+public:
+	void PlayChangeAnimation(bool bUp);
+
+protected:
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Left;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Anim_Right;
 
 #pragma endregion
 
