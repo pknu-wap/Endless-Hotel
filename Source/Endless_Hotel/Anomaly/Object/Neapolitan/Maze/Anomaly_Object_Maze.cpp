@@ -26,12 +26,6 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	{
 		PC->SetHeartbeatSound(MazeMonster.Get());
 	}
-
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [PC, &DelayHandle, this]()
-		{
-			PC->SetPlayerInputAble(true);
-			GetWorld()->GetTimerManager().ClearTimer(DelayHandle);
-		}), 1.5f, false);
 }
 
 void AAnomaly_Object_Maze::SetDeactiveWall()
@@ -51,29 +45,35 @@ void AAnomaly_Object_Maze::Reset()
 
 #pragma region AI
 
-void AAnomaly_Object_Maze::ResetAI()
+void AAnomaly_Object_Maze::DisableAI()
 {
 	if (AController* MonsterController = MazeMonster->GetController())
 	{
-		MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
 		MonsterController->UnPossess();
 		MonsterController->Destroy();
+	}
+	if (IsValid(MazeMonster.Get()))
+	{
+		MazeMonster->Destroy();
+		MazeMonster = nullptr;
 	}
 }
 
 void AAnomaly_Object_Maze::StartAI()
 {
-	if (!MazeMonster->GetController())
+	if (!IsValid(MazeMonster.Get()))
 	{
-		MazeMonster->SpawnDefaultController();
+		MazeMonster = GetWorld()->SpawnActor<AMazeMonster>(MazeMonsterClass, MazeMonsterTransform);
 	}
-	MazeMonster->ActivateMob();
-	MazeMonster->SetActorLocation(FVector(-4773, -706, -2768));
 	MazeMonster->GetCharacterMovement()->GravityScale = 1.f;
 	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MazeMonster->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	MazeMonster->bIsAttacked = false;
+	if (!MazeMonster->GetController())
+	{
+		MazeMonster->SpawnDefaultController();
+	}
 }
 
 #pragma endregion

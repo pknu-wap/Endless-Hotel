@@ -33,20 +33,18 @@ void UBTTask_PickInorderPatrol::InitializeFromAsset(UBehaviorTree& Asset)
 EBTNodeResult::Type UBTTask_PickInorderPatrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AI = OwnerComp.GetAIOwner();
-	if (!AI) return EBTNodeResult::Failed;
-
 	AMazeMonster* Monster = Cast<AMazeMonster>(AI->GetPawn());
-	if (!Monster) return EBTNodeResult::Failed;
 
-	const TArray<TObjectPtr<AActor>>& Points = Monster->PatrolPoints;
-	if (Points.Num() == 0) return EBTNodeResult::Failed;
-
-	AActor* Point = Points[Monster->CurrentIndex];
-	if (!Point) return EBTNodeResult::Failed;
+	const TArray<FTransform>& Points = Monster->PatrolPoints;
+	if (Points.Num() == 0)
+	{
+		return EBTNodeResult::Failed;
+	}
+	FTransform Point = Points[Monster->CurrentIndex];
 	Monster->CurrentIndex < (Points.Num() - 1) ? Monster->CurrentIndex++ : Monster->CurrentIndex = 0;
 
 	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
-	BB->SetValueAsVector(AMazeMonsterController::Key_PatrolPos, Point->GetActorLocation());
+	BB->SetValueAsVector(AMazeMonsterController::Key_PatrolPos, Point.GetLocation());
 
 	return EBTNodeResult::Succeeded;
 }

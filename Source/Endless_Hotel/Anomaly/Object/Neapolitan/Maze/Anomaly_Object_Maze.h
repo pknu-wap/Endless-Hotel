@@ -51,8 +51,7 @@ public:
 #pragma region AI
 
 public:
-	UFUNCTION()
-	void ResetAI();
+	void DisableAI();
 
 private:
 	void StartAI();
@@ -84,7 +83,13 @@ protected:
 	FMazeElevatorSetting ElevatorPoint;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<class AMazeMonster> MazeMonsterClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
 	TWeakObjectPtr<class AMazeMonster> MazeMonster;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform MazeMonsterTransform;
 
 #pragma endregion
 

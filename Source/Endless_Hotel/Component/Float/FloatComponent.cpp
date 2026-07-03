@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Component/Float/FloatComponent.h"
+#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -43,6 +44,20 @@ void UFloatComponent::StopFloating()
 void UFloatComponent::DropObject()
 {
 	TargetMesh->SetEnableGravity(true);
+	TargetMesh->SetNotifyRigidBodyCollision(true);
+	TargetMesh->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnObjectDropped);
+
+	Comp_Audio = NewObject<UAudioComponent>(this);
+	Comp_Audio->SetSound(SW_Drop);
+	Comp_Audio->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules::KeepRelativeTransform);
+}
+
+void UFloatComponent::OnObjectDropped(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	Comp_Audio->Play();
+
+	TargetMesh->SetNotifyRigidBodyCollision(false);
+	TargetMesh->OnComponentHit.Clear();
 }
 
 #pragma endregion
