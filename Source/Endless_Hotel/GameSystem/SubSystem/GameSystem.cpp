@@ -58,6 +58,8 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	}
 
 	InitializePool();
+
+	ChooseKeyIndex = FMath::RandRange(1, 2);
 }
 #pragma endregion
 
