@@ -9,6 +9,9 @@
 AAnomaly_Object_Windup::AAnomaly_Object_Windup(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+	SKM_Windup = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKM_Windup"));
+	SKM_Windup->SetupAttachment(RootComponent);
+
 	AC_Windup = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Windup"));
 	AC_Windup->SetupAttachment(RootComponent);
 }
@@ -47,6 +50,7 @@ void AAnomaly_Object_Windup::WindupLoopTick()
 void AAnomaly_Object_Windup::WindupPlay()
 {
 	AC_Windup->Play();
+	PlayWindupAnimationOnce();
 }
 
 void AAnomaly_Object_Windup::StopWindup()
@@ -81,6 +85,17 @@ void AAnomaly_Object_Windup::WrongLoopTick()
 	
 	WindupPlay();
 	CurrentWrongPlayCount++;
+}
+
+#pragma endregion
+
+#pragma region Animation
+void AAnomaly_Object_Windup::PlayWindupAnimationOnce()
+{
+	SKM_Windup->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+	SKM_Windup->SetAnimation(WindupAnimation);
+	SKM_Windup->SetPosition(0.0f, false);
+	SKM_Windup->Play(false);
 }
 
 #pragma endregion
