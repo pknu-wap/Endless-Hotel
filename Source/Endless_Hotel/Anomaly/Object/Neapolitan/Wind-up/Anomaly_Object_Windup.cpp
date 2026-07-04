@@ -21,6 +21,8 @@ void AAnomaly_Object_Windup::BeginPlay()
 	Super::BeginPlay();
 
 	AC_Windup->SetSound(Sound_Windup);
+	SKM_Windup->SetHiddenInGame(false);
+	Object->SetHiddenInGame(false);
 }
 
 #pragma endregion

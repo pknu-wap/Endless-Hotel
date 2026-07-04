@@ -79,7 +79,7 @@ public:
 #pragma region Restore
 
 public:
-	void StartRestoring(float Duration = 2.5f);
+	virtual void StartRestoring(float Duration = 2.5f);
 
 public:
 	FTransform OriginalTransform;

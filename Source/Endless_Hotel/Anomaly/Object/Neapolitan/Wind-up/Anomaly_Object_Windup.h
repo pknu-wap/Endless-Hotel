@@ -51,7 +51,7 @@ protected:
 	uint8 MaxWindupPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	float WindupPlayInterval = 4.0f;
+	float WindupPlayInterval = 3.0f;
 
 	uint8 CurrentWindupPlayCount = 0;
 
@@ -61,7 +61,7 @@ protected:
 	int WrongPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	float WrongPlayInterval = 1.0f;
+	float WrongPlayInterval = 0.5f;
 
 	uint8 CurrentWrongPlayCount = 0;
 
