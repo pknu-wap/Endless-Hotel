@@ -33,7 +33,7 @@ protected:
 #pragma endregion
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "State")
 	ETwinState CurrentState = ETwinState::Frozen;
 
 	float DetectDistance;
@@ -50,7 +50,7 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "TriggerBox")
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
 #pragma endregion
