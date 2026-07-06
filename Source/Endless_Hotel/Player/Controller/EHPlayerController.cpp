@@ -503,7 +503,7 @@ void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
 	float WheelValue = Value.Get<float>();
 	bool bIsUp = WheelValue >= 0 ? true : false;
 
-	CachedInteractComp->ChangeIndex(bIsUp);
+	CachedInteractComp->TryChangeIndex(bIsUp);
 }
 
 #pragma endregion

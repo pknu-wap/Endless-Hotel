@@ -22,16 +22,14 @@ void UUI_Interact::SetDescription(FText Value)
 	Text_Description->SetText(Value);
 }
 
-void UUI_Interact::ShowDescription(bool bIsShow)
+void UUI_Interact::ShowDescription(bool bIsShow, bool bNeedArrow)
 {
-	if (bIsShow)
-	{
-		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	}
-	else
-	{
-		SetVisibility(ESlateVisibility::Collapsed);
-	}
+	ESlateVisibility Target = bIsShow ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed;
+	SetVisibility(Target);
+
+	Target = bNeedArrow ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed;
+	Image_Left->SetVisibility(Target);
+	Image_Right->SetVisibility(Target);
 }
 
 #pragma endregion

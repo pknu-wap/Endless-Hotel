@@ -15,7 +15,7 @@ void UInteractComponent::BeginPlay()
 
 	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-	UI_Interact->ShowDescription(false);
+	UI_Interact->ShowDescription(false, false);
 }
 
 #pragma endregion
@@ -43,13 +43,30 @@ void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
 	if (UI_Interact.IsValid())
 	{
 		UI_Interact->SetDescription(GetDescription());
-		UI_Interact->ShowDescription(bIsShow);
+		UI_Interact->ShowDescription(bIsShow, HasManyInteracting());
 	}
+}
+
+void UInteractComponent::TryChangeIndex(bool bUp)
+{
+	if (!HasManyInteracting() || bChangingIndex)
+	{
+		return;
+	}
+
+	UI_Interact->PlayChangeAnimation(bUp);
+	
+	bChangingIndex = true;
+
+	constexpr float ChangeDuration = 0.3f;
+
+	FTimerHandle TextHandle;
+	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ChangeIndex, bUp), ChangeDuration, false);
 }
 
 void UInteractComponent::ChangeIndex(bool bUp)
 {
-	UI_Interact->PlayChangeAnimation(bUp);
+	bChangingIndex = false;
 
 	if (bUp)
 	{
@@ -60,7 +77,7 @@ void UInteractComponent::ChangeIndex(bool bUp)
 		}
 		return;
 	}
-	
+
 	CurrentIndex--;
 	if (CurrentIndex < 0)
 	{

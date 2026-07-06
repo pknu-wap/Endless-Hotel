@@ -22,7 +22,7 @@ protected:
 
 public:
 	void SetDescription(FText Value);
-	void ShowDescription(bool bIsShow);
+	void ShowDescription(bool bIsShow, bool bNeedArrow);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -41,6 +41,17 @@ protected:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> Anim_Right;
+
+#pragma endregion
+
+#pragma region Arrow
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_Left;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UImage> Image_Right;
 
 #pragma endregion
 
