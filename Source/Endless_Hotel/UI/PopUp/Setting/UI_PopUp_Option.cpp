@@ -116,7 +116,7 @@ void UUI_PopUp_Option::HighlightOptions()
 				break;
 			}
 
-			Target->HighlightOption.Broadcast(OptionInfo);
+			Target->OnHighlight.Broadcast(OptionInfo);
 		}
 
 		if (auto* Target = Cast<UUI_Slider_Setting>(Child))

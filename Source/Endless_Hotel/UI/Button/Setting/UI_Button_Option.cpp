@@ -13,7 +13,7 @@
 
 #pragma region Declare
 
-FHighlightOption UUI_Button_Option::HighlightOption;
+UUI_Button_Option::FHighlightOption UUI_Button_Option::OnHighlight;
 
 #pragma endregion
 
@@ -23,7 +23,7 @@ TSharedRef<SWidget> UUI_Button_Option::RebuildWidget()
 {
 	SettingHandle = UGameUserSettings::GetGameUserSettings();
 
-	HighlightOption.AddDynamic(this, &ThisClass::Highlight);
+	OnHighlight.AddDynamic(this, &ThisClass::Highlight);
 	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
 
 	return Super::RebuildWidget();
@@ -33,7 +33,7 @@ void UUI_Button_Option::ReleaseSlateResources(bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
 
-	HighlightOption.Clear();
+	OnHighlight.Clear();
 	OnClicked.Clear();
 }
 
@@ -116,7 +116,7 @@ void UUI_Button_Option::Click_Button()
 		break;
 	}
 
-	HighlightOption.Broadcast(OptionInfo);
+	OnHighlight.Broadcast(OptionInfo);
 }
 
 #pragma endregion

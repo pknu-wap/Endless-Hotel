@@ -8,12 +8,6 @@
 #include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Key.generated.h>
 
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FKeyHighlight);
-
-#pragma endregion
-
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Button_Key : public UUI_Button_Base
 {
@@ -63,6 +57,7 @@ public:
 	void SetSavedOption();
 
 protected:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FKeyHighlight);
 	static FKeyHighlight Highlight;
 
 #pragma endregion
