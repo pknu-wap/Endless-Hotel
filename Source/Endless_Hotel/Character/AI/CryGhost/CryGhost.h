@@ -41,6 +41,7 @@ public:
 #pragma region State
 
 public:
+	void SetCryState();
 	void AdvanceCryGhostState();
 	const ECryGhostState& GetCurrentState() { return CurrentState; }
 
@@ -85,6 +86,18 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<ACharacter> TargetPlayer;
+
+#pragma endregion
+
+#pragma region Run
+
+public:
+	void RunCryGhost();
+	void StopCryGhost();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Run")
+	TObjectPtr<UAnimMontage> AM_Run;
 
 #pragma endregion
 

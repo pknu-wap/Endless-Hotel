@@ -30,7 +30,7 @@ enum class EAnomalyID : uint8
 	FireCorridor		= 22	UMETA(DisplayName = "FireCorridor"),
 	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color"),
 	GhostHand			= 24	UMETA(DisplayName = "GhostHand"),
-	Ghost               = 28	UMETA(DisplayName = "Ghost"),
+	CryGhost_Light      = 28	UMETA(DisplayName = "CryGhost_Light"),
 	Radio				= 76	UMETA(DisplayName = "Radio"),
 	Doll_Coming			= 79	UMETA(DisplayName = "Doll_Coming"),
 	CrawlChild			= 80	UMETA(DisplayName = "CrawlChild"),
