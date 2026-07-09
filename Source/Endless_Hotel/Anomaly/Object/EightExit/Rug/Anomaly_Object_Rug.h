@@ -24,10 +24,10 @@ public:
 	void ChangeRugColor();
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Material")
 	TObjectPtr<class UMaterialInterface> ChangedMaterial;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Material")
 	TObjectPtr<class UMaterialInterface> OriginalMaterial;
 
 #pragma endregion

@@ -88,7 +88,7 @@ public:
 #pragma region Trigger
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Trigger")
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
 	UPROPERTY(EditAnywhere, Category = "Trigger")
