@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/Neapolitan/Twin/Anomaly_Twin.h"
 #include "Character/AI/Twin/Twin.h"
 #include "Player/Character/EHPlayer.h"
