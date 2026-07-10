@@ -12,7 +12,7 @@ void AAnomaly_Choose::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Choose:
-		AnomalyActions.Add([this](AAnomaly_Object_Base* AnomalyObject)
+		AnomalyActions.Add([this](UObject* AnomalyObject)
 			{
 				if (UGameInstance* GI = GetGameInstance())
 				{

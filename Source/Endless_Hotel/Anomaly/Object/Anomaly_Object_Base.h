@@ -32,11 +32,9 @@ public:
 
 public:
 	void SetSolvedFalse() { bSolved = false; }
-	void SetAnomalyName() { AnomalyName = static_cast<EAnomalyID>(AnomalyID); }
+	void SetAnomalyName(EAnomalyID AnomalyID) { AnomalyName = AnomalyID; }
 
 public:
-	EAnomalyID AnomalyID;
-
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
 
