@@ -503,31 +503,51 @@ void AEHPlayerController::ChangeInteract(const FInputActionValue& Value)
 	float WheelValue = Value.Get<float>();
 	bool bIsUp = WheelValue >= 0 ? true : false;
 
-	CachedInteractComp->ChangeIndex(bIsUp);
+	CachedInteractComp->TryChangeIndex(bIsUp);
 }
 
 #pragma endregion
 
 #pragma region Watching
 
-bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor, float Distance)
+bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor, float Distance, bool bUseCrosshairCheck)
 {
 	if (!TargetActor)
 	{
 		return false;
 	}
-	return GetLookedAtActor(Distance) == TargetActor;
+	return bUseCrosshairCheck ? GetLookedAtActor(Distance) == TargetActor : IsActorOnScreen(TargetActor);
 }
 
 bool AEHPlayerController::IsLookingAtActor(AActor* TargetActor)
 {
-	return IsLookingAtActor(TargetActor, TraceDistance);
+	return IsLookingAtActor(TargetActor, TraceDistance, true);
+}
+
+bool AEHPlayerController::IsActorOnScreen(AActor* TargetActor) const
+{
+	if (!TargetActor)
+	{
+		return false;
+	}
+
+	FVector2D ScreenPos;
+	if (!ProjectWorldLocationToScreen(TargetActor->GetActorLocation(), ScreenPos, true))
+	{
+		return false;
+	}
+	int32 SizeX, SizeY;
+	GetViewportSize(SizeX, SizeY);
+	return ScreenPos.X >= 0 && ScreenPos.X <= SizeX && ScreenPos.Y >= 0 && ScreenPos.Y <= SizeY;
 }
 
 AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 {
 	UCameraComponent* Camera = GetPlayerCamera();
-	if (!Camera) return nullptr;
+	if (!Camera)
+	{
+		return nullptr;
+	}
 
 	FVector Start = Camera->GetComponentLocation();
 	FVector End = Start + Camera->GetForwardVector() * Distance;

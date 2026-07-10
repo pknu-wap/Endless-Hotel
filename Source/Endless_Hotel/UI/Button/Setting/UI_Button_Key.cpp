@@ -8,7 +8,7 @@
 
 #pragma region Declare
 
-FKeyHighlight UUI_Button_Key::Highlight;
+UUI_Button_Key::FKeyHighlight UUI_Button_Key::Highlight;
 
 #pragma endregion
 

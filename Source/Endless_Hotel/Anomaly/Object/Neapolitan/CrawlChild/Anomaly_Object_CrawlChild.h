@@ -34,10 +34,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_Child;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Trigger")
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Trigger")
 	FTransform TriggerBox_Transform;
 
 	bool bShouldDie = false;

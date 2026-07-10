@@ -18,37 +18,20 @@ public:
 
 #pragma endregion
 
-#pragma region Page
+#pragma region NoteBook
 
 public:
 	void TurnOverPage(bool bLeft);
 
 protected:
 	UPROPERTY(EditAnywhere)
-	FVector LeftPageLocation;
+	TObjectPtr<USkeletalMeshComponent> SKM_NoteBook;
 
-	UPROPERTY(EditAnywhere)
-	FRotator LeftPageRotation;
+	UPROPERTY(EditAnywhere, Category = "NoteBook")
+	TObjectPtr<UAnimMontage> AM_LeftToRight;
 
-	UPROPERTY(EditAnywhere)
-	FVector RightPageLocation;
-
-	UPROPERTY(EditAnywhere)
-	FRotator RightPageRotation;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> SM_Paper;
-
-private:
-	FVector StartLocation;
-	FVector EndLocation;
-
-	FRotator StartRotation;
-	FRotator EndRotation;
-
-	FTimerHandle MoveHandle;
-
-	float ElapsedTime = 0.f;
+	UPROPERTY(EditAnywhere, Category = "NoteBook")
+	TObjectPtr<UAnimMontage> AM_RightToLeft;
 
 #pragma endregion
 

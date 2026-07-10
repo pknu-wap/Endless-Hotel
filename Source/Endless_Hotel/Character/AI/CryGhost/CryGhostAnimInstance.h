@@ -15,6 +15,9 @@ class ENDLESS_HOTEL_API UCryGhostAnimInstance : public UBaseAIAnimInstance
 
 public:
 	UPROPERTY(BlueprintReadOnly)
+	bool bIsCry = false;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bIsStand = false;
 
 	UPROPERTY(BlueprintReadOnly)
