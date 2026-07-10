@@ -291,8 +291,9 @@ protected:
 #pragma region Watching
 
 public:
-	bool IsLookingAtActor(AActor* TargetActor, float Distance);
+	bool IsLookingAtActor(AActor* TargetActor, float Distance, bool bUseCrosshairCheck);
 	bool IsLookingAtActor(AActor* TargetActor);
+	bool IsActorOnScreen(AActor* TargetActor) const;
 
 private:
 	AActor* GetLookedAtActor(float Distance) const;

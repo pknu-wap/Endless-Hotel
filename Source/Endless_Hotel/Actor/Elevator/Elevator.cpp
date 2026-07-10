@@ -271,7 +271,7 @@ void AElevator::StartElevator()
         SetLightOn(true);
         RootComponent->SetRelativeLocation(StandardPos + StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-        auto* PC = Player->GetController();
+        AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
         UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
         
         Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -279,11 +279,13 @@ void AElevator::StartElevator()
         FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
         FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
         SavedRotation -= Sub->GetElevatorOffset() - this->GetActorRotation();
+        FRotator ForPlayerSavedRotation = FRotator(0, SavedRotation.Yaw, SavedRotation.Roll);
         FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
         FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
         Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
-        Player->SetActorRotation(SavedRotation);
+        Player->SetActorRotation(ForPlayerSavedRotation);
         PC->SetControlRotation(SavedRotation);
+        PC->PlayerCameraManager->SetGameCameraCutThisFrame();
 
         if (ElevatorOverWall.IsValid())
         {

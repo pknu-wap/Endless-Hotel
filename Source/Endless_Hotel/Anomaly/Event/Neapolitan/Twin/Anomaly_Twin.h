@@ -16,6 +16,29 @@ class ENDLESS_HOTEL_API AAnomaly_Twin : public AAnomaly_Event_EightExit
 public:
 	virtual void SetAnomalyState() override;
 	virtual void DisableAnomaly() override;
+	void StartTwin();
+
+#pragma endregion
+
+#pragma region TwinAISetting
+
+public:
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<class ATwin> TwinClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TArray<TWeakObjectPtr<class ATwin>> Twins;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TArray<FTransform> Transforms;
+
+#pragma endregion
+
+#pragma region Trigger
+
+protected:
+	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 #pragma endregion
 

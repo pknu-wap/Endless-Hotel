@@ -27,9 +27,6 @@ enum class EAnomalyVerdictMode : uint8
 	Fail
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
-
 USTRUCT(BlueprintType)
 struct FAnomalyObjectArray
 {
@@ -81,6 +78,7 @@ public:
 
 public:
 	uint8 Floor = STARTFLOOR;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
@@ -108,8 +106,6 @@ public:
 
 #pragma region Anomaly
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
-
 public:
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
@@ -129,6 +125,7 @@ public:
 	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
 
 	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 	FOnFloorChange_Disable FloorChange_Disable;
 	EMapDataLayer CurrentDataLayer;
 	bool bIsStartInBed = false;
@@ -138,7 +135,7 @@ public:
 #pragma region Pool
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|Pool")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Pool")
 	uint8 ActIndex = 0;
 
 private:
@@ -162,6 +159,7 @@ public:
 public:
 	bool bIsClear = false;
 	bool bExceptClearedAnomaly = false;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
@@ -174,8 +172,6 @@ public:
 #pragma endregion
 
 #pragma region Elevator
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
 
 public:
 	void RegisterElevator(class AElevator* Elevator);
@@ -195,6 +191,7 @@ public:
 	bool IsTargetElevator(const AElevator* Elevator);
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
 	FAnomalySpawned OnAnomalySpawned;
 
 private:
