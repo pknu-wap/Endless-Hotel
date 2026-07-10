@@ -8,12 +8,6 @@
 #include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Option.generated.h>
 
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightOption, FOptionInfo, TargetInfo);
-
-#pragma endregion
-
 UCLASS()
 class ENDLESS_HOTEL_API UUI_Button_Option : public UUI_Button_Base
 {
@@ -58,7 +52,8 @@ protected:
 	void Highlight(FOptionInfo TargetInfo);
 
 public:
-	static FHighlightOption HighlightOption;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightOption, FOptionInfo, TargetInfo);
+	static FHighlightOption OnHighlight;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Highlight")

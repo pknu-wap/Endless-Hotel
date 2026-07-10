@@ -12,20 +12,22 @@ void AAnomaly_Choose::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Choose:
-		AnomalyActions.Add([this](UObject* AnomalyObject)
-			{
-				if (UGameInstance* GI = GetGameInstance())
-				{
-					UGameSystem* APSS = GI->GetSubsystem<UGameSystem>();
-
-					if (APSS->GlobalSelectedKeyIndex == 2)
-					{
-						SetVerdictMode(EAnomalyVerdictMode::Normal);
-					}
-				}
-			});
+		SetChooseVerdictMode();
 		ScheduleAnomaly();
 		break;
+	}
+}
+
+#pragma endregion
+
+#pragma region Verdict
+
+void AAnomaly_Choose::SetChooseVerdictMode()
+{
+	UGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (GameSystem->ChooseKeyIndex == 2)
+	{
+		SetVerdictMode(EAnomalyVerdictMode::Normal);
 	}
 }
 

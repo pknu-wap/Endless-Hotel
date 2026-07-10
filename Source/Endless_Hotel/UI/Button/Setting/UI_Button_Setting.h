@@ -8,12 +8,6 @@
 #include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Setting.generated.h>
 
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightSetting, FSettingCategory, TargetInfo);
-
-#pragma endregion
-
 UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_Button_Setting : public UUI_Button_Base
 {
@@ -53,7 +47,8 @@ protected:
 	void Highlight(FSettingCategory TargetInfo);
 
 protected:
-	static FHighlightSetting HighlightSetting;
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightSetting, FSettingCategory, TargetInfo);
+	static FHighlightSetting OnHighlight;
 
 	UPROPERTY(EditAnywhere, Category = "Highlight")
 	bool bIsSideButton = false;

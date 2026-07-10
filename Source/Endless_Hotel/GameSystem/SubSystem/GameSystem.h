@@ -164,11 +164,10 @@ public:
 
 #pragma endregion
 
-#pragma region AnomalyChooseKeyVal
+#pragma region Choose
 
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "AnomalyData")
-	int32 GlobalSelectedKeyIndex = 0;
+	uint8 ChooseKeyIndex = 0;
 
 #pragma endregion
 

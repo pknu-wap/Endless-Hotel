@@ -6,7 +6,7 @@
 
 #pragma region Declare
 
-FHighlightSetting UUI_Button_Setting::HighlightSetting;
+UUI_Button_Setting::FHighlightSetting UUI_Button_Setting::OnHighlight;
 
 #pragma endregion
 
@@ -14,7 +14,7 @@ FHighlightSetting UUI_Button_Setting::HighlightSetting;
 
 TSharedRef<SWidget> UUI_Button_Setting::RebuildWidget()
 {
-	HighlightSetting.AddDynamic(this, &ThisClass::Highlight);
+	OnHighlight.AddDynamic(this, &ThisClass::Highlight);
 
 	OnClicked.Clear();
 	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
@@ -26,7 +26,7 @@ void UUI_Button_Setting::ReleaseSlateResources(bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
 
-	HighlightSetting.Clear();
+	OnHighlight.Clear();
 }
 
 #pragma endregion
@@ -45,7 +45,7 @@ void UUI_Button_Setting::ClickCategoryButton()
 	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
 	SettingWidget->StartRotateGear(SettingInfo.Angle);
 
-	HighlightSetting.Broadcast(SettingInfo);
+	OnHighlight.Broadcast(SettingInfo);
 }
 
 void UUI_Button_Setting::Click_Button()

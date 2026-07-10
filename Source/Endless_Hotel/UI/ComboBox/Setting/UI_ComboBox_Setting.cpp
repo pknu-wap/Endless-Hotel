@@ -112,11 +112,11 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
 
-		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::AntiAliasing, Value));
-		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Shadow, Value));
-		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Texture, Value));
-		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::PostProcessing, Value));
-		UUI_Button_Option::HighlightOption.Broadcast(FOptionInfo(EOptionCategory::Shading, Value));
+		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::AntiAliasing, Value));
+		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shadow, Value));
+		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Texture, Value));
+		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::PostProcessing, Value));
+		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shading, Value));
 		break;
 	}
 }

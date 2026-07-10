@@ -1,9 +1,13 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/EightExit/CryGhost/Anomaly_CryGhost.h"
+#include "Anomaly/Object/EightExit/Light/Anomaly_Object_Light.h"
 #include "Character/AI/CryGhost/CryGhost.h"
 #include "Player/Character/EHPlayer.h"
+#include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundCue.h>
 
 #pragma region Activity
 
@@ -14,6 +18,12 @@ void AAnomaly_CryGhost::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::CryGhost:
+		TriggerBox->SetWorldTransform(CryTriggerTrans);
+		ActiveTrigger();
+		break;
+
+	case EAnomalyID::CryGhost_Light:
+		TriggerBox->SetWorldTransform(LightTriggerTrans);
 		ActiveTrigger();
 		break;
 	}
@@ -43,15 +53,37 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if (!IsValid(CryGhost))
+	switch (AnomalyName)
 	{
-		CryGhost = GetWorld()->SpawnActor<ACryGhost>(GhostClass, GhostSpawnTrans);
+	case EAnomalyID::CryGhost:
+		SpawnCryGhost(CrySpawnTrans);
+		CryGhost->SetCryState();
+		AdvanceCryGhostState();
+		break;
+
+	case EAnomalyID::CryGhost_Light:
+		SpawnCryGhost(LightSpawnTrans);
+		TurnAllLights(false);
+		break;
 	}
-	else
+}
+
+void AAnomaly_CryGhost::SpawnCryGhost(FTransform Trans)
+{
+	if (IsValid(CryGhost))
 	{
-		CryGhost->AdvanceCryGhostState();
+		return;
 	}
 
+	CryGhost = GetWorld()->SpawnActor<ACryGhost>(GhostClass, Trans);
+}
+
+#pragma endregion
+
+#pragma region Cry
+
+void AAnomaly_CryGhost::AdvanceCryGhostState()
+{
 	switch (CryGhost->GetCurrentState())
 	{
 	case ECryGhostState::Cry:
@@ -93,6 +125,40 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 		break;
 	}
 	}
+
+	CryGhost->AdvanceCryGhostState();
+}
+
+#pragma endregion
+
+#pragma region Light
+
+void AAnomaly_CryGhost::TurnAllLights(bool bOn)
+{
+	for (AAnomaly_Object_Base* Target : TargetAnomalyObjects)
+	{
+		auto* Light = Cast<AAnomaly_Object_Light>(Target);
+		Light->TurnLight(bOn);
+	}
+
+	if (bOn)
+	{
+		CryGhost->StopCryGhost();
+	}
+	else
+	{
+		PlayNoiseSound();
+		CryGhost->RunCryGhost();
+	}
+
+	float TurnDuration = bOn ? 3.f : 1.5f;
+	GetWorld()->GetTimerManager().SetTimer(LightHandle, FTimerDelegate::CreateUObject(this, &ThisClass::TurnAllLights, !bOn), TurnDuration, false);
+}
+
+void AAnomaly_CryGhost::PlayNoiseSound()
+{
+	AC_Light = UGameplayStatics::CreateSound2D(GetWorld(), SC_Noise);
+	AC_Light->Play();
 }
 
 #pragma endregion
