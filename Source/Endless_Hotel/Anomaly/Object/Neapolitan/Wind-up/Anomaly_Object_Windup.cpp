@@ -35,14 +35,10 @@ void AAnomaly_Object_Windup::StartWindupLoop()
 
 	WindupLoopTick();
 
-	GetWorld()->GetTimerManager().SetTimer(
-		WindupPlayHandle,
-		FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				WindupLoopTick();
-			}),
-		WindupPlayInterval,
-		true);
+	GetWorld()->GetTimerManager().SetTimer(WindupPlayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			WindupLoopTick();
+		}), WindupPlayInterval, true);
 }
 
 void AAnomaly_Object_Windup::WindupLoopTick()
@@ -77,14 +73,10 @@ void AAnomaly_Object_Windup::StartWrongLoop()
 
 	WrongLoopTick();
 
-	GetWorld()->GetTimerManager().SetTimer(
-		WrongPlayHandle,
-		FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				WrongLoopTick();
-			}),
-		WrongPlayInterval,
-		true);
+	GetWorld()->GetTimerManager().SetTimer(WrongPlayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			WrongLoopTick();
+		}), WrongPlayInterval, true);
 }
 
 void AAnomaly_Object_Windup::WrongLoopTick()
