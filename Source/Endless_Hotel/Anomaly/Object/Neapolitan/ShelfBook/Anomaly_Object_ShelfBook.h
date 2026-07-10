@@ -68,7 +68,6 @@ protected:
 	UPROPERTY()
 	TArray<TObjectPtr<USceneComponent>> OriginalBookParents;
 
-	UPROPERTY()
 	TArray<FTransform> OriginalBookRelativeTransforms;
 
 #pragma endregion

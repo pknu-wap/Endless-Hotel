@@ -7,7 +7,6 @@
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/AudioComponent.h>
-#include <Components/MeshComponent.h>
 #include <Sound/SoundWave.h>
 #include <Kismet/GameplayStatics.h>
 #include <Materials/MaterialInstanceDynamic.h>
