@@ -51,10 +51,7 @@ protected:
 #pragma region Interact
 
 public:
-	UPROPERTY(EditAnyWhere)
 	TArray<EInteractType> CorrectInteractTypes;
-
-	UPROPERTY(EditAnywhere)
 	bool bIsOrderedInteractTypes = false;
 
 public:
