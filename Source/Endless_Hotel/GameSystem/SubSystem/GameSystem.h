@@ -167,7 +167,7 @@ public:
 #pragma region Choose
 
 public:
-	int32 ChooseKeyIndex = 0;
+	uint8 ChooseKeyIndex = 0;
 
 #pragma endregion
 
