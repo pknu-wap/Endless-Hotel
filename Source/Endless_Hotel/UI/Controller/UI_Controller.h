@@ -23,6 +23,14 @@ private:
 
 #pragma endregion
 
+#pragma region Show
+
+public:
+	void ShowHUDWidget(bool bShow);
+	void ShowPopUpWidget(bool bShow);
+
+#pragma endregion
+
 #pragma region Cache
 
 public:
