@@ -57,6 +57,8 @@ private:
 
 	const uint8 IndexChangeSize = 6;
 
+	FTimerHandle TextHandle;
+
 #pragma endregion
 
 #pragma region Page

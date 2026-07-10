@@ -72,6 +72,16 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 
 	UI_NoteBook_Left->ChangeDescription(LeftIndex);
 	UI_NoteBook_Right->ChangeDescription(RightIndex);
+
+	UI_NoteBook_Left->SetVisibility(ESlateVisibility::Hidden);
+	UI_NoteBook_Right->SetVisibility(ESlateVisibility::Hidden);
+
+	constexpr float MontageLength = 1.8f;
+	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			UI_NoteBook_Left->SetVisibility(ESlateVisibility::Visible);
+			UI_NoteBook_Right->SetVisibility(ESlateVisibility::Visible);
+		}), MontageLength, false);
 }
 
 #pragma endregion

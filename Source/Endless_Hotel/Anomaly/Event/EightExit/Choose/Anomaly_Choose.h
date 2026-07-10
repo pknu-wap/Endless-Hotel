@@ -18,4 +18,11 @@ public:
 
 #pragma endregion
 
+#pragma region Verdict
+
+private:
+	void SetChooseVerdictMode();
+
+#pragma endregion
+
 };

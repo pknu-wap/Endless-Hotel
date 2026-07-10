@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -11,19 +11,29 @@ class ENDLESS_HOTEL_API AChooseKey : public AEHActor
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
 public:
 	AChooseKey(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr <class UStaticMeshComponent> KeyMesh1;
+#pragma endregion
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr <class UStaticMeshComponent> KeyMesh2;
+#pragma region Key
 
-public:
-	UPROPERTY(BlueprintReadOnly, Category = "Anomaly Data")
-	int32 SelectedKeyIndex;
+protected:
+	UPROPERTY(EditAnywhere, Category = "Key")
+	TObjectPtr<class UStaticMesh> KeyMesh1;
+
+	UPROPERTY(EditAnywhere, Category = "Key")
+	TObjectPtr<class UStaticMesh> KeyMesh2;
+
+private:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Comp_Key;
+
+#pragma endregion
+
 };

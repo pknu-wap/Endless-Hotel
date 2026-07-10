@@ -4,6 +4,7 @@
 #include "Character/AI/CryGhost/CryGhostAnimInstance.h"
 #include <Components/AudioComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -14,11 +15,19 @@ ACryGhost::ACryGhost(const FObjectInitializer& ObjectInitializer)
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->SetAutoActivate(false);
 	AudioComponent->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
+
+	GetCharacterMovement()->MaxWalkSpeed = 0.f;
 }
 
 #pragma endregion
 
 #pragma region State
+
+void ACryGhost::SetCryState()
+{
+	auto* AnimInstance = Cast<UCryGhostAnimInstance>(GetMesh()->GetAnimInstance());
+	AnimInstance->bIsCry = true;
+}
 
 void ACryGhost::AdvanceCryGhostState()
 {
@@ -87,6 +96,22 @@ void ACryGhost::AdjustGhostRotation()
 	FRotator TargetRotator = Direction.Rotation();
 
 	SetActorRotation(TargetRotator);
+}
+
+#pragma endregion
+
+#pragma region Run
+
+void ACryGhost::RunCryGhost()
+{
+	PlayAnimMontage(AM_Run);
+
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+}
+
+void ACryGhost::StopCryGhost()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 0.f;
 }
 
 #pragma endregion

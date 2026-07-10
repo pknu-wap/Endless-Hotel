@@ -8,14 +8,6 @@
 #include <Delegates/DelegateCombinations.h>
 #include <EHPlayer.generated.h>
 
-#pragma region Declare
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, bCanInteract);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDieDelegate, const EDeathReason&, DeathReason);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrouchDelegate, bool, bIsCrouch);
-
-#pragma endregion
-
 UCLASS()
 class ENDLESS_HOTEL_API AEHPlayer : public AEHCharacter
 {
@@ -66,6 +58,7 @@ protected:
 #pragma region Interact
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, bCanInteract);
 	FCanInteract CanInteract;
 
 #pragma endregion
@@ -73,6 +66,7 @@ public:
 #pragma region Crouch
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrouchDelegate, bool, bIsCrouch);
 	FCrouchDelegate CrouchDelegate;
 
 #pragma endregion
@@ -85,6 +79,7 @@ protected:
 	void FreezeAnimation();
 
 public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDieDelegate, const EDeathReason&, DeathReason);
 	FDieDelegate DieDelegate;
 
 	bool bIsDead = false;
