@@ -95,4 +95,23 @@ protected:
 
 #pragma endregion
 
+#pragma region BGM
+
+public:
+	void StopBGM();
+
+private:
+	UFUNCTION()
+	void PlayBGM();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_BGM;
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
+
+#pragma endregion
+
 };

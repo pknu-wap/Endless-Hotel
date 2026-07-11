@@ -36,7 +36,7 @@ public:
 public:
 	class UUI_Base* GetHUDWidget() { return CachedWidgets[WidgetStack[0]]; }
 	class UUI_Base* GetPopUpWidget() { return CachedWidgets[WidgetStack.Top()]; }
-	class UUI_Base* GetPopUpWidget(const EWidgetType& WidgetType) { return CachedWidgets[WidgetType]; }
+	class UUI_Base* GetCachedWidget(const EWidgetType& WidgetType) { return CachedWidgets[WidgetType]; }
 
 private:
 	UPROPERTY()
