@@ -40,6 +40,7 @@ void UUI_HUD_Title::Click_Start()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->bIsClear = false;
 	Subsystem->Floor = 9;
+	Subsystem->bIsFirstStartFloor = true;
 
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
