@@ -89,8 +89,24 @@ void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetData
 		{
 			if (UI_Loading->IsLoadingCompleted())
 			{
-				SwitchDataLayer(TargetDataLayer, bNotifyDelegate);
+				UI_Loading->StartLoadingEyeEffect();
+				WaitLoading(TargetDataLayer, bNotifyDelegate);
 				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
+			}
+		}), 0.1f, true);
+}
+
+void UEHGameInstance::WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
+{
+	auto* UICon = GetSubsystem<UUI_Controller>();
+	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->GetHUDWidget());
+
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UI_Loading]()
+		{
+			if (UI_Loading->IsCompletedEyeEffect())
+			{
+				SwitchDataLayer(TargetDataLayer, bNotifyDelegate);
+				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.1f, true);
 }

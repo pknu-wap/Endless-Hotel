@@ -16,7 +16,10 @@ void UUI_Slider_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	SetLoadingPercentage(InDeltaTime);
+	if (bStartLoading)
+	{
+		SetLoadingPercentage(InDeltaTime);
+	}
 }
 
 #pragma endregion
@@ -25,9 +28,9 @@ void UUI_Slider_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 
 void UUI_Slider_Loading::SetLoadingPercentage(float InDeltaTime)
 {
-	LoadingPercentage += InDeltaTime * 0.8f;
+	LoadingPercentage += InDeltaTime * 0.2f;
 	LoadingPercentage = FMath::Clamp(LoadingPercentage, 0, TargetPercentage);
-
+	
 	Slide_Slider(LoadingPercentage);
 }
 

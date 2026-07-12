@@ -98,7 +98,7 @@ protected:
 #pragma region BGM
 
 public:
-	void StopBGM();
+	void StopBGM(float Duration);
 
 private:
 	UFUNCTION()

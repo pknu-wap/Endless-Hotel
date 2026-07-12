@@ -120,10 +120,10 @@ void UUI_HUD_Title::SetLogoImage()
 
 #pragma region BGM
 
-void UUI_HUD_Title::StopBGM()
+void UUI_HUD_Title::StopBGM(float Duration)
 {
 	AC->OnAudioFinished.Clear();
-	AC->FadeOut(2.f, 0.f);
+	AC->FadeOut(Duration, 0.f);
 }
 
 void UUI_HUD_Title::PlayBGM()

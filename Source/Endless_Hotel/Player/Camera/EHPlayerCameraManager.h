@@ -52,6 +52,7 @@ private:
 
 public:
 	void StartEyeEffect(bool bIsOpen);
+	void LoadingEyeEffect();
 
 private:
 	void SetEyeEffect();
@@ -60,17 +61,23 @@ private:
 	void OnValueChangedEyeEffect(float Value);
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "EyeEffect", meta = (AssetBundles = "EyeEffect"))
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> M_EyeEffect;
 
-	UPROPERTY(EditAnywhere, Category = "EyeEffect", meta = (AssetBundles = "EyeEffect"))
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> CV_EyeOpen;
+
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
+	TObjectPtr<UCurveFloat> CV_Loading;
 
 private:
 	FTimerHandle WaitHandle;
 
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Eye;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Loading;
 
 #pragma endregion
 
