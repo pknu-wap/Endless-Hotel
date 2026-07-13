@@ -14,6 +14,7 @@ void AAnomaly_Twin::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Twin:
+		SetupAnomalyAction(&AAnomaly_Twin::StartTwin);
 		break;
 	}
 	ActiveTrigger();
@@ -35,17 +36,6 @@ void AAnomaly_Twin::StartTwin()
 	{
 		Twins.Add(GetWorld()->SpawnActor<ATwin>(TwinClass, Transform));
 	}
-}
-
-void AAnomaly_Twin::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
-	if (!Player)
-	{
-		return;
-	}
-	StartTwin();
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 #pragma endregion

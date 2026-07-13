@@ -78,6 +78,7 @@ public:
 
 public:
 	uint8 Floor = STARTFLOOR;
+	bool bIsFirstStartFloor = true;
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 	FOnFloorChange_Reset FloorChange_Reset;
 

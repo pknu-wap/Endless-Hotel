@@ -42,6 +42,7 @@ public:
 	void Interact(class AEHCharacter* Interacter);
 	FInteractInfo GetSelectedInteractInfo();
 	void RestoreInteract() { bIsInteracted = false; }
+	void DeactiveInteract() { bIsInteracted = true; }
 
 private:
 	void ShowDescriptionWidget(bool bIsShow);

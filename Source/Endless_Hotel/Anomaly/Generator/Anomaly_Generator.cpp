@@ -36,8 +36,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 				}
 				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
 				{
-					AnomalyObject->AnomalyID = CurrentAnomaly->AnomalyName;
-					AnomalyObject->SetAnomalyName();
+					AnomalyObject->SetAnomalyName(CurrentAnomaly->AnomalyName);
 					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 				}
 			}
