@@ -51,9 +51,6 @@ protected:
 public:
 	EAnomalyID AnomalyName;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
-	EAnomalyRule AnomalyRule = EAnomalyRule::None;
-
 protected:
 	TArray<TFunction<void(UObject*)>> AnomalyActions;
 

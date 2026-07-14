@@ -32,6 +32,9 @@ public:
 	TArray<TSubclassOf<class AAnomaly_Object_Base>> GetObjectByID(EAnomalyID AnomalyID);
 	const TArray<FAnomalyEntry> GetOriginAnomaly() { return OriginAnomaly; }
 
+private:
+	bool CanSpawnAnomaly(const FAnomalyEntry& AnomalyData, const TArray<EAnomalyRule>& ActiveRules) const;
+
 public:
 	UPROPERTY()
 	TSet<EAnomalyID> ClearedAnomalySet;
@@ -40,12 +43,11 @@ public:
 	TArray<FAnomalyEntry> ActAnomaly;
 
 	const uint8 MaxIndex = 255;
+	FAnomalyEntry NormalAnomalyData;
 
 protected:
 	UPROPERTY()
 	TObjectPtr<class UDataTable> DataTable_Anomaly;
-
-	FAnomalyEntry NormalAnomalyData;
 
 private:
 	UPROPERTY()

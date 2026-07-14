@@ -17,9 +17,10 @@ class AAnomaly_Object_Base;
 struct FAnomalySpawnInfo
 {
 	bool bIsNormal = false;
-	uint8 Index = 0;
 	EAnomalyID AnomalyID = EAnomalyID::None;
 	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
+	UPROPERTY()
+	TSoftClassPtr<AAnomaly_Event> EventClass;
 };
 
 #pragma endregion
@@ -63,10 +64,6 @@ public:
 	FAnomalySpawnInfo DecideAnomaly(uint8 Index);
 	FAnomalySpawnInfo DecideNext();
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel);
-
-protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Anomaly|Normal")
-	TSoftClassPtr<AAnomaly_Event> NormalClass;
 
 private:
 	bool bIsInitialFloor = true;

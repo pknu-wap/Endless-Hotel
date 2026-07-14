@@ -91,16 +91,20 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	if (!DataC->ActAnomaly.IsValidIndex(Index))
+	const bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
+	const FAnomalyEntry& Data = bHasAnomaly ? DataC->ActAnomaly[Index] : DataC->NormalAnomalyData;
+
+	if (!bHasAnomaly)
 	{
 		Sub->InitializePool();
-		return DecideAnomaly(0);
 	}
+
 	FAnomalySpawnInfo Info;
-	Info.bIsNormal = false;
-	Info.Index = Index;
-	Info.AnomalyID = DataC->ActAnomaly[Index].ID;
-	Info.DataLayer = DataC->ActAnomaly[Index].DataLayer;
+	Info.bIsNormal = !bHasAnomaly;
+	Info.AnomalyID = Data.ID;
+	Info.DataLayer = Data.DataLayer;
+	Info.EventClass = Data.Event;
+
 	return Info;
 }
 
@@ -123,41 +127,22 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 
 AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel)
 {
-	UClass* AnomalyClass;
-	if (Info.bIsNormal)
-	{
-		AnomalyClass = NormalClass.LoadSynchronous();
-	}
-	else
-	{
-		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index].Event;
-		AnomalyClass = SoftClass.LoadSynchronous();
-
-		if (!IsValid(AnomalyClass))
-		{
-			FTimerHandle RetryHandle;
-			GetWorld()->GetTimerManager().SetTimer(RetryHandle,
-				FTimerDelegate::CreateWeakLambda(this, [this, Info, SpawnLevel]()
-					{
-						SpawnFromInfo(Info, SpawnLevel);
-					}), 0.5f, false);
-			return nullptr;
-		}
-	}
-
-	const FTransform SpawnTransform(FVector::ZeroVector);
-	FActorSpawnParameters Params;
-	Params.OverrideLevel = SpawnLevel;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, SpawnTransform, Params);
-	if (!Spawned)
+	UClass* AnomalyClass = Info.EventClass.LoadSynchronous();
+	if (!IsValid(AnomalyClass))
 	{
 		return nullptr;
 	}
 
-	Spawned->AnomalyName = Info.AnomalyID;
+	FActorSpawnParameters Params;
+	Params.OverrideLevel = SpawnLevel;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, FTransform::Identity, Params);
+
+	if (Spawned)
+	{
+		Spawned->AnomalyName = Info.AnomalyID;
+	}
 	return Spawned;
 }
 
