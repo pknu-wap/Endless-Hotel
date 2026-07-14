@@ -202,8 +202,7 @@ void UGameSystem::InitializePool()
 
 	ActIndex = 0;
 
-	// Temp Logic : Remove Anomaly By Rule
-	// DataC->RemoveNoRuleAnomaly();
+	DataC->RemoveNoRuleAnomaly();
 
 	if (bExceptClearedAnomaly && !DataC->ClearedAnomalySet.IsEmpty() && DataC->ClearedAnomalySet.Num() < AnomalyCount)
 	{
