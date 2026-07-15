@@ -147,6 +147,7 @@ public:
 	void InitializePool();
 	void RegisterAnomalyObject(AAnomaly_Object_Base* Object);
 	void UnRegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
 	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; };
 
 #pragma endregion
