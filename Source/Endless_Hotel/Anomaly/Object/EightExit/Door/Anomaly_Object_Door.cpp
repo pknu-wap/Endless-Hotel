@@ -50,6 +50,12 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	ExitTrigger->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 }
 
+void AAnomaly_Object_Door::Reset()
+{
+	Super::Reset();
+	Component_Interact->DeactiveInteract();
+}
+
 void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
@@ -82,12 +88,6 @@ void AAnomaly_Object_Door::BeginPlay()
 		FOnTimelineEvent CloseFinished;
 		CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
 		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
-
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		
-		Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::UpdateDoorByFloor);
-
-		UpdateDoorByFloor();
 	}
 }
 
@@ -201,12 +201,6 @@ void AAnomaly_Object_Door::PlayOpen_Door()
 
 #pragma region Close
 
-void AAnomaly_Object_Door::CloseDoor()
-{
-	StartRotateClose();
-	PlayClose_Door();
-}
-
 void AAnomaly_Object_Door::StartRotateClose()
 {
 	CloseYaw = Object->GetRelativeRotation().Yaw;
@@ -267,55 +261,9 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::DoorOpen:
-		APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
-
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-
-		if (ExecuteAnomalies.Contains(EAnomalyID::Door_Close))
-		{
-			if (Sub->Floor != STARTFLOOR || EHPC->bRevive)
-			{
-				return;
-			}
-		}
 		MoveToHandlePlayer();
 		PlayHandleTwistSound();
 		break;
-	}
-}
-
-void AAnomaly_Object_Door::UpdateDoorByFloor()
-{
-	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	APlayerController* BasePC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	AEHPlayerController* EHPC = Cast<AEHPlayerController>(BasePC);
-	//Component_Interact->bIsInteracted = true;
-
-	if (Sub->Floor == STARTFLOOR)
-	{
-		if (Sub->bIsStartInBed && !EHPC->bRevive)
-		{
-			Component_Interact->RestoreInteract();
-		}
-		else
-		{
-			DoorRotateStarted();
-		}
-	}
-	else
-	{
-		Component_Interact->Deactivate();
-		bIsDoorOpened = false;
-
-		Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-		Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
-
-		FVector InitialLocation = DoorInitialTransform.GetLocation();
-		FRotator InitialRotation = DoorInitialTransform.Rotator();
-		GetRootComponent()->SetWorldLocationAndRotation(InitialLocation, InitialRotation);
-
-		Timeline_Open->Stop();
 	}
 }
 
@@ -466,8 +414,8 @@ void AAnomaly_Object_Door::CloseFirstDoor()
 
 	PlayClose_Door();
 
-	FVector InitialLocation = DoorInitialTransform.GetLocation();
-	FRotator InitialRotation = DoorInitialTransform.Rotator();
+	FVector InitialLocation = OriginalTransform.GetLocation();
+	FRotator InitialRotation = OriginalTransform.Rotator();
 
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
@@ -484,4 +432,25 @@ void AAnomaly_Object_Door::CloseFirstDoor()
 		LatentInfo
 	);
 }
+
+#pragma endregion
+
+#pragma region Normal
+
+void AAnomaly_Object_Door::ReadyDoor()
+{
+	bIsDoorOpened = false;
+	Component_Interact->RestoreInteract();
+	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
+	GetRootComponent()->SetWorldTransform(OriginalTransform);
+
+	Timeline_Open->Stop();
+}
+
+void AAnomaly_Object_Door::ReadyDoorOpened()
+{
+	GetRootComponent()->SetWorldTransform(DoorOpenTransform);
+}
+
 #pragma endregion

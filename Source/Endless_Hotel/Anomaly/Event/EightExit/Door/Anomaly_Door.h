@@ -28,22 +28,9 @@ public:
 
 #pragma endregion
 
-#pragma region Trigger
-
-protected:
-	void SetupDoorTrigger();
-
-#pragma endregion
-
 #pragma region Door
 	
 protected:
-	UFUNCTION()
-	void OnTriggerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnTriggerBox_CloseBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
 	TObjectPtr<UBoxComponent> TriggerBox_Close;
 
