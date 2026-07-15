@@ -32,6 +32,9 @@ public:
 private:
 	void SetLoadingPercentage(float InDeltaTime);
 
+public:
+	bool bStartLoading = false;
+
 private:
 	const float TargetPercentage = 1.f;
 	float LoadingPercentage = 0.f;

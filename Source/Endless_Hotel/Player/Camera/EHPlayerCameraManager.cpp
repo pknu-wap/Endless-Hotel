@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
+#include "UI/HUD/Loading/UI_HUD_Loading.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
@@ -19,6 +20,7 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 	PrimaryActorTick.bCanEverTick = false;
 
 	TimeLine_Eye = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Eye"));
+	TimeLine_Loading = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Loading"));
 }
 
 void AEHPlayerCameraManager::BeginPlay()
@@ -117,11 +119,23 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 					{
 						TimeLine_Eye->Stop();
-					}), 6.0f, false);
+					}), 6.f, false);
 
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
+}
+
+void AEHPlayerCameraManager::LoadingEyeEffect()
+{
+	TimeLine_Loading->PlayFromStart();
+
+	constexpr float StopDuration = 2.f;
+	FTimerHandle StopHandle;
+	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			TimeLine_Loading->Stop();
+		}), StopDuration, false);
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()
@@ -134,6 +148,10 @@ void AEHPlayerCameraManager::SetEyeEffect()
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("OnValueChangedEyeEffect"));
 	TimeLine_Eye->AddInterpFloat(CV_EyeOpen, Update_Open);
+
+	FOnTimelineFloat Update_Loading;
+	Update_Loading.BindUFunction(this, FName("OnValueChangedEyeEffect"));
+	TimeLine_Loading->AddInterpFloat(CV_Loading, Update_Loading);
 }
 
 void AEHPlayerCameraManager::OnValueChangedEyeEffect(float Value)

@@ -15,6 +15,35 @@ class ENDLESS_HOTEL_API AAnomaly_HandPrint : public AAnomaly_Event_EightExit
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
+
+protected:
+	virtual void StartAnomalyAction() override;
+
+#pragma endregion
+
+#pragma region HandPrint
+
+private:
+	void SpawnHandPrint();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "HandPrint")
+	TSubclassOf<class AAnomaly_Object_HandPrint> HandPrintClass;
+
+	UPROPERTY(EditAnywhere, Category = "HandPrint")
+	TArray<FTransform> HandPrintTrans;
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class AAnomaly_Object_HandPrint>> SpawnedHandPrint;
+
+#pragma endregion
+
+#pragma region Light
+
+private:
+	void TurnAllLights(bool bOn);
 
 #pragma endregion
 

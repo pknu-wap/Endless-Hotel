@@ -26,12 +26,12 @@ struct FInteractInfo
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Interact")
 	EInteractType InteractType = EInteractType::None;
 
 	UPROPERTY()
 	bool bIsInteracted = false;
 
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Interact")
 	FText Description;
 };
