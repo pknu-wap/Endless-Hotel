@@ -38,16 +38,14 @@ protected:
 #pragma region Data Layer
 
 public:
-	// 로딩된 레이어을 활성화하고, 기존 레이어를 로드 상태로 변경
 	void SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
-
-	// 위 함수의 로딩 있는 버전
 	void SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
 
-	// 현재 데이터 레이어
 	const EMapDataLayer& GetCurrentDataLayer() { return CurrentDataLayer; }
 
 private:
+	void WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
+
 	UDataLayerAsset* GetDataLayerAsset(const EMapDataLayer& Target);
 
 public:
@@ -56,6 +54,8 @@ public:
 
 private:
 	FTimerHandle SwitchHandle;
+	FTimerHandle WaitHandle;
+
 	EMapDataLayer CurrentDataLayer = EMapDataLayer::Lobby;
 
 #pragma endregion

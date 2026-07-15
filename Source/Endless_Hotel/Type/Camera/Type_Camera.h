@@ -9,5 +9,6 @@ enum class ECameraType : uint8
 {
 	None		UMETA(DisplayName = "None"),
 	Title		UMETA(DisplayName = "Title"),
-	Gear		UMETA(DisplayName = "Gear")
+	Gear		UMETA(DisplayName = "Gear"),
+	SandClock	UMETA(DisplayName = "SandClock")
 };

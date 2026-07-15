@@ -24,13 +24,13 @@ struct FSettingCategory
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Setting")
 	ESettingCategory Enum = ESettingCategory::None;
 
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Setting")
 	FText Name;
 
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, Category = "Setting")
 	float Angle = 0;
 };
 
@@ -113,10 +113,10 @@ public:
 		:Category(Cat), Value(Val) {}
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	EOptionCategory Category = EOptionCategory::None;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	EOptionValue Value = EOptionValue::None;
 };
 
@@ -148,9 +148,9 @@ public:
 	}
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	EKeySettingType Type = EKeySettingType::None;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	FKey Value;
 };

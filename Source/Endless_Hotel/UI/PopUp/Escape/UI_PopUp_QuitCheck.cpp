@@ -30,7 +30,7 @@ void UUI_PopUp_QuitCheck::Click_Yes()
 		break;
 
 	case EQuitButtonType::MainMenu:
-		GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Lobby);
+		GameInstance->SwitchDataLayer(EMapDataLayer::Lobby);
 		break;
 	}
 }
