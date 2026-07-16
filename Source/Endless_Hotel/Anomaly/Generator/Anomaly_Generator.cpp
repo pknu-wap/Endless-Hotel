@@ -85,11 +85,13 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNorm
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	const bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
+	bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
 
 	if (!bHasAnomaly)
 	{
 		Sub->InitializePool();
+		Index = Sub->ActIndex;
+		bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
 	}
 	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? DataC->NormalAnomalyData : DataC->ActAnomaly[Index];
 

@@ -144,7 +144,10 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyN
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	ActIndex++;
+	if(CurrentAnomaly->AnomalyName != EAnomalyID::Normal)
+	{
+		ActIndex++;
+	}
 }
 
 void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
