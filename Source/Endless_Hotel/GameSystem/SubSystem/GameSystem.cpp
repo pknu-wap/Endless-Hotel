@@ -103,7 +103,7 @@ void UGameSystem::ApplyVerdict()
 	if (bPassed)
 	{
 		SubFloor();
-
+		bIsStartInBed = false;
 		if (bExceptClearedAnomaly)
 		{
 			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyName);
