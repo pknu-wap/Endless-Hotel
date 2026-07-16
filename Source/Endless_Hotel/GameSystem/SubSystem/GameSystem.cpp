@@ -67,7 +67,10 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	bIsStartInBed = bIsFirstStartFloor ? true : bIsStartInBed;
+	if (bIsFirstStartFloor)
+	{
+		bIsStartInBed = true;
+	}
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();
@@ -119,6 +122,10 @@ void UGameSystem::ApplyVerdict()
 		if(Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			LoadNextMap();
+		}
+		else
+		{
+			bIsStartInBed = false;
 		}
 	}
 	bIsAnomalySolved = false;

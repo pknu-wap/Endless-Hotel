@@ -63,6 +63,13 @@ void AAnomaly_Generator::SpawnAnomaly()
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
+	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
+	{
+		CurrentData.bIsNormal = true;
+		CurrentData.AnomalyID = DataC->NormalAnomalyData.ID;
+		CurrentData.DataLayer = DataC->NormalAnomalyData.DataLayer;
+		CurrentData.EventClass = DataC->NormalAnomalyData.Event;
+	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
@@ -108,7 +115,7 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	constexpr int32 NormalChance = 15;
-	const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance || Subsystem->Floor == STARTFLOOR;
+	const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance;
 
 	return DecideAnomaly(Subsystem->ActIndex, bForceNormal);
 }
