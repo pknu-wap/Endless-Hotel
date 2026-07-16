@@ -28,6 +28,9 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 			continue;
 		}
 		BookComps.Add(Comp);
+		
+		OriginalBookParents.Add(Comp->GetAttachParent());
+		OriginalBookRelativeTransforms.Add(Comp->GetRelativeTransform());
 	}
 }
 #pragma endregion
@@ -58,4 +61,33 @@ void AAnomaly_Object_ShelfBook::ShelfBooksFall()
 	}
 }
 
+#pragma endregion
+
+#pragma region Restore
+
+void AAnomaly_Object_ShelfBook::StartRestoring(float Duration)
+{
+	Super::StartRestoring(Duration);
+
+	for (int32 Index = 0; Index < BookComps.Num(); ++Index)
+	{
+		UStaticMeshComponent* Book = BookComps[Index].Get();
+
+		Book->SetSimulatePhysics(false);
+		Book->SetEnableGravity(false);
+		Book->SetPhysicsLinearVelocity(FVector::ZeroVector);
+		Book->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+		Book->SetNotifyRigidBodyCollision(false);
+
+		if (OriginalBookParents.IsValidIndex(Index) && OriginalBookParents[Index])
+		{
+			Book->AttachToComponent(OriginalBookParents[Index], FAttachmentTransformRules::KeepRelativeTransform);
+		}
+
+		if (OriginalBookRelativeTransforms.IsValidIndex(Index))
+		{
+			Book->SetRelativeTransform(OriginalBookRelativeTransforms[Index]);
+		}
+	}
+}
 #pragma endregion

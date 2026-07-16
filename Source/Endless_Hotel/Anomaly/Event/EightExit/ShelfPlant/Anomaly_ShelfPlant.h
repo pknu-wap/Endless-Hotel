@@ -4,10 +4,10 @@
 
 #include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Shelf.generated.h>
+#include <Anomaly_ShelfPlant.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Shelf : public AAnomaly_Event_EightExit
+class ENDLESS_HOTEL_API AAnomaly_ShelfPlant : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 	

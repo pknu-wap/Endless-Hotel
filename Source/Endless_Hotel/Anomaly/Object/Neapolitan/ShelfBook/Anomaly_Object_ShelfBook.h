@@ -58,4 +58,17 @@ protected:
 	bool bIsFallen = false;
 
 #pragma endregion
+
+#pragma region Restore
+
+public:
+	virtual void StartRestoring(float Duration = 2.5f) override;
+
+protected:
+	UPROPERTY()
+	TArray<TObjectPtr<USceneComponent>> OriginalBookParents;
+
+	TArray<FTransform> OriginalBookRelativeTransforms;
+
+#pragma endregion
 };

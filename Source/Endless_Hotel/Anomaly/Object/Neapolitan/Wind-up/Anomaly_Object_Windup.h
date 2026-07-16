@@ -3,6 +3,9 @@
 #pragma once
 
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
+#include <Components/AudioComponent.h>
+#include <Components/SkeletalMeshComponent.h>
+#include <Animation/AnimationAsset.h>
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Windup.generated.h>
 
@@ -29,6 +32,12 @@ protected:
 
 #pragma endregion
 
+#pragma region Components
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	TObjectPtr<USkeletalMeshComponent> SKM_Windup;
+
 #pragma region Sound
 
 protected:
@@ -42,7 +51,7 @@ protected:
 	uint8 MaxWindupPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	float WindupPlayInterval = 4.0f;
+	float WindupPlayInterval = 3.0f;
 
 	uint8 CurrentWindupPlayCount = 0;
 
@@ -52,10 +61,9 @@ protected:
 	int WrongPlayCount = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	float WrongPlayInterval = 1.0f;
+	float WrongPlayInterval = 0.5f;
 
-	uint8
-		CurrentWrongPlayCount = 0;
+	uint8 CurrentWrongPlayCount = 0;
 
 	FTimerHandle WrongPlayHandle;
 
@@ -71,6 +79,16 @@ public:
 	void StartWrongLoop();
 	
 	void WrongLoopTick();
+
+#pragma endregion
+
+#pragma region Animation
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimationAsset> WindupAnimation;
+
+	void PlayWindupAnimationOnce();
 
 #pragma endregion
 

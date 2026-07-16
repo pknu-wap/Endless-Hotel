@@ -1,12 +1,12 @@
 // Copyright by 2025-2 WAP Game 2 team
 
-#include "Anomaly/Object/EightExit/Shelf/Anomaly_Object_Shelf.h"
+#include "Anomaly/Object/EightExit/ShelfPlant/Anomaly_Object_ShelfPlant.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/SceneComponent.h>
 
 #pragma region Base
 
-AAnomaly_Object_Shelf::AAnomaly_Object_Shelf(const FObjectInitializer& ObjectInitializer)
+AAnomaly_Object_ShelfPlant::AAnomaly_Object_ShelfPlant(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	SM_Plant = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Plant"));
@@ -20,7 +20,7 @@ AAnomaly_Object_Shelf::AAnomaly_Object_Shelf(const FObjectInitializer& ObjectIni
 
 #pragma region Change
 
-void AAnomaly_Object_Shelf::StartChange()
+void AAnomaly_Object_ShelfPlant::StartChange()
 {
 	SM_Plant->SetVisibility(false);
 	SM_AfterPlant->SetVisibility(true);
