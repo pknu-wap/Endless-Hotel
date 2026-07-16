@@ -23,3 +23,21 @@ static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEX
 		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
 		Subsystem->bIsClear = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
 	}));
+
+static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRule"), TEXT("Usage: EHDebug.GameSystem.AddAnomalyRule <RuleName>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+	{
+		if (Args.Num() != 1)
+		{
+			return;
+		}
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		const UEnum* RuleEnum = StaticEnum<EAnomalyRule>();
+		uint8 RuleValue = RuleEnum->GetValueByNameString(Args[0]);
+		if (RuleValue == INDEX_NONE)
+		{
+			RuleValue = RuleEnum->GetValueByNameString(FString::Printf(TEXT("EAnomalyRule::%s"), *Args[0]));
+		}
+		const EAnomalyRule Rule = static_cast<EAnomalyRule>(RuleValue);
+
+		Subsystem->AddAnomalyRule(Rule);
+	}));

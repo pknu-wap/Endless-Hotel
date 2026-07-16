@@ -194,7 +194,6 @@ void UGameSystem::AddFloor()
 
 void UGameSystem::InitializePool()
 {
-	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	AnomalyCount = DataC->GetOriginAnomaly().Num();
 	DataC->ActAnomaly.Empty();
@@ -209,7 +208,6 @@ void UGameSystem::InitializePool()
 		DataC->RemoveClearedAnomaly();
 	}
 
-	// Shuffle
 	if (DataC->ActAnomaly.Num() > 1)
 	{
 		for (uint8 CurrentIndex = DataC->ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
@@ -257,6 +255,7 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
 	AnomalyRules.Add(AnomalyRule);
+	InitializePool();
 }
 
 #pragma endregion
