@@ -31,7 +31,7 @@ void AAnomaly_Elevator::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 
 void AAnomaly_Elevator::SetAnomalyState()
 {
-    switch (AnomalyName)
+    switch (AnomalyID)
     {
     case EAnomalyID::ElevatorNoFloor:
         TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);

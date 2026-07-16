@@ -9,7 +9,7 @@ void AAnomaly_Event_Phone::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Phone_Ringing:
 		SetupAnomalyAction(&AAnomaly_Object_Phone::RingingPhone, { EInteractType::TurnOff, EInteractType::Call });

@@ -10,7 +10,7 @@ void AAnomaly_Light::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Light_Destroy:
 		SetupAnomalyAction(&AAnomaly_Object_Light::DropLight);

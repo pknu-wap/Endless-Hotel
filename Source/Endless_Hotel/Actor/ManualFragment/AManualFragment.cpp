@@ -25,7 +25,7 @@ void AAManualFragment::SetManualFragment()
 		Destroy();
 		return;
 	}
-	if (Subsystem->CurrentAnomaly->AnomalyName == BoundAnomaly)
+	if (Subsystem->CurrentAnomaly->AnomalyID == BoundAnomaly)
 	{
 		SetActorTransform(Placement);
 	}

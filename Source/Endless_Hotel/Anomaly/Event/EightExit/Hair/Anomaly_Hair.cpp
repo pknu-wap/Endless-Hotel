@@ -27,7 +27,7 @@ void AAnomaly_Hair::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Hair:
 		SetupAnomalyAction(&AAnomaly_Object_Hair::StartHair);

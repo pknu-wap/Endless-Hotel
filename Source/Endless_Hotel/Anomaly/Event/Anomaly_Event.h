@@ -49,7 +49,7 @@ protected:
 	virtual void StartAnomalyAction();
 
 public:
-	EAnomalyID AnomalyName;
+	EAnomalyID AnomalyID;
 
 protected:
 	TArray<TFunction<void(UObject*)>> AnomalyActions;

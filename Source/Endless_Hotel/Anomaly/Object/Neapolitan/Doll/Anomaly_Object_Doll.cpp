@@ -166,7 +166,7 @@ void AAnomaly_Object_Doll::FinishBurning()
 	Object->SetHiddenInGame(true);
 	BurnNiagara->Deactivate();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	if (Subsystem->CurrentAnomaly->AnomalyName == EAnomalyID::Maze_Monster)
+	if (Subsystem->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
 	{
 		Subsystem->CurrentAnomaly->InteractSolveVerdict();
 	}

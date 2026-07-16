@@ -9,7 +9,7 @@ void AAnomaly_ShelfPlant::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Plant_Change:
 		SetupAnomalyAction(&AAnomaly_Object_ShelfPlant::StartChange);

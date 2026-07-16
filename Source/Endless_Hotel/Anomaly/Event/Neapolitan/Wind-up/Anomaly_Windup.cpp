@@ -9,7 +9,7 @@ void AAnomaly_Windup::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Windup:
 		SetupAnomalyAction(&AAnomaly_Object_Windup::StartWindupLoop, { EInteractType::TurnOff, EInteractType::Burn });

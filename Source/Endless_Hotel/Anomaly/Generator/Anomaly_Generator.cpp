@@ -22,7 +22,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto ObjectPool = Sub->GetAnomalyObject();
 
-	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyName);
+	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
 
 	for (const auto& TargetClass : TargetClasses)
 	{
@@ -36,7 +36,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 				}
 				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
 				{
-					AnomalyObject->SetAnomalyName(CurrentAnomaly->AnomalyName);
+					AnomalyObject->SetAnomalyName(CurrentAnomaly->AnomalyID);
 					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 				}
 			}
@@ -73,9 +73,9 @@ void AAnomaly_Generator::SpawnAnomaly()
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 	AnomalyObjectLinker(TargetClasses);
-	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName, CurrentData.DataLayer);
+	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
 	NextAnomalyData = DecideNext();
 	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
 	if (bIsInitialFloor)
@@ -136,7 +136,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 
 	if (Spawned)
 	{
-		Spawned->AnomalyName = Info.AnomalyID;
+		Spawned->AnomalyID = Info.AnomalyID;
 	}
 	return Spawned;
 }

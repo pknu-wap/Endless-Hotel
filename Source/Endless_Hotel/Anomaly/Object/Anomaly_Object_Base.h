@@ -32,7 +32,7 @@ public:
 
 public:
 	void SetSolvedFalse() { bSolved = false; }
-	void SetAnomalyName(EAnomalyID AnomalyID) { AnomalyName = AnomalyID; }
+	void SetAnomalyName(EAnomalyID ID) { AnomalyID = ID; }
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
@@ -42,7 +42,7 @@ public:
 	bool bIsEightExitObject = false;
 
 protected:
-	EAnomalyID AnomalyName;
+	EAnomalyID AnomalyID;
 
 #pragma endregion
 

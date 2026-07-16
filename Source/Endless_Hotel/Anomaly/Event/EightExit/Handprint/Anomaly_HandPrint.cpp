@@ -10,7 +10,7 @@ void AAnomaly_HandPrint::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Handprint:
 		ActiveTrigger();

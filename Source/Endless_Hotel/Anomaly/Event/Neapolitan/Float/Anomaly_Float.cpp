@@ -11,7 +11,7 @@ void AAnomaly_Float::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Float:
 		SetupAnomalyAction(&AAnomaly_Object_Base::StartFloating, { EInteractType::Restore });

@@ -106,7 +106,7 @@ void UGameSystem::ApplyVerdict()
 		bIsStartInBed = false;
 		if (bExceptClearedAnomaly)
 		{
-			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyName);
+			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyID);
 			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
@@ -144,22 +144,22 @@ void UGameSystem::TryInteractSolveVerdict()
 
 #pragma region Anomaly
 
-void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
-	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentAnomaly->AnomalyID = AnomalyID;
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	if(CurrentAnomaly->AnomalyName != EAnomalyID::Normal)
+	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
 	{
-		ActIndex++;
+		++ActIndex;
 	}
 }
 
-void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
+void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
-	NextAnomalyID = AnomalyName;
+	NextAnomalyID = AnomalyID;
 	NextAnomalyMap = AnomalyMap;
 }
 

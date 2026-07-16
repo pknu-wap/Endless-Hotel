@@ -20,7 +20,7 @@ void AAnomaly_SignDrop::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::SignDrop:
 		SetupAnomalyAction(&AAnomaly_Object_SignDrop::ExecuteSignDrop, { EInteractType::Restore });

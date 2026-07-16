@@ -14,7 +14,7 @@
 void AAnomaly_Maze::SetAnomalyState()
 {
 	Super::SetAnomalyState();
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Maze_Monster:
 	{

@@ -9,7 +9,7 @@ void AAnomaly_Disappear::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Disappear:
 		SetupAnomalyAction(&AAnomaly_Object_Disappear::StartDisappear);

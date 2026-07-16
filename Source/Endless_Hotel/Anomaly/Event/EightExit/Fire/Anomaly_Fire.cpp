@@ -15,7 +15,7 @@ void AAnomaly_Fire::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Fire:
 		SetupAnomalyAction(&AAnomaly_Object_Candle::FallCandle);
