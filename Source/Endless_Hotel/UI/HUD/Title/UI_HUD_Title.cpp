@@ -5,6 +5,7 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include <Components/AudioComponent.h>
 #include <Components/Image.h>
 #include <Components/Button.h>
 #include <Kismet/GameplayStatics.h>
@@ -29,6 +30,10 @@ void UUI_HUD_Title::ShowWidget()
 	Super::ShowWidget();
 
 	SetLogoImage();
+
+	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
+	PlayBGM();
 }
 
 #pragma endregion
@@ -40,6 +45,7 @@ void UUI_HUD_Title::Click_Start()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->bIsClear = false;
 	Subsystem->Floor = 9;
+	Subsystem->bIsFirstStartFloor = true;
 
 	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
@@ -109,6 +115,21 @@ void UUI_HUD_Title::SetLogoImage()
 	}
 
 	Image_Logo->SetBrushFromTexture(Texture_Clear);
+}
+
+#pragma endregion
+
+#pragma region BGM
+
+void UUI_HUD_Title::StopBGM(float Duration)
+{
+	AC->OnAudioFinished.Clear();
+	AC->FadeOut(Duration, 0.f);
+}
+
+void UUI_HUD_Title::PlayBGM()
+{
+	AC->Play();
 }
 
 #pragma endregion

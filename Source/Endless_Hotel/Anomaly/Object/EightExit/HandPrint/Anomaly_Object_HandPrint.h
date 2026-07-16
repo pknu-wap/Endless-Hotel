@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
+#include "Actor/EHActor.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_HandPrint.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_HandPrint : public AAnomaly_Object_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Object_HandPrint : public AEHActor
 {
 	GENERATED_BODY()
 
@@ -18,40 +18,20 @@ public:
 
 #pragma endregion
 
-#pragma region Reset
+#pragma region HandPrint
 
 public:
-	virtual void Reset() override;
-
-#pragma endregion
-
-#pragma region Cong
-
-public:
-	void ReserveCongCong();
+	void ShowHandPrint(uint8 Index);
 
 protected:
-	void ShowHandPrint();
-	void TurnLights(bool bOn);
-
-public:
-	static bool bIsFirstHandPrint;
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly")
-	uint8 HandPrintIndex = 0;
-
-	UPROPERTY(EditAnywhere, Category = "Decal")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UDecalComponent> Decal_HandPrint;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC;
 
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_First;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_Default;
+	UPROPERTY(EditAnywhere, Category = "HandPrint")
+	TObjectPtr<class USoundWave> SW_First;
 
 #pragma endregion
 

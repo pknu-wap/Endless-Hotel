@@ -49,14 +49,13 @@ protected:
 	virtual void StartAnomalyAction();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anomaly|ID")
 	EAnomalyID AnomalyName;
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
 protected:
-	TArray<TFunction<void(class AAnomaly_Object_Base*)>> AnomalyActions;
+	TArray<TFunction<void(UObject*)>> AnomalyActions;
 
 #pragma endregion
 
@@ -66,7 +65,7 @@ public:
 	virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
+	UPROPERTY(EditAnywhere, Category = "Anomaly|Verdict")
 	bool bIsSolved = false;
 
 protected:
@@ -125,12 +124,15 @@ protected:
 	template<typename ObjectType>
 	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None }, bool bIsOrdered = false)
 	{
-		AnomalyActions.Add([SelectedFunc, Interactions, bIsOrdered](AAnomaly_Object_Base* Obj)
+		AnomalyActions.Add([SelectedFunc, Interactions, bIsOrdered](UObject* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
-					TargetObj->CorrectInteractTypes = Interactions;
-					TargetObj->bIsOrderedInteractTypes = bIsOrdered;
+					if constexpr (TIsDerivedFrom<ObjectType, AAnomaly_Object_Base>::IsDerived)
+					{
+						TargetObj->CorrectInteractTypes = Interactions;
+						TargetObj->bIsOrderedInteractTypes = bIsOrdered;
+					}
 					(TargetObj->*SelectedFunc)();
 				}
 			});

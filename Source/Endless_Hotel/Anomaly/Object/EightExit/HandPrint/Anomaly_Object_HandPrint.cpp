@@ -1,87 +1,43 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/HandPrint/Anomaly_Object_HandPrint.h"
-#include "Anomaly/Object/EightExit/Light/Anomaly_Object_Light.h"
 #include <Components/AudioComponent.h>
 #include <Components/DecalComponent.h>
-#include <EngineUtils.h>
 
 #pragma region Base
-
-bool AAnomaly_Object_HandPrint::bIsFirstHandPrint = true;
 
 AAnomaly_Object_HandPrint::AAnomaly_Object_HandPrint(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Decal_HandPrint = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal_HandPrint"));
 	SetRootComponent(Decal_HandPrint);
-	Decal_HandPrint->SetRelativeRotation(FRotator(90, 0, 0));
+	Decal_HandPrint->SetVisibility(false);
 
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AC->SetupAttachment(RootComponent);
+	AC->SetAutoActivate(false);
 }
 
 #pragma endregion
 
-#pragma region Reset
+#pragma region HandPrint
 
-void AAnomaly_Object_HandPrint::Reset()
+void AAnomaly_Object_HandPrint::ShowHandPrint(uint8 Index)
 {
-	bIsFirstHandPrint = true;
+	FTimerHandle EffectHandle;
+	float ShowDuration = 2.f + Index * 0.1f;
 
-	TurnLights(true);
-	
-	Destroy();
-}
-
-#pragma endregion
-
-#pragma region Cong
-
-void AAnomaly_Object_HandPrint::ReserveCongCong()
-{
-	constexpr float FirstDuration = 2.1f;
-
-	if (bIsFirstHandPrint)
+	if (Index == 1)
 	{
-		AC->Sound = Sound_First;
-		AC->Play();
-
-		TurnLights(false);
-
-		FTimerHandle FirstHandle;
-		GetWorld()->GetTimerManager().SetTimer(FirstHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				Decal_HandPrint->SetVisibility(true);
-			}), FirstDuration, false);
-
-		return;
+		ShowDuration = 0.1f;
+		AC->SetSound(SW_First);
 	}
 
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, this, &ThisClass::ShowHandPrint, FirstDuration + HandPrintIndex * 0.1f, false);
-}
-
-void AAnomaly_Object_HandPrint::ShowHandPrint()
-{
-	Decal_HandPrint->SetVisibility(true);
-	AC->Sound = Sound_Default;
-	AC->Play();
-}
-
-void AAnomaly_Object_HandPrint::TurnLights(bool bOn)
-{
-	if (!bIsFirstHandPrint)
-	{
-		return;
-	}
-
-	for (TActorIterator<AAnomaly_Object_Light> Iter(GetWorld()); Iter; ++Iter)
-	{
-		Iter->TurnLight(bOn);
-	}
-
-	bIsFirstHandPrint = false;
+	GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			Decal_HandPrint->SetVisibility(true);
+			AC->Play();
+		}), ShowDuration, false);
 }
 
 #pragma endregion

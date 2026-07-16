@@ -91,6 +91,22 @@ void UUI_Controller::CloseAllWidgets()
 
 #pragma endregion
 
+#pragma region Show & Hide
+
+void UUI_Controller::ShowHUDWidget(bool bShow)
+{
+	ESlateVisibility SV = bShow ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed;
+	GetHUDWidget()->SetVisibility(SV);
+}
+
+void UUI_Controller::ShowPopUpWidget(bool bShow)
+{
+	ESlateVisibility SV = bShow ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Collapsed;
+	GetPopUpWidget()->SetVisibility(SV);
+}
+
+#pragma endregion
+
 #pragma region Input
 
 void UUI_Controller::SetInputMode(const EWidgetInputMode& InputMode)

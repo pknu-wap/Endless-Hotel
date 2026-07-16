@@ -28,10 +28,10 @@ protected:
 	void ButtonUnhover();
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Hover")
 	FString Color_Hover;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Hover")
 	FString Color_Unhover;
 
 #pragma endregion

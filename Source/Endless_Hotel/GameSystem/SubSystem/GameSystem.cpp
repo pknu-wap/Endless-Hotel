@@ -122,6 +122,7 @@ void UGameSystem::ApplyVerdict()
 		}
 	}
 	bIsAnomalySolved = false;
+	bIsFirstStartFloor = false;
 }
 
 void UGameSystem::TryInteractSolveVerdict()

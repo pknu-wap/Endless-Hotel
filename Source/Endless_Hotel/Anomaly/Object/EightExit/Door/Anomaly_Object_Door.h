@@ -15,12 +15,13 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 
 public:
 	AAnomaly_Object_Door(const FObjectInitializer& ObjectInitializer);
+	virtual void Reset() override;
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Index")
 	int32 DoorIndex = 0;
 
 protected:
@@ -104,6 +105,7 @@ protected:
 #pragma endregion
 
 #pragma region Close
+
 public:
 	void CloseDoor();
 	void PlayClose_Door();
@@ -153,6 +155,7 @@ protected:
 #pragma endregion
 	
 #pragma region Interact
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
 	TObjectPtr<class USoundWave> Sound_HandleTwist;
@@ -161,10 +164,6 @@ protected:
 
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
-
-protected:
-	UFUNCTION()
-	void UpdateDoorByFloor();
 
 #pragma endregion
 
@@ -200,9 +199,6 @@ protected:
 	FTransform DoorOpenTransform;
 
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
-	FTransform DoorInitialTransform;
-
-	UPROPERTY(EditAnywhere, Category = "Door Settings")
 	float RotationSpeed = 2.0f;
 
 	bool bIsOpening = false;
@@ -218,6 +214,14 @@ protected:
 	void OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void CloseFirstDoor();
+
+#pragma endregion
+
+#pragma region Normal
+
+public:
+	void ReadyDoor();
+	void ReadyDoorOpened();
 
 #pragma endregion
 
