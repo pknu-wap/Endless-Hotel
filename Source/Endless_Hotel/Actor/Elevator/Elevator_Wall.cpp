@@ -13,11 +13,6 @@ AElevator_Wall::AElevator_Wall(const FObjectInitializer& ObjectInitializer)
     RootComponent = Wall;
 }
 
-void AElevator_Wall::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
 void AElevator_Wall::ResetWall()
 {
     auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
