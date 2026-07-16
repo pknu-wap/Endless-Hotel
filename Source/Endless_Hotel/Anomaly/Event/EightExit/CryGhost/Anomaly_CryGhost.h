@@ -65,7 +65,6 @@ protected:
 
 private:
 	void TurnAllLights(bool bOn);
-	void MakeNoiseSound();
 	void PlayNoiseSound();
 
 protected:
