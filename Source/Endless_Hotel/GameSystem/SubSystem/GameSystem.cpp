@@ -67,7 +67,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	bIsStartInBed = (bIsStartInBed) ? bIsStartInBed : DataLayer == EMapDataLayer::Lobby;
+	bIsStartInBed = bIsFirstStartFloor ? true : bIsStartInBed;
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();

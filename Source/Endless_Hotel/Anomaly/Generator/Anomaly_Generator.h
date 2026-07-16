@@ -61,7 +61,7 @@ public:
 	UFUNCTION()
 	void SpawnAnomaly();
 
-	FAnomalySpawnInfo DecideAnomaly(uint8 Index);
+	FAnomalySpawnInfo DecideAnomaly(uint8 Index, bool bForceNormal);
 	FAnomalySpawnInfo DecideNext();
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel);
 

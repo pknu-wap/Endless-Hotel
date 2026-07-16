@@ -63,12 +63,6 @@ void AAnomaly_Generator::SpawnAnomaly()
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
-	if (Subsystem->Floor == STARTFLOOR)
-	{
-		CurrentData.bIsNormal = true;
-		CurrentData.DataLayer = EMapDataLayer::Hotel;
-		CurrentData.AnomalyID = EAnomalyID::Normal;
-	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
@@ -87,20 +81,20 @@ void AAnomaly_Generator::SpawnAnomaly()
 	}
 }
 
-FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
+FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNormal)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	const bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
-	const FAnomalyEntry& Data = bHasAnomaly ? DataC->ActAnomaly[Index] : DataC->NormalAnomalyData;
 
 	if (!bHasAnomaly)
 	{
 		Sub->InitializePool();
 	}
+	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? DataC->NormalAnomalyData : DataC->ActAnomaly[Index];
 
 	FAnomalySpawnInfo Info;
-	Info.bIsNormal = !bHasAnomaly;
+	Info.bIsNormal = bForceNormal || !bHasAnomaly;
 	Info.AnomalyID = Data.ID;
 	Info.DataLayer = Data.DataLayer;
 	Info.EventClass = Data.Event;
@@ -111,18 +105,10 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
 FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	int32 IsNormal = FMath::RandRange(1, 100);
+	constexpr int32 NormalChance = 15;
+	const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance || Subsystem->Floor == STARTFLOOR;
 
-	if (IsNormal > 85)
-	{
-		FAnomalySpawnInfo Info;
-		Info.bIsNormal = true;
-		Info.AnomalyID = EAnomalyID::None;
-		Info.DataLayer = EMapDataLayer::Hotel;
-		return Info;
-	}
-
-	return DecideAnomaly(Subsystem->ActIndex);
+	return DecideAnomaly(Subsystem->ActIndex, bForceNormal);
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel)
