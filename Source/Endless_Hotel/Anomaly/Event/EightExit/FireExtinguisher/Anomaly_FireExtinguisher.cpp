@@ -71,8 +71,8 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 
 void AAnomaly_FireExtinguisher::PlayDownAnimMontage()
 {
-	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	Player->PlayAnimMontage(AM_DownUp);
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->PlayAnimation(AM_DownUp);
 	
 	auto* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);
