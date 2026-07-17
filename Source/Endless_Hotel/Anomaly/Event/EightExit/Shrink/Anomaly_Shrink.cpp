@@ -38,7 +38,7 @@ void AAnomaly_Shrink::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Shrink:
 		ScheduleAnomaly(10);

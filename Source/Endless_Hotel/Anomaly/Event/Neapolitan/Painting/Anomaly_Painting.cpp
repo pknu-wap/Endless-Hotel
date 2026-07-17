@@ -11,7 +11,7 @@ void AAnomaly_Painting::SetAnomalyState()
 
 	SetupAnomalyAction(&AAnomaly_Object_Painting::DieWatchingPainting);
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Painting_Eye:
 		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, { EInteractType::Rotate });

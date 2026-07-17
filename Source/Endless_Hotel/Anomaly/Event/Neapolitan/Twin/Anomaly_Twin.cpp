@@ -11,7 +11,7 @@ void AAnomaly_Twin::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Twin:
 		SetupAnomalyAction(&AAnomaly_Twin::StartTwin);

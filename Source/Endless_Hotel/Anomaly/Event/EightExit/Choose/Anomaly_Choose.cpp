@@ -9,7 +9,7 @@ void AAnomaly_Choose::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Choose:
 		SetChooseVerdictMode();

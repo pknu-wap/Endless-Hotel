@@ -103,6 +103,11 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UDataController::GetObjectByID(EAnomal
 	return ResultArray;
 }
 
+bool UDataController::CanSpawnAnomaly(const FAnomalyEntry& AnomalyEntry, const TArray<EAnomalyRule>& ActiveRules) const
+{
+	return ActiveRules.Contains(AnomalyEntry.Rule);
+}
+
 void UDataController::RemoveClearedAnomaly()
 {
 	ActAnomaly.RemoveAll([this](const auto& Entry)
@@ -120,10 +125,9 @@ void UDataController::RemoveNoRuleAnomaly()
 {
 	// Temp Logic : Remove Anomaly By Rule
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	ActAnomaly.RemoveAll([GameSystem](const auto& Entry)
+	ActAnomaly.RemoveAll([this, GameSystem](const FAnomalyEntry& Entry)
 		{
-			const AAnomaly_Event* DefaultObj = GetDefault<AAnomaly_Event>(Entry.Event.Get());
-			return !GameSystem->AnomalyRules.Contains(DefaultObj->AnomalyRule);
+			return !CanSpawnAnomaly(Entry, GameSystem->AnomalyRules);
 		});
 }
 

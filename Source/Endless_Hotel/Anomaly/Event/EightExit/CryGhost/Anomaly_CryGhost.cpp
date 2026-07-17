@@ -15,7 +15,7 @@ void AAnomaly_CryGhost::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::CryGhost:
 		TriggerBox->SetWorldTransform(CryTriggerTrans);
@@ -53,7 +53,7 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::CryGhost:
 		SpawnCryGhost(CrySpawnTrans);

@@ -22,7 +22,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto ObjectPool = Sub->GetAnomalyObject();
 
-	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyName);
+	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
 
 	for (const auto& TargetClass : TargetClasses)
 	{
@@ -36,7 +36,7 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 				}
 				if (AnomalyObject->ExecuteAnomalies.Contains(TargetAnomalyName))
 				{
-					AnomalyObject->SetAnomalyName(CurrentAnomaly->AnomalyName);
+					AnomalyObject->SetAnomalyName(CurrentAnomaly->AnomalyID);
 					CurrentAnomaly->LinkedObjects.Add(AnomalyObject);
 				}
 			}
@@ -63,18 +63,19 @@ void AAnomaly_Generator::SpawnAnomaly()
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
-	if (Subsystem->Floor == STARTFLOOR)
+	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
 	{
 		CurrentData.bIsNormal = true;
-		CurrentData.DataLayer = EMapDataLayer::Hotel;
-		CurrentData.AnomalyID = EAnomalyID::Normal;
+		CurrentData.AnomalyID = DataC->NormalAnomalyData.ID;
+		CurrentData.DataLayer = DataC->NormalAnomalyData.DataLayer;
+		CurrentData.EventClass = DataC->NormalAnomalyData.Event;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyName);
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
 	AnomalyObjectLinker(TargetClasses);
-	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyName, CurrentData.DataLayer);
+	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
 	NextAnomalyData = DecideNext();
 	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
 	if (bIsInitialFloor)
@@ -87,77 +88,56 @@ void AAnomaly_Generator::SpawnAnomaly()
 	}
 }
 
-FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index)
+FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNormal)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	if (!DataC->ActAnomaly.IsValidIndex(Index))
+	bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
+
+	if (!bHasAnomaly)
 	{
 		Sub->InitializePool();
-		return DecideAnomaly(0);
+		Index = Sub->ActIndex;
+		bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
 	}
+	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? DataC->NormalAnomalyData : DataC->ActAnomaly[Index];
+
 	FAnomalySpawnInfo Info;
-	Info.bIsNormal = false;
-	Info.Index = Index;
-	Info.AnomalyID = DataC->ActAnomaly[Index].ID;
-	Info.DataLayer = DataC->ActAnomaly[Index].DataLayer;
+	Info.bIsNormal = bForceNormal || !bHasAnomaly;
+	Info.AnomalyID = Data.ID;
+	Info.DataLayer = Data.DataLayer;
+	Info.EventClass = Data.Event;
+
 	return Info;
 }
 
 FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	int32 IsNormal = FMath::RandRange(1, 100);
+	constexpr int32 NormalChance = 15;
+	const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance;
 
-	if (IsNormal > 85)
-	{
-		FAnomalySpawnInfo Info;
-		Info.bIsNormal = true;
-		Info.AnomalyID = EAnomalyID::None;
-		Info.DataLayer = EMapDataLayer::Hotel;
-		return Info;
-	}
-
-	return DecideAnomaly(Subsystem->ActIndex);
+	return DecideAnomaly(Subsystem->ActIndex, bForceNormal);
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel)
 {
-	UClass* AnomalyClass;
-	if (Info.bIsNormal)
-	{
-		AnomalyClass = NormalClass.LoadSynchronous();
-	}
-	else
-	{
-		auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-		TSoftClassPtr<AAnomaly_Event> SoftClass = DataC->ActAnomaly[Info.Index].Event;
-		AnomalyClass = SoftClass.LoadSynchronous();
-
-		if (!IsValid(AnomalyClass))
-		{
-			FTimerHandle RetryHandle;
-			GetWorld()->GetTimerManager().SetTimer(RetryHandle,
-				FTimerDelegate::CreateWeakLambda(this, [this, Info, SpawnLevel]()
-					{
-						SpawnFromInfo(Info, SpawnLevel);
-					}), 0.5f, false);
-			return nullptr;
-		}
-	}
-
-	const FTransform SpawnTransform(FVector::ZeroVector);
-	FActorSpawnParameters Params;
-	Params.OverrideLevel = SpawnLevel;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, SpawnTransform, Params);
-	if (!Spawned)
+	UClass* AnomalyClass = Info.EventClass.LoadSynchronous();
+	if (!IsValid(AnomalyClass))
 	{
 		return nullptr;
 	}
 
-	Spawned->AnomalyName = Info.AnomalyID;
+	FActorSpawnParameters Params;
+	Params.OverrideLevel = SpawnLevel;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	AAnomaly_Event* Spawned = GetWorld()->SpawnActor<AAnomaly_Event>(AnomalyClass, FTransform::Identity, Params);
+
+	if (Spawned)
+	{
+		Spawned->AnomalyID = Info.AnomalyID;
+	}
 	return Spawned;
 }
 

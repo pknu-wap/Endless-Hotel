@@ -9,7 +9,7 @@ void AAnomaly_MusicBox::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::MusicBox_Ringing:
 		SetupAnomalyAction(&AAnomaly_Object_MusicBox::PlayMusicBox, { EInteractType::TurnOff });

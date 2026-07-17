@@ -9,7 +9,7 @@ void AAnomaly_Ceiling::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Ceil_Rotate:
 		SetupAnomalyAction(&AAnomaly_Object_Ceiling::PlayCeilingRotate);

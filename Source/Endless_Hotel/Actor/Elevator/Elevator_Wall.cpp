@@ -13,20 +13,10 @@ AElevator_Wall::AElevator_Wall(const FObjectInitializer& ObjectInitializer)
     RootComponent = Wall;
 }
 
-void AElevator_Wall::BeginPlay()
-{
-    Super::BeginPlay();
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-}
-
 void AElevator_Wall::ResetWall()
 {
     auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
     FVector StartLocation = Subsystem->bIsStartInBed && bIsOver ? StandardLocation + End : StandardLocation + Start;
-    if(bIsOver)
-    {
-        Subsystem->bIsStartInBed = false;
-    }
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = 1000;

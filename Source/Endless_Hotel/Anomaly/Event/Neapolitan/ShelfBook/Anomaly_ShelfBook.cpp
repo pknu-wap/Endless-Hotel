@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Event/Neapolitan/ShelfBook/Anomaly_ShelfBook.h"
 #include "Anomaly/Object/Neapolitan/ShelfBook/Anomaly_Object_ShelfBook.h"
@@ -9,7 +9,7 @@ void AAnomaly_ShelfBook::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Shelf_Book:
 		SetupAnomalyAction(&AAnomaly_Object_ShelfBook::FallSound, { EInteractType::Restore });

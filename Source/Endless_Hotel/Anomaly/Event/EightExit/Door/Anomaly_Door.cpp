@@ -28,7 +28,7 @@ void AAnomaly_Door::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Door_Shake:
 		SetupAnomalyAction(&AAnomaly_Object_Door::DoorShaking);
