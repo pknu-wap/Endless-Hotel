@@ -9,7 +9,7 @@ void AAnomaly_Doll::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Doll:
 		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });

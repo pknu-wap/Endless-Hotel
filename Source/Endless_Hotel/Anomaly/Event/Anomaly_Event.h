@@ -49,10 +49,7 @@ protected:
 	virtual void StartAnomalyAction();
 
 public:
-	EAnomalyID AnomalyName;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Rules")
-	EAnomalyRule AnomalyRule = EAnomalyRule::None;
+	EAnomalyID AnomalyID;
 
 protected:
 	TArray<TFunction<void(UObject*)>> AnomalyActions;

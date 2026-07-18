@@ -9,7 +9,7 @@ void AAnomaly_Radio::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Radio:
 		SetupAnomalyAction(&AAnomaly_Object_Radio::PointerMoving, { EInteractType::TurnOff });

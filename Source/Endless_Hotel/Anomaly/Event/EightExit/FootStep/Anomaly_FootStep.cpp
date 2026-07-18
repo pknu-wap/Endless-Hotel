@@ -12,7 +12,7 @@ void AAnomaly_FootStep::SetAnomalyState()
 {
     Super::SetAnomalyState();
 
-    switch (AnomalyName) {
+    switch (AnomalyID) {
     case EAnomalyID::FootStep:
         ScheduleAnomaly(20);
         break;

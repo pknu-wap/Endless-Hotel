@@ -108,8 +108,8 @@ public:
 #pragma region Anomaly
 
 public:
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
-	void SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap);
+	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
+	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void LoadNextMap();
 
 public:
@@ -147,6 +147,7 @@ public:
 	void InitializePool();
 	void RegisterAnomalyObject(AAnomaly_Object_Base* Object);
 	void UnRegisterAnomalyObject(AAnomaly_Object_Base* Object);
+	void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
 	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; };
 
 #pragma endregion

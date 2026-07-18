@@ -15,7 +15,7 @@ void AAnomaly_FireExtinguisher::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::FireExt_Explode:
 		SetupAnomalyAction(&AAnomaly_Object_FireExtinguisher::Explode);

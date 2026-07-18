@@ -13,7 +13,7 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::CrawlChild:
 		SetupAnomalyAction(&AAnomaly_Object_CrawlChild::ActivePlayTrigger);

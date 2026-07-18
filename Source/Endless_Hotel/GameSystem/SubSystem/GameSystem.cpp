@@ -67,7 +67,10 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	bIsStartInBed = (bIsStartInBed) ? bIsStartInBed : DataLayer == EMapDataLayer::Lobby;
+	if (bIsFirstStartFloor)
+	{
+		bIsStartInBed = true;
+	}
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();
@@ -100,10 +103,10 @@ void UGameSystem::ApplyVerdict()
 	if (bPassed)
 	{
 		SubFloor();
-
+		bIsStartInBed = false;
 		if (bExceptClearedAnomaly)
 		{
-			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyName);
+			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyID);
 			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
 		}
 	}
@@ -119,6 +122,10 @@ void UGameSystem::ApplyVerdict()
 		if(Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			LoadNextMap();
+		}
+		else
+		{
+			bIsStartInBed = false;
 		}
 	}
 	bIsAnomalySolved = false;
@@ -137,19 +144,22 @@ void UGameSystem::TryInteractSolveVerdict()
 
 #pragma region Anomaly
 
-void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
+void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
-	CurrentAnomaly->AnomalyName = AnomalyName;
+	CurrentAnomaly->AnomalyID = AnomalyID;
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	ActIndex++;
+	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
+	{
+		++ActIndex;
+	}
 }
 
-void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyName, EMapDataLayer AnomalyMap)
+void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
-	NextAnomalyID = AnomalyName;
+	NextAnomalyID = AnomalyID;
 	NextAnomalyMap = AnomalyMap;
 }
 
@@ -194,7 +204,6 @@ void UGameSystem::AddFloor()
 
 void UGameSystem::InitializePool()
 {
-	// Copy from Original
 	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
 	AnomalyCount = DataC->GetOriginAnomaly().Num();
 	DataC->ActAnomaly.Empty();
@@ -202,15 +211,13 @@ void UGameSystem::InitializePool()
 
 	ActIndex = 0;
 
-	// Temp Logic : Remove Anomaly By Rule
-	// DataC->RemoveNoRuleAnomaly();
+	DataC->RemoveNoRuleAnomaly();
 
 	if (bExceptClearedAnomaly && !DataC->ClearedAnomalySet.IsEmpty() && DataC->ClearedAnomalySet.Num() < AnomalyCount)
 	{
 		DataC->RemoveClearedAnomaly();
 	}
 
-	// Shuffle
 	if (DataC->ActAnomaly.Num() > 1)
 	{
 		for (uint8 CurrentIndex = DataC->ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
@@ -253,6 +260,15 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 			CurrentAnomaly->LinkedObjects.Remove(Object);
 		}
 	}
+}
+
+void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
+{
+	AnomalyRules.Add(AnomalyRule);
+	FSaveData_Manual SavedRules;
+	SavedRules.ActiveRules = AnomalyRules;
+	USaveManager::SaveData_Manual(SavedRules);
+	InitializePool();
 }
 
 #pragma endregion

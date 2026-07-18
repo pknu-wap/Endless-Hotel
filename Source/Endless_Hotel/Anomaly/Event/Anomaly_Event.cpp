@@ -49,7 +49,7 @@ void AAnomaly_Event::StartAnomalyAction()
 		{
 			if (AAnomaly_Object_Base* AnomalyObj = Cast<AAnomaly_Object_Base>(TargetObj))
 			{
-				if (!AnomalyObj->ExecuteAnomalies.Contains(AnomalyName))
+				if (!AnomalyObj->ExecuteAnomalies.Contains(AnomalyID))
 				{
 					continue;
 				}
@@ -83,7 +83,7 @@ void AAnomaly_Event::SetAnomalyState()
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
 		
-		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyName)) 
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyID)) 
 		{
 			continue;
 		}

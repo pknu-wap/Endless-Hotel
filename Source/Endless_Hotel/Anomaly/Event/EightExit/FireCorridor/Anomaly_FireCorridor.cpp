@@ -9,7 +9,7 @@ void AAnomaly_FireCorridor::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::FireCorridor:
 		ScheduleAnomaly();

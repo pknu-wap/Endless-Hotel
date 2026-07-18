@@ -9,7 +9,7 @@ void AAnomaly_Clock::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Clock_Ringing:
 		SetupAnomalyAction(&AAnomaly_Object_Clock::RingingClock, { EInteractType::TurnOff });

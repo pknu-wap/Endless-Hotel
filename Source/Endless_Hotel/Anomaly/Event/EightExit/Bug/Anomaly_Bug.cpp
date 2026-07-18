@@ -9,7 +9,7 @@ void AAnomaly_Bug::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Bug:
 		ActiveTrigger();

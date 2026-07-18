@@ -10,7 +10,7 @@ void AAnomaly_Cart::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	switch (AnomalyName)
+	switch (AnomalyID)
 	{
 	case EAnomalyID::Cart_Moving:
 		SetupAnomalyAction(&AAnomaly_Object_Cart::CartMoving, { EInteractType::Restore });

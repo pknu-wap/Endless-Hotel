@@ -4,6 +4,7 @@
 
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Level/Type_Level.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Type_AnomalyEntry.generated.h>
 
@@ -15,6 +16,9 @@ struct FAnomalyEntry
 public:
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EAnomalyID ID = EAnomalyID::None;
+
+    UPROPERTY(EditAnywhere, Category = "InGame|Data")
+    EAnomalyRule Rule = EAnomalyRule::EightExit;
 
     UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
     TSoftClassPtr<class AAnomaly_Event> Event;

@@ -20,9 +20,6 @@ public:
 	void ResetWall();
 
 protected:
-	virtual void BeginPlay() override;
-
-protected:
 	UPROPERTY(EditAnywhere, Category="Wall")
 	TObjectPtr<UStaticMeshComponent> Wall;
 
