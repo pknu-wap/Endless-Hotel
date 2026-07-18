@@ -2,11 +2,7 @@
 
 #include "Anomaly/Event/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "GameSystem/SubSystem/GameSystem.h"
 #include <Components/BoxComponent.h>
-#include <Kismet/GameplayStatics.h>
-#include <GameFramework/Character.h>
 
 #pragma region Base
 
@@ -31,7 +27,7 @@ void AAnomaly_Door::SetAnomalyState()
 	switch (AnomalyName)
 	{
 	case EAnomalyID::Door_Shake:
-		SetupAnomalyAction(&AAnomaly_Object_Door::DoorShaking);
+		SetupAnomalyAction(&AAnomaly_Object_Door::StartShaking);
 		ActiveTrigger();
 		break;
 	}
