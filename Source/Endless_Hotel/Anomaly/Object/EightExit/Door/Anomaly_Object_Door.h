@@ -61,9 +61,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Shake")
 	TArray<TObjectPtr<USoundWave>> SW_Voice;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UAudioComponent> AC_Shake;
-
 private:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TL_Door;
@@ -71,7 +68,10 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TL_Handle;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> AC_Shake;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC_Voice;
 
 	FVector DoorOrigin;
