@@ -3,10 +3,23 @@
 #include "Actor/ManualFragment/AManualFragment.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include <Components/WidgetComponent.h>
 
 #pragma region Base
 
-void AAManualFragment::BeginPlay()
+AManualFragment::AManualFragment(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+
+	/*static ConstructorHelpers::FClassFinder<UUserWidget> UIFinder(TEXT("Component_ManualWidget's Path"));*/
+
+	Component_ManualWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component_ManualWidget"));
+	/*Component_ManualWidget->SetupAttachment(RootComponent);
+	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
+	Component_Widget->SetWidgetClass(UIFinder.Class);*/
+}
+
+void AManualFragment::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
@@ -17,7 +30,7 @@ void AAManualFragment::BeginPlay()
 
 #pragma region RuleSetting
 
-void AAManualFragment::SetManualFragment()
+void AManualFragment::SetManualFragment()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	if (Subsystem->AnomalyRules.Contains(Rule))
@@ -35,7 +48,7 @@ void AAManualFragment::SetManualFragment()
 
 #pragma region Interact
 
-void AAManualFragment::Interact_Implementation(AEHCharacter* Interacter)
+void AManualFragment::Interact_Implementation(AEHCharacter* Interacter)
 {
 	Super::Interact_Implementation(Interacter);
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();

@@ -9,14 +9,25 @@
 #include <AManualFragment.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAManualFragment : public AInteractBase
+class ENDLESS_HOTEL_API AManualFragment : public AInteractBase
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
+public:
+	AManualFragment(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region UI
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	TObjectPtr<class UWidgetComponent> Component_ManualWidget;
 
 #pragma endregion
 
