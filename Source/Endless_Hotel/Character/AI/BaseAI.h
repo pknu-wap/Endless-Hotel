@@ -21,7 +21,7 @@ public:
 #pragma region Navigation
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Navigation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Navigation)
 	TObjectPtr<class UNavigationInvokerComponent> NavInvoker;
 
 	UPROPERTY(EditAnywhere, Category = Navigation)
