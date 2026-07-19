@@ -12,7 +12,7 @@ void AAnomaly_Windup::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Windup:
-		SetupAnomalyAction(&AAnomaly_Object_Windup::StartWindupLoop, { EInteractType::TurnOff, EInteractType::Burn });
+		SetupAnomalyAction<AAnomaly_Object_Windup>(&AAnomaly_Object_Windup::StartWindupLoop, FAnomalyActionInfo({ EInteractType::TurnOff, EInteractType::Burn }));
 		ScheduleAnomaly(20);
 		break;
 	}

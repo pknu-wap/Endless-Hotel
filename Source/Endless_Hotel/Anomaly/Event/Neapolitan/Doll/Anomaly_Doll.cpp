@@ -12,13 +12,13 @@ void AAnomaly_Doll::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Doll:
-		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
+		SetupAnomalyAction<AAnomaly_Object_Doll>(&AAnomaly_Object_Doll::ActivateDoll_Show, FAnomalyActionInfo({ EInteractType::Burn }));
 		ScheduleAnomaly();
 		break;
 
 	case EAnomalyID::Doll_Coming:
-		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show);
-		SetupAnomalyAction(&AAnomaly_Object_Doll::SpawnComingDolls, { EInteractType::Burn });
+		SetupAnomalyAction<AAnomaly_Object_Doll>(&AAnomaly_Object_Doll::ActivateDoll_Show);
+		SetupAnomalyAction<AAnomaly_Object_Doll>(&AAnomaly_Object_Doll::SpawnComingDolls, FAnomalyActionInfo({ EInteractType::Burn }));
 		ActiveTrigger();
 		break;
 	}

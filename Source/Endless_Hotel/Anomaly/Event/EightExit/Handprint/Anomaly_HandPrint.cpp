@@ -13,6 +13,8 @@ void AAnomaly_HandPrint::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Handprint:
+		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnHandPrint);
+		SetupAnomalyAction<ThisClass>(&ThisClass::TurnAllLights, FAnomalyActionInfo(), false);
 		ActiveTrigger();
 		break;
 	}
@@ -30,12 +32,6 @@ void AAnomaly_HandPrint::DisableAnomaly()
 	TurnAllLights(true);
 
 	Super::DisableAnomaly();
-}
-
-void AAnomaly_HandPrint::StartAnomalyAction()
-{
-	SpawnHandPrint();
-	TurnAllLights(false);
 }
 
 #pragma endregion

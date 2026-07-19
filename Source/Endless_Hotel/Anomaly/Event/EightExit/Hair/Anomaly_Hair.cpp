@@ -5,13 +5,6 @@
 
 #pragma region Base
 
-AAnomaly_Hair::AAnomaly_Hair(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
-{
-	PrimaryActorTick.bCanEverTick = false;
-
-}
-
 void AAnomaly_Hair::BeginPlay()
 {
 	Super::BeginPlay();
@@ -30,7 +23,7 @@ void AAnomaly_Hair::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Hair:
-		SetupAnomalyAction(&AAnomaly_Object_Hair::StartHair);
+		SetupAnomalyAction<AAnomaly_Object_Hair>(&AAnomaly_Object_Hair::StartHair);
 		break;
 	}
 	ActiveTrigger();

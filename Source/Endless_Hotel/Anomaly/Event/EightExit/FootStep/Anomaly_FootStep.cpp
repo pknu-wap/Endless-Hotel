@@ -10,25 +10,27 @@
 
 void AAnomaly_FootStep::SetAnomalyState()
 {
-    Super::SetAnomalyState();
+	Super::SetAnomalyState();
 
-    switch (AnomalyID) {
-    case EAnomalyID::FootStep:
-        ScheduleAnomaly(20);
-        break;
-    }
+	switch (AnomalyID)
+	{
+	case EAnomalyID::FootStep:
+		SetupAnomalyAction<ThisClass>(&ThisClass::ChangeFootStep, FAnomalyActionInfo(), true);
+		ScheduleAnomaly(20);
+		break;
+	}
 }
 
 void AAnomaly_FootStep::DisableAnomaly()
 {
-    Super::DisableAnomaly();
+	Super::DisableAnomaly();
 
-    ChangeFootStep(false);
+	ChangeFootStep(false);
 }
 
 void AAnomaly_FootStep::StartAnomalyAction()
 {
-    ChangeFootStep(true);
+	ChangeFootStep(true);
 }
 
 #pragma endregion
@@ -37,10 +39,10 @@ void AAnomaly_FootStep::StartAnomalyAction()
 
 void AAnomaly_FootStep::ChangeFootStep(bool bIsStart)
 {
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    auto* SkeletalMesh = Player->GetMesh();
-    auto* AnimInstance = Cast<UEHPlayerAnimInstance>(SkeletalMesh->GetAnimInstance());
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	auto* SkeletalMesh = Player->GetMesh();
+	auto* AnimInstance = Cast<UEHPlayerAnimInstance>(SkeletalMesh->GetAnimInstance());
 
-    AnimInstance->bIsAnomalyGenerated = bIsStart;
+	AnimInstance->bIsAnomalyGenerated = bIsStart;
 }
 #pragma endregion

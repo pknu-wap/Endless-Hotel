@@ -16,9 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Bug : public AAnomaly_Event_EightExit
 public:
 	virtual void SetAnomalyState() override;
 
-protected:
-	virtual void StartAnomalyAction() override;
-
 #pragma endregion
 
 #pragma region Bug

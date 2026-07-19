@@ -18,7 +18,9 @@ void AAnomaly_FireExtinguisher::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::FireExt_Explode:
-		SetupAnomalyAction(&AAnomaly_Object_FireExtinguisher::Explode);
+		SetupAnomalyAction<AAnomaly_Object_FireExtinguisher>(&AAnomaly_Object_FireExtinguisher::Explode);
+		SetupAnomalyAction<ThisClass>(&ThisClass::ShowBlurWiget, FAnomalyActionInfo(), true);
+		SetupAnomalyAction<ThisClass>(&ThisClass::PlayDownAnimMontage);
 		ActiveTrigger();
 		break;
 	}
@@ -29,14 +31,6 @@ void AAnomaly_FireExtinguisher::DisableAnomaly()
 	Super::DisableAnomaly();
 
 	ShowBlurWiget(false);
-}
-
-void AAnomaly_FireExtinguisher::StartAnomalyAction()
-{
-	Super::StartAnomalyAction();
-
-	ShowBlurWiget(true);
-	PlayDownAnimMontage();
 }
 
 #pragma endregion

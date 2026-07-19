@@ -13,6 +13,26 @@
 
 class AAnomaly_Object_Base;
 
+USTRUCT()
+struct FAnomalyActionInfo
+{
+	GENERATED_BODY()
+
+public:
+	FAnomalyActionInfo() = default;
+	FAnomalyActionInfo(TArray<EInteractType> Inter, bool bOrdered = false) :Interactions(Inter), bIsOrdered(bOrdered)
+	{
+		if (Interactions.IsEmpty())
+		{
+			Interactions.Add(EInteractType::None);
+		}
+	}
+
+public:
+	TArray<EInteractType> Interactions = { EInteractType::None };
+	bool bIsOrdered = false;
+};
+
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
@@ -118,19 +138,19 @@ public:
 #pragma region Templete
 
 protected:
-	template<typename ObjectType>
-	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(), TArray<EInteractType> Interactions = { EInteractType::None }, bool bIsOrdered = false)
+	template<typename ObjectType, typename... Args>
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(Args...), FAnomalyActionInfo ActionInfo = FAnomalyActionInfo(), Args&&... FuncArgs)
 	{
-		AnomalyActions.Add([SelectedFunc, Interactions, bIsOrdered](UObject* Obj)
+		AnomalyActions.Add([SelectedFunc, ActionInfo, FuncArgs...](UObject* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
 					if constexpr (TIsDerivedFrom<ObjectType, AAnomaly_Object_Base>::IsDerived)
 					{
-						TargetObj->CorrectInteractTypes = Interactions;
-						TargetObj->bIsOrderedInteractTypes = bIsOrdered;
+						TargetObj->CorrectInteractTypes = ActionInfo.Interactions;
+						TargetObj->bIsOrderedInteractTypes = ActionInfo.bIsOrdered;
 					}
-					(TargetObj->*SelectedFunc)();
+					(TargetObj->*SelectedFunc)(FuncArgs...);
 				}
 			});
 	}

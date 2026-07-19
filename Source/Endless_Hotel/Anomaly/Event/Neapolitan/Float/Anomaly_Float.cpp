@@ -14,17 +14,11 @@ void AAnomaly_Float::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Float:
-		SetupAnomalyAction(&AAnomaly_Object_Base::StartFloating, { EInteractType::Restore });
+		SetupAnomalyAction(&AAnomaly_Object_Base::StartFloating, FAnomalyActionInfo({ EInteractType::Restore }));
+		SetupAnomalyAction(&ThisClass::PlayGravitySound);
 		ScheduleAnomaly(10);
 		break;
 	}
-}
-
-void AAnomaly_Float::StartAnomalyAction()
-{
-	Super::StartAnomalyAction();
-
-	PlayGravitySound();
 }
 
 #pragma endregion

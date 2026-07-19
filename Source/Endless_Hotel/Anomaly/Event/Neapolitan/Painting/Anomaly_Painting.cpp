@@ -9,28 +9,28 @@ void AAnomaly_Painting::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	SetupAnomalyAction(&AAnomaly_Object_Painting::DieWatchingPainting);
+	SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::DieWatchingPainting);
 
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Painting_Eye:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::EyeFollowing, { EInteractType::Rotate });
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::EyeFollowing, FAnomalyActionInfo({ EInteractType::Rotate }));
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Blood:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::BloodDropping, { EInteractType::Rotate });
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BloodDropping, FAnomalyActionInfo({ EInteractType::Rotate }));
 		ActiveTrigger();
 		break;
 	case EAnomalyID::Painting_Blur:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::BlurPaint, { EInteractType::Rotate });
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BlurPaint, FAnomalyActionInfo({ EInteractType::Rotate }));
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Tilt:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::FrameTilt, { EInteractType::Rotate });
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::FrameTilt, FAnomalyActionInfo({ EInteractType::Rotate }));
 		ScheduleAnomaly(10.0f);
 		break;
 	case EAnomalyID::Painting_Picture:
-		SetupAnomalyAction(&AAnomaly_Object_Painting::ChangePicture, { EInteractType::Rotate });
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::ChangePicture, FAnomalyActionInfo({ EInteractType::Rotate }));
 		ScheduleAnomaly();
 		break;
 	}
