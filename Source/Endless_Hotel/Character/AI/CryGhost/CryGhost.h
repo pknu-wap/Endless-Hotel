@@ -24,6 +24,13 @@ FORCEINLINE ECryGhostState& operator++(ECryGhostState& Value)
 	return Value;
 }
 
+FORCEINLINE ECryGhostState& operator++(ECryGhostState& Value, int)
+{
+	ECryGhostState Temp = Value;
+	++Value;
+	return Temp;
+}
+
 #pragma endregion
 
 UCLASS()

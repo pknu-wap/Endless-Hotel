@@ -12,7 +12,7 @@ void AAnomaly_Disappear::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Disappear:
-		SetupAnomalyAction(&AAnomaly_Object_Disappear::StartDisappear);
+		SetupAnomalyAction<AAnomaly_Object_Disappear>(&AAnomaly_Object_Disappear::StartDisappear);
 		ScheduleAnomaly();
 		break;
 	}

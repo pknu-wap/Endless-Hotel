@@ -80,13 +80,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		PC->StopHeartbeatSound();
 	}
 
-	PlayAnimMontage(DeathAnim);
-
-	UAnimInstance* ThirdAnimInst = Third_Mesh->GetAnimInstance();
-	if (ThirdAnimInst)
-	{
-		ThirdAnimInst->Montage_Play(DeathAnim);
-	}
+	PlayAnimation(DeathAnim);
 
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->bInheritPitch = true;
@@ -148,6 +142,18 @@ void AEHPlayer::FreezeAnimation()
 void AEHPlayer::PlayElevatorSound(bool bIsPlay)
 {
 	bIsPlay ? ElevatorMoveAudioComponent->Play() : ElevatorMoveAudioComponent->Stop();
+}
+
+#pragma endregion
+
+#pragma region Animation
+
+void AEHPlayer::PlayAnimation(UAnimMontage* Montage)
+{
+	PlayAnimMontage(Montage);
+
+	UAnimInstance* ThirdAnimInst = Third_Mesh->GetAnimInstance();
+	ThirdAnimInst->Montage_Play(Montage);
 }
 
 #pragma endregion

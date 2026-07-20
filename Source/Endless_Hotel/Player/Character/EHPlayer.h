@@ -107,4 +107,11 @@ public:
 
 #pragma endregion
 
+#pragma region Animation
+
+public:
+	void PlayAnimation(UAnimMontage* Montage);
+
+#pragma endregion
+
 };

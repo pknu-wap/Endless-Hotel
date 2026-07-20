@@ -31,11 +31,9 @@ void ACryGhost::SetCryState()
 
 void ACryGhost::AdvanceCryGhostState()
 {
-	++CurrentState;
-
 	auto* AnimInstance = Cast<UCryGhostAnimInstance>(GetMesh()->GetAnimInstance());
 	
-	switch (CurrentState)
+	switch (CurrentState++)
 	{
 	case ECryGhostState::Stand:
 		AnimInstance->bIsStand = true;

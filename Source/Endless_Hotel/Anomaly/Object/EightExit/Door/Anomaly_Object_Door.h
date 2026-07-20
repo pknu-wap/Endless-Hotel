@@ -29,12 +29,6 @@ protected:
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
 	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC_Effect;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC_Voice;
-
-	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
 
 #pragma endregion
@@ -42,51 +36,57 @@ protected:
 #pragma region Shake
 
 public:
-	void DoorShaking();
+	void StartShaking();
 
-protected:
-	void PlayShake_Handle();
-	void PlayShake_Door();
-
-	void Timer_Handle();
-	void Timer_Door();
-
+private:
 	UFUNCTION()
 	void ShakeDoor(float Value);
 
 	UFUNCTION()
 	void ShakeHandle(float Value);
 
+	UFUNCTION()
+	void ShakeDoorEnd();
+
+	UFUNCTION()
+	void ShakeHandleEnd();
+
 protected:
+	UPROPERTY(EditAnywhere, Category = "Shake")
+	TObjectPtr<UCurveFloat> CV_Door;
+
+	UPROPERTY(EditAnywhere, Category = "Shake")
+	TObjectPtr<UCurveFloat> CV_Handle;
+
+	UPROPERTY(EditAnywhere, Category = "Shake")
+	TArray<TObjectPtr<USoundWave>> SW_Voice;
+
+private:
 	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> Timeline_Door;
+	TObjectPtr<class UTimelineComponent> TL_Door;
 
 	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> Timeline_Handle;
+	TObjectPtr<class UTimelineComponent> TL_Handle;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
-	TObjectPtr<UCurveFloat> Curve_Door;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> AC_Shake;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Time")
-	TObjectPtr<UCurveFloat> Curve_Handle;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> AC_Voice;
 
-	FVector Door_Origin;
-	FVector Handle_Origin;
+	FVector DoorOrigin;
+	FVector HandleOrigin;
 
-	FTimerHandle HandleHandle;
-	FTimerHandle DoorHandle;
+	const uint8 MaxHandleShake = 30;
+	uint8 CurrentHandleShake = 0;
 
-	const uint8 MaxShakeCount_Handle = 29;
-	uint8 ShakeCount_Handle = 0;
+	const uint8 MaxDoorShake = 4;
+	uint8 CurrentDoorShake = 0;
 
-	const uint8 MaxShakeCount_Door = 4;
-	uint8 ShakeCount_Door = 0;
+	FTimerHandle HandleShakeHandle;
+	FTimerHandle DoorShakeHandle;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
-	TObjectPtr<class USoundWave> Sound_DoorShake;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Sound")
-	TArray<TObjectPtr<class USoundWave>> Sounds_Voice;
+	bool bIsFirstShakeSetting = true;
 
 #pragma endregion
 

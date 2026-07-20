@@ -14,7 +14,7 @@ void AAnomaly_Twin::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Twin:
-		SetupAnomalyAction(&AAnomaly_Twin::StartTwin);
+		SetupAnomalyAction<AAnomaly_Twin>(&AAnomaly_Twin::StartTwin);
 		break;
 	}
 	ActiveTrigger();

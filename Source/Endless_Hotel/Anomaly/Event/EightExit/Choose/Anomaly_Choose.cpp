@@ -12,7 +12,7 @@ void AAnomaly_Choose::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Choose:
-		SetChooseVerdictMode();
+		SetupAnomalyAction(&ThisClass::SetChooseVerdictMode);
 		ScheduleAnomaly();
 		break;
 	}

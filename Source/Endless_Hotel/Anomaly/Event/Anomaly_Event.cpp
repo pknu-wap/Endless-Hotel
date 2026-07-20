@@ -36,28 +36,23 @@ void AAnomaly_Event::BeginPlay()
 
 void AAnomaly_Event::StartAnomalyAction()
 {
-	if (TargetAnomalyObjects.IsEmpty())
+	for (const auto& Action : AnomalyActions)
 	{
+		Action(this);
+	}
+
+	for (UObject* TargetObj : TargetAnomalyObjects)
+	{
+		if (AAnomaly_Object_Base* AnomalyObj = Cast<AAnomaly_Object_Base>(TargetObj))
+		{
+			if (!AnomalyObj->ExecuteAnomalies.Contains(AnomalyID))
+			{
+				continue;
+			}
+		}
 		for (const auto& Action : AnomalyActions)
 		{
-			Action(this);
-		}
-	}
-	else
-	{
-		for (UObject* TargetObj : TargetAnomalyObjects)
-		{
-			if (AAnomaly_Object_Base* AnomalyObj = Cast<AAnomaly_Object_Base>(TargetObj))
-			{
-				if (!AnomalyObj->ExecuteAnomalies.Contains(AnomalyID))
-				{
-					continue;
-				}
-			}
-			for (const auto& Action : AnomalyActions)
-			{
-				Action(TargetObj);
-			}
+			Action(TargetObj);
 		}
 	}
 }
