@@ -10,13 +10,7 @@
 AManualFragment::AManualFragment(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-
-	/*static ConstructorHelpers::FClassFinder<UUserWidget> UIFinder(TEXT("Component_ManualWidget's Path"));*/
-
 	Component_TextWidget = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Component_ManualWidget"));
-	/*Component_ManualWidget->SetupAttachment(RootComponent);
-	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
-	Component_Widget->SetWidgetClass(UIFinder.Class);*/
 }
 
 void AManualFragment::BeginPlay()

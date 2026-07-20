@@ -49,17 +49,6 @@ void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Door_Origin = GetActorLocation();
-	Handle_Origin = Mesh_Handle->GetRelativeLocation();
-
-	FOnTimelineFloat Update_Door;
-	Update_Door.BindUFunction(this, FName("ShakeDoor"));
-	Timeline_Door->AddInterpFloat(Curve_Door, Update_Door);
-
-	FOnTimelineFloat Update_Handle;
-	Update_Handle.BindUFunction(this, FName("ShakeHandle"));
-	Timeline_Handle->AddInterpFloat(Curve_Handle, Update_Handle);
-
 	if (DoorIndex == 8)
 	{
 		BaseYaw = Object->GetRelativeRotation().Yaw;
