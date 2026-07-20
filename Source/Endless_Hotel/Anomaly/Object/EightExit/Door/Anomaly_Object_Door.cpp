@@ -37,17 +37,6 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);
 	AC_DoorMove->bAutoActivate = false;
-
-	ExitTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("ExitTrigger"));
-	ExitTrigger->SetupAttachment(GetRootComponent());
-
-	ExitTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	ExitTrigger->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-
-	ExitTrigger->SetCollisionResponseToAllChannels(ECR_Ignore);
-	ExitTrigger->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-	ExitTrigger->SetBoxExtent(FVector(100.f, 100.f, 100.f));
 }
 
 void AAnomaly_Object_Door::Reset()
@@ -60,8 +49,6 @@ void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ExitTrigger->OnComponentEndOverlap.AddUniqueDynamic(this, &AAnomaly_Object_Door::OnExitTriggerEndOverlap);
-
 	if (DoorIndex == 8)
 	{
 		BaseYaw = Object->GetRelativeRotation().Yaw;
@@ -69,6 +56,10 @@ void AAnomaly_Object_Door::BeginPlay()
 		FOnTimelineFloat OpenUpdate;
 		OpenUpdate.BindUFunction(this, FName("UpdateRotateOpen"));
 		Timeline_Open->AddInterpFloat(Curve_Open, OpenUpdate);
+
+		FOnTimelineEvent OpenFinished;
+		OpenFinished.BindUFunction(this, FName("FinishRotateOpen"));
+		Timeline_Close->SetTimelineFinishedFunc(OpenFinished);
 
 		FOnTimelineFloat CloseUpdate;
 		CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
@@ -196,6 +187,12 @@ void AAnomaly_Object_Door::PlayOpen_Door()
 
 #pragma region Close
 
+void AAnomaly_Object_Door::CloseDoor()
+{
+	StartRotateClose();
+	PlayClose_Door();
+}
+
 void AAnomaly_Object_Door::StartRotateClose()
 {
 	CloseYaw = Object->GetRelativeRotation().Yaw;
@@ -274,11 +271,10 @@ void AAnomaly_Object_Door::MoveToHandlePlayer()
 	PC->SetIgnoreLookInput(true);
 
 	FTransform WorldTarget = TargetPlayerTransform;
-
-	FVector TargetLocation = WorldTarget.GetLocation();
-	TargetLocation.X -= 30.0f;
 	FRotator TargetRotation = WorldTarget.Rotator();
+	FVector TargetLocation = WorldTarget.GetLocation();
 
+	TargetLocation.X -= 30.0f;
 	TargetLocation.Z = Player->GetActorLocation().Z;
 
 	FLatentActionInfo LatentInfo;
@@ -347,7 +343,7 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 	AEHPlayerController* EHPC = Cast<AEHPlayerController>(Player->GetController());
 
 	EHPC->OnPushDoorStarted();
-	DoorRotateStarted();
+	OpenDoor();
 
 	FTimerHandle DoorPushHandle;
 	GetWorld()->GetTimerManager().SetTimer(DoorPushHandle, FTimerDelegate::CreateWeakLambda(this, [this, EHPC, Player]()
@@ -359,73 +355,6 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 			EHPC->OnPushDoorCompleted();
 			EHPC->SetIgnoreLookInput(false);
 		}), 1.0f, false);
-}
-
-void AAnomaly_Object_Door::DoorRotateStarted()
-{
-	PlayOpen_Door();
-
-	FVector TargetLocation = DoorOpenTransform.GetLocation();
-	FRotator TargetRotation = DoorOpenTransform.Rotator();
-
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("DoorRotateCompleted");
-	LatentInfo.UUID = __LINE__ + 200;
-	LatentInfo.Linkage = 0;
-
-	UKismetSystemLibrary::MoveComponentTo(
-		GetRootComponent(),
-		TargetLocation,
-		TargetRotation,
-		true, true, RotationSpeed, false,
-		EMoveComponentAction::Move,
-		LatentInfo
-	);
-}
-
-void AAnomaly_Object_Door::DoorRotateCompleted()
-{
-	bIsDoorOpened = true;
-}
-
-void AAnomaly_Object_Door::OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (OtherActor == Player && bIsDoorOpened)
-	{
-		UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Sub->Floor == STARTFLOOR)
-		{
-			return;
-		}
-		CloseFirstDoor();
-	}
-}
-
-void AAnomaly_Object_Door::CloseFirstDoor()
-{
-	bIsDoorOpened = false;
-
-	PlayClose_Door();
-
-	FVector InitialLocation = OriginalTransform.GetLocation();
-	FRotator InitialRotation = OriginalTransform.Rotator();
-
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnDoorClosed");
-	LatentInfo.UUID = __LINE__ + 300;
-	LatentInfo.Linkage = 0;
-
-	UKismetSystemLibrary::MoveComponentTo(
-		GetRootComponent(),
-		InitialLocation,
-		InitialRotation,
-		true, true, RotationSpeed, false,
-		EMoveComponentAction::Move,
-		LatentInfo
-	);
 }
 
 #pragma endregion

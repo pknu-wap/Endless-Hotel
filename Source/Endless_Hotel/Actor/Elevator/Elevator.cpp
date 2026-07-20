@@ -309,7 +309,7 @@ void AElevator::StartElevator()
         GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
                 MoveElevator(StandardPos + StartPos, StandardPos + MapPos, true);
-            }), ElevatorMoveDuration / 2, false);
+            }), ElevatorMoveDuration, false);
     }
     else
     {
