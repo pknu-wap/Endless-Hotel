@@ -13,5 +13,6 @@ enum class EAnomalyRule : uint8
 	Monster				= 4		UMETA(DisplayName = "Monster"),
 	Painting			= 5		UMETA(DispalyName = "Painting"),
 	Doll				= 6		UMETA(DisplayName = "Doll"),
-	ResetObject			= 7		UMETA(DisplayName = "ResetObject")
+	ResetObject			= 7		UMETA(DisplayName = "ResetObject"),
+	Watch				= 8		UMETA(DisplayName = "Watch")
 };
