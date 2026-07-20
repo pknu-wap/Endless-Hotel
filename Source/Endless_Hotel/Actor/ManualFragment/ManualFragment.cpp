@@ -1,9 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/ManualFragment/AManualFragment.h"
+#include "Actor/ManualFragment/ManualFragment.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include <Components/WidgetComponent.h>
+#include <Components/TextRenderComponent.h>
 
 #pragma region Base
 
@@ -13,7 +13,7 @@ AManualFragment::AManualFragment(const FObjectInitializer& ObjectInitializer)
 
 	/*static ConstructorHelpers::FClassFinder<UUserWidget> UIFinder(TEXT("Component_ManualWidget's Path"));*/
 
-	Component_ManualWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component_ManualWidget"));
+	Component_TextWidget = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Component_ManualWidget"));
 	/*Component_ManualWidget->SetupAttachment(RootComponent);
 	Component_Widget->SetWidgetSpace(EWidgetSpace::Screen);
 	Component_Widget->SetWidgetClass(UIFinder.Class);*/

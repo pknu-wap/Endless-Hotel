@@ -6,7 +6,7 @@
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include <CoreMinimal.h>
-#include <AManualFragment.generated.h>
+#include <ManualFragment.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AManualFragment : public AInteractBase
@@ -27,7 +27,7 @@ protected:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
-	TObjectPtr<class UWidgetComponent> Component_ManualWidget;
+	TObjectPtr<class UTextRenderComponent> Component_TextWidget;
 
 #pragma endregion
 
