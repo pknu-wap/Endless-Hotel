@@ -94,6 +94,8 @@ private:
 
 public:
 	void OpenDoor();
+
+protected:
 	void PlayOpen_Door();
 
 protected:
@@ -108,6 +110,8 @@ protected:
 
 public:
 	void CloseDoor();
+
+protected:
 	void PlayClose_Door();
 
 protected:
@@ -188,32 +192,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
 	FTransform PushPlayerTransform;
 
-protected:
-	UFUNCTION()
-	void DoorRotateStarted();
-
-	UFUNCTION()
-	void DoorRotateCompleted();
-
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
 	FTransform DoorOpenTransform;
 
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
 	float RotationSpeed = 2.0f;
 
-	bool bIsOpening = false;
 	FRotator TargetDoorRotation;
 
 protected:
 	bool bIsDoorOpened = false;
-
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	class UBoxComponent* ExitTrigger;
-
-	UFUNCTION()
-	void OnExitTriggerEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	void CloseFirstDoor();
 
 #pragma endregion
 
