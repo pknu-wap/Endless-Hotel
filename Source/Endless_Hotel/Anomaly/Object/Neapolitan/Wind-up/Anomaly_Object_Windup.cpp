@@ -123,6 +123,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 				StopWindup();
 
 				CurrentInteractStep = EWindupInteractStep::NeedBurn;
+				AllowNextInteract();
 			}
 
 			else if(Info.InteractType == EInteractType::Burn)
@@ -141,6 +142,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 				SetupBurnTargets();
 				StartBurning(BurnDuration);
 
+				bSolved = true;
 				CurrentInteractStep = EWindupInteractStep::Finished;
 			}
 			break;

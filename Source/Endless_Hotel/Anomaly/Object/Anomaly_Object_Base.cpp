@@ -87,6 +87,14 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
     }
 }
 
+void AAnomaly_Object_Base::AllowNextInteract()
+{
+    if (IsValid(Component_Interact))
+    {
+        Component_Interact->RestoreInteract();
+    }
+}
+
 #pragma endregion
 
 #pragma region Floating
