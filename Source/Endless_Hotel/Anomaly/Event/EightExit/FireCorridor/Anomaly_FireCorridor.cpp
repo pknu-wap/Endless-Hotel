@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/EightExit/FireCorridor/Anomaly_FireCorridor.h"
 
 #pragma region Activity

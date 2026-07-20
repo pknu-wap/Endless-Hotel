@@ -16,8 +16,8 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::CrawlChild:
-		SetupAnomalyAction(&AAnomaly_Object_CrawlChild::ActivePlayTrigger);
-		SetupAnomalyAction(&AAnomaly_Object_Door::OpenDoor);
+		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::ActivePlayTrigger);
+		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		PlayerMC = Player->GetCharacterMovement();
 		OriginalSpeed = PlayerMC->MaxWalkSpeed;

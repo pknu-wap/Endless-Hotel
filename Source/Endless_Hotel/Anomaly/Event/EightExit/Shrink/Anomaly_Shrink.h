@@ -36,16 +36,15 @@ protected:
 
 public:
 	virtual void SetAnomalyState() override;
-
-protected:
-	virtual void StartAnomalyAction() override;
 	virtual void DisableAnomaly() override;
 
 #pragma endregion
 
 #pragma region Shrink
 
-protected:
+private:
+	void StartShrink();
+
 	UFUNCTION()
 	void ShrinkPlayer(float Value);
 

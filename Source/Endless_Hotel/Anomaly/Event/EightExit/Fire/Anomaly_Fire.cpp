@@ -18,23 +18,11 @@ void AAnomaly_Fire::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Fire:
-		SetupAnomalyAction(&AAnomaly_Object_Candle::FallCandle);
+		SetupAnomalyAction<AAnomaly_Object_Candle>(&AAnomaly_Object_Candle::FallCandle);
+		SetupAnomalyAction<ThisClass>(&ThisClass::StartFire);
 		ActiveTrigger();
 		break;
 	}
-}
-
-void AAnomaly_Fire::StartAnomalyAction()
-{
-	Super::StartAnomalyAction();
-
-	FTimerHandle SpawnHandle;
-	GetWorld()->GetTimerManager().SetTimer(SpawnHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			SpawnFires();
-			SpawnSmokes();
-			SmokeTimer(false);
-		}), 0.5f, false);
 }
 
 void AAnomaly_Fire::DisableAnomaly()
@@ -67,6 +55,17 @@ void AAnomaly_Fire::DisableAnomaly()
 #pragma endregion
 
 #pragma region Fire
+
+void AAnomaly_Fire::StartFire()
+{
+	FTimerHandle SpawnHandle;
+	GetWorld()->GetTimerManager().SetTimer(SpawnHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			SpawnFires();
+			SpawnSmokes();
+			SmokeTimer(false);
+		}), 0.5f, false);
+}
 
 void AAnomaly_Fire::SpawnFires()
 {

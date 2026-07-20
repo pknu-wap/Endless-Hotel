@@ -12,14 +12,10 @@ void AAnomaly_Bug::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Bug:
+		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnBugs);
 		ActiveTrigger();
 		break;
 	}
-}
-
-void AAnomaly_Bug::StartAnomalyAction()
-{
-	SpawnBugs();
 }
 
 #pragma endregion

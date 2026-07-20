@@ -22,14 +22,14 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	Mesh_Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle"));
 	Mesh_Handle->SetupAttachment(RootComponent);
 
-	Timeline_Door = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Door"));
-	Timeline_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Handle"));
+	TL_Door = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Door"));
+	TL_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Handle"));
 
 	Timeline_Open = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Open"));
 	Timeline_Close = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Close"));
 		
-	AC_Effect = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Effect"));
-	AC_Effect->SetupAttachment(RootComponent);
+	AC_Shake = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Shake"));
+	AC_Shake->SetupAttachment(RootComponent);
 
 	AC_Voice = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Voice"));
 	AC_Voice->SetupAttachment(RootComponent);
@@ -86,83 +86,89 @@ void AAnomaly_Object_Door::BeginPlay()
 
 #pragma region Shake
 
+void AAnomaly_Object_Door::StartShaking()
+{
+	if (bIsFirstShakeSetting)
+	{
+		DoorOrigin = Object->GetRelativeLocation();
+		HandleOrigin = Mesh_Handle->GetRelativeLocation();
+
+		FOnTimelineFloat Update_Door;
+		Update_Door.BindUFunction(this, FName("ShakeDoor"));
+		TL_Door->AddInterpFloat(CV_Door, Update_Door);
+
+		FOnTimelineFloat Update_Handle;
+		Update_Handle.BindUFunction(this, FName("ShakeHandle"));
+		TL_Handle->AddInterpFloat(CV_Handle, Update_Handle);
+
+		FOnTimelineEvent Finish_Door;
+		Finish_Door.BindUFunction(this, TEXT("ShakeDoorEnd"));
+		TL_Door->SetTimelineFinishedFunc(Finish_Door);
+
+		FOnTimelineEvent Finish_Handle;
+		Finish_Handle.BindUFunction(this, TEXT("ShakeHandleEnd"));
+		TL_Handle->SetTimelineFinishedFunc(Finish_Handle);
+
+		bIsFirstShakeSetting = false;
+	}
+
+	int32 RandInt = FMath::RandRange(1, 5);
+	FTimerHandle StartHandle;
+	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			AC_Shake->Stop();
+			AC_Shake->Play();
+
+			AC_Voice->Stop();
+			int32 RandInt = FMath::RandRange(0, SW_Voice.Num() - 1);
+			AC_Voice->SetSound(SW_Voice[RandInt]);
+			AC_Voice->Play();
+
+			ShakeHandleEnd();
+		}), RandInt, false);
+}
+
 void AAnomaly_Object_Door::ShakeDoor(float Value)
 {
-	FVector Target = Door_Origin;
-	Target.X += Value;
+	FVector Forward = Object->GetForwardVector() * Value;
 
-	Object->SetWorldLocation(Target);
+	Object->SetRelativeLocation(DoorOrigin + Forward);
 }
 
 void AAnomaly_Object_Door::ShakeHandle(float Value)
 {
-	FVector Target = Handle_Origin;
-	Target.Y += Value;
+	FVector Up = Mesh_Handle->GetUpVector() * Value;
 
-	Mesh_Handle->SetRelativeLocation(Target);
+	Mesh_Handle->SetRelativeLocation(HandleOrigin + Up);
 }
 
-void AAnomaly_Object_Door::DoorShaking()
+void AAnomaly_Object_Door::ShakeDoorEnd()
 {
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::PlayShake_Handle, DoorIndex, false);
-}
-
-void AAnomaly_Object_Door::PlayShake_Handle()
-{
-	if (!AC_Effect->IsPlaying())
+	if (CurrentDoorShake++ < MaxDoorShake)
 	{
-		AC_Effect->Sound = Sound_DoorShake;
-		AC_Effect->Play();
+		TL_Door->PlayFromStart();
+		GetWorld()->GetTimerManager().SetTimer(HandleShakeHandle, this, &ThisClass::ShakeDoorEnd, 0.25f, false);
 	}
-
-	if (!AC_Voice->IsPlaying())
+	else
 	{
-		int32 RandomInt = FMath::RandRange(0, Sounds_Voice.Num() + 4);
-		if (RandomInt < Sounds_Voice.Num())
-		{
-			AC_Voice->Sound = Sounds_Voice[RandomInt];
-			AC_Voice->Play();
-		}
-	}
-
-	Timeline_Handle->PlayFromStart();
-
-	GetWorld()->GetTimerManager().SetTimer(HandleHandle, this, &ThisClass::Timer_Handle, 0.17f, true);
-}
-
-void AAnomaly_Object_Door::PlayShake_Door()
-{
-	Timeline_Door->PlayFromStart();
-
-	GetWorld()->GetTimerManager().SetTimer(DoorHandle, this, &ThisClass::Timer_Door, 0.25f, true);
-}
-
-void AAnomaly_Object_Door::Timer_Handle()
-{
-	Timeline_Handle->PlayFromStart();
-	ShakeCount_Handle++;
-
-	if (ShakeCount_Handle >= MaxShakeCount_Handle)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(HandleHandle);
-
-		ShakeCount_Handle = 0;
-
-		PlayShake_Door();
+		TL_Door->Stop();
+		StartShaking();
+		CurrentDoorShake = 0;
 	}
 }
 
-void AAnomaly_Object_Door::Timer_Door()
+void AAnomaly_Object_Door::ShakeHandleEnd()
 {
-	Timeline_Door->PlayFromStart();
-	ShakeCount_Door++;
-
-	if (ShakeCount_Door >= MaxShakeCount_Door)
+	if (CurrentHandleShake++ < MaxHandleShake)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(DoorHandle);
-
-		ShakeCount_Door = 0;
+		TL_Handle->PlayFromStart();
+		GetWorld()->GetTimerManager().SetTimer(HandleShakeHandle, this, &ThisClass::ShakeHandleEnd, 0.17f, false);
+	}
+	else
+	{
+		TL_Handle->Stop();
+		TL_Door->PlayFromStart();
+		CurrentHandleShake = 0;
 	}
 }
 
