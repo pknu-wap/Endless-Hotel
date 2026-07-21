@@ -13,6 +13,9 @@ class ENDLESS_HOTEL_API AAnomaly_CrawlChild : public AAnomaly_Event_Neapolitan
 
 #pragma region Base
 
+public:
+	AAnomaly_CrawlChild(const FObjectInitializer& ObjectInitializer);
+
 #pragma endregion
 
 #pragma region Activity
@@ -30,6 +33,17 @@ protected:
 	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
 
 	float OriginalSpeed;
+
+#pragma endregion
+
+#pragma region Subtitle
+
+public:
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	TArray<FText> Subtitle;
+
+public:
+	void ShowSubTitle();
 
 #pragma endregion
 

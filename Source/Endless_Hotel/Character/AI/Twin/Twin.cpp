@@ -17,7 +17,7 @@ void ATwin::BeginPlay()
     Super::BeginPlay();
     if (TriggerBox)
     {
-        TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ATwin::OnTriggerBox);
+        TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
     }
     CustomTimeDilation = 0.0f;
 }
