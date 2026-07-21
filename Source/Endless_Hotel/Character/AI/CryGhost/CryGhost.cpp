@@ -16,7 +16,7 @@ ACryGhost::ACryGhost(const FObjectInitializer& ObjectInitializer)
 	AudioComponent->SetAutoActivate(false);
 	AudioComponent->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
 
-	GetCharacterMovement()->MaxWalkSpeed = 0.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
 #pragma endregion

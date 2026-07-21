@@ -27,12 +27,18 @@ void AComingDoll::SetupBurnTargets()
 {
 	auto* SK_Mesh = GetMesh();
 
-	BurnDMI = SK_Mesh->CreateDynamicMaterialInstance(0);
-	BurnDMI->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-	BurnDMI->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
-	BurnDMI->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+	BurnDMI1 = SK_Mesh->CreateDynamicMaterialInstance(0);
+	BurnDMI1->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+	BurnDMI1->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+	BurnDMI1->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
 
-	SK_Mesh->SetMaterial(0, BurnDMI);
+	BurnDMI2 = SK_Mesh->CreateDynamicMaterialInstance(1);
+	BurnDMI2->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+	BurnDMI2->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+	BurnDMI2->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+
+	SK_Mesh->SetMaterial(0, BurnDMI1);
+	SK_Mesh->SetMaterial(1, BurnDMI2);
 }
 
 void AComingDoll::StartBurning()
@@ -48,7 +54,8 @@ void AComingDoll::BurnTick()
 {
 	BurnCurrentTime += 0.02f;
 	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-	BurnDMI->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+	BurnDMI1->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+	BurnDMI2->SetScalarParameterValue(TEXT("Alpha"), Alpha);
 
 	if (Alpha >= 1.f)
 	{

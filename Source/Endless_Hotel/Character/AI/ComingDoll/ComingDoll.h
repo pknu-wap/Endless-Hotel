@@ -42,7 +42,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> BurnDMI;
+	TObjectPtr<UMaterialInstanceDynamic> BurnDMI1;
+
+	UPROPERTY()
+	TObjectPtr<UMaterialInstanceDynamic> BurnDMI2;
 
 	FTimerHandle BurnHandle;
 
