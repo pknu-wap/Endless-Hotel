@@ -4,7 +4,6 @@
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/CapsuleComponent.h>
-#include <NiagaraComponent.h>
 
 #pragma region Base
 
@@ -25,20 +24,19 @@ AComingDoll::AComingDoll(const FObjectInitializer& ObjectInitializer)
 
 void AComingDoll::SetupBurnTargets()
 {
-	auto* SK_Mesh = GetMesh();
+	auto* SkeletalMesh = GetMesh();
 
-	BurnDMI1 = SK_Mesh->CreateDynamicMaterialInstance(0);
-	BurnDMI1->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-	BurnDMI1->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
-	BurnDMI1->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+	for (int32 Index = 0; Index < SkeletalMesh->GetNumMaterials(); ++Index)
+	{
+		auto* Material = SkeletalMesh->CreateDynamicMaterialInstance(Index);
+		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
 
-	BurnDMI2 = SK_Mesh->CreateDynamicMaterialInstance(1);
-	BurnDMI2->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-	BurnDMI2->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
-	BurnDMI2->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+		MID_Burn.Add(Material);
 
-	SK_Mesh->SetMaterial(0, BurnDMI1);
-	SK_Mesh->SetMaterial(1, BurnDMI2);
+		SkeletalMesh->SetMaterial(Index, MID_Burn[Index]);
+	}
 }
 
 void AComingDoll::StartBurning()
@@ -53,9 +51,14 @@ void AComingDoll::StartBurning()
 void AComingDoll::BurnTick()
 {
 	BurnCurrentTime += 0.02f;
+
+	constexpr float BurnDuration = 5.f;
 	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-	BurnDMI1->SetScalarParameterValue(TEXT("Alpha"), Alpha);
-	BurnDMI2->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+
+	for (int32 Index = 0; Index < MID_Burn.Num(); ++Index)
+	{
+		MID_Burn[Index]->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+	}
 
 	if (Alpha >= 1.f)
 	{
