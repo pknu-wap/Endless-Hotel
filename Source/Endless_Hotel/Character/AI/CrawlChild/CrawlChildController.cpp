@@ -10,10 +10,13 @@
 void ACrawlChildController::FallFromWheelChair()
 {
 	APawn* AIPawn = GetPawn();
-	AIPawn->SetActorTransform(AnimationPositions[0]);
 	//ToDo: 휠체어에서 떨어지는 연출
 	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	MoveToActor(Player);
+	FTimerHandle DelayHandle;
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player]()
+		{
+			MoveToActor(Player);
+		}), AnimationLengths[0], false);
 }
 
 #pragma endregion

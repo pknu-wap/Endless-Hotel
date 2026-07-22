@@ -15,7 +15,10 @@ class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_Neap
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> AC;
+	TObjectPtr<class UAudioComponent> ObjectAC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> ChildAC;
 
 public:
 	AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer);
@@ -25,11 +28,24 @@ protected:
 
 #pragma endregion
 
+#pragma region ReadyAnomaly
+
+private:
+	void SetupCrawlChildObject();
+
+#pragma endregion
+
 #pragma region Trigger
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "TriggerBox")
 	TObjectPtr<class UBoxComponent> TriggerBox;
+
+	UPROPERTY(EditAnywhere, Category = "TriggerBox")
+	FTransform TriggerBox_Transform;
+
+public:
+	void ActiveTriggerBox();
 
 protected:
 	UFUNCTION()
@@ -43,6 +59,40 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
 	FTransform StartTransform;
+
+	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
+	FTransform EndTransform;
+
+	TObjectPtr<class UTimelineComponent> FallTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Collapse|Curve")
+	TObjectPtr<UCurveFloat> FallCurve;
+
+private:
+	UFUNCTION()
+	void OnFallTimelineUpdate(float Alpha);
+
+	UFUNCTION()
+	void OnFallTimelineFinished();
+
+#pragma endregion
+
+#pragma region AI
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<class ACrawlChild> CrawlChildClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform AIStartTransform;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform AIEndTransform;
+
+	TWeakObjectPtr<class ACrawlChild> CrawlChild;
+
+public:
+	void StartCrawlChild();
 
 #pragma endregion
 

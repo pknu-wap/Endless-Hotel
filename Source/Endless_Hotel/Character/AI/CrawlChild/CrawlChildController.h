@@ -17,9 +17,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AnimationConfig");
 	TArray<float> AnimationLengths;
 
-	UPROPERTY(EditAnywhere, Category = "AnimationConfig");
-	TArray<FTransform> AnimationPositions;
-
 public:
 	void FallFromWheelChair();
 
