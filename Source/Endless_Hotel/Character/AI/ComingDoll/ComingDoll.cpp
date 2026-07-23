@@ -4,7 +4,6 @@
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/CapsuleComponent.h>
-#include <NiagaraComponent.h>
 
 #pragma region Base
 
@@ -25,14 +24,19 @@ AComingDoll::AComingDoll(const FObjectInitializer& ObjectInitializer)
 
 void AComingDoll::SetupBurnTargets()
 {
-	auto* SK_Mesh = GetMesh();
+	auto* SkeletalMesh = GetMesh();
 
-	BurnDMI = SK_Mesh->CreateDynamicMaterialInstance(0);
-	BurnDMI->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-	BurnDMI->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
-	BurnDMI->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+	for (int32 Index = 0; Index < SkeletalMesh->GetNumMaterials(); ++Index)
+	{
+		auto* Material = SkeletalMesh->CreateDynamicMaterialInstance(Index);
+		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
 
-	SK_Mesh->SetMaterial(0, BurnDMI);
+		MID_Burn.Add(Material);
+
+		SkeletalMesh->SetMaterial(Index, MID_Burn[Index]);
+	}
 }
 
 void AComingDoll::StartBurning()
@@ -47,8 +51,14 @@ void AComingDoll::StartBurning()
 void AComingDoll::BurnTick()
 {
 	BurnCurrentTime += 0.02f;
+
+	constexpr float BurnDuration = 5.f;
 	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-	BurnDMI->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+
+	for (int32 Index = 0; Index < MID_Burn.Num(); ++Index)
+	{
+		MID_Burn[Index]->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+	}
 
 	if (Alpha >= 1.f)
 	{

@@ -269,6 +269,7 @@ void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 	SavedRules.ActiveRules = AnomalyRules;
 	USaveManager::SaveData_Manual(SavedRules);
 	InitializePool();
+	OnAddAnomalyRule.Broadcast(AnomalyRule);
 }
 
 #pragma endregion

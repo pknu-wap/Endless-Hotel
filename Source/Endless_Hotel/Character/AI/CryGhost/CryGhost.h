@@ -108,4 +108,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Death
+
+private:
+	UFUNCTION()
+	void OnDeathTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+private:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UCapsuleComponent> DeathTrigger;
+
+#pragma endregion
+
 };
