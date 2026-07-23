@@ -23,11 +23,11 @@ void ANormal::SetAnomalyState()
     }
     if (Subsystem->bIsFirstStartFloor)
     {
-        SetupAnomalyAction(&AAnomaly_Object_Door::ReadyDoor);
+        SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoor);
     }
     else if (Subsystem->Floor == STARTFLOOR)
     {
-        SetupAnomalyAction(&AAnomaly_Object_Door::ReadyDoorOpened);
+        SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoorOpened);
     }
     ScheduleAnomaly();
 }

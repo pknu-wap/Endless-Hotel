@@ -12,7 +12,7 @@ void AAnomaly_ShelfBook::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Shelf_Book:
-		SetupAnomalyAction(&AAnomaly_Object_ShelfBook::FallSound, { EInteractType::Restore });
+		SetupAnomalyAction<AAnomaly_Object_ShelfBook>(&AAnomaly_Object_ShelfBook::FallSound, FAnomalyActionInfo({ EInteractType::Restore }));
 		ActiveTrigger();
 		break;
 	}

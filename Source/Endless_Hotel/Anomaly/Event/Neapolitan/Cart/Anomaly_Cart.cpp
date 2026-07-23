@@ -1,6 +1,5 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/Neapolitan/Cart/Anomaly_Cart.h"
 #include "Anomaly/Object/Neapolitan/Cart/Anomaly_Object_Cart.h"
 
@@ -13,7 +12,7 @@ void AAnomaly_Cart::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Cart_Moving:
-		SetupAnomalyAction(&AAnomaly_Object_Cart::CartMoving, { EInteractType::Restore });
+		SetupAnomalyAction<AAnomaly_Object_Cart>(&AAnomaly_Object_Cart::CartMoving, FAnomalyActionInfo({ EInteractType::Restore }));
 		ScheduleAnomaly(20);
 		break;
 	}

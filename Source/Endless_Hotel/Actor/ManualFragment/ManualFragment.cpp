@@ -1,12 +1,19 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/ManualFragment/AManualFragment.h"
+#include "Actor/ManualFragment/ManualFragment.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include <Components/TextRenderComponent.h>
 
 #pragma region Base
 
-void AAManualFragment::BeginPlay()
+AManualFragment::AManualFragment(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	Component_TextWidget = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Component_ManualWidget"));
+}
+
+void AManualFragment::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
@@ -17,7 +24,7 @@ void AAManualFragment::BeginPlay()
 
 #pragma region RuleSetting
 
-void AAManualFragment::SetManualFragment()
+void AManualFragment::SetManualFragment()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	if (Subsystem->AnomalyRules.Contains(Rule))
@@ -35,7 +42,7 @@ void AAManualFragment::SetManualFragment()
 
 #pragma region Interact
 
-void AAManualFragment::Interact_Implementation(AEHCharacter* Interacter)
+void AManualFragment::Interact_Implementation(AEHCharacter* Interacter)
 {
 	Super::Interact_Implementation(Interacter);
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();

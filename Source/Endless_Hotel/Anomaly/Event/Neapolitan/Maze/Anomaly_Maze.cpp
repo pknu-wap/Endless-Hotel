@@ -32,7 +32,7 @@ void AAnomaly_Maze::SetAnomalyState()
 			const int32 PositionIndex = FMath::RandRange(0, Walls.Num() - 1);
 			TargetWall = Walls[PositionIndex];
 		}
-		SetupAnomalyAction(&AAnomaly_Object_Doll::ActivateDoll_Show, { EInteractType::Burn });
+		SetupAnomalyAction<AAnomaly_Object_Doll>(&AAnomaly_Object_Doll::ActivateDoll_Show, FAnomalyActionInfo({ EInteractType::Burn }));
 		ScheduleAnomaly();
 		TargetWall->StartMazeMonster();
 		break;

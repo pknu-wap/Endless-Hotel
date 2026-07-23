@@ -91,7 +91,7 @@ void UUI_Controller::CloseAllWidgets()
 
 #pragma endregion
 
-#pragma region Show & Hide
+#pragma region Show
 
 void UUI_Controller::ShowHUDWidget(bool bShow)
 {

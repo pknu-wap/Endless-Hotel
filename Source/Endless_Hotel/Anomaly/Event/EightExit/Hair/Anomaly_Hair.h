@@ -11,9 +11,6 @@ class ENDLESS_HOTEL_API AAnomaly_Hair : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
-public:
-	AAnomaly_Hair(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	virtual void BeginPlay() override;
 

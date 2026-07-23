@@ -31,9 +31,12 @@ void UUI_HUD_Title::ShowWidget()
 
 	SetLogoImage();
 
-	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
-	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
-	PlayBGM();
+	if (!IsValid(AC))
+	{
+		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
+		PlayBGM();
+	}
 }
 
 #pragma endregion
@@ -125,6 +128,7 @@ void UUI_HUD_Title::StopBGM(float Duration)
 {
 	AC->OnAudioFinished.Clear();
 	AC->FadeOut(Duration, 0.f);
+	AC = nullptr;
 }
 
 void UUI_HUD_Title::PlayBGM()

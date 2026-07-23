@@ -18,4 +18,18 @@ public:
 
 #pragma endregion
 
+#pragma region Navigation
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Navigation)
+	TObjectPtr<class UNavigationInvokerComponent> NavInvoker;
+
+	UPROPERTY(EditAnywhere, Category = Navigation)
+	float NavGenerationRadius = 3000.f;
+
+	UPROPERTY(EditAnywhere, Category = Navigation)
+	float NavRemovalRadius = 5000.f;
+
+#pragma endregion
+
 };

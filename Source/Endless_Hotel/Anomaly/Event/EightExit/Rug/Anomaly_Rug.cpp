@@ -3,15 +3,6 @@
 #include "Anomaly/Event/EightExit/Rug/Anomaly_Rug.h"
 #include "Anomaly/Object/EightExit/Rug/Anomaly_Object_Rug.h"
 
-#pragma region Base
-
-AAnomaly_Rug::AAnomaly_Rug()
-{
-	PrimaryActorTick.bCanEverTick = false;
-}
-
-#pragma endregion
-
 #pragma region Activity
 
 void AAnomaly_Rug::SetAnomalyState()
@@ -21,7 +12,7 @@ void AAnomaly_Rug::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Rug_Color:
-		SetupAnomalyAction(&AAnomaly_Object_Rug::ChangeRugColor);
+		SetupAnomalyAction<AAnomaly_Object_Rug>(&AAnomaly_Object_Rug::ChangeRugColor);
 		ScheduleAnomaly();
 		break;
 	}

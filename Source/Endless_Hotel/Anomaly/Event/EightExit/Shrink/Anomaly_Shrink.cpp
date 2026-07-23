@@ -41,14 +41,10 @@ void AAnomaly_Shrink::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Shrink:
+		SetupAnomalyAction<ThisClass>(&ThisClass::StartShrink);
 		ScheduleAnomaly(10);
 		break;
 	}
-}
-
-void AAnomaly_Shrink::StartAnomalyAction()
-{
-	Timeline_Shrink->PlayFromStart();
 }
 
 void AAnomaly_Shrink::DisableAnomaly()
@@ -68,6 +64,11 @@ void AAnomaly_Shrink::DisableAnomaly()
 #pragma endregion
 
 #pragma region Shrink
+
+void AAnomaly_Shrink::StartShrink()
+{
+	Timeline_Shrink->PlayFromStart();
+}
 
 void AAnomaly_Shrink::ShrinkPlayer(float Value)
 {
