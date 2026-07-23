@@ -42,11 +42,10 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> BurnDMI;
+	TArray<TObjectPtr<UMaterialInstanceDynamic>> MID_Burn;
 
 	FTimerHandle BurnHandle;
 
-	const float BurnDuration = 5.f;
 	float BurnCurrentTime = 0.f;
 
 #pragma endregion

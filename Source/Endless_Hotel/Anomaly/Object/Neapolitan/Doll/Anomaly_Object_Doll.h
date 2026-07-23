@@ -37,57 +37,40 @@ public:
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_Doll_Fire;
-
 #pragma endregion
 
 #pragma region Burn
 
 protected:
-	FTimerHandle BurnHandle;
+	void StartBurning();
+	void SetupBurnTargets();
+
+private:
+	void BurnTick();
+
+protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
-	float BurnDuration = 5.f;
-
-	float BurnCurrentTime = 0.f;
-
-	bool bIsBurning = false;
-
-	TWeakObjectPtr<UStaticMeshComponent> BurnMesh;
-	TWeakObjectPtr<class UNiagaraComponent> BurnNiagara;
-
-	UPROPERTY()
-	TObjectPtr<UMaterialInstanceDynamic> BurnMID = nullptr;
-
-	FName Param_Alpha = TEXT("Alpha");
-	FName Param_EdgeColor = TEXT("Edge Color");
-	FName Param_DissolveTex = TEXT("Dissolve Texture");
-
-	FName NiagaraVar_Alpha = TEXT("Alpha");
-	FName NiagaraVar_EdgeColor = TEXT("EdgeColor");
+	TObjectPtr<UTexture> DissolveTexture;
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
-	TObjectPtr<UTexture> DissolveTexture = nullptr;
-
-	UPROPERTY(EditAnywhere, Category = "Burn")
-	FLinearColor EdgeColor = FLinearColor::White; 
+	FLinearColor EdgeColor = FLinearColor::White;
 
 	UPROPERTY(EditAnywhere, Category = "Burn")
 	float ColorBoost = 1.f;
 
-protected:
-	void SetupBurnTargets();
-	void StartBurning(float Duration);
-	void BurnTick();
-	void FinishBurning();
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<UMaterialInstanceDynamic>> MID_Burn;
+
+	FTimerHandle BurnHandle;
+
+	float BurnCurrentTime = 0.f;
 
 #pragma endregion
 
