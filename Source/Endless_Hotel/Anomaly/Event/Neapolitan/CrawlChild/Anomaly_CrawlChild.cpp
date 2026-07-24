@@ -3,7 +3,9 @@
 #include "Anomaly/Event/Neapolitan/CrawlChild/Anomaly_CrawlChild.h"
 #include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
+#include "Character/AI/CrawlChild/CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
@@ -16,22 +18,27 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::CrawlChild:
-		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::ActivePlayTrigger);
-		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		PlayerMC = Player->GetCharacterMovement();
-		OriginalSpeed = PlayerMC->MaxWalkSpeed;
+		//SetupAnomalyAction<AAnomaly_CrawlChild>(&AAnomaly_CrawlChild::ShowSubTitle);
+		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::StartCrawlChild);
+		//SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
 		ActiveTrigger();
 		break;
 	}
 }
 
-void AAnomaly_CrawlChild::DisableAnomaly()
+#pragma endregion
+
+#pragma region Subtitle
+
+void AAnomaly_CrawlChild::ShowSubTitle()
 {
-	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->bCanRun = true;
-	PC->bCanCrouch = true;
-	PlayerMC->MaxWalkSpeed = OriginalSpeed;
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	FTimerHandle SubTitleTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(SubTitleTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon]()
+		{
+			uint8 SubtitleIndex = FMath::RandRange(0, Subtitle.Num() - 1);
+			UICon->ShowSubTitle(Subtitle[SubtitleIndex], 2, 0.5f);
+		}), 2, true);
 }
 
 #pragma endregion

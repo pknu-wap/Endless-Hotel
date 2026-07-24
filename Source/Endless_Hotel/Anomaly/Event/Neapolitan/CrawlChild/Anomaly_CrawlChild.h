@@ -11,25 +11,21 @@ class ENDLESS_HOTEL_API AAnomaly_CrawlChild : public AAnomaly_Event_Neapolitan
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-#pragma endregion
-
 #pragma region Activity
 
 protected:
 	virtual void SetAnomalyState() override;
-	virtual void DisableAnomaly() override;
 
 #pragma endregion
 
-#pragma region CrawlChild
+#pragma region Subtitle
 
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
+public:
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	TArray<FText> Subtitle;
 
-	float OriginalSpeed;
+public:
+	void ShowSubTitle();
 
 #pragma endregion
 

@@ -15,54 +15,84 @@ class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_Neap
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> AC;
+	TObjectPtr<class UAudioComponent> ObjectAC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> ChildAC;
 
 public:
 	AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma endregion
 
-#pragma region CrawlChild
+#pragma region ReadyAnomaly
+
+private:
+	void SetupCrawlChildObject();
+
+#pragma endregion
+
+#pragma region Trigger
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Move")
-	float LockSpeed = 100.f;
-
-	UPROPERTY(EditAnywhere, Category = "Socket")
-	FName SocketName = TEXT("CrawlChild");
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_Child;
-
-	UPROPERTY(EditAnywhere, Category = "Trigger")
+	UPROPERTY(EditAnywhere, Category = "TriggerBox")
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
-	UPROPERTY(EditAnywhere, Category = "Trigger")
+	UPROPERTY(EditAnywhere, Category = "TriggerBox")
 	FTransform TriggerBox_Transform;
 
-	bool bShouldDie = false;
-
 public:
-	void ActivePlayTrigger();
+	void ActiveTriggerBox();
 
 protected:
 	UFUNCTION()
-	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	void AttatchChildToPlayer();
-	void ApplyBackwardsPenalty();
+	void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 #pragma endregion
 
-#pragma region Subtitle
+#pragma region Collapse
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
+	FTransform StartTransform;
+
+	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
+	FTransform EndTransform;
+
+	TObjectPtr<class UTimelineComponent> FallTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Collapse|Curve")
+	TObjectPtr<UCurveFloat> FallCurve;
+
+private:
+	UFUNCTION()
+	void OnFallTimelineUpdate(float Alpha);
+
+	UFUNCTION()
+	void OnFallTimelineFinished();
+
+#pragma endregion
+
+#pragma region AI
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<class ACrawlChild> CrawlChildClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform AIStartTransform;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform AIEndTransform;
+
+	TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
 public:
-    UPROPERTY(EditAnywhere, Category = "SubTitle")
-    TArray<FText> Subtitle;
-
-public:
-	void ShowSubTitle();
+	void StartCrawlChild();
 
 #pragma endregion
 
