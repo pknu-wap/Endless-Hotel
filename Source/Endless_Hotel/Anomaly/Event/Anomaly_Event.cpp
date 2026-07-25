@@ -36,13 +36,11 @@ void AAnomaly_Event::BeginPlay()
 
 void AAnomaly_Event::StartAnomalyAction()
 {
-	AnomalyActions.StableSort([](const FAnomalyActionEntry& A, const FAnomalyActionEntry& B)
-		{
-			return A.Priority < B.Priority;
-		});
+	for (const auto& Action : AnomalyActions)
+	{
+		Action(this);
+	}
 
-	TArray<UObject*> AllTargets;
-	AllTargets.Add(this);
 	for (UObject* TargetObj : TargetAnomalyObjects)
 	{
 		if (AAnomaly_Object_Base* AnomalyObj = Cast<AAnomaly_Object_Base>(TargetObj))
@@ -52,13 +50,9 @@ void AAnomaly_Event::StartAnomalyAction()
 				continue;
 			}
 		}
-		AllTargets.Add(TargetObj);
-	}
-	for (const auto& Entry : AnomalyActions)
-	{
-		for (UObject* Target : AllTargets)
+		for (const auto& Action : AnomalyActions)
 		{
-			Entry.Action(Target);
+			Action(TargetObj);
 		}
 	}
 }

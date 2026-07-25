@@ -20,8 +20,8 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	{
 	case EAnomalyID::CrawlChild:
 		//SetupAnomalyAction<AAnomaly_CrawlChild>(&AAnomaly_CrawlChild::ShowSubTitle);
-		SetupAnomalyActionWithPriority<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::SetupCrawlChildObject, 0);
-		SetupAnomalyActionWithPriority<ThisClass>(&ThisClass::StartCrawlChild, 1);
+		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::SetupCrawlChildObject);
+		SetupAnomalyAction<ThisClass>(&ThisClass::StartCrawlChild);
 		ActiveTrigger();
 		//SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
 		break;

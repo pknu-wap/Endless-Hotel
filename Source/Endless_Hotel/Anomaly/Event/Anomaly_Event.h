@@ -33,12 +33,6 @@ public:
 	bool bIsOrdered = false;
 };
 
-struct FAnomalyActionEntry
-{
-	TFunction<void(UObject*)> Action;
-	int32 Priority = 0;
-};
-
 #pragma endregion
 
 UCLASS(Blueprintable, BlueprintType)
@@ -78,7 +72,7 @@ public:
 	EAnomalyID AnomalyID;
 
 protected:
-	TArray<FAnomalyActionEntry> AnomalyActions;
+	TArray<TFunction<void(UObject*)>> AnomalyActions;
 
 #pragma endregion
 
@@ -145,19 +139,9 @@ public:
 
 protected:
 	template<typename ObjectType, typename... Args>
-	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(Args...),
-		FAnomalyActionInfo ActionInfo = FAnomalyActionInfo(),
-		Args&&... FuncArgs)
+	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(Args...), FAnomalyActionInfo ActionInfo = FAnomalyActionInfo(), Args&&... FuncArgs)
 	{
-		SetupAnomalyActionWithPriority<ObjectType>(SelectedFunc, 0, ActionInfo, Forward<Args>(FuncArgs)...);
-	}
-
-	template<typename ObjectType, typename... Args>
-	void SetupAnomalyActionWithPriority(void (ObjectType::* SelectedFunc)(Args...), uint8 Priority = 0, FAnomalyActionInfo ActionInfo = FAnomalyActionInfo(), Args&&... FuncArgs)
-	{
-		FAnomalyActionEntry Entry;
-		Entry.Priority = Priority;
-		Entry.Action = [SelectedFunc, ActionInfo, FuncArgs...](UObject* Obj)
+		AnomalyActions.Add([SelectedFunc, ActionInfo, FuncArgs...](UObject* Obj)
 			{
 				if (ObjectType* TargetObj = Cast<ObjectType>(Obj))
 				{
@@ -168,8 +152,7 @@ protected:
 					}
 					(TargetObj->*SelectedFunc)(FuncArgs...);
 				}
-			};
-		AnomalyActions.Add(MoveTemp(Entry));
+			});
 	}
 
 #pragma endregion

@@ -6,11 +6,17 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_CrawlChild.generated.h>
 
+#pragma region Declare
+
+class ACrawlChild;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 protected:
@@ -83,7 +89,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FTransform AIEndTransform;
 
-	TWeakObjectPtr<class ACrawlChild> CrawlChild;
+	UPROPERTY(VisibleAnywhere, Category = "AI")
+	TWeakObjectPtr<ACrawlChild> CrawlChild;
 
 public:
 	UFUNCTION()
