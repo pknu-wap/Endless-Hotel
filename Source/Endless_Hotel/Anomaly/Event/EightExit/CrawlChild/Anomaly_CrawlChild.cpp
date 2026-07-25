@@ -1,7 +1,8 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Anomaly/Event/Neapolitan/CrawlChild/Anomaly_CrawlChild.h"
-#include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
+#include "Character/AI/CrawlChild/CrawlChildController.h"
+#include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
@@ -19,11 +20,22 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	{
 	case EAnomalyID::CrawlChild:
 		//SetupAnomalyAction<AAnomaly_CrawlChild>(&AAnomaly_CrawlChild::ShowSubTitle);
-		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::StartCrawlChild);
-		//SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
+		SetupAnomalyActionWithPriority<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::SetupCrawlChildObject, 0);
+		SetupAnomalyActionWithPriority<ThisClass>(&ThisClass::StartCrawlChild, 1);
 		ActiveTrigger();
+		//SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region Anomaly
+
+void AAnomaly_CrawlChild::DisableAnomaly()
+{
+	CrawlChild->Destroy();
+	Super::DisableAnomaly();
 }
 
 #pragma endregion
@@ -39,6 +51,18 @@ void AAnomaly_CrawlChild::ShowSubTitle()
 			uint8 SubtitleIndex = FMath::RandRange(0, Subtitle.Num() - 1);
 			UICon->ShowSubTitle(Subtitle[SubtitleIndex], 2, 0.5f);
 		}), 2, true);
+}
+
+#pragma endregion
+
+#pragma region AI
+
+void AAnomaly_CrawlChild::StartCrawlChild()
+{
+	CrawlChild = GetWorld()->SpawnActor<ACrawlChild>(CrawlChildClass, AIStartTransform);
+	ACrawlChildController* CrawlChildController = Cast<ACrawlChildController>(CrawlChild->GetController());
+	OnCrawlChildSpawned.Broadcast(CrawlChild.Get());
+	CrawlChildController->FallFromWheelChair();
 }
 
 #pragma endregion

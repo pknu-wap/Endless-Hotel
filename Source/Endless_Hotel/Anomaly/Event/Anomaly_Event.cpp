@@ -36,11 +36,13 @@ void AAnomaly_Event::BeginPlay()
 
 void AAnomaly_Event::StartAnomalyAction()
 {
-	for (const auto& Action : AnomalyActions)
-	{
-		Action(this);
-	}
+	AnomalyActions.StableSort([](const FAnomalyActionEntry& A, const FAnomalyActionEntry& B)
+		{
+			return A.Priority < B.Priority;
+		});
 
+	TArray<UObject*> AllTargets;
+	AllTargets.Add(this);
 	for (UObject* TargetObj : TargetAnomalyObjects)
 	{
 		if (AAnomaly_Object_Base* AnomalyObj = Cast<AAnomaly_Object_Base>(TargetObj))
@@ -50,9 +52,13 @@ void AAnomaly_Event::StartAnomalyAction()
 				continue;
 			}
 		}
-		for (const auto& Action : AnomalyActions)
+		AllTargets.Add(TargetObj);
+	}
+	for (const auto& Entry : AnomalyActions)
+	{
+		for (UObject* Target : AllTargets)
 		{
-			Action(TargetObj);
+			Entry.Action(Target);
 		}
 	}
 }
@@ -77,13 +83,13 @@ void AAnomaly_Event::SetAnomalyState()
 	for (auto* FoundActor : LinkedObjects)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		
-		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyID)) 
+
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyID))
 		{
 			continue;
 		}
 
-		if(!bIsEightExit && !AnomalyObject->bIsEightExitObject)
+		if (!bIsEightExit && !AnomalyObject->bIsEightExitObject)
 		{
 			AnomalyObject->SetSolvedFalse();
 		}

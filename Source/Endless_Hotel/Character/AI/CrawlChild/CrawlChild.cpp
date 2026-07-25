@@ -2,7 +2,7 @@
 
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "CrawlChildAnimInstance.h"
-#include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/BoxComponent.h>

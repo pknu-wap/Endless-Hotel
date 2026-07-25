@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
+#include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_CrawlChild.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_Neapolitan
+class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_EightExit
 {
 	GENERATED_BODY()
 	
@@ -30,7 +30,7 @@ protected:
 
 #pragma region ReadyAnomaly
 
-private:
+public:
 	void SetupCrawlChildObject();
 
 #pragma endregion
@@ -81,18 +81,13 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<class ACrawlChild> CrawlChildClass;
-
-	UPROPERTY(EditAnywhere, Category = "AI")
-	FTransform AIStartTransform;
-
-	UPROPERTY(EditAnywhere, Category = "AI")
 	FTransform AIEndTransform;
 
 	TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
 public:
-	void StartCrawlChild();
+	UFUNCTION()
+	void OnCrawlChildSpawnedHandler(ACrawlChild* SpawnedCrawlChild);
 
 #pragma endregion
 
