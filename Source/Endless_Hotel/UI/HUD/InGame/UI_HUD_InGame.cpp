@@ -26,12 +26,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
 	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
 
-	VB_Rule->ClearChildren();
-
-	for (auto Rule : Subsystem->AnomalyRules)
-	{
-		AddDebugAnomalyRule(Rule);
-	}
+	
 }
 
 #pragma endregion
@@ -209,10 +204,16 @@ void UUI_HUD_InGame::ShowDebugGameInfo(bool bActive)
 
 void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 {
-	UTextBlock* TextBlock = NewObject<UTextBlock>(this);
-	TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(NewRule));
+	VB_Rule->ClearChildren();
 
-	VB_Rule->AddChildToVerticalBox(TextBlock);
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	for (auto Rule : Subsystem->AnomalyRules)
+	{
+		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
+		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
+
+		VB_Rule->AddChildToVerticalBox(TextBlock);
+	}
 }
 
 void UUI_HUD_InGame::ChangeDebugAnomaly()
