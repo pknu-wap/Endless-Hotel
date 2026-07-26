@@ -1,11 +1,13 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Anomaly/Object/Neapolitan/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChildController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
@@ -49,6 +51,9 @@ void AAnomaly_Object_CrawlChild::BeginPlay()
 
 void AAnomaly_Object_CrawlChild::SetupCrawlChildObject()
 {
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(Sub->CurrentAnomaly);
+	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 	Object->SetWorldTransform(StartTransform);
@@ -106,18 +111,10 @@ void AAnomaly_Object_CrawlChild::OnFallTimelineFinished()
 
 #pragma region AI
 
-void AAnomaly_Object_CrawlChild::StartCrawlChild()
+void AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler(ACrawlChild* SpawnedCrawlChild)
 {
-	if (CrawlChild.IsValid())
-	{
-		CrawlChild->GetController()->Destroy();
-		CrawlChild->Destroy();
-	}
-	CrawlChild = GetWorld()->SpawnActor<ACrawlChild>(CrawlChildClass, AIStartTransform);
-	CrawlChild->AnomalyObjectRef = this;
-	ACrawlChildController* CrawlChildController = Cast<ACrawlChildController>(CrawlChild->GetController());
-	CrawlChildController->FallFromWheelChair();
-	SetupCrawlChildObject();
+	this->CrawlChild = SpawnedCrawlChild;
+	SpawnedCrawlChild->AnomalyObjectRef = this;
 }
 
 #pragma endregion
