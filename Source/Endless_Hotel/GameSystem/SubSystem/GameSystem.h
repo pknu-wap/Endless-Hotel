@@ -119,6 +119,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
 
+	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
 	EAnomalyID NextAnomalyID = EAnomalyID::None;
 

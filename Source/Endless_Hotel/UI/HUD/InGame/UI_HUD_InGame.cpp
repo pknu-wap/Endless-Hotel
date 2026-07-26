@@ -4,10 +4,12 @@
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Components/TextBlock.h>
+#include <Components/VerticalBox.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -21,6 +23,15 @@ void UUI_HUD_InGame::NativeOnInitialized()
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
+	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
+	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
+
+	VB_Rule->ClearChildren();
+
+	for (auto Rule : Subsystem->AnomalyRules)
+	{
+		AddDebugAnomalyRule(Rule);
+	}
 }
 
 #pragma endregion
@@ -181,6 +192,35 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 			Image_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
 			Text_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
 		}), Delay + Duration, false);
+}
+
+#pragma endregion
+
+#pragma region Debug
+
+void UUI_HUD_InGame::ShowDebugGameInfo(bool bActive)
+{
+	ESlateVisibility Active = bActive ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	Text_Rule->SetVisibility(Active);
+	VB_Rule->SetVisibility(Active);
+	Text_Current->SetVisibility(Active);
+	Text_Next->SetVisibility(Active);
+}
+
+void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
+{
+	UTextBlock* TextBlock = NewObject<UTextBlock>(this);
+	TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(NewRule));
+
+	VB_Rule->AddChildToVerticalBox(TextBlock);
+}
+
+void UUI_HUD_InGame::ChangeDebugAnomaly()
+{
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->NextAnomalyID)));
 }
 
 #pragma endregion

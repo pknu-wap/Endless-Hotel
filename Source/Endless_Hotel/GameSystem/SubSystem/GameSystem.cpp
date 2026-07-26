@@ -147,6 +147,7 @@ void UGameSystem::TryInteractSolveVerdict()
 void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
+	CurrentAnomalyID = AnomalyID;
 	CurrentAnomaly->AnomalyID = AnomalyID;
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
