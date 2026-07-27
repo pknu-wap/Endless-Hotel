@@ -77,13 +77,13 @@ void AAnomaly_Event::SetAnomalyState()
 	for (auto* FoundActor : LinkedObjects)
 	{
 		auto* AnomalyObject = Cast<AAnomaly_Object_Base>(FoundActor);
-		
-		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyID)) 
+
+		if (!AnomalyObject->ExecuteAnomalies.Contains(AnomalyID))
 		{
 			continue;
 		}
 
-		if(!bIsEightExit && !AnomalyObject->bIsEightExitObject)
+		if (!bIsEightExit && !AnomalyObject->bIsEightExitObject)
 		{
 			AnomalyObject->SetSolvedFalse();
 		}

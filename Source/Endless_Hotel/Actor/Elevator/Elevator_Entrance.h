@@ -23,9 +23,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Entrance")
 	TObjectPtr<UStaticMeshComponent> Entrance;
 	
-	UPROPERTY(EditAnywhere, Category="ElevatorSticker")
-	TObjectPtr<UStaticMeshComponent> ElevatorSticker;
-	
 #pragma endregion
 
 #pragma region Trigger

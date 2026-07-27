@@ -41,14 +41,11 @@ void AAnomaly_Object_Doll::Reset()
 	Object->SetHiddenInGame(true);
 	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if (BurnNiagara.IsValid())
-	{
-		BurnNiagara->Deactivate();
-	}
+	Niagara_Fire->Deactivate();
 
-	if (IsValid(BurnMID))
+	for (int32 Index = 0; Index < MID_Burn.Num(); ++Index)
 	{
-		BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
+		MID_Burn[Index]->SetScalarParameterValue(TEXT("Alpha"), 0.f);
 	}
 
 	TryBurnComingDolls();
@@ -78,7 +75,7 @@ void AAnomaly_Object_Doll::Interact_Implementation(AEHCharacter* Interacter)
 	{
 	case EInteractType::Burn:
 		SetupBurnTargets();
-		StartBurning(BurnDuration);
+		StartBurning();
 		TryBurnComingDolls();
 		break;
 	}
@@ -90,47 +87,25 @@ void AAnomaly_Object_Doll::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_Doll::SetupBurnTargets()
 {
-	BurnMesh = Object;
-	BurnNiagara = Niagara_Fire;
-
-	if (BurnMesh.IsValid() && !BurnMID)
+	for (int32 Index = 0; Index < Object->GetNumMaterials(); ++Index)
 	{
-		BurnMID = BurnMesh->CreateDynamicMaterialInstance(0);
+		auto* Material = Object->CreateDynamicMaterialInstance(Index);
+		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
 
-		if (BurnMID)
-		{
-			BurnMesh->SetMaterial(0, BurnMID);
+		MID_Burn.Add(Material);
 
-			BurnMID->SetScalarParameterValue(Param_Alpha, 0.f);
-			BurnMID->SetVectorParameterValue(Param_EdgeColor, EdgeColor * ColorBoost);
-		}
-
-		if (DissolveTexture)
-		{
-			BurnMID->SetTextureParameterValue(Param_DissolveTex, DissolveTexture);
-		}
+		Object->SetMaterial(Index, MID_Burn[Index]);
 	}
 }
 
-void AAnomaly_Object_Doll::StartBurning(float Duration)
+void AAnomaly_Object_Doll::StartBurning()
 {
-	if (bIsBurning)
-	{
-		return;
-	}
+	SetupBurnTargets();
 
-	bIsBurning = true;
-	BurnCurrentTime = 0.f;
-	BurnDuration = Duration;
+	Niagara_Fire->Activate();
 
-	if (BurnNiagara.IsValid())
-	{
-		BurnNiagara->SetFloatParameter(NiagaraVar_Alpha, 0.f);
-		BurnNiagara->SetVariableLinearColor(NiagaraVar_EdgeColor, EdgeColor * ColorBoost);
-		BurnNiagara->Activate();
-	}
-
-	AC->Sound = Sound_Doll_Fire;
 	AC->Play();
 
 	GetWorld()->GetTimerManager().SetTimer(BurnHandle, this, &ThisClass::BurnTick, 0.02f, true);
@@ -138,37 +113,28 @@ void AAnomaly_Object_Doll::StartBurning(float Duration)
 
 void AAnomaly_Object_Doll::BurnTick()
 {
-	if (!bIsBurning || !BurnMID)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
-		return;
-	}
-
 	BurnCurrentTime += 0.02f;
-	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
-	BurnMID->SetScalarParameterValue(Param_Alpha, Alpha);
 
-	if (BurnNiagara.IsValid())
+	constexpr float BurnDuration = 5.f;
+	const float Alpha = FMath::Clamp(BurnCurrentTime / BurnDuration, 0.f, 1.f);
+
+	for (int32 Index = 0; Index < MID_Burn.Num(); ++Index)
 	{
-		BurnNiagara->SetFloatParameter(NiagaraVar_Alpha, Alpha);
+		MID_Burn[Index]->SetScalarParameterValue(TEXT("Alpha"), Alpha);
 	}
 
 	if (Alpha >= 1.f)
 	{
-		FinishBurning();
-	}
-}
+		Object->SetHiddenInGame(true);
+		Niagara_Fire->Deactivate();
 
-void AAnomaly_Object_Doll::FinishBurning()
-{
-	GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
-	bIsBurning = false;
-	Object->SetHiddenInGame(true);
-	BurnNiagara->Deactivate();
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	if (Subsystem->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
-	{
-		Subsystem->CurrentAnomaly->InteractSolveVerdict();
+		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+		if (Subsystem->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
+		{
+			Subsystem->CurrentAnomaly->InteractSolveVerdict();
+		}
+
+		GetWorld()->GetTimerManager().ClearTimer(BurnHandle);
 	}
 }
 

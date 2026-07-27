@@ -2,7 +2,9 @@
 
 #include "Character/AI/CryGhost/CryGhost.h"
 #include "Character/AI/CryGhost/CryGhostAnimInstance.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
+#include <Components/CapsuleComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
@@ -16,7 +18,11 @@ ACryGhost::ACryGhost(const FObjectInitializer& ObjectInitializer)
 	AudioComponent->SetAutoActivate(false);
 	AudioComponent->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
 
-	GetCharacterMovement()->MaxWalkSpeed = 0.f;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+
+	DeathTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DeathTrigger"));
+	DeathTrigger->SetupAttachment(GetMesh());
+	DeathTrigger->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnDeathTrigger);
 }
 
 #pragma endregion
@@ -110,6 +116,19 @@ void ACryGhost::RunCryGhost()
 void ACryGhost::StopCryGhost()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 0.f;
+}
+
+#pragma endregion
+
+#pragma region Death
+
+void ACryGhost::OnDeathTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (auto* Player = Cast<AEHPlayer>(OtherActor))
+	{
+		Player->DieDelegate.Broadcast(EDeathReason::Doll);
+		DeathTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 #pragma endregion

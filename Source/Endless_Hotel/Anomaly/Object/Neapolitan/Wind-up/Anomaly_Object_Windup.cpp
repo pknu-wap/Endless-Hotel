@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
 #include "Component/Interact/InteractComponent.h"
@@ -86,7 +86,7 @@ void AAnomaly_Object_Windup::WrongLoopTick()
 		GetWorld()->GetTimerManager().ClearTimer(WrongPlayHandle);
 		
 		SetupBurnTargets();
-		StartBurning(BurnDuration);
+		StartBurning();
 
 		return;
 	}
@@ -140,7 +140,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 			if (Info.InteractType == EInteractType::Burn)
 			{
 				SetupBurnTargets();
-				StartBurning(BurnDuration);
+				StartBurning();
 
 				bSolved = true;
 				CurrentInteractStep = EWindupInteractStep::Finished;
