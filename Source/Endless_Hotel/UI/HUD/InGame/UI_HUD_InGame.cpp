@@ -100,21 +100,20 @@ void UUI_HUD_InGame::SetBrightness(float Value)
 
 void UUI_HUD_InGame::AnomalyBlur(bool bIsStart)
 {
-	if (!bIsStart)
-	{
-		BackBlur->SetBlurStrength(0.f);
-		return;
-	}
+	const float TargetStrength = bIsStart ? 20.f : 0.f;
+	float CurrentStrength = bIsStart ? 0.f : 20.f;
 
-	const float TargetStrength = 20;
-	float CurrentStrength = 0;
-
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength, bIsStart]() mutable
 		{
-			CurrentStrength += 0.1f;
+			const float AddValue = bIsStart ? 0.1f : -0.1f;
+			CurrentStrength += AddValue;
 			BackBlur->SetBlurStrength(CurrentStrength);
 
-			if (CurrentStrength >= TargetStrength)
+			if (bIsStart && CurrentStrength >= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+			else if (!bIsStart && CurrentStrength <= TargetStrength)
 			{
 				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
 			}

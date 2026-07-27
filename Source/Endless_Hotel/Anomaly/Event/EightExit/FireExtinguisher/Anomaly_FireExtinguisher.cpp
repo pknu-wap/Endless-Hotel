@@ -39,23 +39,24 @@ void AAnomaly_FireExtinguisher::DisableAnomaly()
 
 void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_Base* BlurWidget = UICon->GetHUDWidget();
-	Cast<UUI_HUD_InGame>(BlurWidget)->AnomalyBlur(bIsStart);
-
 	if (!bIsStart)
 	{
 		AC->Stop();
 		GetWorld()->GetTimerManager().ClearTimer(FadeOutHandle);
 		return;
 	}
+
+	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UUI_HUD_InGame* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	BlurWidget->AnomalyBlur(true);
 	
 	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_Blur);
 	AC->Play();
 
-	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, FTimerDelegate::CreateWeakLambda(this, [this, BlurWidget]()
 		{
 			AC->FadeOut(1, 0);
+			BlurWidget->AnomalyBlur(false);
 		}), 9, false);
 }
 
