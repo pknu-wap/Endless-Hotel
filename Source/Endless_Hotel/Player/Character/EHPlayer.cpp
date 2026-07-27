@@ -4,6 +4,8 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <Components/CapsuleComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/PointLightComponent.h>
@@ -81,6 +83,26 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	}
 
 	PlayAnimation(DeathAnim);
+
+	switch (DeathReason)
+	{
+	case EDeathReason::Music:
+	{
+		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+		auto* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+		BlurWidget->EyeEffectBlur(true);
+
+		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_Ringing);
+		AC->Play();
+
+		FTimerHandle RingingHandle;
+		GetWorld()->GetTimerManager().SetTimer(RingingHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				AC->FadeOut(1, 0);
+			}), 7, false);
+		break;
+	}
+	}
 
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->bInheritPitch = true;

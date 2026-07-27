@@ -46,9 +46,9 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 		return;
 	}
 
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UUI_HUD_InGame* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
-	BlurWidget->AnomalyBlur(true);
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	BlurWidget->EyeEffectBlur(true);
 	
 	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_Blur);
 	AC->Play();
@@ -56,8 +56,8 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 	GetWorld()->GetTimerManager().SetTimer(FadeOutHandle, FTimerDelegate::CreateWeakLambda(this, [this, BlurWidget]()
 		{
 			AC->FadeOut(1, 0);
-			BlurWidget->AnomalyBlur(false);
-		}), 9, false);
+			BlurWidget->EyeEffectBlur(false);
+		}), 7, false);
 }
 
 #pragma endregion

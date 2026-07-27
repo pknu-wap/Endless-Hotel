@@ -69,17 +69,15 @@ protected:
 #pragma region Blur
 
 public:
-	void AnomalyBlur(bool bIsStart);
-
-private:
-	void EyeEffectBlur(bool bIsStart);
+	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+	void RemoveEyeEffectBlur();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBackgroundBlur> BackBlur;
 
 	FTimerHandle BlurHandle;
-	const float EyeEffectValue = 40.f;
+	float CurrentStrength = 0.f;
 
 #pragma endregion
 

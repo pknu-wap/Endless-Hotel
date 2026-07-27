@@ -85,8 +85,15 @@ public:
 	bool bIsDead = false;
 
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Death")
 	TMap<EDeathReason, TObjectPtr<class UAnimMontage>> DeathAnims;
+
+	UPROPERTY(EditAnywhere, Category = "Death")
+	TObjectPtr<class USoundWave> SW_Ringing;
+
+private:
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
 
 #pragma endregion
 

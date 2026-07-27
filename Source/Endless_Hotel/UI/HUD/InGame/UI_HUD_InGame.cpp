@@ -27,6 +27,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
 
 	AddDebugAnomalyRule(EAnomalyRule::None);
+	ChangeDebugAnomaly();
 }
 
 #pragma endregion
@@ -44,7 +45,7 @@ void UUI_HUD_InGame::ShowWidget()
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
 {
 	ShowCrosshair(bIsStart);
-	EyeEffectBlur(bIsStart);
+	EyeEffectBlur(!bIsStart, 0.5f);
 }
 
 #pragma endregion
@@ -98,14 +99,14 @@ void UUI_HUD_InGame::SetBrightness(float Value)
 
 #pragma region Blur
 
-void UUI_HUD_InGame::AnomalyBlur(bool bIsStart)
+void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 {
 	const float TargetStrength = bIsStart ? 20.f : 0.f;
-	float CurrentStrength = bIsStart ? 0.f : 20.f;
+	CurrentStrength = bIsStart ? 0.f : 20.f;
 
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength, bIsStart]() mutable
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, Value, bIsStart]()
 		{
-			const float AddValue = bIsStart ? 0.1f : -0.1f;
+			const float AddValue = bIsStart ? 0.1f * Value : -0.1f * Value;
 			CurrentStrength += AddValue;
 			BackBlur->SetBlurStrength(CurrentStrength);
 
@@ -120,40 +121,9 @@ void UUI_HUD_InGame::AnomalyBlur(bool bIsStart)
 		}), 0.01f, true);
 }
 
-void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart)
+void UUI_HUD_InGame::RemoveEyeEffectBlur()
 {
-	float TargetStrength = 0;
-	float CurrentStrength = 20;
-
-	if (!bIsStart)
-	{
-		TargetStrength = 20;
-		CurrentStrength = 0;
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart, TargetStrength, CurrentStrength]() mutable
-		{
-			BackBlur->SetBlurStrength(CurrentStrength);
-
-			if (bIsStart)
-			{
-				CurrentStrength -= 0.05f;
-
-				if (CurrentStrength <= TargetStrength)
-				{
-					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-				}
-			}
-			else
-			{
-				CurrentStrength += 0.05f;
-
-				if (CurrentStrength >= TargetStrength)
-				{
-					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-				}
-			}
-		}), 0.01f, true);
+	BackBlur->SetBlurStrength(0.f);
 }
 
 #pragma endregion
