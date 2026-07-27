@@ -6,6 +6,7 @@
 #include <Components/AudioComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include <Animation/AnimationAsset.h>
+#include <Engine/TimerHandle.h>
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Windup.generated.h>
 
@@ -29,6 +30,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Set
+
+public:
+	void SetWindup();
+
+private:
+	FTimerHandle DelayHandle;
 
 #pragma endregion
 
@@ -89,6 +100,23 @@ protected:
 	TObjectPtr<UAnimationAsset> WindupAnimation;
 
 	void PlayWindupAnimationOnce();
+
+#pragma endregion
+
+#pragma region Burn
+
+private:
+	void SetupWindupBurnTargets();
+	void StartWindupBurning();
+	void WindupBurnTick();
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class UMaterialInstanceDynamic>> MID_WindupBurn;
+
+	FTimerHandle WindupBurnHandle;
+
+	float WindupBurnCurrentTime = 0.f;
 
 #pragma endregion
 
