@@ -26,7 +26,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
 	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
 
-	
+	AddDebugAnomalyRule(EAnomalyRule::None);
 }
 
 #pragma endregion

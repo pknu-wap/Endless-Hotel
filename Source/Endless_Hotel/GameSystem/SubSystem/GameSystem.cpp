@@ -265,7 +265,17 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 
 void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
-	AnomalyRules.Add(AnomalyRule);
+	AnomalyRules.AddUnique(AnomalyRule);
+	FSaveData_Manual SavedRules;
+	SavedRules.ActiveRules = AnomalyRules;
+	USaveManager::SaveData_Manual(SavedRules);
+	InitializePool();
+	OnAddAnomalyRule.Broadcast(AnomalyRule);
+}
+
+void UGameSystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
+{
+	AnomalyRules.Remove(AnomalyRule);
 	FSaveData_Manual SavedRules;
 	SavedRules.ActiveRules = AnomalyRules;
 	USaveManager::SaveData_Manual(SavedRules);
