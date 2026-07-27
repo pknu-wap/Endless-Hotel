@@ -24,7 +24,7 @@ FORCEINLINE ECryGhostState& operator++(ECryGhostState& Value)
 	return Value;
 }
 
-FORCEINLINE ECryGhostState& operator++(ECryGhostState& Value, int)
+FORCEINLINE ECryGhostState operator++(ECryGhostState& Value, int)
 {
 	ECryGhostState Temp = Value;
 	++Value;

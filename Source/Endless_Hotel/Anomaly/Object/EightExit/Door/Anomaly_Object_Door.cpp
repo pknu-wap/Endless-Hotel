@@ -10,6 +10,8 @@
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
+#include <Components/SkeletalMeshComponent.h>
+#include <Animation/AnimationAsset.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 #include <GameFramework/Character.h>
@@ -21,6 +23,11 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 {
 	Mesh_Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle"));
 	Mesh_Handle->SetupAttachment(RootComponent);
+
+	SKM_Hand = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKM_Hand"));
+	SKM_Hand->SetupAttachment(Object, HandSocketName);
+	SKM_Hand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SKM_Hand->SetHiddenInGame(true);
 
 	TL_Door = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Door"));
 	TL_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Handle"));
@@ -59,7 +66,7 @@ void AAnomaly_Object_Door::BeginPlay()
 
 		FOnTimelineEvent OpenFinished;
 		OpenFinished.BindUFunction(this, FName("FinishRotateOpen"));
-		Timeline_Close->SetTimelineFinishedFunc(OpenFinished);
+		Timeline_Open->SetTimelineFinishedFunc(OpenFinished);
 
 		FOnTimelineFloat CloseUpdate;
 		CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
@@ -223,11 +230,47 @@ void AAnomaly_Object_Door::UpdateRotateClose(float Value)
 	Object->SetRelativeRotation(Rot);
 }
 
+void AAnomaly_Object_Door::FinishRotateOpen()
+{
+	PlayHand();
+}
+
 void AAnomaly_Object_Door::FinishRotateClose()
 {
 	FRotator Rot = Object->GetRelativeRotation();
 	Rot.Yaw = BaseYaw;
 	Object->SetRelativeRotation(Rot);
+
+	SKM_Hand->SetHiddenInGame(true);
+}
+
+#pragma endregion
+
+#pragma region Hand
+
+void AAnomaly_Object_Door::StartHandDoor()
+{
+	OpenDoor();
+}
+
+void AAnomaly_Object_Door::PlayHand()
+{
+	CloseHandDoor();
+
+	SKM_Hand->SetHiddenInGame(false);
+	SKM_Hand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+	SKM_Hand->SetAnimation(HandAnimation);
+	SKM_Hand->SetPosition(0.0f, false);
+	SKM_Hand->Play(false);
+
+	const float CloseDelay = HandAnimation->GetPlayLength() + HandHoldDuration;
+
+	GetWorld()->GetTimerManager().SetTimer(HandTimerHandle,	this, &ThisClass::CloseHandDoor, CloseDelay, false);
+}
+
+void AAnomaly_Object_Door::CloseHandDoor()
+{
+	CloseDoor();
 }
 
 #pragma endregion

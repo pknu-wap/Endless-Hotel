@@ -30,6 +30,11 @@ void AAnomaly_Door::SetAnomalyState()
 		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::StartShaking);
 		ActiveTrigger();
 		break;
+		
+	case EAnomalyID::Door_Close:
+		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::StartHandDoor);
+		ActiveTrigger();
+		break;
 	}
 }
 
