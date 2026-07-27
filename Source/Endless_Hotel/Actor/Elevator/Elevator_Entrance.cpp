@@ -13,9 +13,6 @@ AElevator_Entrance::AElevator_Entrance(const FObjectInitializer& ObjectInitializ
 	Entrance = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Entrance"));
 	RootComponent = Entrance;
 
-	ElevatorSticker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ElevatorSticker"));
-	ElevatorSticker->SetupAttachment(RootComponent);
-
 	TakeOff_Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TakeOff_Trigger"));
 	TakeOff_Trigger->SetupAttachment(RootComponent);
 }
