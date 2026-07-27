@@ -6,9 +6,6 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Door.generated.h>
 
-class USkeletalMeshComponent;
-class UAnimationAsset;
-
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 {
@@ -139,9 +136,6 @@ protected:
 	void UpdateRotateClose(float Value);
 
 	UFUNCTION()
-	void FinishRotateOpen();
-
-	UFUNCTION()
 	void FinishRotateClose();
 
 protected:
@@ -161,33 +155,6 @@ protected:
 	float OpenYaw = 0.f;
 	float CloseYaw = 0.f;
 	float BaseYaw = 0.f;
-
-#pragma endregion
-	
-#pragma region Hand
-
-public:
-	void StartHandDoor();
-	void PlayHand();
-	void CloseHandDoor();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Hand")
-	TObjectPtr<USkeletalMeshComponent> SKM_Hand;
-
-	UPROPERTY(EditAnywhere, Category = "Hand")
-	FName HandSocketName = TEXT("HandSocket");
-
-	UPROPERTY(EditAnywhere, Category = "Hand")
-	float HandAnimationDuration = 2.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Hand")
-	float HandHoldDuration = 2.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Hand")
-	TObjectPtr<UAnimationAsset> HandAnimation;
-
-	FTimerHandle HandTimerHandle;
 
 #pragma endregion
 
