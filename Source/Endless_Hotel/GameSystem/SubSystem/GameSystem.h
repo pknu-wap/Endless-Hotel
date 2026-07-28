@@ -117,6 +117,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
 
+	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
 	EAnomalyID NextAnomalyID = EAnomalyID::None;
 
@@ -146,6 +148,7 @@ public:
 	void RegisterAnomalyObject(AAnomaly_Object_Base* Object);
 	void UnRegisterAnomalyObject(AAnomaly_Object_Base* Object);
 	void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
+	void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
 	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; }
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);

@@ -4,10 +4,12 @@
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Components/TextBlock.h>
+#include <Components/VerticalBox.h>
 #include <Kismet/GameplayStatics.h>
 
 #pragma region Base
@@ -21,6 +23,11 @@ void UUI_HUD_InGame::NativeOnInitialized()
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
+	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
+	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
+
+	AddDebugAnomalyRule(EAnomalyRule::None);
+	ChangeDebugAnomaly();
 }
 
 #pragma endregion
@@ -38,7 +45,7 @@ void UUI_HUD_InGame::ShowWidget()
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
 {
 	ShowCrosshair(bIsStart);
-	EyeEffectBlur(bIsStart);
+	EyeEffectBlur(!bIsStart, 0.5f);
 }
 
 #pragma endregion
@@ -92,63 +99,31 @@ void UUI_HUD_InGame::SetBrightness(float Value)
 
 #pragma region Blur
 
-void UUI_HUD_InGame::AnomalyBlur(bool bIsStart)
+void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 {
-	if (!bIsStart)
-	{
-		BackBlur->SetBlurStrength(0.f);
-		return;
-	}
+	const float TargetStrength = bIsStart ? 20.f : 0.f;
+	CurrentStrength = bIsStart ? 0.f : 20.f;
 
-	const float TargetStrength = 20;
-	float CurrentStrength = 0;
-
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, CurrentStrength]() mutable
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, Value, bIsStart]()
 		{
-			CurrentStrength += 0.1f;
+			const float AddValue = bIsStart ? 0.1f * Value : -0.1f * Value;
+			CurrentStrength += AddValue;
 			BackBlur->SetBlurStrength(CurrentStrength);
 
-			if (CurrentStrength >= TargetStrength)
+			if (bIsStart && CurrentStrength >= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+			else if (!bIsStart && CurrentStrength <= TargetStrength)
 			{
 				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
 			}
 		}), 0.01f, true);
 }
 
-void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart)
+void UUI_HUD_InGame::RemoveEyeEffectBlur()
 {
-	float TargetStrength = 0;
-	float CurrentStrength = 20;
-
-	if (!bIsStart)
-	{
-		TargetStrength = 20;
-		CurrentStrength = 0;
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsStart, TargetStrength, CurrentStrength]() mutable
-		{
-			BackBlur->SetBlurStrength(CurrentStrength);
-
-			if (bIsStart)
-			{
-				CurrentStrength -= 0.05f;
-
-				if (CurrentStrength <= TargetStrength)
-				{
-					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-				}
-			}
-			else
-			{
-				CurrentStrength += 0.05f;
-
-				if (CurrentStrength >= TargetStrength)
-				{
-					GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-				}
-			}
-		}), 0.01f, true);
+	BackBlur->SetBlurStrength(0.f);
 }
 
 #pragma endregion
@@ -181,6 +156,41 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 			Image_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
 			Text_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
 		}), Delay + Duration, false);
+}
+
+#pragma endregion
+
+#pragma region Debug
+
+void UUI_HUD_InGame::ShowDebugGameInfo(bool bActive)
+{
+	ESlateVisibility Active = bActive ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	Text_Rule->SetVisibility(Active);
+	VB_Rule->SetVisibility(Active);
+	Text_Current->SetVisibility(Active);
+	Text_Next->SetVisibility(Active);
+}
+
+void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
+{
+	VB_Rule->ClearChildren();
+
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	for (auto Rule : Subsystem->AnomalyRules)
+	{
+		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
+		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
+
+		VB_Rule->AddChildToVerticalBox(TextBlock);
+	}
+}
+
+void UUI_HUD_InGame::ChangeDebugAnomaly()
+{
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->NextAnomalyID)));
 }
 
 #pragma endregion

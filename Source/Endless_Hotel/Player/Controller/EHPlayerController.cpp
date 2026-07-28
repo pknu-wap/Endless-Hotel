@@ -4,6 +4,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
@@ -391,6 +392,10 @@ void AEHPlayerController::RevivePlayer()
 	bRevive = true;
 	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
+
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	BlurWidget->RemoveEyeEffectBlur();
 
 	TWeakObjectPtr<AEHPlayerController> WeakThis(this);
 	TWeakObjectPtr<APawn> WeakPawn(ControlledPawn);

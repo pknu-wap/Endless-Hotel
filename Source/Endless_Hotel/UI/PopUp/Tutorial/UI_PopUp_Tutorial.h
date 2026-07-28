@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API UUI_PopUp_Tutorial : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
 #pragma region Show
 
 protected:
@@ -25,6 +32,10 @@ protected:
 
 private:
 	void CloseTutorial();
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_ESC;
 
 #pragma endregion
 

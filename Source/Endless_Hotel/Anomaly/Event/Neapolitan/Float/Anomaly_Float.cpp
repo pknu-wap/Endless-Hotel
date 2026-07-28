@@ -14,8 +14,8 @@ void AAnomaly_Float::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Float:
-		SetupAnomalyAction(&AAnomaly_Object_Base::StartFloating, FAnomalyActionInfo({ EInteractType::Restore }));
-		SetupAnomalyAction(&ThisClass::PlayGravitySound);
+		SetupAnomalyAction<AAnomaly_Object_Base>(&AAnomaly_Object_Base::StartFloating, FAnomalyActionInfo({ EInteractType::Restore }));
+		SetupAnomalyAction<ThisClass>(&ThisClass::PlayGravitySound);
 		ScheduleAnomaly(10);
 		break;
 	}

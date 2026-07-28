@@ -10,11 +10,22 @@ UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_PopUp_Read : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
-	
+
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
 #pragma region Input
 
 protected:
 	virtual void Input_ESC() override;
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> Button_ESC;
 
 #pragma endregion
 
