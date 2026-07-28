@@ -238,7 +238,6 @@ void AElevator::NotifySubsystem()
     Sub->TryInteractSolveVerdict();
     Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
     Sub->ApplyVerdict();
-    Sub->LoadNextMap();
 }
 
 void AElevator::StartElevator()

@@ -15,11 +15,10 @@ void ANormal::SetAnomalyState()
     Super::SetAnomalyState();
     auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (Subsystem->bIsStartInBed)
+    if (Subsystem->bIsStartInBed || Subsystem->bIsFirstStartFloor)
     {
         Subsystem->RemoveTargetElevator();
         Player->SetActorTransform(Player->StartTransform);
-        Subsystem->bIsStartInBed = false;
     }
     if (Subsystem->bIsFirstStartFloor)
     {

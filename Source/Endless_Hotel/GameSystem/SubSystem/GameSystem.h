@@ -21,10 +21,8 @@ class AAnomaly_Object_Base;
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
 {
-	SolvedOnly,
 	Both_AND,
-	Normal,
-	Fail
+	Normal
 };
 
 USTRUCT(BlueprintType)
@@ -69,8 +67,8 @@ private:
 	bool bIsElevatorNormal = false;
 
 public:
-	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; };
-	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; };
+	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; }
+	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; }
 
 #pragma endregion
 
@@ -98,7 +96,7 @@ public:
 	bool bPassed = false;
 
 public:
-	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Fail) { VerdictMode = ENewMode; };
+	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
@@ -184,7 +182,7 @@ public:
 	void SetTargetElevator();
 	void RemoveTargetElevator();
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
-	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; };
+	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; }
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
 
 	AElevator* GetElevatorByID(FName TargetID);
@@ -192,7 +190,6 @@ public:
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }
 	FRotator GetElevatorOffset() { return ElevatorOffset; }
-	FTransform GetPlayerinElevatorTransform() { return RelativePlayerTransform; };
 	bool IsTargetElevator(const AElevator* Elevator);
 
 public:
@@ -203,7 +200,6 @@ private:
 	FVector RelativePlayerLocation;
 	FRotator RelativePlayerRotation;
 	FRotator ElevatorOffset;
-	FTransform RelativePlayerTransform;
 	TMap<FName, TWeakObjectPtr<class AElevator>> Elevators;
 	TWeakObjectPtr<class AElevator> TargetElevator = nullptr;
 	float PlayerVelocity;

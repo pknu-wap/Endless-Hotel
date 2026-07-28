@@ -40,9 +40,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RuleSetting|BoundAnomaly")
 	EAnomalyID BoundAnomaly;
 
-	UPROPERTY(EditAnywhere, Category = "RuleSetting|Placement")
-	FTransform Placement;
-
 protected:
 	UFUNCTION()
 	void SetManualFragment();

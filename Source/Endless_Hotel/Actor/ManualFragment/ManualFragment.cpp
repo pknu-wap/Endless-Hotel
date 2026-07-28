@@ -18,6 +18,8 @@ void AManualFragment::BeginPlay()
 	Super::BeginPlay();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::SetManualFragment);
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
 }
 
 #pragma endregion
@@ -34,7 +36,8 @@ void AManualFragment::SetManualFragment()
 	}
 	if (Subsystem->CurrentAnomaly->AnomalyID == BoundAnomaly)
 	{
-		SetActorTransform(Placement);
+		SetActorHiddenInGame(false);
+		SetActorEnableCollision(true);
 	}
 }
 
