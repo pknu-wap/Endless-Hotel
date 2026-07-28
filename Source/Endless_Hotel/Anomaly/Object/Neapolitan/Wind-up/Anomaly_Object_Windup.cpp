@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
-#include <Component/Interact/InteractComponent.h>
+#include "Component/Interact/InteractComponent.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/AudioComponent.h>
 

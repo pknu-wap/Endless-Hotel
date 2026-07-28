@@ -6,7 +6,6 @@
 #include <Components/AudioComponent.h>
 #include <Components/SkeletalMeshComponent.h>
 #include <Animation/AnimationAsset.h>
-#include <Engine/TimerHandle.h>
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Windup.generated.h>
 
