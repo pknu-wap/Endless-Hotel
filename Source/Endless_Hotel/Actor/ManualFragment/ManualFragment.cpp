@@ -11,6 +11,7 @@ AManualFragment::AManualFragment(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
 	Component_TextWidget = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Component_ManualWidget"));
+	Component_TextWidget->SetupAttachment(RootComponent);
 }
 
 void AManualFragment::BeginPlay()

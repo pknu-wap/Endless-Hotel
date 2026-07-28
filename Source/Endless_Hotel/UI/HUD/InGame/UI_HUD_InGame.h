@@ -3,6 +3,8 @@
 #pragma once
 
 #include "UI/HUD/UI_HUD_Base.h"
+#include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <UI_HUD_InGame.generated.h>
 
@@ -67,17 +69,15 @@ protected:
 #pragma region Blur
 
 public:
-	void AnomalyBlur(bool bIsStart);
-
-private:
-	void EyeEffectBlur(bool bIsStart);
+	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+	void RemoveEyeEffectBlur();
 
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UBackgroundBlur> BackBlur;
 
 	FTimerHandle BlurHandle;
-	const float EyeEffectValue = 40.f;
+	float CurrentStrength = 0.f;
 
 #pragma endregion
 
@@ -100,6 +100,33 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_SubTitle;
+
+#pragma endregion
+
+#pragma region Debug
+
+public:
+	void ShowDebugGameInfo(bool bActive);
+
+private:
+	UFUNCTION()
+	void AddDebugAnomalyRule(EAnomalyRule NewRule);
+
+	UFUNCTION()
+	void ChangeDebugAnomaly();
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Rule;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UVerticalBox> VB_Rule;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Current;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> Text_Next;
 
 #pragma endregion
 
