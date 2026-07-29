@@ -157,7 +157,7 @@ protected:
 	float BaseYaw = 0.f;
 
 #pragma endregion
-	
+
 #pragma region Interact
 
 protected:
