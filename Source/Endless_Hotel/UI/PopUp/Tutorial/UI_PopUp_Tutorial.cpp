@@ -3,6 +3,18 @@
 #include "UI/PopUp/Tutorial/UI_PopUp_Tutorial.h"
 #include "UI/Controller/UI_Controller.h"
 #include <Blueprint/WidgetTree.h>
+#include <Components/Button.h>
+
+#pragma region Base
+
+void UUI_PopUp_Tutorial::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	Button_ESC->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
+}
+
+#pragma endregion
 
 #pragma region Show
 
