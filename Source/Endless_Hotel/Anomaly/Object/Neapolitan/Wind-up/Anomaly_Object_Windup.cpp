@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
 #include "Component/Interact/InteractComponent.h"
+#include <Niagara/Public/NiagaraComponent.h>
 #include <Components/AudioComponent.h>
 
 #pragma region Base
@@ -21,8 +22,26 @@ void AAnomaly_Object_Windup::BeginPlay()
 	Super::BeginPlay();
 
 	AC_Windup->SetSound(Sound_Windup);
+}
+
+#pragma endregion
+
+#pragma region Set
+
+void AAnomaly_Object_Windup::SetWindup()
+{
 	SKM_Windup->SetHiddenInGame(false);
+	SKM_Windup->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SKM_Windup->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
 	Object->SetHiddenInGame(false);
+	Object->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle,	FTimerDelegate::CreateWeakLambda(this, [this]()
+	{
+		StartWindupLoop();
+	}),	10.f, false);
 }
 
 #pragma endregion
@@ -84,9 +103,7 @@ void AAnomaly_Object_Windup::WrongLoopTick()
 	if (CurrentWrongPlayCount >= WrongPlayCount)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(WrongPlayHandle);
-		
-		SetupBurnTargets();
-		StartBurning();
+		StartWindupBurning();
 
 		return;
 	}
@@ -108,6 +125,55 @@ void AAnomaly_Object_Windup::PlayWindupAnimationOnce()
 
 #pragma endregion
 
+#pragma region Burn
+
+void AAnomaly_Object_Windup::SetupWindupBurnTargets()
+{
+	for (int32 Index = 0; Index < SKM_Windup->GetNumMaterials(); ++Index)
+	{
+		auto* Material = SKM_Windup->CreateDynamicMaterialInstance(Index);
+		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
+		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
+
+		MID_WindupBurn.Add(Material);
+
+		SKM_Windup->SetMaterial(Index, MID_WindupBurn[Index]);
+	}
+}
+
+void AAnomaly_Object_Windup::StartWindupBurning()
+{
+	SetupWindupBurnTargets();
+	Niagara_Fire->Activate();
+	AC->Play();
+	GetWorld()->GetTimerManager().SetTimer(WindupBurnHandle, this, &ThisClass::WindupBurnTick,0.02f, true);
+}
+
+void AAnomaly_Object_Windup::WindupBurnTick()
+{
+	WindupBurnCurrentTime += 0.02f;
+	constexpr float BurnDuration = 5.f;
+	const float Alpha =	FMath::Clamp(WindupBurnCurrentTime / BurnDuration, 0.f, 1.f);
+
+	for (int32 Index = 0; Index < MID_WindupBurn.Num(); ++Index)
+	{
+		MID_WindupBurn[Index]->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+	}
+
+	if (Alpha >= 1.f)
+	{
+		SKM_Windup->SetHiddenInGame(true);
+		Object->SetHiddenInGame(true);
+		Niagara_Fire->Deactivate();
+
+		GetWorld()->GetTimerManager().ClearTimer(WindupBurnHandle);
+		SKM_Windup->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+#pragma endregion
+
 #pragma region Interact
 
 void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
@@ -123,6 +189,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 				StopWindup();
 
 				CurrentInteractStep = EWindupInteractStep::NeedBurn;
+				AllowNextInteract();
 			}
 
 			else if(Info.InteractType == EInteractType::Burn)
@@ -138,9 +205,9 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 		{
 			if (Info.InteractType == EInteractType::Burn)
 			{
-				SetupBurnTargets();
-				StartBurning();
+				StartWindupBurning();
 
+				bSolved = true;
 				CurrentInteractStep = EWindupInteractStep::Finished;
 			}
 			break;

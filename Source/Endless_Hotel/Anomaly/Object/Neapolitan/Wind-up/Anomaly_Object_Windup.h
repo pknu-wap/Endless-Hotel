@@ -32,6 +32,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Set
+
+public:
+	void SetWindup();
+
+private:
+	FTimerHandle DelayHandle;
+
+#pragma endregion
+
 #pragma region Components
 
 protected:
@@ -89,6 +99,23 @@ protected:
 	TObjectPtr<UAnimationAsset> WindupAnimation;
 
 	void PlayWindupAnimationOnce();
+
+#pragma endregion
+
+#pragma region Burn
+
+private:
+	void SetupWindupBurnTargets();
+	void StartWindupBurning();
+	void WindupBurnTick();
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<class UMaterialInstanceDynamic>> MID_WindupBurn;
+
+	FTimerHandle WindupBurnHandle;
+
+	float WindupBurnCurrentTime = 0.f;
 
 #pragma endregion
 
