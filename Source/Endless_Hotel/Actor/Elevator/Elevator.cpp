@@ -126,6 +126,7 @@ void AElevator::MoveDoors(bool bWillOpen)
     if (bWillOpen)
     {
         DoorTimeline->PlayFromStart();
+        ElevatorLight->SetLightingChannels(true, true, false);
     }
     else
     {
@@ -156,6 +157,7 @@ void AElevator::OnDoorTimelineFinished()
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     RootComponent->SetRelativeLocation(Start);
+    ElevatorLight->SetLightingChannels(false, true, false);
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!Player->ElevatorMoveAudioComponent->IsPlaying())
     {
@@ -250,7 +252,7 @@ void AElevator::StartElevator()
     {
         ElevatorOverWall->ResetWall();
     }
-
+    ElevatorLight->SetLightingChannels(true, true, false);
     DoorTimeline->Stop();
     bIsDoorOpened = false;
     bIsDoorMoving = false;

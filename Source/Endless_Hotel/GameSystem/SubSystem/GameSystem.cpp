@@ -128,9 +128,9 @@ void UGameSystem::ApplyVerdict()
 			bIsStartInBed = false;
 		}
 	}
-	LoadNextMap();
 	bIsAnomalySolved = false;
 	bIsFirstStartFloor = false;
+	LoadNextMap();
 }
 
 void UGameSystem::TryInteractSolveVerdict()
