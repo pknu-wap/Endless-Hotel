@@ -213,4 +213,11 @@ public:
 
 #pragma endregion
 
+#pragma region Light
+
+public:
+	void SetLight(bool bIsStartFloor);
+
+#pragma endregion
+
 };
