@@ -23,16 +23,11 @@ ANoteBook::ANoteBook(const FObjectInitializer& ObjectInitializer)
 void ANoteBook::TurnOverPage(bool bLeft)
 {
 	FindDescription();
-	ShowDescription(false);
 
 	UAnimInstance* AnimInstance = SKM_NoteBook->GetAnimInstance();
 	UAnimMontage* TargetMontage = bLeft ? AM_LeftToRight : AM_RightToLeft;
 	
 	AnimInstance->Montage_Play(TargetMontage);
-
-	const float AnimLength = TargetMontage->GetPlayLength();
-
-	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ShowDescription, true), AnimLength, false);
 }
 
 float ANoteBook::GetAnimationLength(bool bLeft)
@@ -59,11 +54,15 @@ void ANoteBook::FindDescription()
 	}
 }
 
-void ANoteBook::ShowDescription(bool bShow)
+void ANoteBook::ShowDescription(bool bShow, uint8 Index)
 {
 	for (UStaticMeshComponent* Target : SM_Descriptions)
 	{
-		Target->SetVisibility(bShow, true);
+		if (Target->ComponentHasTag(FName(*FString::FromInt(Index))))
+		{
+			Target->SetVisibility(bShow, true);
+			break;
+		}
 	}
 }
 

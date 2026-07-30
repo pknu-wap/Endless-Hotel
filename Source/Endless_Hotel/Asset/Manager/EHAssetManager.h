@@ -32,7 +32,7 @@ private:
 	void LoadAnomalyData();
 
 private:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TArray<FAnomalyEntry> Data_Anomalies;
 
 #pragma endregion

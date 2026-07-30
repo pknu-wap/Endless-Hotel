@@ -39,15 +39,15 @@ protected:
 
 #pragma region Description
 
+public:
+	void ShowDescription(bool bShow, uint8 Index);
+
 private:
 	void FindDescription();
-	void ShowDescription(bool bShow);
 
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> SM_Descriptions;
-
-	FTimerHandle ShowHandle;
 
 #pragma endregion
 

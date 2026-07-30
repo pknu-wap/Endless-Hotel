@@ -44,6 +44,11 @@ void UUI_PopUp_NoteBook::SettingWidget()
 
 	TArray<UActorComponent*> Array = TargetObject->GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
 
+	Array.Sort([](const UActorComponent& First, const UActorComponent& Second)
+		{
+			return First.GetName() < Second.GetName();
+		});
+
 	for (auto* Target : Array)
 	{
 		auto* Comp_Widget = Cast<UWidgetComponent>(Target);
@@ -70,15 +75,17 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 
 	PageStartIndex += ChangeSize;
 
+	auto* NoteBook = Cast<ANoteBook>(TargetObject);
+	NoteBook->TurnOverPage(bLeft);
+
 	for (int32 Index = 0; Index < UI_NoteBooks.Num(); ++Index)
 	{
 		UUI_NoteBook* UI_NoteBook = UI_NoteBooks[Index].Get();
 		UI_NoteBook->ChangeDescription(PageStartIndex + Index);
 		UI_NoteBook->SetVisibility(ESlateVisibility::Hidden);
-	}
 
-	auto* NoteBook = Cast<ANoteBook>(TargetObject);
-	NoteBook->TurnOverPage(bLeft);
+		NoteBook->ShowDescription(false, Index);
+	}
 
 	const float MontageLength = NoteBook->GetAnimationLength(bLeft);
 	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -87,6 +94,13 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 			{
 				UUI_NoteBook* UI_NoteBook = UI_NoteBooks[Index].Get();
 				UI_NoteBook->SetVisibility(ESlateVisibility::Visible);
+
+				auto& AssetManager = UEHAssetManager::Get();
+				if (AssetManager.IsValidIndexAnomalyData(PageStartIndex + Index))
+				{
+					auto* NoteBook = Cast<ANoteBook>(TargetObject);
+					NoteBook->ShowDescription(true, Index);
+				}
 			}
 		}), MontageLength, false);
 }
