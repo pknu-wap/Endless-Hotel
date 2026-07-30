@@ -27,13 +27,13 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	Timeline_Open = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Open"));
 	Timeline_Close = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Close"));
-		
+
 	AC_Shake = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Shake"));
 	AC_Shake->SetupAttachment(RootComponent);
 
 	AC_Voice = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Voice"));
 	AC_Voice->SetupAttachment(RootComponent);
-	
+
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);
 	AC_DoorMove->bAutoActivate = false;

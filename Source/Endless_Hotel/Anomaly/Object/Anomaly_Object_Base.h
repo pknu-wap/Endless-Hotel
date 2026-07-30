@@ -55,6 +55,8 @@ public:
 public:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 
+protected:
+	void AllowNextInteract();
 #pragma endregion
 
 #pragma region Verdict
