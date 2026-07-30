@@ -15,34 +15,15 @@ class ENDLESS_HOTEL_API UUI_NoteBook : public UUI_Base
 #pragma region Description
 
 public:
-	void ChangeDescription(const uint8& StartIndex);
-
-private:
-	void HideDescription();
-	void SetDescription(TArray<FAnomalyEntry>& Datas, class UImage* Image, class UTextBlock* Text, uint8 Index);
+	void ChangeDescription(uint8 Index);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image1;
+	TObjectPtr<class UImage> Image_Picture;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image2;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image3;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text1;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text2;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text3;
-
-	UPROPERTY(EditAnywhere, Category = "Description")
-	TObjectPtr<class UTexture2D> Image_Empty;
-
+	TObjectPtr<class UTextBlock> Text_Description;
+	
 #pragma endregion
 
 };

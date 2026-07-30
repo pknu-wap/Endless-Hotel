@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <Engine/AssetManager.h>
 #include <EHAssetManager.generated.h>
@@ -21,15 +22,18 @@ public:
 #pragma region Anomaly
 
 public:
-	TArray<class UPDA_Anomaly*> GetAnomalyDataAsset(const TArray<uint8>& Indexes);
-	bool IsValidIndexAnomalyDataAsset(uint8 Index) { return DA_Anomalies.IsValidIndex(Index); }
+	FAnomalyEntry GetAnomalyData(uint8 Index);
+	TArray<FAnomalyEntry> GetAnomalyData(TArray<uint8> Indexes);
+	TArray<FAnomalyEntry> GetAnomalyData(TArray<EAnomalyID> IDs);
+
+	bool IsValidIndexAnomalyData(uint8 Index) { return Data_Anomalies.IsValidIndex(Index); }
 
 private:
-	void LoadAnomalyDataAsset();
+	void LoadAnomalyData();
 
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UPDA_Anomaly>> DA_Anomalies;
+	TArray<FAnomalyEntry> Data_Anomalies;
 
 #pragma endregion
 

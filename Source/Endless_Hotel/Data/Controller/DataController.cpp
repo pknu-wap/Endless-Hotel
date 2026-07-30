@@ -27,7 +27,7 @@ void UDataController::GetAnomalyEntries()
 {
 	auto& AssetManager = UEHAssetManager::Get();
 
-	TArray<uint8> AnomalyList;
+	TArray<EAnomalyID> AnomalyList;
 	OriginAnomaly.Empty();
 
 	if (!DataTable_Anomaly)
@@ -38,39 +38,36 @@ void UDataController::GetAnomalyEntries()
 	for (auto RowData : DataTable_Anomaly->GetRowMap())
 	{
 		FAnomalyData* Data = (FAnomalyData*)RowData.Value;
-		AnomalyList.Add(static_cast<uint8>(Data->AnomalyID));
+		AnomalyList.Add(Data->AnomalyID);
 	}
 
 	if (AnomalyList.IsEmpty())
 	{
-		for (int index = 0; index < MaxIndex; ++index)
+		const UEnum* Enum = StaticEnum<EAnomalyID>();
+		
+		for (int32 Index = 0; Index < Enum->NumEnums(); ++Index)
 		{
-			AnomalyList.Add(index);
+			int64 Value = Enum->GetValueByIndex(Index);
+
+			AnomalyList.Add(static_cast<EAnomalyID>(Value));
 		}
 	}
-
-	AnomalyList.Add(255);
-
-	TArray<UPDA_Anomaly*> Datas = AssetManager.GetAnomalyDataAsset(AnomalyList);
-	
-	for (UPDA_Anomaly* PDA : Datas)
+	else
 	{
-		if (!PDA)
+		AnomalyList.Add(EAnomalyID::Normal);
+	}
+
+	TArray<FAnomalyEntry> Datas = AssetManager.GetAnomalyData(AnomalyList);
+	
+	for (FAnomalyEntry Entry : Datas)
+	{
+		if (Entry.ID == EAnomalyID::Normal)
 		{
+			NormalAnomalyData = Entry;
 			continue;
 		}
-		for (const auto& Entry : PDA->Entries)
-		{
-			if (Entry.ID == EAnomalyID::Normal)
-			{
-				NormalAnomalyData = Entry;
-				continue;
-			}
-			if (AnomalyList.Contains(static_cast<uint8>(Entry.ID)))
-			{
-				OriginAnomaly.Add(Entry);
-			}
-		}
+
+		OriginAnomaly.Add(Entry);
 	}
 }
 

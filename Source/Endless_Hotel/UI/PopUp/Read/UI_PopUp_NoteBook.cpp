@@ -37,16 +37,19 @@ void UUI_PopUp_NoteBook::Click_ButtonRight()
 
 void UUI_PopUp_NoteBook::SettingWidget()
 {
-	if (IsValid(UI_NoteBook_Left.Get()) && IsValid(UI_NoteBook_Right.Get()))
+	if (!UI_NoteBooks.IsEmpty())
 	{
 		return;
 	}
 
-	auto* WC_Des1 = Cast<UWidgetComponent>(TargetObject->GetComponentsByTag(UWidgetComponent::StaticClass(), FName("Description1"))[0]);
-	auto* WC_Des2 = Cast<UWidgetComponent>(TargetObject->GetComponentsByTag(UWidgetComponent::StaticClass(), FName("Description2"))[0]);
+	TArray<UActorComponent*> Array = TargetObject->GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
 
-	UI_NoteBook_Left = Cast<UUI_NoteBook>(WC_Des1->GetUserWidgetObject());
-	UI_NoteBook_Right = Cast<UUI_NoteBook>(WC_Des2->GetUserWidgetObject());
+	for (auto* Target : Array)
+	{
+		auto* Comp_Widget = Cast<UWidgetComponent>(Target);
+		auto* UI_NoteBook = Cast<UUI_NoteBook>(Comp_Widget->GetUserWidgetObject());
+		UI_NoteBooks.Add(UI_NoteBook);
+	}
 }
 
 #pragma endregion
@@ -60,27 +63,31 @@ void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 	int32 ChangeSize = bLeft ? -IndexChangeSize : IndexChangeSize;
 
 	auto& AssetManager = UEHAssetManager::Get();
-	if (!AssetManager.IsValidIndexAnomalyDataAsset(LeftIndex + ChangeSize))
+	if (!AssetManager.IsValidIndexAnomalyData(PageStartIndex + ChangeSize))
 	{
 		return;
 	}
 
-	Cast<ANoteBook>(TargetObject)->TurnOverPage(bLeft);
+	PageStartIndex += ChangeSize;
 
-	LeftIndex += ChangeSize;
-	RightIndex += ChangeSize;
+	for (int32 Index = 0; Index < UI_NoteBooks.Num(); ++Index)
+	{
+		UUI_NoteBook* UI_NoteBook = UI_NoteBooks[Index].Get();
+		UI_NoteBook->ChangeDescription(PageStartIndex + Index);
+		UI_NoteBook->SetVisibility(ESlateVisibility::Hidden);
+	}
 
-	UI_NoteBook_Left->ChangeDescription(LeftIndex);
-	UI_NoteBook_Right->ChangeDescription(RightIndex);
+	auto* NoteBook = Cast<ANoteBook>(TargetObject);
+	NoteBook->TurnOverPage(bLeft);
 
-	UI_NoteBook_Left->SetVisibility(ESlateVisibility::Hidden);
-	UI_NoteBook_Right->SetVisibility(ESlateVisibility::Hidden);
-
-	constexpr float MontageLength = 1.8f;
+	const float MontageLength = NoteBook->GetAnimationLength(bLeft);
 	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			UI_NoteBook_Left->SetVisibility(ESlateVisibility::Visible);
-			UI_NoteBook_Right->SetVisibility(ESlateVisibility::Visible);
+			for (int32 Index = 0; Index < UI_NoteBooks.Num(); ++Index)
+			{
+				UUI_NoteBook* UI_NoteBook = UI_NoteBooks[Index].Get();
+				UI_NoteBook->SetVisibility(ESlateVisibility::Visible);
+			}
 		}), MontageLength, false);
 }
 

@@ -22,10 +22,49 @@ ANoteBook::ANoteBook(const FObjectInitializer& ObjectInitializer)
 
 void ANoteBook::TurnOverPage(bool bLeft)
 {
+	FindDescription();
+	ShowDescription(false);
+
 	UAnimInstance* AnimInstance = SKM_NoteBook->GetAnimInstance();
 	UAnimMontage* TargetMontage = bLeft ? AM_LeftToRight : AM_RightToLeft;
 	
 	AnimInstance->Montage_Play(TargetMontage);
+
+	const float AnimLength = TargetMontage->GetPlayLength();
+
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ShowDescription, true), AnimLength, false);
+}
+
+float ANoteBook::GetAnimationLength(bool bLeft)
+{
+	return bLeft ? AM_LeftToRight->GetPlayLength() : AM_RightToLeft->GetPlayLength();
+}
+
+#pragma endregion
+
+#pragma region Description
+
+void ANoteBook::FindDescription()
+{
+	if (!SM_Descriptions.IsEmpty())
+	{
+		return;
+	}
+
+	TArray<UActorComponent*> Array = GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Picture"));
+
+	for (auto* Target : Array)
+	{
+		SM_Descriptions.Add(Cast<UStaticMeshComponent>(Target));
+	}
+}
+
+void ANoteBook::ShowDescription(bool bShow)
+{
+	for (UStaticMeshComponent* Target : SM_Descriptions)
+	{
+		Target->SetVisibility(bShow, true);
+	}
 }
 
 #pragma endregion
