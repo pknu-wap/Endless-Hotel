@@ -16,10 +16,6 @@ struct FAnomalyEntry
 public:
     FAnomalyEntry() = default;
 	FAnomalyEntry(EAnomalyID New) :ID(New) {}
-    FAnomalyEntry(uint8 Index)
-    {
-        ID = static_cast<EAnomalyID>(Index);
-    }
 
 public:
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
