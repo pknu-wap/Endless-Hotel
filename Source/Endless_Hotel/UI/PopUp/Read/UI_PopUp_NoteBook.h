@@ -47,15 +47,10 @@ private:
 
 private:
 	UPROPERTY()
-	TWeakObjectPtr<class UUI_NoteBook> UI_NoteBook_Left;
+	TArray<TWeakObjectPtr<class UUI_NoteBook>> UI_NoteBooks;
 
-	UPROPERTY()
-	TWeakObjectPtr<class UUI_NoteBook> UI_NoteBook_Right;
-
-	uint8 LeftIndex = 0;
-	uint8 RightIndex = 3;
-
-	const uint8 IndexChangeSize = 6;
+	uint8 PageStartIndex = 0;
+	const uint8 IndexChangeSize = 5;
 
 	FTimerHandle TextHandle;
 

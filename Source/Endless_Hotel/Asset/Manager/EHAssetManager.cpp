@@ -5,34 +5,61 @@
 
 #pragma region Anomaly
 
-TArray<UPDA_Anomaly*> UEHAssetManager::GetAnomalyDataAsset(const TArray<uint8>& Indexes)
+FAnomalyEntry UEHAssetManager::GetAnomalyData(uint8 Index)
 {
-	LoadAnomalyDataAsset();
+	LoadAnomalyData();
 
-	TArray<UPDA_Anomaly*> ReturnArray;
-
-	for (const uint8& Index : Indexes)
+	if (!IsValidIndexAnomalyData(Index))
 	{
-		auto FoundPDA = DA_Anomalies.FindByPredicate([Index](const TObjectPtr<UPDA_Anomaly>& Item)
-			{
-				return Item->Entries.ContainsByPredicate([Index](const FAnomalyEntry& Entry)
-					{
-						return static_cast<uint8>(Entry.ID) == Index;
-					});
-			});
+		return FAnomalyEntry();
+	}
 
-        if (FoundPDA && *FoundPDA)
-        {
-            ReturnArray.AddUnique(*FoundPDA);
-        }
+	return Data_Anomalies[Index];
+}
+
+TArray<FAnomalyEntry> UEHAssetManager::GetAnomalyData(TArray<uint8> Indexes)
+{
+	LoadAnomalyData();
+
+	TArray<FAnomalyEntry> ReturnArray;
+
+	for (uint8 Index : Indexes)
+	{
+		if (!IsValidIndexAnomalyData(Index))
+		{
+			continue;
+		}
+
+		ReturnArray.AddUnique(Data_Anomalies[Index]);
 	}
 
 	return ReturnArray;
 }
 
-void UEHAssetManager::LoadAnomalyDataAsset()
+TArray<FAnomalyEntry> UEHAssetManager::GetAnomalyData(TArray<EAnomalyID> IDs)
 {
-	if (!DA_Anomalies.IsEmpty())
+	LoadAnomalyData();
+
+	TArray<FAnomalyEntry> ReturnArray;
+
+	for (EAnomalyID ID : IDs)
+	{
+		int32 Index = 0;
+
+		if (!Data_Anomalies.Find(ID, Index))
+		{
+			continue;
+		}
+		
+		ReturnArray.AddUnique(Data_Anomalies[Index]);
+	}
+
+	return ReturnArray;
+}
+
+void UEHAssetManager::LoadAnomalyData()
+{
+	if (!Data_Anomalies.IsEmpty())
 	{
 		return;
 	}
@@ -43,26 +70,18 @@ void UEHAssetManager::LoadAnomalyDataAsset()
 	for (const auto& ID : IDs)
 	{
 		LoadPrimaryAsset(ID)->WaitUntilComplete();
-		DA_Anomalies.Add(GetPrimaryAssetObject<UPDA_Anomaly>(ID));
+
+		auto* PDA_Anomaly = GetPrimaryAssetObject<UPDA_Anomaly>(ID);
+
+		for (FAnomalyEntry Data : PDA_Anomaly->Entries)
+		{
+			Data_Anomalies.Add(Data);
+		}
 	}
 
-	DA_Anomalies.RemoveAll([](const TObjectPtr<UPDA_Anomaly>& PDA)
+	Data_Anomalies.Sort([](const FAnomalyEntry& First, const FAnomalyEntry& Second)
 		{
-			return !PDA || PDA->Entries.IsEmpty();
-		});
-
-	for (auto& PDA : DA_Anomalies)
-	{
-		if (!PDA) continue;
-		PDA->Entries.Sort([](const FAnomalyEntry& A, const FAnomalyEntry& B)
-			{
-				return A.ID < B.ID;
-			});
-	}
-
-	DA_Anomalies.Sort([](const TObjectPtr<UPDA_Anomaly> First, const TObjectPtr<UPDA_Anomaly> Second)
-		{
-			return First->Entries[0].ID < Second->Entries[0].ID;
+			return static_cast<uint8>(First.ID) < static_cast<uint8>(Second.ID);
 		});
 }
 

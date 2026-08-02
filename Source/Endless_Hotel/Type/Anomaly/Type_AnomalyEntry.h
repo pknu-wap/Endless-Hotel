@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyID.h"
-#include "Type/Level/Type_Level.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Type_AnomalyEntry.generated.h>
 
@@ -14,24 +14,38 @@ struct FAnomalyEntry
     GENERATED_BODY()
 
 public:
+    FAnomalyEntry() = default;
+	FAnomalyEntry(EAnomalyID New) :ID(New) {}
+
+public:
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EAnomalyID ID = EAnomalyID::None;
 
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EAnomalyRule Rule = EAnomalyRule::EightExit;
 
-    UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-    TSoftClassPtr<class AAnomaly_Event> Event;
-
-    UPROPERTY(EditAnywhere, Category = "InGame|Data", meta = (AssetBundles = "InGame"))
-    TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
-
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EMapDataLayer DataLayer = EMapDataLayer::Hotel;
 
-    UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (AssetBundles = "UI"))
-    TSoftObjectPtr<class UTexture2D> Image_Description;
+    UPROPERTY(EditAnywhere, Category = "InGame|Class")
+    TSoftClassPtr<class AAnomaly_Event> Event;
+
+    UPROPERTY(EditAnywhere, Category = "InGame|Class")
+    TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
 
     UPROPERTY(EditAnywhere, Category = "UI|Description")
-    FText Text_Description;
+    TSoftObjectPtr<class UTexture2D> Picture;
+
+    UPROPERTY(EditAnywhere, Category = "UI|Description")
+    FText Description;
 };
+
+FORCEINLINE bool operator==(const FAnomalyEntry& First, const FAnomalyEntry& Second)
+{
+    return First.ID == Second.ID;
+}
+
+FORCEINLINE uint32 GetTypeHash(const FAnomalyEntry& Entry)
+{
+    return GetTypeHash(Entry.ID);
+}
