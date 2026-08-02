@@ -2,23 +2,13 @@
 
 #include "Anomaly/Event/EightExit/Elevator/Anomaly_Elevator.h"
 #include "Actor/Elevator/Elevator.h"
+#include "Character/AI/ElevatorGhost/ElevatorGhost.h"
+#include "Character/AI/ElevatorGhost/ElevatorGhostController.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
-
-#pragma region Base
-
-void AAnomaly_Elevator::BeginPlay()
-{
-    Super::BeginPlay();
-    
-    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    TargetElevator = SubSystem->GetElevatorByID(TargetAnomalyElevatorID);
-}
-
-#pragma endregion
 
 #pragma region Activity
 
@@ -31,19 +21,36 @@ void AAnomaly_Elevator::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 
 void AAnomaly_Elevator::SetAnomalyState()
 {
+    AnomalyActions.Empty();
+    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
     switch (AnomalyID)
     {
     case EAnomalyID::ElevatorNoFloor:
+    {
+        TargetElevator = SubSystem->GetElevatorByID(TargetAnomalyElevatorID[0]);
         TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
         TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
+        this->TargetAnomalyObjects.Add(TargetElevator.Get());
+        SetupAnomalyAction<AElevator>(&AElevator::DisableElevatorFloor);
         ScheduleAnomaly();
-        FTimerHandle StartDelay;
-        GetWorld()->GetTimerManager().SetTimer(StartDelay, FTimerDelegate::CreateWeakLambda(this, [this]()
-            {
-                TargetElevator->DisableElevatorFloor();
-            }), 2, false);
         break;
     }
+    case EAnomalyID::ElevatorGhost:
+    {
+        TargetElevator = SubSystem->GetElevatorByID(TargetAnomalyElevatorID[1]);
+        ElevatorGhost = GetWorld()->SpawnActor<AElevatorGhost>(ElevatorGhostClass, StartTransform);
+        auto* ElevatorGhostController = Cast<AElevatorGhostController>(ElevatorGhost->GetController());
+        ElevatorGhostController->TargetElevator = TargetElevator;
+        ScheduleAnomaly();
+        break;
+    }
+    }
+}
+
+void AAnomaly_Elevator::DisableAnomaly()
+{
+    ElevatorGhost->Destroy();
+    Super::DisableAnomaly();
 }
 
 #pragma endregion

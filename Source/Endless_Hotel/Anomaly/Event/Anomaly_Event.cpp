@@ -142,7 +142,7 @@ void AAnomaly_Event::InteractSolveVerdict()
 
 	for (const auto& AnomalyObject : TargetAnomalyObjects)
 	{
-		if (!AnomalyObject->bSolved)
+		if (!Cast<AAnomaly_Object_Base>(AnomalyObject)->bSolved)
 		{
 			bAllSolved = false;
 			break;

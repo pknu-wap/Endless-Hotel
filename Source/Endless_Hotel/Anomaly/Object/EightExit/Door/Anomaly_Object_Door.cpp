@@ -43,6 +43,7 @@ void AAnomaly_Object_Door::Reset()
 {
 	Super::Reset();
 	Component_Interact->DeactiveInteract();
+	SetLight(false);
 }
 
 void AAnomaly_Object_Door::BeginPlay()
@@ -375,6 +376,11 @@ void AAnomaly_Object_Door::ReadyDoor()
 void AAnomaly_Object_Door::ReadyDoorOpened()
 {
 	GetRootComponent()->SetWorldTransform(DoorOpenTransform);
+}
+
+void AAnomaly_Object_Door::SetLight(bool bIsStartFloor)
+{
+	Object->SetLightingChannels(true, false, bIsStartFloor);
 }
 
 #pragma endregion

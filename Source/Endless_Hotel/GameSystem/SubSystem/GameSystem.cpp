@@ -75,6 +75,7 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		Elevator.Value->StartElevator();
 	}
+	bIsStartInBed = false;
 }
 
 #pragma endregion
@@ -85,8 +86,6 @@ bool UGameSystem::ComputeVerdict() const
 {
 	switch (VerdictMode)
 	{
-	case EAnomalyVerdictMode::SolvedOnly:
-		return bIsAnomalySolved;
 	case EAnomalyVerdictMode::Both_AND:
 		return bIsAnomalySolved && !bIsElevatorNormal;
 	case EAnomalyVerdictMode::Normal:
@@ -121,7 +120,8 @@ void UGameSystem::ApplyVerdict()
 		NextAnomalyMap = EMapDataLayer::Hotel;
 		if(Cast<AEHPlayer>(Player)->bIsDead)
 		{
-			LoadNextMap();
+			bIsStartInBed = true;
+			RemoveTargetElevator();
 		}
 		else
 		{
@@ -130,6 +130,7 @@ void UGameSystem::ApplyVerdict()
 	}
 	bIsAnomalySolved = false;
 	bIsFirstStartFloor = false;
+	LoadNextMap();
 }
 
 void UGameSystem::TryInteractSolveVerdict()

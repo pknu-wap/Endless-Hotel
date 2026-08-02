@@ -126,6 +126,8 @@ void AElevator::MoveDoors(bool bWillOpen)
     if (bWillOpen)
     {
         DoorTimeline->PlayFromStart();
+        LeftDoor->SetLightingChannels(true, true, false);
+        RightDoor->SetLightingChannels(true, true, false);
     }
     else
     {
@@ -156,6 +158,8 @@ void AElevator::OnDoorTimelineFinished()
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     RootComponent->SetRelativeLocation(Start);
+    LeftDoor->SetLightingChannels(false, true, false);
+    RightDoor->SetLightingChannels(false, true, false);
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (!Player->ElevatorMoveAudioComponent->IsPlaying())
     {
@@ -238,7 +242,6 @@ void AElevator::NotifySubsystem()
     Sub->TryInteractSolveVerdict();
     Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
     Sub->ApplyVerdict();
-    Sub->LoadNextMap();
 }
 
 void AElevator::StartElevator()
@@ -251,12 +254,13 @@ void AElevator::StartElevator()
     {
         ElevatorOverWall->ResetWall();
     }
-
     DoorTimeline->Stop();
     bIsDoorOpened = false;
     bIsDoorMoving = false;
     LeftDoor->SetRelativeLocation(LeftDoorClosed);
     RightDoor->SetRelativeLocation(RightDoorClosed);
+    LeftDoor->SetLightingChannels(true, true, false);
+    RightDoor->SetLightingChannels(true, true, false);
 
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -268,6 +272,8 @@ void AElevator::StartElevator()
         {
             LinkedEntrance->SetTriggerActive();
         }
+        LeftDoor->SetLightingChannels(false, true, false);
+        RightDoor->SetLightingChannels(false, true, false);
         SetLightOn(true);
         RootComponent->SetRelativeLocation(StandardPos + StartPos);
         auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
