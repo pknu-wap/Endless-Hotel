@@ -47,7 +47,10 @@ void AElevatorGhostController::StartWalkingIntoElevator()
     ElevatorGhost->SetActorEnableCollision(false);
     GetWorld()->GetTimerManager().SetTimer(EnterElevatorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            if (!ElevatorGhost.IsValid()) return;
+            if (!ElevatorGhost.IsValid())
+            {
+                return;
+            }
 
             FVector Current = ElevatorGhost->GetActorLocation();
             FVector Direction = (TargetLocation - Current).GetSafeNormal();

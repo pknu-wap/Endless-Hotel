@@ -57,7 +57,7 @@ void AAnomaly_HandPrint::SpawnHandPrint()
 
 void AAnomaly_HandPrint::TurnAllLights(bool bOn)
 {
-	for (AAnomaly_Object_Base* Target : TargetAnomalyObjects)
+	for (const auto& Target : TargetAnomalyObjects)
 	{
 		auto* Light = Cast<AAnomaly_Object_Light>(Target);
 		Light->TurnLight(bOn);

@@ -45,7 +45,6 @@ public:
 	virtual void SetAnomalyState() override;
 
 protected:
-	virtual void StartAnomalyAction() override;
 	virtual void DisableAnomaly() override;
 
 #pragma endregion

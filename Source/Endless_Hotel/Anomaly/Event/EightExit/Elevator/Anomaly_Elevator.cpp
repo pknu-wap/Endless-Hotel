@@ -30,6 +30,7 @@ void AAnomaly_Elevator::SetAnomalyState()
         TargetElevator = SubSystem->GetElevatorByID(TargetAnomalyElevatorID[0]);
         TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
         TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
+        this->TargetAnomalyObjects.Add(TargetElevator.Get());
         SetupAnomalyAction<AElevator>(&AElevator::DisableElevatorFloor);
         ScheduleAnomaly();
         break;
@@ -43,20 +44,6 @@ void AAnomaly_Elevator::SetAnomalyState()
         ScheduleAnomaly();
         break;
     }
-    }
-}
-
-void AAnomaly_Elevator::StartAnomalyAction()
-{
-    Super::StartAnomalyAction();
-
-    if (!TargetElevator.IsValid())
-    {
-        return;
-    }
-    for (const auto& Action : AnomalyActions)
-    {
-        Action(TargetElevator.Get());
     }
 }
 
