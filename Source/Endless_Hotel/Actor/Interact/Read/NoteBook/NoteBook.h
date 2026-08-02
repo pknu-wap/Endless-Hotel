@@ -23,6 +23,8 @@ public:
 public:
 	void TurnOverPage(bool bLeft);
 
+	float GetAnimationLength(bool bLeft);
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SKM_NoteBook;
@@ -32,6 +34,20 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "NoteBook")
 	TObjectPtr<UAnimMontage> AM_RightToLeft;
+
+#pragma endregion
+
+#pragma region Description
+
+public:
+	void ShowDescription(bool bShow, uint8 Index);
+
+private:
+	void FindDescription();
+
+private:
+	UPROPERTY()
+	TArray<TObjectPtr<UStaticMeshComponent>> SM_Descriptions;
 
 #pragma endregion
 

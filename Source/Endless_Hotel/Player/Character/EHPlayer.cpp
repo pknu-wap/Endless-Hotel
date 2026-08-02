@@ -142,7 +142,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			Cast<AEHPlayerController>(GetController())->RevivePlayer();
 			SubSystem->ApplyVerdict();
 			bIsDead = false;
-		}), AnimLength + 5, false);
+		}), AnimLength + 6, false);
 }
 
 void AEHPlayer::FreezeAnimation()
