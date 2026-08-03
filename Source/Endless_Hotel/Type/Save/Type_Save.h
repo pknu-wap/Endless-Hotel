@@ -95,6 +95,9 @@ public:
 	EOptionValue Overlap = EOptionValue::Off;
 
 	UPROPERTY(SaveGame)
+	EOptionValue CameraShake = EOptionValue::On;
+
+	UPROPERTY(SaveGame)
 	float Brightness = 0.5f;
 
 public:

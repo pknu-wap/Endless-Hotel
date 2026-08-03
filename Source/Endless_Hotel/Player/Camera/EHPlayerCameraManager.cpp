@@ -1,6 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Player/Camera/EHPlayerCameraManager.h"
+#include "Player/Character/EHPlayer.h"
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameFramework/Character.h"
@@ -11,6 +12,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
+#include <GameFramework/SpringArmComponent.h>
 
 #pragma region Base
 
@@ -179,6 +181,28 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
 {
 	PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)), BlendTime);
+}
+
+#pragma endregion
+
+#pragma region Camera
+
+void AEHPlayerCameraManager::ActiveCameraShake(bool bActive)
+{
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	auto* ThirdMesh = Player->GetThirdMesh();
+	auto* SpringArm = Player->GetSpringArm();
+
+	if (bActive)
+	{
+		SpringArm->AttachToComponent(ThirdMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
+		SpringArm->SetRelativeLocationAndRotation(FVector(7, 7, 0), FRotator::ZeroRotator);
+		SpringArm->TargetArmLength = 20.0f;
+		return;
+	}
+
+	SpringArm->AttachToComponent(ThirdMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	SpringArm->SetRelativeLocationAndRotation(FVector(0, 20, 170), FRotator(0, 90, 0));
 }
 
 #pragma endregion

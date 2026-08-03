@@ -114,6 +114,10 @@ void UUI_PopUp_Option::HighlightOptions()
 			case EOptionCategory::Overlap:
 				OptionInfo.Value = Data.Overlap;
 				break;
+
+			case EOptionCategory::CameraShake:
+				OptionInfo.Value = Data.CameraShake;
+				break;
 			}
 
 			Target->OnHighlight.Broadcast(OptionInfo);

@@ -37,6 +37,7 @@ public:
 #pragma region Component
 
 public:
+	class USpringArmComponent* GetSpringArm() { return SpringArm; }
 	class UCameraComponent* GetCamera() { return Camera; }
 	class USkeletalMeshComponent* GetThirdMesh() { return Third_Mesh; }
 

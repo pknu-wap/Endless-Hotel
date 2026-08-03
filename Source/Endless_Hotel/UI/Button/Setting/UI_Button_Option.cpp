@@ -4,6 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include <GameFramework/GameUserSettings.h>
@@ -104,6 +105,11 @@ void UUI_Button_Option::Click_Button()
 	case EOptionCategory::Overlap:
 		SetOption_AnomalyOverlap();
 		Data.Overlap = OptionInfo.Value;
+		break;
+
+	case EOptionCategory::CameraShake:
+		SetOption_CameraShake();
+		Data.CameraShake = OptionInfo.Value;
 		break;
 
 	// System Category
@@ -283,6 +289,22 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 
 	case EOptionValue::Off:
 		Sub->bExceptClearedAnomaly = false;
+		break;
+	}
+}
+
+void UUI_Button_Option::SetOption_CameraShake()
+{
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+	switch (OptionInfo.Value)
+	{
+	case EOptionValue::On:
+		CameraManager->ActiveCameraShake(true);
+		break;
+
+	case EOptionValue::Off:
+		CameraManager->ActiveCameraShake(false);
 		break;
 	}
 }

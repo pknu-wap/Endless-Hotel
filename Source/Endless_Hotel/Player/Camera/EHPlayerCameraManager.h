@@ -94,6 +94,7 @@ public:
 
 public:
 	void RegisterCamera(const ECameraType& CameraType, class AEHCameraActor* Camera) { Cameras.Add(CameraType, Camera); }
+	void ActiveCameraShake(bool bActive);
 
 private:
 	UPROPERTY()

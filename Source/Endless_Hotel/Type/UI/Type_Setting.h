@@ -93,6 +93,7 @@ enum class EOptionCategory : uint8
 
 	// Gameplay
 	Overlap			UMETA(DisplayName = "Overlap"),
+	CameraShake		UMETA(DisplayName = "CameraShake"),
 	Brightness		UMETA(DisplayName = "Brightness"),
 
 	// System

@@ -90,6 +90,7 @@ protected:
 
 protected:
 	void SetOption_AnomalyOverlap();
+	void SetOption_CameraShake();
 
 #pragma endregion
 
