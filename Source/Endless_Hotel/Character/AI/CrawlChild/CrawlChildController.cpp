@@ -24,9 +24,11 @@ void ACrawlChildController::StartWithWheelChair()
 	AnimInst->bIsRiding = true;
 	
 	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, AnimInst]()
 		{
 			FallFromWheelChair();
+			AnimInst->bIsRiding = false;
+			AnimInst->bIsFalling = true;
 		}), AnimationLengths[0], false);
 }
 
@@ -34,7 +36,6 @@ void ACrawlChildController::FallFromWheelChair()
 {
 	//ToDo: 휠체어에서 떨어지는 연출
 	auto* AnimInst = Cast<UCrawlChildAnimInstance>(CrawlChild->GetMesh()->GetAnimInstance());
-	AnimInst->bIsRiding = false;
 
 	const FDetachmentTransformRules DetachRules(EDetachmentRule::KeepWorld, true);
 	CrawlChild->DetachFromActor(DetachRules);
@@ -45,8 +46,9 @@ void ACrawlChildController::FallFromWheelChair()
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AnimInst]()
 		{
-			MoveToActor(Player);
+			AnimInst->bIsFalling = false;
 			AnimInst->bIsCrawling = true;
+			MoveToActor(Player);
 		}), AnimationLengths[1], false);
 }
 
