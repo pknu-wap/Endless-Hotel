@@ -35,6 +35,9 @@ private:
 
 #pragma region Text
 
+public:
+	void SetDescriptionText(FText Text);
+
 private:
 	UFUNCTION()
 	void ChangeTextState(EAnomalyRule Rule);

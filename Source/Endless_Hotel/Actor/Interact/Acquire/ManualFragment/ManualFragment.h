@@ -34,7 +34,7 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UTextRenderComponent> Comp_Description;
+	TObjectPtr<class UWidgetComponent> Comp_Description;
 
 #pragma endregion
 
@@ -50,6 +50,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Setting")
 	EAnomalyID AppearAnomaly;
+
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	FText Description;
 
 #pragma endregion
 

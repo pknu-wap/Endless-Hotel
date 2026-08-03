@@ -29,6 +29,13 @@ void UUI_Manual_Rule::NativeOnInitialized()
 
 #pragma region Text
 
+void UUI_Manual_Rule::SetDescriptionText(FText Text)
+{
+	SetVisibility(ESlateVisibility::Visible);
+	Text_Index->SetVisibility(ESlateVisibility::Hidden);
+	Text_Description->SetText(Text);
+}
+
 void UUI_Manual_Rule::ChangeTextState(EAnomalyRule Rule)
 {
 	if (AnomalyRule != Rule)
