@@ -38,14 +38,19 @@ void AAnomaly_Object_Light::BeginPlay()
 
 void AAnomaly_Object_Light::Reset()
 {
-	Object->SetSimulatePhysics(false);
+	Object->SetVisibility(true);
 
 	Mesh_Destroy->DestroyComponent();
-	Mesh_Destroy = NewObject<UGeometryCollectionComponent>();
-	Mesh_Destroy->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	Mesh_Destroy = NewObject<UGeometryCollectionComponent>(this);
+	Mesh_Destroy->AttachToComponent(Object, FAttachmentTransformRules::KeepRelativeTransform);
+	Mesh_Destroy->RegisterComponent();
+	Mesh_Destroy->SetRestCollection(GC_Light);
+	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::LightDestroyed);
+
 	SetGeometryCollection();
 
 	PointLight->SetLightColor(OriginalColor);
+	PointLight->AttachToComponent(Object, FAttachmentTransformRules::KeepWorldTransform);
 
 	TurnLight(true);
 
@@ -64,6 +69,10 @@ void AAnomaly_Object_Light::TurnLight(bool bIsOn)
 	PointLight->MarkRenderStateDirty();
 }
 
+#pragma endregion
+
+#pragma region Destroy
+
 void AAnomaly_Object_Light::SetGeometryCollection()
 {
 	Mesh_Destroy->SetVisibility(false);
@@ -72,19 +81,23 @@ void AAnomaly_Object_Light::SetGeometryCollection()
 	Mesh_Destroy->SetNotifyBreaks(true);
 }
 
-#pragma endregion
-
-#pragma region Destroy
+void AAnomaly_Object_Light::StartDropLight()
+{
+	FTimerHandle DropHandle;
+	GetWorld()->GetTimerManager().SetTimer(DropHandle, this, &ThisClass::DropLight, LightIndex * 0.5f, false);
+}
 
 void AAnomaly_Object_Light::DropLight()
 {
-	Object->SetSimulatePhysics(true);
+	Object->SetVisibility(false);
+
+	PointLight->AttachToComponent(Mesh_Destroy, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
 	Mesh_Destroy->SetVisibility(true);
-	Mesh_Destroy->SetSimulatePhysics(true);
+	Mesh_Destroy->SetCollisionProfileName(TEXT("PhysicsActor"));
 	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	PointLight->AttachToComponent(Object, FAttachmentTransformRules::KeepWorldTransform);
+	Mesh_Destroy->SetEnableGravity(true);
+	Mesh_Destroy->SetSimulatePhysics(true);
 }
 
 void AAnomaly_Object_Light::LightDestroyed(const FChaosBreakEvent& BreakEvent)
