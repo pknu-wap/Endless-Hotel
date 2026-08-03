@@ -16,19 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Light : public AAnomaly_Event_EightExit
 public:
 	virtual void SetAnomalyState() override;
 
-protected:
-	virtual void StartAnomalyAction() override;
-
-#pragma endregion
-
-#pragma region Light
-
-protected:
-	uint8 CurrentIndex = 1;
-	const uint8 MaxIndex = 20;
-
-	float NextActionDelay = 0.5f;
-
 #pragma endregion
 
 };
