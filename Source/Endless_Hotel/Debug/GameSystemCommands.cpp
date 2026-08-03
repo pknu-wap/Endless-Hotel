@@ -113,6 +113,7 @@ static FAutoConsoleCommand AddSpawnAnomaly(
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.AddToSpawnList(AnomalyID);
+            //이 부분에서 UI 동기화 필요
         })
 );
 
@@ -146,6 +147,7 @@ static FAutoConsoleCommand RemoveSpawnAnomaly(
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.RemoveFromSpawnList(AnomalyID);
             auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+            //이 부분에서 UI 동기화 필요
         })
 );
 
@@ -163,7 +165,7 @@ static FAutoConsoleCommand AddAllSpawnAnomaly(
                 AssetManager.AddToSpawnList(ID);
             }
             auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            UE_LOG(LogTemp, Log, TEXT("[Debug] Added all AnomalyIDs to spawn list."));
+            //이 부분에서 UI 동기화 필요
         })
 );
 
@@ -181,7 +183,7 @@ static FAutoConsoleCommand RemoveAllSpawnAnomaly(
                 AssetManager.RemoveFromSpawnList(ID);
             }
             auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            UE_LOG(LogTemp, Log, TEXT("[Debug] Removed all AnomalyIDs from spawn list."));
+            //이 부분에서 UI 동기화 필요
         })
 );
 
@@ -224,37 +226,20 @@ static FAutoConsoleCommand SetNextAnomaly(
 
             if (AnomalyID == EAnomalyID::None || AnomalyID == EAnomalyID::Normal)
             {
-                UE_LOG(LogTemp, Warning, TEXT("[Debug] Cannot force-set None/Normal as next anomaly."));
                 return;
             }
 
             UWorld* World = GEngine->GetCurrentPlayWorld();
-            if (!World)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("[Debug] No valid PlayWorld found."));
-                return;
-            }
-
             AAnomaly_Generator* Generator = nullptr;
             for (TActorIterator<AAnomaly_Generator> It(World); It; ++It)
             {
                 Generator = *It;
                 break;
             }
-
-            if (!Generator)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("[Debug] No AAnomaly_Generator found in the current world."));
-                return;
-            }
-
             if (Generator->SetNextAnomalyForced(AnomalyID))
             {
+                //이 부분에서 UI 동기화 필요
                 UE_LOG(LogTemp, Log, TEXT("[Debug] Next anomaly forced to: %s"), *Args[0]);
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("[Debug] Failed: %s is not in the active pool."), *Args[0]);
             }
         })
 );
