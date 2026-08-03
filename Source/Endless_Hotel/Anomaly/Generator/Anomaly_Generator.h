@@ -70,4 +70,11 @@ private:
 
 #pragma endregion
 
+#pragma region Debug
+
+public:
+	bool SetNextAnomalyForced(EAnomalyID ID);
+
+#pragma endregion
+
 };

@@ -26,6 +26,8 @@ protected:
 public:
 	TWeakObjectPtr<class AAnomaly_Object_CrawlChild> AnomalyObjectRef;
 
+	TWeakObjectPtr<class AAnomaly_Object_WChair> WheelChairObjectRef;
+
 #pragma endregion
 
 #pragma region CatchPlayer

@@ -23,10 +23,6 @@ void ACrawlChild::BeginPlay()
 	Super::BeginPlay();
 	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 	this->SetActorEnableCollision(true);
-	if (UCrawlChildAnimInstance* AnimInstance = Cast<UCrawlChildAnimInstance>(GetMesh()->GetAnimInstance()))
-	{
-		AnimInstance->bIsCrawling = true;
-	}
 }
 
 #pragma endregion

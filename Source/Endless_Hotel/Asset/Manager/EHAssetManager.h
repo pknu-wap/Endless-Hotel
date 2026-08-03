@@ -96,6 +96,7 @@ public:
 	FString GetActAnomalyListAsString() const;
 	void AddToSpawnList(EAnomalyID AnomalyID);
 	void RemoveFromSpawnList(EAnomalyID AnomalyID);
+	bool TryGetActAnomalyEntryByID(EAnomalyID AnomalyID, FAnomalyEntry& OutEntry) const;
 
 #pragma endregion
 

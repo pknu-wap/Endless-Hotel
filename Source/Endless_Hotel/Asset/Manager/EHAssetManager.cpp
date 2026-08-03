@@ -224,6 +224,17 @@ void UEHAssetManager::RemoveFromSpawnList(EAnomalyID AnomalyID)
 	UE_LOG(LogTemp, Log, TEXT("[Debug] Removed %d entries of Anomaly: %s"), Removed, *UEnum::GetValueAsString(AnomalyID));
 }
 
+bool UEHAssetManager::TryGetActAnomalyEntryByID(EAnomalyID AnomalyID, FAnomalyEntry& OutEntry) const
+{
+	if (const FAnomalyEntry* Found = ActAnomaly.FindByPredicate([AnomalyID](const FAnomalyEntry& E) { return E.ID == AnomalyID; }))
+	{
+		OutEntry = *Found;
+		return true;
+	}
+
+	return false;
+}
+
 FString UEHAssetManager::GetActAnomalyListAsString() const
 {
 	if (ActAnomaly.IsEmpty())
@@ -234,10 +245,10 @@ FString UEHAssetManager::GetActAnomalyListAsString() const
 	FString Result;
 	for (const FAnomalyEntry& Entry : ActAnomaly)
 	{
-		Result += UEnum::GetValueAsString(Entry.ID) + TEXT(", ");
+		Result += UEnum::GetValueAsString(Entry.ID) + TEXT(",\n");
 	}
 
-	Result.RemoveFromEnd(TEXT(", "));
+	Result.RemoveFromEnd(TEXT(",\n"));
 	return Result;
 }
 

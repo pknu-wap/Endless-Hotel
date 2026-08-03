@@ -53,7 +53,7 @@ void AAnomaly_Object_CrawlChild::SetupCrawlChildObject()
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(Sub->CurrentAnomaly);
-	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler);
+	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &ThisClass::OnCrawlChildSpawnedHandler);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 	Object->SetWorldTransform(StartTransform);

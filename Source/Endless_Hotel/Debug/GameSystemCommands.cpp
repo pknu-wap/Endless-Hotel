@@ -1,9 +1,11 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "Anomaly/Generator/Anomaly_Generator.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include <CoreMinimal.h>
 #include <HAL/IConsoleManager.h>
+#include <EngineUtils.h>
 
 static FAutoConsoleCommand SetExceptClearedAnomaly(TEXT("EHDebug.GameSystem.SetExceptClearedAnomaly"), TEXT("Usage: EHDebug.GameSystem.ExceptClearedAnomaly <true|false>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 	{
@@ -108,7 +110,6 @@ static FAutoConsoleCommand AddSpawnAnomaly(
                 return;
             }
             auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            Subsystem->InitializePool();
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.AddToSpawnList(AnomalyID);
@@ -191,5 +192,69 @@ static FAutoConsoleCommand PrintSpawnAnomalyList(
         {
             auto& AssetManager = UEHAssetManager::Get();
             UE_LOG(LogTemp, Log, TEXT("[Debug] Current Spawn Anomaly List: %s"), *AssetManager.GetActAnomalyListAsString());
+        })
+);
+
+static FAutoConsoleCommand SetNextAnomaly(
+    TEXT("EHDebug.GameSystem.SetNextAnomaly"),
+    TEXT("Usage: EHDebug.GameSystem.SetNextAnomaly <AnomalyID>"),
+    FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+        {
+            if (Args.Num() != 1)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Usage: EHDebug.GameSystem.SetNextAnomaly <AnomalyID>"));
+                LogAnomalyIDHint();
+                return;
+            }
+
+            const UEnum* IDEnum = StaticEnum<EAnomalyID>();
+            int64 Value = IDEnum->GetValueByNameString(Args[0]);
+            if (Value == INDEX_NONE)
+            {
+                Value = IDEnum->GetValueByNameString(FString::Printf(TEXT("EAnomalyID::%s"), *Args[0]));
+            }
+            if (Value == INDEX_NONE)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Invalid AnomalyID: %s"), *Args[0]);
+                LogAnomalyIDHint();
+                return;
+            }
+
+            const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
+
+            if (AnomalyID == EAnomalyID::None || AnomalyID == EAnomalyID::Normal)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] Cannot force-set None/Normal as next anomaly."));
+                return;
+            }
+
+            UWorld* World = GEngine->GetCurrentPlayWorld();
+            if (!World)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] No valid PlayWorld found."));
+                return;
+            }
+
+            AAnomaly_Generator* Generator = nullptr;
+            for (TActorIterator<AAnomaly_Generator> It(World); It; ++It)
+            {
+                Generator = *It;
+                break;
+            }
+
+            if (!Generator)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] No AAnomaly_Generator found in the current world."));
+                return;
+            }
+
+            if (Generator->SetNextAnomalyForced(AnomalyID))
+            {
+                UE_LOG(LogTemp, Log, TEXT("[Debug] Next anomaly forced to: %s"), *Args[0]);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] Failed: %s is not in the active pool."), *Args[0]);
+            }
         })
 );

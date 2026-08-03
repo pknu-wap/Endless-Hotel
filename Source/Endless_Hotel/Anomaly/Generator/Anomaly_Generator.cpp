@@ -141,4 +141,28 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 	return Spawned;
 }
 
+bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
+{
+	auto& AssetManager = UEHAssetManager::Get();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+
+	FAnomalyEntry Data;
+	if (!AssetManager.TryGetActAnomalyEntryByID(ID, Data))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Anomaly_Generator] SetNextAnomalyForced failed: ID not in active pool."));
+		return false;
+	}
+
+	FAnomalySpawnInfo Info;
+	Info.bIsNormal = false;
+	Info.AnomalyID = Data.ID;
+	Info.DataLayer = Data.DataLayer;
+	Info.EventClass = Data.Event;
+
+	NextAnomalyData = Info;
+	Sub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+
+	return true;
+}
+
 #pragma endregion
