@@ -23,10 +23,6 @@ void ACrawlChild::BeginPlay()
 	Super::BeginPlay();
 	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 	this->SetActorEnableCollision(true);
-	if (UCrawlChildAnimInstance* AnimInstance = Cast<UCrawlChildAnimInstance>(GetMesh()->GetAnimInstance()))
-	{
-		AnimInstance->bIsCrawling = true;
-	}
 }
 
 #pragma endregion
@@ -55,8 +51,8 @@ void ACrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	UCharacterMovementComponent* Move = Player->GetCharacterMovement();
 	const FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
 	this->AttachToComponent(PlayerMesh, AttachRules, SocketName);
-	SetActorRelativeLocation(SocketSetting.GetLocation());
-	SetActorRelativeRotation(SocketSetting.GetRotation());
+	SetActorRelativeTransform(SocketSetting);
+
 	this->SetActorEnableCollision(false);
 	PC->bCanRun = false;
 	PC->bIsRunning = false;
@@ -66,6 +62,7 @@ void ACrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	if (UCrawlChildAnimInstance* AnimInstance = Cast<UCrawlChildAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		AnimInstance->bIsCrawling = false;
+		AnimInstance->bIsFalling = false;
 	}
 }
 
