@@ -27,7 +27,7 @@ void AAnomaly_Maze::SetAnomalyState()
 			}
 		}
 
-		if (Walls.Num() > 0)
+		if (!Walls.IsEmpty())
 		{
 			const int32 PositionIndex = FMath::RandRange(0, Walls.Num() - 1);
 			TargetWall = Walls[PositionIndex];

@@ -71,6 +71,11 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		Elevator.Value->StartElevator();
 	}
 	bIsStartInBed = false;
+	if (DataLayer == NextAnomalyMap && !bIsClear)
+	{
+		FloorChange_Disable.Broadcast();
+		FloorChange_Reset.Broadcast();
+	}
 }
 
 #pragma endregion
@@ -164,11 +169,6 @@ void UGameSystem::LoadNextMap()
 {
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayer(NextAnomalyMap);
-	if (!bIsClear)
-	{
-		FloorChange_Disable.Broadcast();
-		FloorChange_Reset.Broadcast();
-	}
 }
 
 #pragma endregion
@@ -308,6 +308,41 @@ AElevator* UGameSystem::GetElevatorByID(FName TargetID)
 bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
 {
 	return (TargetElevator == Elevator) ? true : false;
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void UGameSystem::ResetGameSystem()
+{
+	Floor = STARTFLOOR;
+	bIsFirstStartFloor = true;
+	bPassed = false;
+	bIsAnomalySolved = false;
+	bIsElevatorNormal = false;
+
+	AnomalyCount = 0;
+	ActIndex = 0;
+	CurrentAnomaly = nullptr;
+	CurrentAnomalyID = EAnomalyID::None;
+	NextAnomalyID = EAnomalyID::None;
+	NextAnomalyMap = EMapDataLayer::Hotel;
+	CurrentDataLayer = EMapDataLayer::Hotel;
+	bIsStartInBed = false;
+
+	AnomalyObjectPool.Empty();
+	Elevators.Empty();
+	TargetElevator = nullptr;
+	RelativePlayerLocation = FVector::ZeroVector;
+	RelativePlayerRotation = FRotator::ZeroRotator;
+	ElevatorOffset = FRotator::ZeroRotator;
+	PlayerVelocity = 0.f;
+
+	bIsClear = USaveManager::LoadData_GameClear();
+	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
+	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
+	InitializePool();
 }
 
 #pragma endregion
