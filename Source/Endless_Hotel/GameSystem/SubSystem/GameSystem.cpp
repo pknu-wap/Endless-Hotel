@@ -71,11 +71,6 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		Elevator.Value->StartElevator();
 	}
 	bIsStartInBed = false;
-	if (DataLayer == NextAnomalyMap && !bIsClear)
-	{
-		FloorChange_Disable.Broadcast();
-		FloorChange_Reset.Broadcast();
-	}
 }
 
 #pragma endregion
@@ -169,6 +164,8 @@ void UGameSystem::LoadNextMap()
 {
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->SwitchDataLayer(NextAnomalyMap);
+	FloorChange_Disable.Broadcast();
+	FloorChange_Reset.Broadcast();
 }
 
 #pragma endregion
