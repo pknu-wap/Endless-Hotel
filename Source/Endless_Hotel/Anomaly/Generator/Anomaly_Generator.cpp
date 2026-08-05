@@ -77,7 +77,6 @@ void AAnomaly_Generator::BeginPlay()
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
-	SpawnAnomaly();
 }
 
 #pragma endregion

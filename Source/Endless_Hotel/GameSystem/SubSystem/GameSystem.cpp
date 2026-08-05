@@ -65,12 +65,13 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	if (bIsFirstStartFloor)
 	{
 		bIsStartInBed = true;
+		FloorChange_Disable.Broadcast();
+		FloorChange_Reset.Broadcast();
 	}
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();
 	}
-	bIsStartInBed = false;
 }
 
 #pragma endregion
@@ -328,7 +329,6 @@ void UGameSystem::ResetGameSystem()
 	CurrentDataLayer = EMapDataLayer::Hotel;
 	bIsStartInBed = false;
 
-	AnomalyObjectPool.Empty();
 	Elevators.Empty();
 	TargetElevator = nullptr;
 	RelativePlayerLocation = FVector::ZeroVector;

@@ -94,6 +94,11 @@ void AAnomaly_Event::SetAnomalyState()
 
 void AAnomaly_Event::DisableAnomaly()
 {
+	if (!IsValid(this) || IsActorBeingDestroyed())
+	{
+		return;
+	}
+
 	this->LinkedObjects.Empty();
 	this->TargetAnomalyObjects.Empty();
 	this->Destroy();

@@ -30,7 +30,7 @@ void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AAnomaly_Object_Base::Reset()
 {
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if(!Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    if(!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
     {
         bSolved = true;
     }
