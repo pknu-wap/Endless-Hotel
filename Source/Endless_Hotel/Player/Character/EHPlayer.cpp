@@ -71,7 +71,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	if (bIsDead) return;
 
 	bIsDead = true;
-	Cast <AEHPlayerController> (GetController())->SetPlayerInputAble(false);
+	Cast <AEHPlayerController>(GetController())->SetPlayerInputAble(false);
 
 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
 
@@ -82,7 +82,8 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		PC->StopHeartbeatSound();
 	}
 
-	PlayAnimation(DeathAnim);
+	//PlayAnimation(DeathAnim);
+	Third_Mesh->PlayAnimation(DeathAnim, false);
 
 	switch (DeathReason)
 	{
