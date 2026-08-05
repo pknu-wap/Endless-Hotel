@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Generator.generated.h>
@@ -35,6 +36,7 @@ class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
 private:
 	void SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TSubclassOf<AAnomaly_Object_Base> TargetClass);
 	void AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses);
+	bool AreRequiredObjectsReady(const TArray<FAnomalyObjectRequirement>& Requirements) const;
 
 #pragma endregion
 

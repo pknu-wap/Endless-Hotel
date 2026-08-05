@@ -170,29 +170,44 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UEHAssetManager::GetObjectByID(EAnomal
 {
 	TArray<TSubclassOf<AAnomaly_Object_Base>> ResultArray;
 
-	auto LoadObjects = [&ResultArray](const TArray<TSoftClassPtr<AAnomaly_Object_Base>>& SoftClasses)
+	auto LoadObjects = [&ResultArray](const TArray<FAnomalyObjectRequirement>& Requirements)
 		{
-			for (const auto& SoftClass : SoftClasses)
+			for (const auto& Requirement : Requirements)
 			{
-				if (UClass* Loaded = SoftClass.LoadSynchronous())
+				if (UClass* Loaded = Requirement.ObjectClass.LoadSynchronous())
 				{
-					ResultArray.Add(Loaded);
+					ResultArray.AddUnique(Loaded);
 				}
 			}
 		};
 
 	if (AnomalyID == EAnomalyID::Normal)
 	{
-		LoadObjects(NormalAnomalyData.Objects);
+		LoadObjects(NormalAnomalyData.ObjectSettings);
 		return ResultArray;
 	}
 
 	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E.ID == AnomalyID; }))
 	{
-		LoadObjects(Entry->Objects);
+		LoadObjects(Entry->ObjectSettings);
 	}
 
 	return ResultArray;
+}
+
+TArray<FAnomalyObjectRequirement> UEHAssetManager::GetObjectRequirements(EAnomalyID AnomalyID)
+{
+	if (AnomalyID == EAnomalyID::Normal)
+	{
+		return NormalAnomalyData.ObjectSettings;
+	}
+
+	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E.ID == AnomalyID; }))
+	{
+		return Entry->ObjectSettings;
+	}
+
+	return {};
 }
 
 bool UEHAssetManager::CanSpawnAnomaly(const FAnomalyEntry& AnomalyEntry, const TArray<EAnomalyRule>& ActiveRules) const

@@ -9,6 +9,19 @@
 #include <Type_AnomalyEntry.generated.h>
 
 USTRUCT(BlueprintType)
+struct FAnomalyObjectRequirement
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, Category = "InGame|Class")
+    TSoftClassPtr<class AAnomaly_Object_Base> ObjectClass;
+
+    UPROPERTY(EditAnywhere, Category = "InGame|Class")
+    int32 RequiredCount = 1;
+};
+
+USTRUCT(BlueprintType)
 struct FAnomalyEntry
 {
     GENERATED_BODY()
@@ -31,7 +44,7 @@ public:
     TSoftClassPtr<class AAnomaly_Event> Event;
 
     UPROPERTY(EditAnywhere, Category = "InGame|Class")
-    TArray<TSoftClassPtr<class AAnomaly_Object_Base>> Objects;
+    TArray<FAnomalyObjectRequirement> ObjectSettings;
 
     UPROPERTY(EditAnywhere, Category = "UI|Description")
     TSoftObjectPtr<class UTexture2D> Picture;
