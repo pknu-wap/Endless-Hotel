@@ -329,7 +329,6 @@ void UGameSystem::ResetGameSystem()
 	CurrentDataLayer = EMapDataLayer::Hotel;
 	bIsStartInBed = false;
 
-	Elevators.Empty();
 	TargetElevator = nullptr;
 	RelativePlayerLocation = FVector::ZeroVector;
 	RelativePlayerRotation = FRotator::ZeroRotator;
