@@ -3,7 +3,6 @@
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
 #include "Component/Interact/InteractComponent.h"
 #include <Niagara/Public/NiagaraComponent.h>
-#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -12,16 +11,6 @@ AAnomaly_Object_Windup::AAnomaly_Object_Windup(const FObjectInitializer& ObjectI
 {
 	SKM_Windup = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SKM_Windup"));
 	SKM_Windup->SetupAttachment(RootComponent);
-
-	AC_Windup = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Windup"));
-	AC_Windup->SetupAttachment(RootComponent);
-}
-
-void AAnomaly_Object_Windup::BeginPlay()
-{
-	Super::BeginPlay();
-
-	AC_Windup->SetSound(Sound_Windup);
 }
 
 #pragma endregion
@@ -38,10 +27,7 @@ void AAnomaly_Object_Windup::SetWindup()
 	Object->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle,	FTimerDelegate::CreateWeakLambda(this, [this]()
-	{
-		StartWindupLoop();
-	}),	10.f, false);
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, this, &ThisClass::StartWindupLoop, 10.f, false);
 }
 
 #pragma endregion
@@ -54,10 +40,7 @@ void AAnomaly_Object_Windup::StartWindupLoop()
 
 	WindupLoopTick();
 
-	GetWorld()->GetTimerManager().SetTimer(WindupPlayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			WindupLoopTick();
-		}), WindupPlayInterval, true);
+	GetWorld()->GetTimerManager().SetTimer(WindupPlayHandle, this, &ThisClass::WindupLoopTick, WindupPlayInterval, true);
 }
 
 void AAnomaly_Object_Windup::WindupLoopTick()
@@ -73,49 +56,29 @@ void AAnomaly_Object_Windup::WindupLoopTick()
 
 void AAnomaly_Object_Windup::WindupPlay()
 {
-	AC_Windup->Play();
-	PlayWindupAnimationOnce();
+	PlayWindupAnimation();
 }
 
 void AAnomaly_Object_Windup::StopWindup()
 {
 	GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
-	AC_Windup->Stop();
+
+	SKM_Windup->Stop();
 }
 
 void AAnomaly_Object_Windup::StartWrongLoop()
 {
 	GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
-	AC_Windup->Stop();
-
-	CurrentWrongPlayCount = 0;
-
-	WrongLoopTick();
-
-	GetWorld()->GetTimerManager().SetTimer(WrongPlayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			WrongLoopTick();
-		}), WrongPlayInterval, true);
-}
-
-void AAnomaly_Object_Windup::WrongLoopTick()
-{
-	if (CurrentWrongPlayCount >= WrongPlayCount)
-	{
-		GetWorld()->GetTimerManager().ClearTimer(WrongPlayHandle);
-		StartWindupBurning();
-
-		return;
-	}
-	
-	WindupPlay();
-	CurrentWrongPlayCount++;
+	SKM_Windup->Stop();
+	StartWindupBurning();
+	PlayWrongMontage();
 }
 
 #pragma endregion
 
 #pragma region Animation
-void AAnomaly_Object_Windup::PlayWindupAnimationOnce()
+
+void AAnomaly_Object_Windup::PlayWindupAnimation()
 {
 	SKM_Windup->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 	SKM_Windup->SetAnimation(WindupAnimation);
@@ -123,6 +86,14 @@ void AAnomaly_Object_Windup::PlayWindupAnimationOnce()
 	SKM_Windup->Play(false);
 }
 
+void AAnomaly_Object_Windup::PlayWrongMontage()
+{
+	SKM_Windup->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	UAnimInstance* AnimInstance = SKM_Windup->GetAnimInstance();
+
+	AnimInstance->PlaySlotAnimationAsDynamicMontage(WrongWindupAnimation, TEXT("DefaultSlot"), 0.f, 0.f, 1.f,	WrongPlayCount);
+}
 #pragma endregion
 
 #pragma region Burn
