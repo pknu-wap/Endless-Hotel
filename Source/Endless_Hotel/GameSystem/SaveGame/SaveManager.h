@@ -52,14 +52,10 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 
 public:
 	DATA_SAVE_DEFINITION(FSaveData_Setting, Data_Setting);
-	DATA_SAVE_DEFINITION(FSaveData_Key, Data_Key);
 
 protected:
 	UPROPERTY(SaveGame)
 	FSaveData_Setting Data_Setting;
-
-	UPROPERTY(SaveGame)
-	FSaveData_Key Data_Key;
 
 #pragma endregion
 

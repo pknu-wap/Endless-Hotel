@@ -4,6 +4,7 @@
 
 #include "Type/UI/Type_Setting.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
+#include "Type/Level/Type_Progression.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
@@ -106,14 +107,24 @@ public:
 	// System
 	UPROPERTY(SaveGame)
 	EOptionValue Language = EOptionValue::Korean;
-};
-
-USTRUCT()
-struct FSaveData_Key
-{
-	GENERATED_BODY()
 
 public:
+	// Keyboard
+	void ResetKeySetting()
+	{
+		Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
+		Down = FKeySettingInfo(EKeySettingType::Up, EKeys::S);
+		Left = FKeySettingInfo(EKeySettingType::Up, EKeys::A);
+		Right = FKeySettingInfo(EKeySettingType::Up, EKeys::D);
+		Run = FKeySettingInfo(EKeySettingType::Up, EKeys::LeftShift);
+		Sit = FKeySettingInfo(EKeySettingType::Up, EKeys::SpaceBar);
+		Interact = FKeySettingInfo(EKeySettingType::Up, EKeys::E);
+		Hide = FKeySettingInfo(EKeySettingType::Up, EKeys::RightMouseButton);
+		Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
+	}
+
+public:
+	// Keyboard
 	UPROPERTY(SaveGame)
 	FKeySettingInfo Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
 
@@ -145,14 +156,6 @@ public:
 #pragma endregion
 
 #pragma region Progression
-
-UENUM()
-enum class EGameProgression : uint8
-{
-	CheckIn,
-	Tutorial,
-	Loop
-};
 
 USTRUCT()
 struct FSaveData_Progression

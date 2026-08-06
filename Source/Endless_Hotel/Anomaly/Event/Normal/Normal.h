@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Normal.generated.h"
+#include <CoreMinimal.h>
+#include <Normal.generated.h>
 
 #pragma region Declare
 
@@ -23,4 +23,5 @@ protected:
 	virtual void SetAnomalyState() override;
 
 #pragma endregion
+
 };

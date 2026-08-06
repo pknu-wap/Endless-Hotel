@@ -32,4 +32,5 @@ void ANormal::SetAnomalyState()
     }
     ScheduleAnomaly();
 }
+
 #pragma endregion
