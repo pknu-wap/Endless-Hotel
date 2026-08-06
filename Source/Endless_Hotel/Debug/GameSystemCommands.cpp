@@ -3,6 +3,8 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Anomaly/Generator/Anomaly_Generator.h"
 #include "Asset/Manager/EHAssetManager.h"
+#include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <CoreMinimal.h>
 #include <HAL/IConsoleManager.h>
 #include <EngineUtils.h>
@@ -109,11 +111,15 @@ static FAutoConsoleCommand AddSpawnAnomaly(
                 LogAnomalyIDHint();
                 return;
             }
-            auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.AddToSpawnList(AnomalyID);
-            //이 부분에서 UI 동기화 필요
+            
+            auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+            if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
+            {
+                UI_InGame->ChangeDebugAnomaly();
+            }
         })
 );
 
@@ -146,8 +152,12 @@ static FAutoConsoleCommand RemoveSpawnAnomaly(
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.RemoveFromSpawnList(AnomalyID);
-            auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            //이 부분에서 UI 동기화 필요
+            
+            auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+            if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
+            {
+                UI_InGame->ChangeDebugAnomaly();
+            }
         })
 );
 
@@ -164,8 +174,12 @@ static FAutoConsoleCommand AddAllSpawnAnomaly(
                 const EAnomalyID ID = static_cast<EAnomalyID>(IDEnum->GetValueByIndex(Index));
                 AssetManager.AddToSpawnList(ID);
             }
-            auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            //이 부분에서 UI 동기화 필요
+
+            auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+            if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
+            {
+                UI_InGame->ChangeDebugAnomaly();
+            }
         })
 );
 
@@ -182,8 +196,12 @@ static FAutoConsoleCommand RemoveAllSpawnAnomaly(
                 const EAnomalyID ID = static_cast<EAnomalyID>(IDEnum->GetValueByIndex(Index));
                 AssetManager.RemoveFromSpawnList(ID);
             }
-            auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-            //이 부분에서 UI 동기화 필요
+            
+            auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+            if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
+            {
+                UI_InGame->ChangeDebugAnomaly();
+            }
         })
 );
 
@@ -238,7 +256,12 @@ static FAutoConsoleCommand SetNextAnomaly(
             }
             if (Generator->SetNextAnomalyForced(AnomalyID))
             {
-                //이 부분에서 UI 동기화 필요
+                auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+                if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
+                {
+                    UI_InGame->ChangeDebugAnomaly();
+                }
+
                 UE_LOG(LogTemp, Log, TEXT("[Debug] Next anomaly forced to: %s"), *Args[0]);
             }
         })
