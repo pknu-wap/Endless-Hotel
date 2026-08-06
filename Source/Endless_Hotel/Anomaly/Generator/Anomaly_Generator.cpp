@@ -2,11 +2,10 @@
 
 #include "Anomaly_Generator.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Data/Anomaly/AnomalyData.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
+#include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include "Data/Controller/DataController.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include <EngineUtils.h>
 
@@ -60,20 +59,21 @@ void AAnomaly_Generator::BeginPlay()
 void AAnomaly_Generator::SpawnAnomaly()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	auto& AssetManager = UEHAssetManager::Get();
 	
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
 	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
 	{
+		const FAnomalyEntry& NormalData = AssetManager.GetNormalAnomalyData();
 		CurrentData.bIsNormal = true;
-		CurrentData.AnomalyID = DataC->NormalAnomalyData.ID;
-		CurrentData.DataLayer = DataC->NormalAnomalyData.DataLayer;
-		CurrentData.EventClass = DataC->NormalAnomalyData.Event;
+		CurrentData.AnomalyID = NormalData.ID;
+		CurrentData.DataLayer = NormalData.DataLayer;
+		CurrentData.EventClass = NormalData.Event;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 
-	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = DataC->GetObjectByID(CurrentAnomaly->AnomalyID);
+	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = AssetManager.GetObjectByID(CurrentAnomaly->AnomalyID);
 	AnomalyObjectLinker(TargetClasses);
 	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
 	NextAnomalyData = DecideNext();
@@ -91,16 +91,16 @@ void AAnomaly_Generator::SpawnAnomaly()
 FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNormal)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	bool bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
+	auto& AssetManager = UEHAssetManager::Get();
+	bool bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
 
 	if (!bHasAnomaly)
 	{
 		Sub->InitializePool();
 		Index = Sub->ActIndex;
-		bHasAnomaly = DataC->ActAnomaly.IsValidIndex(Index);
+		bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
 	}
-	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? DataC->NormalAnomalyData : DataC->ActAnomaly[Index];
+	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? AssetManager.GetNormalAnomalyData() : AssetManager.GetActAnomalyByIndex(Index);
 
 	FAnomalySpawnInfo Info;
 	Info.bIsNormal = bForceNormal || !bHasAnomaly;
@@ -139,6 +139,30 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 		Spawned->AnomalyID = Info.AnomalyID;
 	}
 	return Spawned;
+}
+
+bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
+{
+	auto& AssetManager = UEHAssetManager::Get();
+	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+
+	FAnomalyEntry Data;
+	if (!AssetManager.TryGetActAnomalyEntryByID(ID, Data))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[Anomaly_Generator] SetNextAnomalyForced failed: ID not in active pool."));
+		return false;
+	}
+
+	FAnomalySpawnInfo Info;
+	Info.bIsNormal = false;
+	Info.AnomalyID = Data.ID;
+	Info.DataLayer = Data.DataLayer;
+	Info.EventClass = Data.Event;
+
+	NextAnomalyData = Info;
+	Sub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+
+	return true;
 }
 
 #pragma endregion

@@ -25,6 +25,7 @@ protected:
 
 public:
 	TWeakObjectPtr<class AAnomaly_Object_CrawlChild> AnomalyObjectRef;
+	TWeakObjectPtr<class AAnomaly_Object_WChair> WheelChairObjectRef;
 
 #pragma endregion
 
@@ -37,8 +38,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Move")
 	float LockSpeed = 100.f;
 
-	UPROPERTY(EditAnywhere, Category = "Sockedt|Setting")
+	UPROPERTY(EditAnywhere, Category = "Socket|Setting")
 	FTransform SocketSetting;
+
+private:
+	bool bIsAttached = false;
+	TObjectPtr<class USkeletalMeshComponent> AttachedPlayerMesh = nullptr;
+	FQuat FixedWorldRotation = FQuat::Identity;
 
 public:
 	void DetachFromPlayer();

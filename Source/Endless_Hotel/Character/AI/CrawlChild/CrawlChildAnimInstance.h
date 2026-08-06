@@ -17,6 +17,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	bool bIsCrawling = false;
 
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	bool bIsRiding = false;
+
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	bool bIsFalling = false;
+
 #pragma endregion
 
 };

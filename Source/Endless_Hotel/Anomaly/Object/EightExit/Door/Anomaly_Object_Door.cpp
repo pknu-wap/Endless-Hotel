@@ -50,26 +50,23 @@ void AAnomaly_Object_Door::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (DoorIndex == 8)
-	{
-		BaseYaw = Object->GetRelativeRotation().Yaw;
+	BaseYaw = Object->GetRelativeRotation().Yaw;
 
-		FOnTimelineFloat OpenUpdate;
-		OpenUpdate.BindUFunction(this, FName("UpdateRotateOpen"));
-		Timeline_Open->AddInterpFloat(Curve_Open, OpenUpdate);
+	FOnTimelineFloat OpenUpdate;
+	OpenUpdate.BindUFunction(this, FName("UpdateRotateOpen"));
+	Timeline_Open->AddInterpFloat(Curve_Open, OpenUpdate);
 
-		FOnTimelineEvent OpenFinished;
-		OpenFinished.BindUFunction(this, FName("FinishRotateOpen"));
-		Timeline_Close->SetTimelineFinishedFunc(OpenFinished);
+	FOnTimelineEvent OpenFinished;
+	OpenFinished.BindUFunction(this, FName("FinishRotateOpen"));
+	Timeline_Close->SetTimelineFinishedFunc(OpenFinished);
 
-		FOnTimelineFloat CloseUpdate;
-		CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
-		Timeline_Close->AddInterpFloat(Curve_Close, CloseUpdate);
+	FOnTimelineFloat CloseUpdate;
+	CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
+	Timeline_Close->AddInterpFloat(Curve_Close, CloseUpdate);
 
-		FOnTimelineEvent CloseFinished;
-		CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
-		Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
-	}
+	FOnTimelineEvent CloseFinished;
+	CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
+	Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
 }
 
 #pragma endregion

@@ -6,6 +6,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Type/Player/Type_Death.h"
 #include <Kismet/GameplayStatics.h>
+#include <Kismet/KismetMathLibrary.h>
 
 #pragma region Base
 
@@ -37,6 +38,9 @@ void AElevatorGhost::AttackPlayer()
 {
     AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+    
+    SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Player->GetActorLocation()));
+
     PC->SetPlayerInputAble(false);
     if (auto* AnimInst = Cast<UElevatorGhostAnimInstance>(GetMesh()->GetAnimInstance()))
     {
@@ -44,4 +48,5 @@ void AElevatorGhost::AttackPlayer()
         Player->DieDelegate.Broadcast(EDeathReason::Attack);
     }
 }
+
 #pragma endregion

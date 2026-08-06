@@ -45,7 +45,11 @@ protected:
 
 	TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
-public:
+protected:
+	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+private:
 	void StartCrawlChild();
 
 #pragma endregion

@@ -2,13 +2,12 @@
 
 #include "GameSystem.h"
 #include "Anomaly/Generator/Anomaly_Generator.h"
+#include "Asset/Manager/EHAssetManager.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "Data/Anomaly/AnomalyData.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
-#include "Data/Controller/DataController.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
@@ -26,11 +25,8 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	UDataController* DataController = Collection.InitializeDependency<UDataController>();
-	if (DataController)
-	{
-		DataController->GetAnomalyEntries();
-	}
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.InitAnomalyEntries();
 
 	Floor = STARTFLOOR;
 	ActIndex = 0;
@@ -48,12 +44,11 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	if (bIsClear && bExceptClearedAnomaly)
 	{
 		const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
-		auto* DataC = GameInstance->GetSubsystem<UDataController>();
 
-		DataC->ClearedAnomalySet.Reset();
+		AssetManager.ResetClearedAnomaly();
 		for (const auto& ID : LoadedHistory)
 		{
-			DataC->ClearedAnomalySet.Add(ID);
+			AssetManager.MarkAnomalyCleared(ID);
 		}
 	}
 
@@ -97,7 +92,7 @@ bool UGameSystem::ComputeVerdict() const
 
 void UGameSystem::ApplyVerdict()
 {
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
+	auto& AssetManager = UEHAssetManager::Get();
 	bPassed = ComputeVerdict();
 	if (bPassed)
 	{
@@ -105,8 +100,8 @@ void UGameSystem::ApplyVerdict()
 		bIsStartInBed = false;
 		if (bExceptClearedAnomaly)
 		{
-			DataC->ClearedAnomalySet.Add(CurrentAnomaly->AnomalyID);
-			USaveManager::SaveClearedAnomalyID(DataC->ClearedAnomalySet.Array());
+			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
+			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 		}
 	}
 	else 
@@ -206,31 +201,20 @@ void UGameSystem::AddFloor()
 
 void UGameSystem::InitializePool()
 {
-	auto* DataC = GetGameInstance()->GetSubsystem<UDataController>();
-	AnomalyCount = DataC->GetOriginAnomaly().Num();
-	DataC->ActAnomaly.Empty();
-	DataC->ActAnomaly.Append(DataC->GetOriginAnomaly());
+	auto& AssetManager = UEHAssetManager::Get();
+	AnomalyCount = AssetManager.GetOriginAnomaly().Num();
+	AssetManager.RebuildActAnomalyFromOrigin();
 
 	ActIndex = 0;
 
-	DataC->RemoveNoRuleAnomaly();
+	AssetManager.RemoveNoRuleAnomaly(AnomalyRules);
 
-	if (bExceptClearedAnomaly && !DataC->ClearedAnomalySet.IsEmpty() && DataC->ClearedAnomalySet.Num() < AnomalyCount)
+	if (bExceptClearedAnomaly && !AssetManager.IsClearedAnomalySetEmpty() && AssetManager.GetClearedAnomalyCount() < AnomalyCount)
 	{
-		DataC->RemoveClearedAnomaly();
+		AssetManager.RemoveClearedAnomaly();
 	}
 
-	if (DataC->ActAnomaly.Num() > 1)
-	{
-		for (uint8 CurrentIndex = DataC->ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
-		{
-			const uint8 RandomIndex = FMath::RandRange(0, CurrentIndex);
-			if (CurrentIndex != RandomIndex)
-			{
-				DataC->ActAnomaly.Swap(CurrentIndex, RandomIndex);
-			}
-		}
-	}
+	AssetManager.ShuffleActAnomaly();
 
 	// Reset Index
 	ActIndex = 0;

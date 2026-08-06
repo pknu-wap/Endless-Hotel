@@ -18,7 +18,22 @@ protected:
 	TArray<float> AnimationLengths;
 
 public:
+	void StartWithWheelChair();
 	void FallFromWheelChair();
+
+#pragma endregion
+
+#pragma region CrawlChild
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "CrawlChild")
+	TWeakObjectPtr<class ACrawlChild> CrawlChild;
+
+	UPROPERTY(EditAnywhere, Category = "CrawlChild|Seat")
+	FTransform SeatOffsetTransform;
+
+	UPROPERTY(EditAnywhere, Category = "CrawlChild|GetOff")
+	FTransform GetOffOffsetTransform;
 
 #pragma endregion
 
