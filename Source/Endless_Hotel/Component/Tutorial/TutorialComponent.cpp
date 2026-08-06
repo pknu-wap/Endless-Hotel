@@ -27,9 +27,8 @@ void UTutorialComponent::BeginPlay()
 	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
 	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
 
-	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
-
-	if (!Data.bIsFirstPlay)
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	if (Data.Progression != EGameProgression::Tutorial)
 	{
 		return;
 	}
@@ -47,7 +46,7 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
-	if (!USaveManager::LoadData_Tutorial().bIsFirstPlay)
+	if (USaveManager::LoadData_Progression().Progression != EGameProgression::Tutorial)
 	{
 		return;
 	}
@@ -67,14 +66,9 @@ void UTutorialComponent::ShowTutorialWidget()
 
 void UTutorialComponent::HideTutorialWidget()
 {
-	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
-	Data.bIsFirstPlay = false;
-
-	USaveManager::SaveData_Tutorial(Data);
-
 	if (UI_Tutorial.IsValid())
 	{
-		if (Data.bIsFirstPlay)
+		if (USaveManager::LoadData_Progression().Progression == EGameProgression::Tutorial)
 		{
 			UI_Tutorial->ShowTutorialAnimation(false);
 		}

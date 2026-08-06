@@ -34,10 +34,10 @@ void AManual::Interact_Implementation(AEHCharacter* Interacter)
 {
 	Super::Interact_Implementation(Interacter);
 
-	auto Data = USaveManager::LoadData_Tutorial();
+	auto Data = USaveManager::LoadData_Progression();
 	Data.bReadManual = true;
 
-	USaveManager::SaveData_Tutorial(Data);
+	USaveManager::SaveData_Progression(Data);
 }
 
 #pragma endregion

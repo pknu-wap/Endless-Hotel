@@ -243,14 +243,17 @@ void AAnomaly_Object_Door::PlayHandleTwistSound()
 
 void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 {
-	if (!USaveManager::LoadData_Tutorial().bReadManual)
+	if (!USaveManager::LoadData_Progression().bReadManual)
 	{
 		Component_Interact->RestoreInteract();
 		return;
 	}
 
-	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	Data.Progression = EGameProgression::Loop;
+	USaveManager::SaveData_Progression(Data);
 
+	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 	switch (Info.InteractType)
 	{
 	case EInteractType::DoorOpen:

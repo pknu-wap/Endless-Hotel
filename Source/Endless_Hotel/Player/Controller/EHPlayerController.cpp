@@ -138,10 +138,6 @@ void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 	case EMapDataLayer::Hotel:
 	{
 		UICon->OpenWidget(EWidgetType::HUD_InGame);
-		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
-		{
-			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
-		}
 		break;
 	}
 	case EMapDataLayer::Lobby:
@@ -350,7 +346,7 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 
 void AEHPlayerController::TurnPlayerHandLight()
 {
-	bHasFlash = USaveManager::LoadData_Tutorial().bHasFlash;
+	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
 
 	if (!bCanMove || !bHasFlash)
 	{

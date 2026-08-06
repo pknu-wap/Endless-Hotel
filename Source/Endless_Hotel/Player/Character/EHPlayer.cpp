@@ -82,7 +82,6 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		PC->StopHeartbeatSound();
 	}
 
-	//PlayAnimation(DeathAnim);
 	Third_Mesh->PlayAnimation(DeathAnim, false);
 
 	switch (DeathReason)

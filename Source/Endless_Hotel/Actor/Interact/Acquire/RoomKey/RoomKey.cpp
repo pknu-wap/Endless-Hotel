@@ -1,15 +1,15 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "Actor/Interact/Acquire/Lighter/Lighter.h"
+#include "Actor/Interact/Acquire/RoomKey/RoomKey.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 
 #pragma region Base
 
-void ALighter::BeginPlay()
+void ARoomKey::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (USaveManager::LoadData_Progression().bHasFlash)
+	if (USaveManager::LoadData_Progression().bHasKey)
 	{
 		Destroy();
 	}
@@ -19,10 +19,10 @@ void ALighter::BeginPlay()
 
 #pragma region Acquire
 
-void ALighter::SaveAcquireData()
+void ARoomKey::SaveAcquireData()
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	Data.bHasFlash = true;
+	Data.bHasKey = true;
 	USaveManager::SaveData_Progression(Data);
 }
 

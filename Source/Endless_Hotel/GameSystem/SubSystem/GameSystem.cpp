@@ -38,13 +38,13 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	bIsClear = USaveManager::LoadData_GameClear();
 	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
-	FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
+	FSaveData_Progression Data_Progression = USaveManager::LoadData_Progression();
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
 
-	AnomalyRules = Data_Manual.ActiveRules;
+	AnomalyRules = Data_Progression.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
 	{
 		const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
@@ -267,9 +267,9 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
 	AnomalyRules.AddUnique(AnomalyRule);
-	FSaveData_Manual SavedRules;
+	FSaveData_Progression SavedRules;
 	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
+	USaveManager::SaveData_Progression(SavedRules);
 	InitializePool();
 	OnAddAnomalyRule.Broadcast(AnomalyRule);
 }
@@ -277,9 +277,9 @@ void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 void UGameSystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
 	AnomalyRules.Remove(AnomalyRule);
-	FSaveData_Manual SavedRules;
+	FSaveData_Progression SavedRules;
 	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
+	USaveManager::SaveData_Progression(SavedRules);
 	InitializePool();
 	OnAddAnomalyRule.Broadcast(AnomalyRule);
 }

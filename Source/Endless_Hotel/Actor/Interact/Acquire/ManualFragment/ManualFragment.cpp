@@ -28,7 +28,7 @@ void AManualFragment::BeginPlay()
 	}
 	else
 	{
-		//SetManualFragment();
+		SetManualFragment();
 		Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::SetManualFragment);
 	}
 }

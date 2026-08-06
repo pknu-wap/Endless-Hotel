@@ -7,6 +7,8 @@
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
+#pragma region Setting
+
 USTRUCT()
 struct FSaveData_Setting
 {
@@ -140,28 +142,38 @@ public:
 	FKeySettingInfo Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
 };
 
+#pragma endregion
+
+#pragma region Progression
+
+UENUM()
+enum class EGameProgression : uint8
+{
+	CheckIn,
+	Tutorial,
+	Loop
+};
+
 USTRUCT()
-struct FSaveData_Tutorial
+struct FSaveData_Progression
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(SaveGame)
-	bool bIsFirstPlay = true;
+	EGameProgression Progression = EGameProgression::CheckIn;
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;
 
 	UPROPERTY(SaveGame)
-	bool bReadManual = false;
-};
+	bool bHasKey = false;
 
-USTRUCT()
-struct FSaveData_Manual
-{
-	GENERATED_BODY()
-	
-public:
+	UPROPERTY(SaveGame)
+	bool bReadManual = false;
+
 	UPROPERTY(SaveGame)
 	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit };
 };
+
+#pragma endregion
