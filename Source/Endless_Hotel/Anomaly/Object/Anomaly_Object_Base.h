@@ -14,6 +14,9 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AInteractBase
 
 #pragma region Base
 
+public:
+	AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
