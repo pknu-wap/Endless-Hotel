@@ -68,7 +68,6 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	if (bIsFirstStartFloor)
 	{
 		bIsStartInBed = true;
-		FloorChange_Disable.Broadcast();
 	}
 	if (VisitedDataLayers.Contains(DataLayer))
 	{
@@ -231,6 +230,7 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 
 void UGameSystem::LoadNextMap()
 {
+	FloorChange_Disable.Broadcast();
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	const EMapDataLayer PrevLayer = CurrentDataLayer;
 	GameInstance->SwitchDataLayer(NextAnomalyMap);
