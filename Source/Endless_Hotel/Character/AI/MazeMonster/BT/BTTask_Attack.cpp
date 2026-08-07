@@ -64,6 +64,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			BaseAIController->StopAI(TEXT("Attack"));
 			Player->DieDelegate.Broadcast(EDeathReason::Attack);
 			MazeMonster->StopAttackSound();
+			MazeMonster->StopHeartbeatSound();
 			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}), DieDelay, false);

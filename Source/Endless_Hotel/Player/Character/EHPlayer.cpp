@@ -30,10 +30,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
-	HeartbeatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartbeatAudioComponent"));
-	HeartbeatAudioComponent->SetupAttachment(RootComponent);
-	HeartbeatAudioComponent->bAutoActivate = false;
-
 	FlashLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("FlashLight"));
 	FlashLight->SetVisibility(false);
 	FlashLight->SetupAttachment(Camera);
@@ -70,13 +66,6 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	Cast <AEHPlayerController> (GetController())->SetPlayerInputAble(false);
 
 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
-
-	AEHPlayerController* PC = Cast<AEHPlayerController>(GetController());
-	if (PC)
-	{
-		PC->PlayDeathSequence();
-		PC->StopHeartbeatSound();
-	}
 
 	PlayAnimation(DeathAnim);
 

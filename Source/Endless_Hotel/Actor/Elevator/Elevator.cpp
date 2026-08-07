@@ -122,7 +122,10 @@ void AElevator::MoveDoors(bool bWillOpen)
     {
         return;
     }
-
+    if (Move_AC->IsPlaying())
+    {
+        Move_AC->Stop();
+    }
     bIsDoorOpened = bWillOpen;
     Door_AC->Activate(true);
     Door_AC->Play();
@@ -151,10 +154,6 @@ void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
     Door_AC->Stop();
-    if (Move_AC->IsPlaying())
-    {
-        Move_AC->Stop();
-    }
     SetActiveBlockBox(false);
 }
 
@@ -164,7 +163,7 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     LeftDoor->SetLightingChannels(false, true, false);
     RightDoor->SetLightingChannels(false, true, false);
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if(!Move_AC->IsPlaying())
+    if(!Move_AC->IsPlaying() && !bIsStart)
     {
         Move_AC->Play();
     }

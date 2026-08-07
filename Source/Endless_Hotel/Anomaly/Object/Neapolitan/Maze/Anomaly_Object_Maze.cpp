@@ -21,11 +21,7 @@ void AAnomaly_Object_Maze::StartMazeMonster()
 	FTimerHandle DelayHandle;
 
 	StartAI();
-	
-	if (MazeMonster.IsValid())
-	{
-		PC->SetHeartbeatSound(MazeMonster.Get());
-	}
+	MazeMonster->PlayHeartbeatSound();
 }
 
 void AAnomaly_Object_Maze::SetDeactiveWall()

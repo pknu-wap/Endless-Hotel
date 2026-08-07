@@ -8,6 +8,12 @@ AMazeMonster::AMazeMonster(const FObjectInitializer& ObjectInitializer)
 {
 	AttackAC = CreateDefaultSubobject<UAudioComponent>(TEXT("Attack_AC"));
 	AttackAC->SetupAttachment(RootComponent);
+
+	Heartbeat_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Heartbeat_AC"));
+	Heartbeat_AC->SetupAttachment(RootComponent);
+	Heartbeat_AC->bAllowSpatialization = false;
+	Heartbeat_AC->bAutoActivate = false;
+
 	CurrentIndex = 0;
 }
 
@@ -21,6 +27,20 @@ void AMazeMonster::PlayAttackSound()
 void AMazeMonster::StopAttackSound()
 {
 	AttackAC->Stop();
+}
+
+#pragma endregion
+
+#pragma region Sound
+
+void AMazeMonster::PlayHeartbeatSound()
+{
+	Heartbeat_AC->Play();
+}
+
+void AMazeMonster::StopHeartbeatSound()
+{
+	Heartbeat_AC->Stop();
 }
 
 #pragma endregion
