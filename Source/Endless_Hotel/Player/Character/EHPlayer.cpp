@@ -34,10 +34,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	HeartbeatAudioComponent->SetupAttachment(RootComponent);
 	HeartbeatAudioComponent->bAutoActivate = false;
 
-	ElevatorMoveAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ElevatorMoveAudioComponent"));
-	ElevatorMoveAudioComponent->SetupAttachment(RootComponent);
-	ElevatorMoveAudioComponent->bAutoActivate = false;
-
 	FlashLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("FlashLight"));
 	FlashLight->SetVisibility(false);
 	FlashLight->SetupAttachment(Camera);
@@ -159,11 +155,6 @@ void AEHPlayer::FreezeAnimation()
 #pragma endregion
 
 #pragma region Sound
-
-void AEHPlayer::PlayElevatorSound(bool bIsPlay)
-{
-	bIsPlay ? ElevatorMoveAudioComponent->Play() : ElevatorMoveAudioComponent->Stop();
-}
 
 #pragma endregion
 

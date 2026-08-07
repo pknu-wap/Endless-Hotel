@@ -51,6 +51,11 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     Door_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Door AC"));
     Door_AC->SetupAttachment(Car);
 
+    Move_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Move_AC"));
+    Move_AC->SetupAttachment(RootComponent);
+    Move_AC->bAutoActivate = false;
+    Move_AC->bAllowSpatialization = false;
+
     TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
     TriggerBlockBox->SetupAttachment(Car);
@@ -146,10 +151,9 @@ void AElevator::OnDoorTimelineFinished()
 {
     bIsDoorMoving = false;
     Door_AC->Stop();
-    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (Player->ElevatorMoveAudioComponent->IsPlaying())
+    if (Move_AC->IsPlaying())
     {
-        Player->ElevatorMoveAudioComponent->Activate(false);
+        Move_AC->Stop();
     }
     SetActiveBlockBox(false);
 }
@@ -160,11 +164,10 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
     LeftDoor->SetLightingChannels(false, true, false);
     RightDoor->SetLightingChannels(false, true, false);
     auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (!Player->ElevatorMoveAudioComponent->IsPlaying())
+    if(!Move_AC->IsPlaying())
     {
-        Player->PlayElevatorSound(true);
+        Move_AC->Play();
     }
-
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = __LINE__;

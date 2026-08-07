@@ -76,6 +76,12 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Audio")
     TObjectPtr<class USoundWave> Sound_DoorMove;
 
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
+    TObjectPtr<class UAudioComponent> Move_AC;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    TObjectPtr<class USoundWave> Sound_Move;
+
 #pragma endregion
 
 #pragma region MovementSettings
