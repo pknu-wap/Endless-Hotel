@@ -10,13 +10,17 @@
 
 void AAnomaly_Object_Base::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     bSolved = true;
     OriginalTransform = GetActorTransform();
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->RegisterAnomalyObject(this);
-    Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    if (UGameInstance* GI = GetGameInstance())
+    {
+        if (UGameSystem* Sub = GI->GetSubsystem<UGameSystem>())
+        {
+            Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+        }
+    }
 }
 
 void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)

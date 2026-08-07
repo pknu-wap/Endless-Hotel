@@ -43,34 +43,6 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 	}
 }
 
-bool AAnomaly_Generator::AreRequiredObjectsReady(const TArray<FAnomalyObjectRequirement>& Requirements) const
-{
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	const auto& ObjectPool = Sub->GetAnomalyObject();
-
-	for (const auto& Req : Requirements)
-	{
-		UClass* LoadedClass = Req.ObjectClass.LoadSynchronous();
-		if (!LoadedClass)
-		{
-			continue;
-		}
-
-		int32 RegisteredCount = 0;
-		if (const auto* Found = ObjectPool.Find(LoadedClass))
-		{
-			RegisteredCount = Found->Objects.Num();
-		}
-
-		if (RegisteredCount < Req.RequiredCount)
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
@@ -87,7 +59,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto& AssetManager = UEHAssetManager::Get();
-	
+
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
 	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
 	{
@@ -97,17 +69,6 @@ void AAnomaly_Generator::SpawnAnomaly()
 		CurrentData.DataLayer = NormalData.DataLayer;
 		CurrentData.EventClass = NormalData.Event;
 	}
-
-	const TArray<FAnomalyObjectRequirement> Requirements = AssetManager.GetObjectRequirements(CurrentData.AnomalyID);
-	if (!AreRequiredObjectsReady(Requirements))
-	{
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				SpawnAnomaly();
-			}));
-		return;
-	}
-
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
 

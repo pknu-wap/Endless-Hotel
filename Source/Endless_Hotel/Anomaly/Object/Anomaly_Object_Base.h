@@ -79,6 +79,7 @@ public:
 	virtual void StartRestoring(float Duration = 2.5f);
 
 public:
+	UPROPERTY(EditAnywhere, Category = "Object|Transform")
 	FTransform OriginalTransform;
 
 #pragma endregion

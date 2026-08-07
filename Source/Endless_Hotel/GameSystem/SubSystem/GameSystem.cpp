@@ -13,6 +13,8 @@
 #include "Actor/Elevator/Elevator.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
+#include <Engine/World.h>
+#include <WorldPartition/WorldPartitionSubsystem.h>
 
 #pragma region Base
 
@@ -56,6 +58,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	ChooseKeyIndex = FMath::RandRange(1, 2);
 }
+
 #pragma endregion
 
 #pragma region Level
@@ -66,12 +69,80 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 		FloorChange_Disable.Broadcast();
-		FloorChange_Reset.Broadcast();
 	}
 	for (const auto& Elevator : Elevators)
 	{
 		Elevator.Value->StartElevator();
 	}
+	if (VisitedDataLayers.Contains(DataLayer))
+	{
+		FloorChange_Reset.Broadcast();
+	}
+	else
+	{
+		RegisterAnomalyObjectsWhenStreamed(DataLayer);
+	}
+}
+
+void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
+{
+	if (!World || !TargetInstance)
+	{
+		return;
+	}
+
+	for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
+	{
+		if (!StreamingLevel)
+		{
+			continue;
+		}
+		ULevel* Level = StreamingLevel->GetLoadedLevel();
+		if (!Level)
+		{
+			continue;
+		}
+
+		for (AActor* Actor : Level->Actors)
+		{
+			AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Actor);
+			if (!AnomalyObject)
+			{
+				continue;
+			}
+
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			if (ActorLayers.Contains(TargetInstance))
+			{
+				RegisterAnomalyObject(AnomalyObject);
+			}
+		}
+	}
+}
+
+void UGameSystem::RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLayer)
+{
+	UWorld* World = GetWorld();
+	UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance());
+	const UDataLayerInstance* TargetInstance = GameInstance ? GameInstance->GetDataLayerInstance(DataLayer) : nullptr;
+
+	if (!World || !TargetInstance)
+	{
+		return;
+	}
+
+	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this, [this, World, DataLayer, TargetInstance]()
+		{
+			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
+			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
+			{
+				return;
+			}
+			RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
+			VisitedDataLayers.Add(DataLayer);
+			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			FloorChange_Reset.Broadcast();
+		}), 0.1f, true);
 }
 
 #pragma endregion
@@ -164,9 +235,12 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 void UGameSystem::LoadNextMap()
 {
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
+	const EMapDataLayer PrevLayer = CurrentDataLayer;
 	GameInstance->SwitchDataLayer(NextAnomalyMap);
-	FloorChange_Disable.Broadcast();
-	FloorChange_Reset.Broadcast();
+	if (PrevLayer == NextAnomalyMap)
+	{
+		FloorChange_Reset.Broadcast();
+	}
 }
 
 #pragma endregion
@@ -225,7 +299,7 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
-	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.Add(Object);
+	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 }
 
 void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)

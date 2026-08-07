@@ -17,6 +17,10 @@
 class AAnomaly_Generator;
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
+class ULevelStreaming;
+class ULevel;
+enum class ELevelStreamingState : uint8;
+struct FActorsInitializedParams;
 
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
@@ -57,6 +61,15 @@ private:
 private:
 	UFUNCTION()
 	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
+
+	void RegisterAnomalyObjectsInDataLayer(UWorld* World, const class UDataLayerInstance* TargetInstance);
+	void RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLayer);
+
+private:
+	UPROPERTY()
+	TSet<EMapDataLayer> VisitedDataLayers;
+
+	FTimerHandle DataLayerStreamingCheckHandle;
 
 #pragma endregion
 
