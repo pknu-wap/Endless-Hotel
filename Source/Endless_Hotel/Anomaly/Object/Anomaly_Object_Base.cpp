@@ -8,15 +8,31 @@
 
 #pragma region Base
 
+AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer)
+    :Super(ObjectInitializer)
+{
+
+#if WITH_EDITORONLY_DATA
+
+    SetIsSpatiallyLoaded(false);
+
+#endif
+
+}
+
 void AAnomaly_Object_Base::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
     bSolved = true;
     OriginalTransform = GetActorTransform();
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->RegisterAnomalyObject(this);
-    Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    if (UGameInstance* GI = GetGameInstance())
+    {
+        if (UGameSystem* Sub = GI->GetSubsystem<UGameSystem>())
+        {
+            Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+        }
+    }
 }
 
 void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -30,7 +46,7 @@ void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AAnomaly_Object_Base::Reset()
 {
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if(!Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    if(!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
     {
         bSolved = true;
     }

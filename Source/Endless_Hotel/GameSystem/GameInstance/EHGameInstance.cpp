@@ -32,7 +32,11 @@ void UEHGameInstance::Init()
 		CultureSetting.SetCurrentCulture(TEXT("ko-KR"));
 		break;
 	}
+}
 
+void UEHGameInstance::OnStart()
+{
+	Super::OnStart();
 	OnDataLayerChanged.Broadcast(CurrentDataLayer);
 }
 
@@ -94,6 +98,18 @@ void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetData
 				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
 			}
 		}), 0.1f, true);
+}
+
+UDataLayerInstance* UEHGameInstance::GetDataLayerInstance(const EMapDataLayer& Target)
+{
+	UDataLayerAsset* Asset = GetDataLayerAsset(Target);
+	if (!Asset)
+	{
+		return nullptr;
+	}
+
+	UDataLayerSubsystem* Subsystem = GetWorld() ? GetWorld()->GetSubsystem<UDataLayerSubsystem>() : nullptr;
+	return Subsystem ? Subsystem->GetDataLayerInstance(Asset) : nullptr;
 }
 
 void UEHGameInstance::WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
