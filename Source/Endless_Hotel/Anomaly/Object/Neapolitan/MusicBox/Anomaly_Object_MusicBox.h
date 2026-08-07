@@ -59,10 +59,6 @@ protected:
 	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
 	void StopMusicBox();
 
-public:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "MusicBox|Interact")
-	bool bWaitingInteract = false;
-
 #pragma endregion
 
 };
