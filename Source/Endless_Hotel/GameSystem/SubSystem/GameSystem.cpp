@@ -70,10 +70,6 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		bIsStartInBed = true;
 		FloorChange_Disable.Broadcast();
 	}
-	for (const auto& Elevator : Elevators)
-	{
-		Elevator.Value->StartElevator();
-	}
 	if (VisitedDataLayers.Contains(DataLayer))
 	{
 		FloorChange_Reset.Broadcast();
@@ -224,6 +220,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	{
 		++ActIndex;
 	}
+	StartAllElevator();
 }
 
 void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
@@ -370,6 +367,14 @@ void UGameSystem::SetTargetElevator()
 void UGameSystem::RemoveTargetElevator()
 {
 	TargetElevator = nullptr;
+}
+
+void UGameSystem::StartAllElevator()
+{
+	for (const auto& Elevator : Elevators)
+	{
+		Elevator.Value->StartElevator();
+	}
 }
 
 AElevator* UGameSystem::GetElevatorByID(FName TargetID)

@@ -215,6 +215,9 @@ public:
 	bool IsTargetElevator(const AElevator* Elevator);
 
 private:
+	void StartAllElevator();
+
+private:
 	FVector RelativePlayerLocation;
 	FRotator RelativePlayerRotation;
 	FRotator ElevatorOffset;
