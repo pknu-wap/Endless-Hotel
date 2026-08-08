@@ -68,7 +68,6 @@ void AElevator::BeginPlay()
     FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->OnAnomalySpawned.AddUniqueDynamic(this, &ThisClass::StartElevator);
     Sub->RegisterElevator(this);
 
     UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));

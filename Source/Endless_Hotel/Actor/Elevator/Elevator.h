@@ -167,7 +167,6 @@ public:
 #pragma region Subsystem
 
 public:
-    UFUNCTION()
     void StartElevator();
 
 protected:

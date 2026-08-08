@@ -55,10 +55,14 @@ void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
 		if (bIsFirstHotel)
 		{
+			DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
 			StartEyeEffect(true);
 			bIsFirstHotel = false;
 		}
-		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
+		else
+		{
+			DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
+		}
 		break;
 	}
 	case EMapDataLayer::Lobby:

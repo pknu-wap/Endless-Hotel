@@ -139,7 +139,6 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 			SpringArm->bUsePawnControlRotation = true;
 			SpringArm->bEnableCameraRotationLag = false;
 
-			Cast<AEHPlayerController>(GetController())->RevivePlayer();
 			SubSystem->ApplyVerdict();
 			bIsDead = false;
 		}), AnimLength + 6, false);

@@ -13,7 +13,7 @@ UCLASS()
 class ENDLESS_HOTEL_API UEHAssetManager : public UAssetManager
 {
 	GENERATED_BODY()
-	
+
 #pragma region Base
 
 public:
