@@ -11,6 +11,11 @@
 
 UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 {
+	if (WidgetStack.Contains(WidgetType))
+	{
+		return CachedWidgets[WidgetType];
+	}
+
 	if (!IsValid(PDA_Widget))
 	{
 		LoadWidgetDataAsset(WidgetType);
