@@ -29,6 +29,29 @@ void AMazeMonster::StopAttackSound()
 	AttackAC->Stop();
 }
 
+void AMazeMonster::AttachAttackSoundTo(
+    USceneComponent* Parent,
+    FName SocketName)
+{
+    AttackAC->AttachToComponent(
+        Parent,
+        FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+        SocketName
+    );
+}
+
+void AMazeMonster::RestoreAttackSoundAttachment()
+{
+    AttackAC->DetachFromComponent(
+        FDetachmentTransformRules::KeepWorldTransform
+    );
+
+    AttackAC->AttachToComponent(
+        RootComponent,
+        FAttachmentTransformRules::KeepRelativeTransform
+    );
+}
+
 #pragma endregion
 
 #pragma region Sound

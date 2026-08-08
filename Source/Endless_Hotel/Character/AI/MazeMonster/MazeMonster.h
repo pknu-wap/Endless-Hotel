@@ -41,6 +41,8 @@ protected:
 public:
 	void PlayAttackSound();
 	void StopAttackSound();
+	void AttachAttackSoundTo(USceneComponent* Parent, FName SocketName);
+	void RestoreAttackSoundAttachment();
 
 #pragma endregion
 
