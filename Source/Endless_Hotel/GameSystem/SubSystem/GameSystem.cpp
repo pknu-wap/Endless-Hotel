@@ -40,7 +40,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
+	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
@@ -232,9 +232,10 @@ void UGameSystem::LoadNextMap()
 {
 	FloorChange_Disable.Broadcast();
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	const EMapDataLayer PrevLayer = CurrentDataLayer;
-	GameInstance->SwitchDataLayer(NextAnomalyMap);
-	if (PrevLayer == NextAnomalyMap)
+	const EMapDataLayer ActualCurrentLayer = GameInstance->GetCurrentDataLayer();
+	const EMapDataLayer TargetLayer = NextAnomalyMap;
+	GameInstance->SwitchDataLayer(TargetLayer);
+	if (ActualCurrentLayer == TargetLayer)
 	{
 		FloorChange_Reset.Broadcast();
 	}
@@ -296,6 +297,8 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
+	Object->SetOriginalTransform();
+	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
 	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 }
 

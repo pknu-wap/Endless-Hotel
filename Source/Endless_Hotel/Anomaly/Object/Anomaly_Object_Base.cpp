@@ -20,29 +20,6 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 
 }
 
-void AAnomaly_Object_Base::BeginPlay()
-{
-    Super::BeginPlay();
-
-    bSolved = true;
-    OriginalTransform = GetActorTransform();
-    if (UGameInstance* GI = GetGameInstance())
-    {
-        if (UGameSystem* Sub = GI->GetSubsystem<UGameSystem>())
-        {
-            Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
-        }
-    }
-}
-
-void AAnomaly_Object_Base::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->UnRegisterAnomalyObject(this);
-
-    Super::EndPlay(EndPlayReason);
-}
-
 void AAnomaly_Object_Base::Reset()
 {
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
@@ -58,6 +35,11 @@ void AAnomaly_Object_Base::Reset()
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+}
+
+void AAnomaly_Object_Base::SetOriginalTransform()
+{
+    OriginalTransform = GetActorTransform();
 }
 
 #pragma endregion

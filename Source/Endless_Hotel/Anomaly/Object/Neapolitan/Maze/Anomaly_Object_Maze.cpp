@@ -70,6 +70,7 @@ void AAnomaly_Object_Maze::StartAI()
 	{
 		MazeMonster->SpawnDefaultController();
 	}
+	SetElevator();
 }
 
 #pragma endregion
@@ -85,6 +86,7 @@ void AAnomaly_Object_Maze::SetElevator()
 	Elevator->SetActorLocation(FVector(-5210, 1435, -2927));
 	ElevatorEntrance->SetActorLocation(FVector(-5210, 1435, -2927));
 	Elevator->StandardPos = FVector(-5210, 1435, -2927);
+	SetElevatorPos();
 }
 
 void AAnomaly_Object_Maze::SetElevatorPos()
