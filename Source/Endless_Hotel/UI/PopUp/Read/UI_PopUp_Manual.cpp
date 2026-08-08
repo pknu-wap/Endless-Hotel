@@ -10,22 +10,32 @@ void UUI_PopUp_Manual::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	Button_Left->OnClicked.AddDynamic(this, &ThisClass::Click_ButtonLeft);
-	Button_Right->OnClicked.AddDynamic(this, &ThisClass::Click_ButtonRight);
+	Button_Next->OnClicked.AddDynamic(this, &ThisClass::Click_ButtonNext);
+	Button_Next->OnHovered.AddDynamic(this, &ThisClass::PlayArrowAnimation);
+	Button_Next->OnUnhovered.AddDynamic(this, &ThisClass::StopArrowAnimation);
 }
 
 #pragma endregion
 
 #pragma region Click
 
-void UUI_PopUp_Manual::Click_ButtonLeft()
+void UUI_PopUp_Manual::Click_ButtonNext()
 {
 	Cast<AManual>(TargetObject)->SwitchPaper();
 }
 
-void UUI_PopUp_Manual::Click_ButtonRight()
+#pragma endregion
+
+#pragma region Animation
+
+void UUI_PopUp_Manual::PlayArrowAnimation()
 {
-	Click_ButtonLeft();
+	PlayAnimation(WidgetAnim_Arrow, 0.f, 0);
+}
+
+void UUI_PopUp_Manual::StopArrowAnimation()
+{
+	StopAnimation(WidgetAnim_Arrow);
 }
 
 #pragma endregion
