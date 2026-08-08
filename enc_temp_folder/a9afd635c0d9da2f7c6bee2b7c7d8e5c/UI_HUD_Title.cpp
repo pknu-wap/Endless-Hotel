@@ -31,7 +31,12 @@ void UUI_HUD_Title::ShowWidget()
 
 	SetLogoImage();
 
-	PlayBGM();
+	if (!IsValid(AC))
+	{
+		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
+		PlayBGM();
+	}
 }
 
 #pragma endregion
@@ -126,12 +131,6 @@ void UUI_HUD_Title::StopBGM(float Duration)
 
 void UUI_HUD_Title::PlayBGM()
 {
-	if (!IsValid(AC))
-	{
-		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
-		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
-	}
-
 	AC->Play();
 }
 
