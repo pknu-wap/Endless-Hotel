@@ -32,7 +32,6 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	Floor = STARTFLOOR;
 	ActIndex = 0;
-	AnomalyRules.Add(EAnomalyRule::EightExit);
 
 	bIsClear = USaveManager::LoadData_GameClear();
 	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();

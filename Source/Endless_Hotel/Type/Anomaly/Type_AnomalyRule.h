@@ -9,9 +9,10 @@ enum class EAnomalyRule : uint8
 {
 	None				= 0		UMETA(DisplayName = "None"),
 	EightExit			= 1		UMETA(DisplayName = "EightExit"),
-	TurnOffSound		= 2		UMETA(DisplayName = "TurnOffSound"),
-	Painting			= 3		UMETA(DispalyName = "Painting"),
-	Doll				= 4		UMETA(DisplayName = "Doll"),
-	ResetObject			= 5		UMETA(DisplayName = "ResetObject"),
-	Watch				= 6		UMETA(DisplayName = "Watch")
+	Touch				= 2		UMETA(DisplayName = "Touch"),
+	Doll				= 3		UMETA(DisplayName = "Doll"),
+	Painting			= 4		UMETA(DispalyName = "Painting"),
+	TurnOffSound		= 5		UMETA(DisplayName = "TurnOffSound"),
+	ResetObject			= 6		UMETA(DisplayName = "ResetObject"),
+	Watch				= 7		UMETA(DisplayName = "Watch")
 };
