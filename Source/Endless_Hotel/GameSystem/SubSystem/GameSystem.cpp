@@ -39,7 +39,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
+	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 
 	AnomalyRules = Data_Manual.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
@@ -67,16 +67,8 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	if (bIsFirstStartFloor)
 	{
 		bIsStartInBed = true;
-		FloorChange_Disable.Broadcast();
 	}
-	if (VisitedDataLayers.Contains(DataLayer))
-	{
-		FloorChange_Reset.Broadcast();
-	}
-	else
-	{
-		RegisterAnomalyObjectsWhenStreamed(DataLayer);
-	}
+	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
 void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
@@ -115,7 +107,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 	}
 }
 
-void UGameSystem::RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLayer)
+void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered)
 {
 	UWorld* World = GetWorld();
 	UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance());
@@ -126,15 +118,37 @@ void UGameSystem::RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLa
 		return;
 	}
 
-	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this, [this, World, DataLayer, TargetInstance]()
+	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
+		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
 		{
 			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
-			RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
-			VisitedDataLayers.Add(DataLayer);
+			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
+			{
+				if (!StreamingLevel) continue;
+				ULevel* Level = StreamingLevel->GetLoadedLevel();
+				if (!Level || !Level->bIsVisible) continue;
+
+				for (AActor* Actor : Level->Actors)
+				{
+					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					{
+						goto ReadyCheckDone;
+					}
+				}
+			}
+			return;
+
+		ReadyCheckDone:
+			if (!bAlreadyRegistered)
+			{
+				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
+				VisitedDataLayers.Add(DataLayer);
+			}
+
 			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 			FloorChange_Reset.Broadcast();
 		}), 0.1f, true);
@@ -230,10 +244,12 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 
 void UGameSystem::LoadNextMap()
 {
+	FloorChange_Disable.Broadcast();
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	const EMapDataLayer PrevLayer = CurrentDataLayer;
-	GameInstance->SwitchDataLayer(NextAnomalyMap);
-	if (PrevLayer == NextAnomalyMap)
+	const EMapDataLayer ActualCurrentLayer = GameInstance->GetCurrentDataLayer();
+	const EMapDataLayer TargetLayer = NextAnomalyMap;
+	GameInstance->SwitchDataLayer(TargetLayer);
+	if (ActualCurrentLayer == TargetLayer)
 	{
 		FloorChange_Reset.Broadcast();
 	}
@@ -295,6 +311,8 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
+	Object->SetOriginalTransform();
+	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
 	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 }
 

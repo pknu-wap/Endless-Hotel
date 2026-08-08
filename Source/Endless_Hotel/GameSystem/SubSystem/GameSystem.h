@@ -63,7 +63,7 @@ private:
 	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
 
 	void RegisterAnomalyObjectsInDataLayer(UWorld* World, const class UDataLayerInstance* TargetInstance);
-	void RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLayer);
+	void WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered);
 
 private:
 	UPROPERTY()

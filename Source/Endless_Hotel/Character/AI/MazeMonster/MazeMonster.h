@@ -41,6 +41,20 @@ protected:
 public:
 	void PlayAttackSound();
 	void StopAttackSound();
+	void AttachAttackSoundTo(USceneComponent* Parent, FName SocketName);
+	void RestoreAttackSoundAttachment();
+
+#pragma endregion
+
+#pragma region Sound
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class UAudioComponent> Heartbeat_AC;
+
+public:
+	void PlayHeartbeatSound();
+	void StopHeartbeatSound();
 
 #pragma endregion
 

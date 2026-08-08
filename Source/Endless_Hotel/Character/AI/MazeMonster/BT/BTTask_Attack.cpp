@@ -50,11 +50,15 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);
 
-	FVector DirectionToPlayer = Player->GetActorLocation() - MazeMonster->GetActorLocation();
-	FRotator LookAtRotation = DirectionToPlayer.Rotation();
-	MazeMonster->SetActorRotation(LookAtRotation);
 	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
-	MazeMonster->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
+	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	MazeMonster->GetCharacterMovement()->StopMovementImmediately(); 
+	MazeMonster->GetMesh()->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
+	MazeMonster->SetActorRelativeLocation(FVector::ZeroVector);
+	MazeMonster->SetActorRelativeRotation(FRotator::ZeroRotator);
+	MazeMonster->AttachAttackSoundTo(Player->GetMesh(), TEXT("JumpScare_MazeMonster"));
+	MazeMonster->StopHeartbeatSound();
 	MazeMonster->PlayAttackSound();
 
 	FTimerHandle DelayHandle;
@@ -64,7 +68,8 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 			BaseAIController->StopAI(TEXT("Attack"));
 			Player->DieDelegate.Broadcast(EDeathReason::Attack);
 			MazeMonster->StopAttackSound();
-			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			MazeMonster->RestoreAttackSoundAttachment();
+			MazeMonster->GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}), DieDelay, false);
 

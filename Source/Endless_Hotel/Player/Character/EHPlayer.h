@@ -90,23 +90,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Sound
-
-public:
-	void PlayElevatorSound(bool bIsPlay);
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> HeartbeatAudioComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundBase> HeartbeatSound;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> ElevatorMoveAudioComponent;
-
-#pragma endregion
-
 #pragma region Animation
 
 public:
