@@ -69,14 +69,7 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 	}
-	if (VisitedDataLayers.Contains(DataLayer))
-	{
-		FloorChange_Reset.Broadcast();
-	}
-	else
-	{
-		RegisterAnomalyObjectsWhenStreamed(DataLayer);
-	}
+	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
 void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
@@ -115,7 +108,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 	}
 }
 
-void UGameSystem::RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLayer)
+void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered)
 {
 	UWorld* World = GetWorld();
 	UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance());
@@ -126,15 +119,37 @@ void UGameSystem::RegisterAnomalyObjectsWhenStreamed(const EMapDataLayer& DataLa
 		return;
 	}
 
-	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this, [this, World, DataLayer, TargetInstance]()
+	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
+		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
 		{
 			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
-			RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
-			VisitedDataLayers.Add(DataLayer);
+			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
+			{
+				if (!StreamingLevel) continue;
+				ULevel* Level = StreamingLevel->GetLoadedLevel();
+				if (!Level || !Level->bIsVisible) continue;
+
+				for (AActor* Actor : Level->Actors)
+				{
+					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					{
+						goto ReadyCheckDone;
+					}
+				}
+			}
+			return;
+
+		ReadyCheckDone:
+			if (!bAlreadyRegistered)
+			{
+				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
+				VisitedDataLayers.Add(DataLayer);
+			}
+
 			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 			FloorChange_Reset.Broadcast();
 		}), 0.1f, true);
