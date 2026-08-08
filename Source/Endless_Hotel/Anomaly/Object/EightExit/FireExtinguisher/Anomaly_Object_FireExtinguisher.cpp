@@ -21,11 +21,24 @@ AAnomaly_Object_FireExtinguisher::AAnomaly_Object_FireExtinguisher(const FObject
 
 #pragma endregion
 
+#pragma region Reset
+
+void AAnomaly_Object_FireExtinguisher::Reset()
+{
+	Super::Reset();
+
+	Object->SetVisibility(false);
+	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+#pragma endregion
+
 #pragma region Explode
 
 void AAnomaly_Object_FireExtinguisher::Explode()
 {
 	Object->SetVisibility(false);
+	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AudioComponent->Play();
 	NiagaraComponent->Activate();
 	FTimerHandle DeactiveHandle;

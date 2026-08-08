@@ -18,6 +18,13 @@ public:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
+
+#pragma endregion
+
 #pragma region Explode
 
 public:
