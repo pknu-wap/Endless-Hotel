@@ -59,10 +59,6 @@ void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 			StartEyeEffect(true);
 			bIsFirstHotel = false;
 		}
-		else
-		{
-			DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
-		}
 		break;
 	}
 	case EMapDataLayer::Lobby:

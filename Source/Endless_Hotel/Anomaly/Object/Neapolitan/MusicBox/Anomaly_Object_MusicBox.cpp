@@ -27,34 +27,30 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 	bSolved = false;
 	AC->Sound = Sound_MusicBox;
 	AC->Play();
-	bWaitingInteract = true;
 	
 	StartRotate();
 
 	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
-	GetWorld()->GetTimerManager().SetTimer(FailTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			bWaitingInteract = false;
-			AC->Stop();
-			bSolved = false;
-			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			if (!Player) return;
-			Player->DieDelegate.Broadcast(EDeathReason::Music);
-		}), LimitTime, false);
+	GetWorld()->GetTimerManager().SetTimer(FailTimerHandle,
+		FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				AC->Stop();
+				bSolved = false;
+				Component_Interact->DeactiveInteract();
+			}), LimitTime, false);
 }
 
 void AAnomaly_Object_MusicBox::StartRotate()
 {
-	GetWorld()->GetTimerManager().SetTimer(
-		RotateHandle,
+	GetWorld()->GetTimerManager().SetTimer(RotateHandle,
 		FTimerDelegate::CreateWeakLambda(this, [this]()
 			{
 				Mesh_BoxRotator->AddLocalRotation(TickRotation);
-				if (!bWaitingInteract) GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
-			}),
-		0.016f,
-		true
-	);
+				if (!GetWorld()->GetTimerManager().IsTimerActive(FailTimerHandle))
+				{
+					GetWorld()->GetTimerManager().ClearTimer(RotateHandle);
+				}
+			}), 0.016f, true);
 }
 
 #pragma endregion
@@ -77,10 +73,7 @@ void AAnomaly_Object_MusicBox::Interact_Implementation(AEHCharacter* Interacter)
 
 void AAnomaly_Object_MusicBox::StopMusicBox()
 {
-	if (!bWaitingInteract) return;
 	AC->Stop();
-	bWaitingInteract = false;
-
 	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
 }
 
