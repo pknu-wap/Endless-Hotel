@@ -88,13 +88,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Death")
 	TMap<EDeathReason, TObjectPtr<class UAnimMontage>> DeathAnims;
 
-	UPROPERTY(EditAnywhere, Category = "Death")
-	TObjectPtr<class USoundWave> SW_Ringing;
-
-private:
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
-
 #pragma endregion
 
 #pragma region Sound

@@ -219,7 +219,7 @@ void AAnomaly_Object_Painting::DieWatchingPainting()
 				if (CurrentWatchTime >= MaxWatchTime)
 				{
 					GetWorld()->GetTimerManager().ClearTimer(WatchingTimeline);
-					Player->DieDelegate.Broadcast(EDeathReason::Music);
+					Player->DieDelegate.Broadcast(EDeathReason::Watch);
 					return;
 				}
 				CurrentWatchTime += 0.01;

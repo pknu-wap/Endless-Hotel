@@ -39,7 +39,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 			bSolved = false;
 			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 			if (!Player) return;
-			Player->DieDelegate.Broadcast(EDeathReason::Music);
+			//Player->DieDelegate.Broadcast(EDeathReason::Music);
 		}), LimitTime, false);
 }
 
