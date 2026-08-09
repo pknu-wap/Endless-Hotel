@@ -112,6 +112,11 @@ void UUI_PopUp_Setting::HideWidget()
 {
 	Super::HideWidget();
 
+	bRotateGear = false;
+
+	SM_Gear->SetActorRotation(OriginRot);
+	AC_Gear->Stop();
+
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 
@@ -126,8 +131,6 @@ void UUI_PopUp_Setting::HideWidget()
 		CameraManager->PossessCameraToPlayer(0.f);
 		break;
 	}
-
-	SM_Gear->SetActorRotation(OriginRot);
 
 	TurnOnGearLight(false);
 }
@@ -265,6 +268,7 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 	if (!IsValid(AC_Gear))
 	{
 		AC_Gear = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gear);
+		AC_Gear->SetAutoActivate(false);
 	}
 
 	AC_Gear->FadeIn(0.5f, 1, 0);
