@@ -100,6 +100,20 @@ void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetData
 		}), 0.1f, true);
 }
 
+void UEHGameInstance::ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive)
+{
+	if (CurrentDataLayer == TargetDataLayer)
+	{
+		return;
+	}
+
+	UDataLayerSubsystem* Subsystem = GetWorld()->GetSubsystem<UDataLayerSubsystem>();
+	UDataLayerAsset* DLA_Active = GetDataLayerAsset(TargetDataLayer);
+	EDataLayerRuntimeState State = bActive ? EDataLayerRuntimeState::Activated : EDataLayerRuntimeState::Loaded;
+
+	Subsystem->SetDataLayerInstanceRuntimeState(DLA_Active, State);
+}
+
 UDataLayerInstance* UEHGameInstance::GetDataLayerInstance(const EMapDataLayer& Target)
 {
 	UDataLayerAsset* Asset = GetDataLayerAsset(Target);
