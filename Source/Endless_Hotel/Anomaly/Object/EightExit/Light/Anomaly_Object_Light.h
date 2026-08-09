@@ -32,7 +32,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Index")
-	int32 LightIndex = 0;
+	int8 LightIndex = 0;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UPointLightComponent> PointLight;
