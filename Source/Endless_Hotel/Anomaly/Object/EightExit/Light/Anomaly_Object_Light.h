@@ -16,9 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Light : public AAnomaly_Object_EightExit
 public:
 	AAnomaly_Object_Light(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma endregion
 
 #pragma region Reset
@@ -52,10 +49,7 @@ public:
 
 private:
 	void SetGeometryCollection();
-	void DropLight();
-
-	UFUNCTION()
-	void LightDestroyed(const struct FChaosBreakEvent& BreakEvent);
+	void DestroyLight();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -78,6 +72,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_LightBlue;
 
+	UPROPERTY(EditAnywhere, Category = "Color")
 	FLinearColor OriginalColor;
 
 #pragma endregion

@@ -27,7 +27,7 @@ void AAnomaly_Object_FireExtinguisher::Reset()
 {
 	Super::Reset();
 
-	Object->SetVisibility(false);
+	Object->SetVisibility(true);
 	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
