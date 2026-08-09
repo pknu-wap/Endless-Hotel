@@ -63,42 +63,42 @@ enum class EOptionValue : uint8
 UENUM(BlueprintType)
 enum class EOptionCategory : uint8
 {
-	None			UMETA(DisplayName = "None"),
+	None				UMETA(DisplayName = "None"),
 
 	// Screen
-	Resolution		UMETA(DisplayName = "Resolution"),
-	Window			UMETA(DisplayName = "Window"),
-	Aspect			UMETA(DisplayName = "Aspect"),
-	Frame			UMETA(DisplayName = "Frame"),
-	VSync			UMETA(DisplayName = "VSync"),
-	HDR				UMETA(DisplayName = "HDR"),
+	Resolution			UMETA(DisplayName = "Resolution"),
+	Window				UMETA(DisplayName = "Window"),
+	Aspect				UMETA(DisplayName = "Aspect"),
+	Frame				UMETA(DisplayName = "Frame"),
+	VSync				UMETA(DisplayName = "VSync"),
+	HDR					UMETA(DisplayName = "HDR"),
 
 	// Grapic
-	Grapic			UMETA(DisplayName = "Grapic"),
-	AntiAliasing	UMETA(DisplayName = "AntiAliasing"),
-	Shadow			UMETA(DisplayName = "Shadow"),
-	Texture			UMETA(DisplayName = "Texture"),
-	PostProcessing	UMETA(DisplayName = "PostProcessing"),
-	Shading			UMETA(DisplayName = "Shading"),
+	Grapic				UMETA(DisplayName = "Grapic"),
+	AntiAliasing		UMETA(DisplayName = "AntiAliasing"),
+	Shadow				UMETA(DisplayName = "Shadow"),
+	Texture				UMETA(DisplayName = "Texture"),
+	PostProcessing		UMETA(DisplayName = "PostProcessing"),
+	Shading				UMETA(DisplayName = "Shading"),
 
 	// Sound
-	Master			UMETA(DisplayName = "Master"),
-	BGM				UMETA(DisplayName = "BGM"),
-	SFX				UMETA(DisplayName = "SFX"),
-	Voice			UMETA(DisplayName = "Voice"),
-	Interface		UMETA(DisplayName = "Interface"),
+	Master				UMETA(DisplayName = "Master"),
+	BGM					UMETA(DisplayName = "BGM"),
+	SFX					UMETA(DisplayName = "SFX"),
+	Voice				UMETA(DisplayName = "Voice"),
+	Interface			UMETA(DisplayName = "Interface"),
 
 	// Control
-	Sensitivity		UMETA(DisplayName = "Sensitivity"),
+	Sensitivity			UMETA(DisplayName = "Sensitivity"),
 
 	// Gameplay
-	Overlap			UMETA(DisplayName = "Overlap"),
-	Brightness		UMETA(DisplayName = "Brightness"),
+	Overlap				UMETA(DisplayName = "Overlap"),
+	Brightness			UMETA(DisplayName = "Brightness"),
 
 	// System
-	Reset_Note		UMETA(DisplayName = "Reset Note"),
-	Reset_Setting	UMETA(DisplayName = "Reset Setting"),
-	Language		UMETA(DisplayName = "Language")
+	Reset_Progression	UMETA(DisplayName = "Reset Progression"),
+	Reset_Setting		UMETA(DisplayName = "Reset Setting"),
+	Language			UMETA(DisplayName = "Language")
 };
 
 USTRUCT(BlueprintType)
