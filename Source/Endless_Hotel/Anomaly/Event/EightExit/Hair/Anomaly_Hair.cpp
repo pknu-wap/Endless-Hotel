@@ -24,10 +24,9 @@ void AAnomaly_Hair::SetAnomalyState()
 	{
 	case EAnomalyID::Hair:
 		SetupAnomalyAction<AAnomaly_Object_Hair>(&AAnomaly_Object_Hair::StartHair);
+		ActiveTrigger();
 		break;
 	}
-	ActiveTrigger();
 }
 
 #pragma endregion
-
