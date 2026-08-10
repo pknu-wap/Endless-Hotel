@@ -13,23 +13,14 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 	:Super(ObjectInitializer)
 {
 	Mesh_Destroy = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("Mesh_Destroy"));
-	Mesh_Destroy->SetupAttachment(RootComponent);
+	Mesh_Destroy->SetupAttachment(Object);
 	SetGeometryCollection();
 	
 	PointLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
-	PointLight->SetupAttachment(RootComponent);
+	PointLight->SetupAttachment(Object);
 
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	AC->SetupAttachment(RootComponent);
-}
-
-void AAnomaly_Object_Light::BeginPlay()
-{
-	Super::BeginPlay();
-
-	OriginalColor = PointLight->GetLightColor();
-
-	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::LightDestroyed);
+	AC->SetupAttachment(Object);
 }
 
 #pragma endregion
@@ -38,18 +29,20 @@ void AAnomaly_Object_Light::BeginPlay()
 
 void AAnomaly_Object_Light::Reset()
 {
-	Object->SetSimulatePhysics(false);
+	Super::Reset();
+
+	Object->SetVisibility(true);
 
 	Mesh_Destroy->DestroyComponent();
-	Mesh_Destroy = NewObject<UGeometryCollectionComponent>();
-	Mesh_Destroy->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	Mesh_Destroy = NewObject<UGeometryCollectionComponent>(this);
+	Mesh_Destroy->AttachToComponent(Object, FAttachmentTransformRules::KeepRelativeTransform);
+	Mesh_Destroy->RegisterComponent();
 	SetGeometryCollection();
 
 	PointLight->SetLightColor(OriginalColor);
+	PointLight->AttachToComponent(Object, FAttachmentTransformRules::KeepWorldTransform);
 
 	TurnLight(true);
-
-	Super::Reset();
 }
 
 #pragma endregion
@@ -64,33 +57,36 @@ void AAnomaly_Object_Light::TurnLight(bool bIsOn)
 	PointLight->MarkRenderStateDirty();
 }
 
-void AAnomaly_Object_Light::SetGeometryCollection()
-{
-	Mesh_Destroy->SetVisibility(false);
-	Mesh_Destroy->SetSimulatePhysics(false);
-	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh_Destroy->SetNotifyBreaks(true);
-}
-
 #pragma endregion
 
 #pragma region Destroy
 
-void AAnomaly_Object_Light::DropLight()
+void AAnomaly_Object_Light::SetGeometryCollection()
 {
-	Object->SetSimulatePhysics(true);
-
-	Mesh_Destroy->SetVisibility(true);
-	Mesh_Destroy->SetSimulatePhysics(true);
-	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	PointLight->AttachToComponent(Object, FAttachmentTransformRules::KeepWorldTransform);
+	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh_Destroy->SetRestCollection(GC_Light);
+	Mesh_Destroy->SetVisibility(false);
+	Mesh_Destroy->SetSimulatePhysics(false);
 }
 
-void AAnomaly_Object_Light::LightDestroyed(const FChaosBreakEvent& BreakEvent)
+void AAnomaly_Object_Light::StartDropLight()
+{
+	FTimerHandle DropHandle;
+	GetWorld()->GetTimerManager().SetTimer(DropHandle, this, &ThisClass::DestroyLight, LightIndex * 0.5f, false);
+}
+
+void AAnomaly_Object_Light::DestroyLight()
 {
 	Object->SetVisibility(false);
-	Object->SetActive(false);
+	Object->SetEnableGravity(true);
+	Object->SetSimulatePhysics(true);
+
+	PointLight->AttachToComponent(Mesh_Destroy, FAttachmentTransformRules::KeepWorldTransform);
+
+	Mesh_Destroy->SetVisibility(true);
+	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Mesh_Destroy->SetEnableGravity(true);
+	Mesh_Destroy->SetSimulatePhysics(true);
 
 	TurnLight(false);
 

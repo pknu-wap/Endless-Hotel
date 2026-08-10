@@ -43,7 +43,6 @@ void UUI_PopUp_NoteBook::SettingWidget()
 	}
 
 	TArray<UActorComponent*> Array = TargetObject->GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
-
 	Array.Sort([](const UActorComponent& First, const UActorComponent& Second)
 		{
 			return First.GetName() < Second.GetName();

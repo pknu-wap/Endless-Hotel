@@ -160,6 +160,7 @@ bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
 
 	NextAnomalyData = Info;
 	Sub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+	Sub->NextAnomalyID = ID;
 
 	return true;
 }

@@ -31,13 +31,6 @@ public:
 
 #pragma endregion
 
-#pragma region Data Layer
-
-private:
-	EMapDataLayer WidgetOpenedDataLayer = EMapDataLayer::None;
-
-#pragma endregion
-
 #pragma region Delegate
 
 public:

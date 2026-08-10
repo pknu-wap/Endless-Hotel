@@ -25,20 +25,23 @@ void UUI_PopUp_Reset::Click_Yes()
 {
 	switch (OptionCategory)
 	{
-	case EOptionCategory::Reset_Note:
-		// 노트 초기화 기능 추가 예정
+	case EOptionCategory::Reset_Progression:
+		USaveManager::DeleteData_GameClear();
+		USaveManager::DeleteData_Manual();
+		USaveManager::DeleteData_Tutorial();
 		break;
 
 	case EOptionCategory::Reset_Setting:
 		UGameUserSettings* SettingHandle = GEngine->GetGameUserSettings();
 		SettingHandle->SetToDefaults();
 		SettingHandle->ApplySettings(false);
+
+		USaveManager::DeleteData_Setting();
+		USaveManager::DeleteData_Key();
+
+		UUI_PopUp_Setting::Highlight.Broadcast();
 		break;
 	}
-
-	USaveManager::DeleteData_Setting();
-
-	UUI_PopUp_Setting::Highlight.Broadcast();
 
 	Input_ESC();
 }

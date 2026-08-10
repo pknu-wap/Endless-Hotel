@@ -16,6 +16,9 @@ class ENDLESS_HOTEL_API ANoteBook : public AInteractRead
 public:
 	ANoteBook(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+
 #pragma endregion
 
 #pragma region NoteBook

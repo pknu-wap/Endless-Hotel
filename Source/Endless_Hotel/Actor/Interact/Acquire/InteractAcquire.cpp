@@ -48,7 +48,7 @@ void AInteractAcquire::MoveToPlayerCamera(AEHCharacter* Interacter)
 	LatentInfo.Linkage = 0;
 	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
 
-	UKismetSystemLibrary::MoveComponentTo(RootComponent, TargetLocation, GetActorRotation() + RotationOffset, true, true, 0.5f, false, EMoveComponentAction::Move, LatentInfo);
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, TargetLocation, CameraComp->GetComponentRotation() + RotationOffset, true, true, 0.5f, false, EMoveComponentAction::Move, LatentInfo);
 }
 
 void AInteractAcquire::OnMoveCompleted()
