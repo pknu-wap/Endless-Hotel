@@ -106,13 +106,11 @@ void UGameSystem::ApplyVerdict()
 	}
 	else 
 	{ 
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-		PC->SetPlayerInputAble(true);
 		ResetFloor();
 
-		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		NextAnomalyMap = EMapDataLayer::Hotel;
+
+		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		if(Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			bIsStartInBed = true;

@@ -37,7 +37,7 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	Lighter->SetupAttachment(GetMesh());
 
 	bUseControllerRotationYaw = true;
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	OnDie.AddUObject(this, &ThisClass::DiePlayer);
 }

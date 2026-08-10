@@ -62,7 +62,7 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		{
 			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
 			BaseAIController->StopAI(TEXT("Attack"));
-			Player->DieDelegate.Broadcast(EDeathReason::Attack);
+			Player->OnDie.Broadcast(EDeathReason::Attack);
 			MazeMonster->StopAttackSound();
 			MazeMonster->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

@@ -31,7 +31,7 @@ void AAnomaly_Fire::DisableAnomaly()
 
 	if (EHPlayer.IsValid())
 	{
-		EHPlayer->CrouchDelegate.RemoveDynamic(this, &ThisClass::SmokeTimer);
+		EHPlayer->OnCrouched.Remove(SmokeDelegate);
 	}
 
 	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
@@ -70,7 +70,7 @@ void AAnomaly_Fire::StartFire()
 void AAnomaly_Fire::SpawnFires()
 {
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->CrouchDelegate.AddUniqueDynamic(this, &ThisClass::SmokeTimer);
+	SmokeDelegate = EHPlayer->OnCrouched.AddUObject(this, &ThisClass::SmokeTimer);
 
 	constexpr float FireSpawnDuration = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -108,7 +108,7 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 	TimerManager.SetTimer(JilsikHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			PlayCoughSound();
-			EHPlayer->DieDelegate.Broadcast(EDeathReason::Smoke);
+			EHPlayer->OnDie.Broadcast(EDeathReason::Smoke);
 		}), JilsikDuration, false);
 }
 

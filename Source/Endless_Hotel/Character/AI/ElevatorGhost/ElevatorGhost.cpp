@@ -45,7 +45,7 @@ void AElevatorGhost::AttackPlayer()
     if (auto* AnimInst = Cast<UElevatorGhostAnimInstance>(GetMesh()->GetAnimInstance()))
     {
         AnimInst->bIsAttacking = true;
-        Player->DieDelegate.Broadcast(EDeathReason::Attack);
+        Player->OnDie.Broadcast(EDeathReason::Attack);
     }
 }
 

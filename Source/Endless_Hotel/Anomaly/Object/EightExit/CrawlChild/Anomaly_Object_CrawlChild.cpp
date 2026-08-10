@@ -84,7 +84,7 @@ void AAnomaly_Object_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedCom
 	PC->bCanRun = true;
 	PC->bIsRunning = true;
 	PC->bCanCrouch = true;
-	Move->MaxWalkSpeed = PC->WalkSpeed;
+	Player->SetWalkSpeed(WALK_SPEED);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

@@ -7,15 +7,11 @@
 #include <GameFramework/PlayerController.h>
 #include <EHPlayerController.generated.h>
 
-class UInputMappingContext;
-class UInputAction;
-class UCameraComponent;
-class UEnhancedInputComponent;
-class USpringArmComponent;
-class ACharacter;
-class AEHPlayer;
-class UPointLightComponent;
+#pragma region Declare
+
 struct FInputActionValue;
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API AEHPlayerController : public APlayerController
@@ -31,13 +27,20 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
-protected:
+#pragma endregion
+
+#pragma region Reference
+
+private:
 	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion
 
 #pragma region Input
+
+public:
+	void SetPlayerInputAble(bool bAble);
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -46,40 +49,30 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputMappingContext> IMC_Default;
 
-	// Move
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Move;
 
-	// Look
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Look;
 
-	// Run
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Run;
 
-	// Interact 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Interact;
 
-	// Interact 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_ChangeInteract;
 
-	// Crouch
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Crouch;
 
-	// FaceCover
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_FaceCover;
-	bool bIsFaceCoverTransitioning = false;
 
-	//Light
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_Light;
 
-	//ESC
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> IA_ESC;
 
@@ -87,15 +80,7 @@ protected:
 
 #pragma region Move
 
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float WalkSpeed = 300.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-	float RunSpeed = 600.0f;
-
-protected:
+private:
 	void Move(const FInputActionValue& Value);
 
 #pragma endregion
@@ -139,25 +124,15 @@ private:
 
 #pragma region Components
 
-protected:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USpringArmComponent> SpringArm;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UCameraComponent> PlayerCameraComponent;
-
-	// Helper function to get camera
-	UCameraComponent* GetPlayerCamera() const;
-
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class USpringArmComponent> SpringArm;
 
 #pragma endregion
 
 #pragma region State
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void ResetPlayerState();
-
 	bool bIsFaceCovering = false;
 	bool bIsCameraFixed = false;
 	bool bCanMove = true;
@@ -170,7 +145,6 @@ public:
 	bool bIsPlayerDoorOpening = false;
 	bool bIsPlayerPushingDoor = false;
 	bool bHasFlash = false;
-	bool bRevive = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }
@@ -182,15 +156,11 @@ public:
 
 #pragma endregion
 
-#pragma region State_Death
+#pragma region Die & Revive
 
-public:
-	void PlayDeathSequence();
+private:
+	void DiePlayer(const EDeathReason& DeathReason);
 	void RevivePlayer();
-
-public:
-	bool bIsPlayerDead = false;
-	bool GetIsPlayerDead() const { return bIsPlayerDead; }
 
 #pragma endregion
 
@@ -215,6 +185,9 @@ public:
 protected:
 	void OnFaceCoverStarted();
 	void OnFaceCoverCompleted();
+
+private:
+	bool bIsFaceCoverTransitioning = false;
 
 #pragma endregion
 
@@ -245,22 +218,14 @@ public:
 
 #pragma endregion
 
-#pragma region SetInput
-	
-public:
-	void SetPlayerInputAble(bool bAble);
-
-#pragma endregion
-
 #pragma region HeartbeatSound
 
 public:
 	void SetHeartbeatSound(AActor* Monster);
 
-	void StopHeartbeatSound();
-
-protected:
+private:
 	void UpdateHeartbeatSound(float DeltaSeconds);
+	void StopHeartbeatSound();
 
 protected:
 	UPROPERTY()

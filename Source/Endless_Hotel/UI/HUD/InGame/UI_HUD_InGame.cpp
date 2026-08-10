@@ -18,8 +18,9 @@ void UUI_HUD_InGame::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Player->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->CanInteract.AddUObject(this, &ThisClass::ChangeCrosshair);
+	Player->OnRevive.AddUObject(this, &ThisClass::RemoveEyeEffectBlur);
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);

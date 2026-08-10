@@ -4,7 +4,6 @@
 
 #include "Type/UI/Type_Setting.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
-#include "Type/Level/Type_Progression.h"
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
@@ -157,6 +156,14 @@ public:
 
 #pragma region Progression
 
+UENUM(BlueprintType)
+enum class EGameProgression : uint8
+{
+	CheckIn		UMETA(DisplayName = "CheckIn"),
+	Tutorial	UMETA(DisplayName = "Tutorial"),
+	Loop		UMETA(DisplayName = "Loop")
+};
+
 USTRUCT()
 struct FSaveData_Progression
 {
@@ -164,7 +171,7 @@ struct FSaveData_Progression
 
 public:
 	UPROPERTY(SaveGame)
-	EGameProgression Progression = EGameProgression::CheckIn;
+	EGameProgression Progression = EGameProgression::Tutorial;
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;

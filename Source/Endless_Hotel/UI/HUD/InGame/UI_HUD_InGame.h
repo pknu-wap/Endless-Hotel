@@ -70,6 +70,9 @@ protected:
 
 public:
 	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+
+private:
+	UFUNCTION()
 	void RemoveEyeEffectBlur();
 
 protected:

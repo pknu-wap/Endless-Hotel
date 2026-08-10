@@ -23,6 +23,9 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 
 	TimeLine_Eye = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Eye"));
 	TimeLine_Loading = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Loading"));
+
+	ViewPitchMin = -70.0f;
+	ViewPitchMax = 70.0f;
 }
 
 void AEHPlayerCameraManager::BeginPlay()
@@ -190,18 +193,18 @@ void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
 void AEHPlayerCameraManager::ActiveCameraShake(bool bActive)
 {
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	auto* ThirdMesh = Player->GetThirdMesh();
 	auto* SpringArm = Player->GetSpringArm();
+	auto* Mesh = Player->GetMesh();
 
 	if (bActive)
 	{
-		SpringArm->AttachToComponent(ThirdMesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
+		SpringArm->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
 		SpringArm->SetRelativeLocationAndRotation(FVector(7, 7, 0), FRotator::ZeroRotator);
 		SpringArm->TargetArmLength = 20.0f;
 		return;
 	}
 
-	SpringArm->AttachToComponent(ThirdMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	SpringArm->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
 	SpringArm->SetRelativeLocationAndRotation(FVector(0, 20, 170), FRotator(0, 90, 0));
 }
 
