@@ -17,4 +17,5 @@ void AAnomaly_ShelfPlant::SetAnomalyState()
 		break;
 	}
 }
+
 #pragma endregion
