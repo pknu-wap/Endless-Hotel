@@ -51,13 +51,14 @@ void AAnomaly_Object_Door::Reset()
 	Component_Interact->DeactiveInteract();
 	SetLight(false);
 
-	if (IsValid(SpawnedGhostHandActor))
-	{
-		SpawnedGhostHandActor->Destroy();
-	}
+	// Door_Close 전용 GhostHand 정리 로직
+	//if (IsValid(SpawnedGhostHandActor))
+	//{
+	//	SpawnedGhostHandActor->Destroy();
+	//}
 
-	SpawnedGhostHandActor = nullptr;
-	SKM_GhostHand = nullptr;
+	//SpawnedGhostHandActor = nullptr;
+	//SKM_GhostHand = nullptr;
 }
 
 void AAnomaly_Object_Door::BeginPlay()
@@ -370,65 +371,65 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 }
 
 #pragma endregion
-#pragma region GhostHand
-
-void AAnomaly_Object_Door::SpawnGhostHand()
-{
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	const FTransform SocketTransform = Object->GetSocketTransform(GhostHandSocketName, ERelativeTransformSpace::RTS_World);
-
-	SpawnedGhostHandActor = GetWorld()->SpawnActor<ASkeletalMeshActor>(ASkeletalMeshActor::StaticClass(), SocketTransform, SpawnParams); 
-	
-	SKM_GhostHand = SpawnedGhostHandActor->GetSkeletalMeshComponent();
-
-	SKM_GhostHand->SetSkeletalMeshAsset(GhostHandMesh);
-
-	SKM_GhostHand->SetSimulatePhysics(false);
-
-	SKM_GhostHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	SpawnedGhostHandActor->AttachToComponent(Object, FAttachmentTransformRules::SnapToTargetNotIncludingScale, GhostHandSocketName);
-}
-
-void AAnomaly_Object_Door::PlayHandOpen()
-{
-	SpawnGhostHand();
-
-	SKM_GhostHand->SetHiddenInGame(false);
-
-	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-
-	SKM_GhostHand->SetAnimation(Anim_HandOpen);
-	SKM_GhostHand->SetPosition(0.f, false);
-	SKM_GhostHand->Play(false);
-}
-
-void AAnomaly_Object_Door::PlayHandClose()
-{
-	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-
-	SKM_GhostHand->SetAnimation(Anim_HandClose);
-	SKM_GhostHand->SetPosition(0.f, false);
-	SKM_GhostHand->Play(false);
-
-	const float AnimationLength = Anim_HandClose->GetPlayLength();
-
-	if (AnimationLength > 0.f)
-	{
-		SpawnedGhostHandActor->SetLifeSpan(AnimationLength);
-	}
-	else
-	{
-		SpawnedGhostHandActor->Destroy();
-		SpawnedGhostHandActor = nullptr;
-		SKM_GhostHand = nullptr;
-	}
-}
-
-#pragma endregion
+//#pragma region GhostHand
+//
+//void AAnomaly_Object_Door::SpawnGhostHand()
+//{
+//	FActorSpawnParameters SpawnParams;
+//	SpawnParams.Owner = this;
+//	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+//
+//	const FTransform SocketTransform = Object->GetSocketTransform(GhostHandSocketName, ERelativeTransformSpace::RTS_World);
+//
+//	SpawnedGhostHandActor = GetWorld()->SpawnActor<ASkeletalMeshActor>(ASkeletalMeshActor::StaticClass(), SocketTransform, SpawnParams);
+//
+//	SKM_GhostHand = SpawnedGhostHandActor->GetSkeletalMeshComponent();
+//
+//	SKM_GhostHand->SetSkeletalMeshAsset(GhostHandMesh);
+//
+//	SKM_GhostHand->SetSimulatePhysics(false);
+//
+//	SKM_GhostHand->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+//
+//	SpawnedGhostHandActor->AttachToComponent(Object, FAttachmentTransformRules::SnapToTargetNotIncludingScale, GhostHandSocketName);
+//}
+//
+//void AAnomaly_Object_Door::PlayHandOpen()
+//{
+//	SpawnGhostHand();
+//
+//	SKM_GhostHand->SetHiddenInGame(false);
+//
+//	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+//
+//	SKM_GhostHand->SetAnimation(Anim_HandOpen);
+//	SKM_GhostHand->SetPosition(0.f, false);
+//	SKM_GhostHand->Play(false);
+//}
+//
+//void AAnomaly_Object_Door::PlayHandClose()
+//{
+//	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+//
+//	SKM_GhostHand->SetAnimation(Anim_HandClose);
+//	SKM_GhostHand->SetPosition(0.f, false);
+//	SKM_GhostHand->Play(false);
+//
+//	const float AnimationLength = Anim_HandClose->GetPlayLength();
+//
+//	if (AnimationLength > 0.f)
+//	{
+//		SpawnedGhostHandActor->SetLifeSpan(AnimationLength);
+//	}
+//	else
+//	{
+//		SpawnedGhostHandActor->Destroy();
+//		SpawnedGhostHandActor = nullptr;
+//		SKM_GhostHand = nullptr;
+//	}
+//}
+//
+//#pragma endregion
 
 #pragma region Normal
 

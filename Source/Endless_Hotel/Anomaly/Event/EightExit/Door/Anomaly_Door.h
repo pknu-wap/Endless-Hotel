@@ -31,39 +31,39 @@ public:
 
 #pragma endregion
 
-#pragma region Trigger
-
-protected:
-	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-
-#pragma endregion
-
-#pragma region DoorSequence
-
-private:
-	enum class EDoorSequenceState : uint8
-	{
-		OpenDoor,
-		OpenHand,
-		CloseHandAndDoor,
-		Finished
-	};
-
-	void AdvanceDoorState();
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Door")
-	FTransform OpenDoorTriggerTrans;
-
-	UPROPERTY(EditAnywhere, Category = "Door")
-	FTransform OpenHandTriggerTrans;
-
-	UPROPERTY(EditAnywhere, Category = "Door")
-	FTransform CloseDoorTriggerTrans;
-
-private:
-	EDoorSequenceState CurrentDoorState = EDoorSequenceState::OpenDoor;
-
-#pragma endregion
+//#pragma region Trigger
+//
+//protected:
+//	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+//
+//#pragma endregion
+//
+//#pragma region DoorSequence
+//
+//private:
+//	enum class EDoorSequenceState : uint8
+//	{
+//		OpenDoor,
+//		OpenHand,
+//		CloseHandAndDoor,
+//		Finished
+//	};
+//
+//	void AdvanceDoorState();
+//
+//protected:
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform OpenDoorTriggerTrans;
+//
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform OpenHandTriggerTrans;
+//
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform CloseDoorTriggerTrans;
+//
+//private:
+//	EDoorSequenceState CurrentDoorState = EDoorSequenceState::OpenDoor;
+//
+//#pragma endregion
 
 };
