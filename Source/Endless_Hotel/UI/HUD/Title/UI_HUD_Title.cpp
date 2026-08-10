@@ -5,6 +5,7 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/AudioComponent.h>
 #include <Components/Image.h>
 #include <Components/Button.h>
@@ -45,18 +46,37 @@ void UUI_HUD_Title::ShowWidget()
 
 void UUI_HUD_Title::Click_Start()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->bIsClear = false;
-	Subsystem->Floor = 9;
-	Subsystem->bIsFirstStartFloor = true;
+	switch (USaveManager::LoadData_Progression().Progression)
+	{
+	case EGameProgression::CheckIn:
+	{
+		constexpr float Duration = 2.f;
 
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
+		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+		CameraManager->PossessCameraToPlayer(Duration);
+
+		SetVisibility(ESlateVisibility::Hidden);
+
+		FTimerHandle DelayHandle;
+		GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+				UICon->OpenWidget(EWidgetType::HUD_InGame);
+			}), Duration, false);
+		break;
+	}
+	default:
+	{
+		UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
+		GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
+		break;
+	}
+	}
 }
 
 void UUI_HUD_Title::Click_Setting()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 

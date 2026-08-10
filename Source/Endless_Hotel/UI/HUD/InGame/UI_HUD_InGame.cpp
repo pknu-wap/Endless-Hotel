@@ -41,6 +41,8 @@ void UUI_HUD_InGame::ShowWidget()
 
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
+
+	ShowCrosshair(true);
 }
 
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
@@ -78,11 +80,10 @@ void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
 	if (bIsStart)
 	{
 		PlayAnimation(WidgetAnim_ShowCrosshair);
+		return;
 	}
-	else
-	{
-		Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
-	}
+	
+	Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
 }
 
 #pragma endregion

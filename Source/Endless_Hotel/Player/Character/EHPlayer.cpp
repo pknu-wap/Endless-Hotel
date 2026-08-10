@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Player/Character/EHPlayer.h"
+#include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
@@ -59,20 +60,25 @@ void AEHPlayer::SetWalkSpeed(float Value)
 
 void AEHPlayer::RespawnPlayer()
 {
+	FTransform TargetTrans;
+
 	switch (USaveManager::LoadData_Progression().Progression)
 	{
 	case EGameProgression::CheckIn:
-		SetActorTransform(SpawnTransform[EGameProgression::CheckIn]);
+		TargetTrans = SpawnTransform[EGameProgression::CheckIn];
 		break;
 
 	case EGameProgression::Tutorial:
-		SetActorTransform(SpawnTransform[EGameProgression::Tutorial]);
+		TargetTrans = SpawnTransform[EGameProgression::Tutorial];
 		break;
 
 	case EGameProgression::Loop:
-		SetActorTransform(SpawnTransform[EGameProgression::Loop]);
+		TargetTrans = SpawnTransform[EGameProgression::Loop];
 		break;
 	}
+
+	SetActorTransform(TargetTrans);
+	GetController()->SetControlRotation(TargetTrans.Rotator());
 }
 
 #pragma endregion
