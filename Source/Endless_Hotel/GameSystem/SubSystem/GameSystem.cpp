@@ -13,6 +13,8 @@
 #include "Actor/Elevator/Elevator.h"
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
+#include <Engine/World.h>
+#include <WorldPartition/WorldPartitionSubsystem.h>
 
 #pragma region Base
 
@@ -30,7 +32,6 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	Floor = STARTFLOOR;
 	ActIndex = 0;
-	AnomalyRules.Add(EAnomalyRule::EightExit);
 
 	bIsClear = USaveManager::LoadData_GameClear();
 	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
@@ -38,7 +39,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OnChangedDataLayer);
+	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 
 	AnomalyRules = Data_Progression.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)
@@ -56,6 +57,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	ChooseKeyIndex = FMath::RandRange(1, 2);
 }
+
 #pragma endregion
 
 #pragma region Level
@@ -66,11 +68,90 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 	}
-	for (const auto& Elevator : Elevators)
+	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
+}
+
+void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
+{
+	if (!World || !TargetInstance)
 	{
-		Elevator.Value->StartElevator();
+		return;
 	}
-	bIsStartInBed = false;
+
+	for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
+	{
+		if (!StreamingLevel)
+		{
+			continue;
+		}
+		ULevel* Level = StreamingLevel->GetLoadedLevel();
+		if (!Level)
+		{
+			continue;
+		}
+
+		for (AActor* Actor : Level->Actors)
+		{
+			AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Actor);
+			if (!AnomalyObject)
+			{
+				continue;
+			}
+
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			if (ActorLayers.Contains(TargetInstance))
+			{
+				RegisterAnomalyObject(AnomalyObject);
+			}
+		}
+	}
+}
+
+void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered)
+{
+	UWorld* World = GetWorld();
+	UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance());
+	const UDataLayerInstance* TargetInstance = GameInstance ? GameInstance->GetDataLayerInstance(DataLayer) : nullptr;
+
+	if (!World || !TargetInstance)
+	{
+		return;
+	}
+
+	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
+		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
+		{
+			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
+			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
+			{
+				return;
+			}
+			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
+			{
+				if (!StreamingLevel) continue;
+				ULevel* Level = StreamingLevel->GetLoadedLevel();
+				if (!Level || !Level->bIsVisible) continue;
+
+				for (AActor* Actor : Level->Actors)
+				{
+					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					{
+						goto ReadyCheckDone;
+					}
+				}
+			}
+			return;
+
+		ReadyCheckDone:
+			if (!bAlreadyRegistered)
+			{
+				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
+				VisitedDataLayers.Add(DataLayer);
+			}
+
+			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			FloorChange_Reset.Broadcast();
+		}), 0.1f, true);
 }
 
 #pragma endregion
@@ -150,6 +231,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	{
 		++ActIndex;
 	}
+	StartAllElevator();
 }
 
 void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
@@ -160,11 +242,13 @@ void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 
 void UGameSystem::LoadNextMap()
 {
+	FloorChange_Disable.Broadcast();
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer(NextAnomalyMap);
-	if (!bIsClear)
+	const EMapDataLayer ActualCurrentLayer = GameInstance->GetCurrentDataLayer();
+	const EMapDataLayer TargetLayer = NextAnomalyMap;
+	GameInstance->SwitchDataLayer(TargetLayer);
+	if (ActualCurrentLayer == TargetLayer)
 	{
-		FloorChange_Disable.Broadcast();
 		FloorChange_Reset.Broadcast();
 	}
 }
@@ -225,7 +309,9 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
-	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.Add(Object);
+	Object->SetOriginalTransform();
+	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
+	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 }
 
 void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
@@ -298,6 +384,14 @@ void UGameSystem::RemoveTargetElevator()
 	TargetElevator = nullptr;
 }
 
+void UGameSystem::StartAllElevator()
+{
+	for (const auto& Elevator : Elevators)
+	{
+		Elevator.Value->StartElevator();
+	}
+}
+
 AElevator* UGameSystem::GetElevatorByID(FName TargetID)
 {
 	return Elevators.FindRef(TargetID).Get();
@@ -306,6 +400,39 @@ AElevator* UGameSystem::GetElevatorByID(FName TargetID)
 bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
 {
 	return (TargetElevator == Elevator) ? true : false;
+}
+
+#pragma endregion
+
+#pragma region Reset
+
+void UGameSystem::ResetGameSystem()
+{
+	Floor = STARTFLOOR;
+	bIsFirstStartFloor = true;
+	bPassed = false;
+	bIsAnomalySolved = false;
+	bIsElevatorNormal = false;
+
+	AnomalyCount = 0;
+	ActIndex = 0;
+	CurrentAnomaly = nullptr;
+	CurrentAnomalyID = EAnomalyID::None;
+	NextAnomalyID = EAnomalyID::None;
+	NextAnomalyMap = EMapDataLayer::Hotel;
+	CurrentDataLayer = EMapDataLayer::Hotel;
+	bIsStartInBed = false;
+
+	TargetElevator = nullptr;
+	RelativePlayerLocation = FVector::ZeroVector;
+	RelativePlayerRotation = FRotator::ZeroRotator;
+	ElevatorOffset = FRotator::ZeroRotator;
+	PlayerVelocity = 0.f;
+
+	bIsClear = USaveManager::LoadData_GameClear();
+	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
+	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
+	InitializePool();
 }
 
 #pragma endregion

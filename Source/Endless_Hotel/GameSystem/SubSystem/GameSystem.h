@@ -10,13 +10,17 @@
 #include <Delegates/DelegateCombinations.h>
 #include <GameSystem.generated.h>
 
-class AAnomaly_Generator;
-class AAnomaly_Event;
-class AAnomaly_Object_Base;
-
 #define STARTFLOOR 9
 
 #pragma region Declare
+
+class AAnomaly_Generator;
+class AAnomaly_Event;
+class AAnomaly_Object_Base;
+class ULevelStreaming;
+class ULevel;
+enum class ELevelStreamingState : uint8;
+struct FActorsInitializedParams;
 
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
@@ -58,48 +62,60 @@ private:
 	UFUNCTION()
 	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
 
+	void RegisterAnomalyObjectsInDataLayer(UWorld* World, const class UDataLayerInstance* TargetInstance);
+	void WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered);
+
+private:
+	UPROPERTY()
+	TSet<EMapDataLayer> VisitedDataLayers;
+
+	FTimerHandle DataLayerStreamingCheckHandle;
+
 #pragma endregion
 
 #pragma region AnomalyState
-
-private:
-	bool bIsAnomalySolved = false;
-	bool bIsElevatorNormal = false;
 
 public:
 	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; }
 	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; }
 
+private:
+	bool bIsAnomalySolved = false;
+	bool bIsElevatorNormal = false;
+
 #pragma endregion
 
 #pragma region Floor
-
-public:
-	uint8 Floor = STARTFLOOR;
-	bool bIsFirstStartFloor = true;
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
-	FOnFloorChange_Reset FloorChange_Reset;
 
 private:
 	void ResetFloor() { Floor = STARTFLOOR; NextAnomalyMap = EMapDataLayer::Hotel; };
 	void SubFloor();
 	void AddFloor();
 
+public:
+	uint8 Floor = STARTFLOOR;
+	bool bIsFirstStartFloor = true;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
+	FOnFloorChange_Reset FloorChange_Reset;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
+	FOnFloorChange_Disable FloorChange_Disable;
+
 #pragma endregion
 
 #pragma region Verdict
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Anomaly|Verdict")
-	EAnomalyVerdictMode VerdictMode;
-
-	bool bPassed = false;
 
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
+
+public:
+	EAnomalyVerdictMode VerdictMode;
+
+	bool bPassed = false;
 
 #pragma endregion
 
@@ -109,39 +125,31 @@ public:
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void LoadNextMap();
+	bool IsAnomalyReady() { return bIsAnomalyReady; }
 
 public:
-	UPROPERTY(BlueprintReadWrite, Category = "Anomaly|Count")
 	uint8 AnomalyCount = 0;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TObjectPtr<class AAnomaly_Event> CurrentAnomaly;
-
 	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
 	EAnomalyID NextAnomalyID = EAnomalyID::None;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Anomaly")
 	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
-
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit };
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
-	FOnFloorChange_Disable FloorChange_Disable;
 	EMapDataLayer CurrentDataLayer;
+
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
+	
 	bool bIsStartInBed = false;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
+	FAnomalySpawned OnAnomalySpawned;
+
+private:
+	bool bIsAnomalyReady = false;
 
 #pragma endregion
 
 #pragma region Pool
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Pool")
-	uint8 ActIndex = 0;
-
-private:
-	UPROPERTY()
-	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> AnomalyObjectPool;
 
 public:
 	void InitializePool();
@@ -151,8 +159,15 @@ public:
 	void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
 	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> GetAnomalyObject() { return AnomalyObjectPool; }
 
+public:
+	uint8 ActIndex = 0;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);
 	FOnAddAnomalyRule OnAddAnomalyRule;
+
+private:
+	UPROPERTY()
+	TMap<TObjectPtr<UClass>, FAnomalyObjectArray> AnomalyObjectPool;
 
 #pragma endregion
 
@@ -165,6 +180,7 @@ public:
 public:
 	bool bIsClear = false;
 	bool bExceptClearedAnomaly = false;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
 
@@ -184,20 +200,22 @@ public:
 	void UnRegisterElevator(FName ElevatorID);
 	void SetTargetElevator();
 	void RemoveTargetElevator();
+
 	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
 	{ RelativePlayerLocation = PlayerLocation; RelativePlayerRotation = PlayerRotation; ElevatorOffset = Offset; }
 	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
 
 	AElevator* GetElevatorByID(FName TargetID);
+
 	float GetPlayerVelocity() { return PlayerVelocity; }
 	FVector GetPlayerinElevatorLocation() { return RelativePlayerLocation; }
 	FRotator GetPlayerinElevatorRotation() { return RelativePlayerRotation; }
+
 	FRotator GetElevatorOffset() { return ElevatorOffset; }
 	bool IsTargetElevator(const AElevator* Elevator);
 
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
-	FAnomalySpawned OnAnomalySpawned;
+private:
+	void StartAllElevator();
 
 private:
 	FVector RelativePlayerLocation;
@@ -206,6 +224,13 @@ private:
 	TMap<FName, TWeakObjectPtr<class AElevator>> Elevators;
 	TWeakObjectPtr<class AElevator> TargetElevator = nullptr;
 	float PlayerVelocity;
+
+#pragma endregion
+
+#pragma region Reset
+
+public:
+	void ResetGameSystem();
 
 #pragma endregion
 

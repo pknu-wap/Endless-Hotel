@@ -32,12 +32,7 @@ void UUI_HUD_Title::ShowWidget()
 
 	SetLogoImage();
 
-	if (!IsValid(AC))
-	{
-		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
-		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
-		PlayBGM();
-	}
+	PlayBGM();
 }
 
 #pragma endregion
@@ -46,6 +41,9 @@ void UUI_HUD_Title::ShowWidget()
 
 void UUI_HUD_Title::Click_Start()
 {
+	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	Subsystem->ResetGameSystem();
+
 	switch (USaveManager::LoadData_Progression().Progression)
 	{
 	case EGameProgression::CheckIn:
@@ -153,6 +151,12 @@ void UUI_HUD_Title::StopBGM(float Duration)
 
 void UUI_HUD_Title::PlayBGM()
 {
+	if (!IsValid(AC))
+	{
+		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
+	}
+
 	AC->Play();
 }
 

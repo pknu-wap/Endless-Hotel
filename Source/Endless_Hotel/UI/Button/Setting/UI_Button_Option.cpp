@@ -113,7 +113,7 @@ void UUI_Button_Option::Click_Button()
 		break;
 
 	// System Category
-	case EOptionCategory::Reset_Note:
+	case EOptionCategory::Reset_Progression:
 		PopUpOption_ResetNote();
 		break;
 

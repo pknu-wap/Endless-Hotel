@@ -70,13 +70,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "MazeTakeonElevatorID")
 	FName TakeOnElevatorID;
 
-	UPROPERTY(EditAnywhere, Category = "Elevator")
+	UPROPERTY(VisibleAnywhere, Category = "Elevator")
 	TWeakObjectPtr<class AElevator> Elevator;
 
-	UPROPERTY(EditAnywhere, Category = "Elevator")
+	UPROPERTY(VisibleAnywhere, Category = "Elevator")
 	TWeakObjectPtr<class AElevator_Wall> ElevatorWall;
 
-	UPROPERTY(EditAnywhere, Category = "Elevator")
+	UPROPERTY(VisibleAnywhere, Category = "Elevator")
 	TWeakObjectPtr<class AElevator_Entrance> ElevatorEntrance;
 
 	UPROPERTY(EditAnywhere, Category = "Elevator")

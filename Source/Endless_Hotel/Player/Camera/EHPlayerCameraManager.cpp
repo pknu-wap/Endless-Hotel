@@ -60,10 +60,10 @@ void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
 		if (bIsFirstHotel)
 		{
+			DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
 			StartEyeEffect(true);
 			bIsFirstHotel = false;
 		}
-		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
 		break;
 	}
 	case EMapDataLayer::Lobby:
@@ -178,7 +178,7 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
 {
 	auto* PC = GetOwningPlayerController();
-	PC->SetViewTargetWithBlend(CameraOwner, BlendTime);
+	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 }
 
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)

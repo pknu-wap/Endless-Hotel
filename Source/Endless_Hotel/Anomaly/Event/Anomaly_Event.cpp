@@ -94,6 +94,10 @@ void AAnomaly_Event::SetAnomalyState()
 
 void AAnomaly_Event::DisableAnomaly()
 {
+	if (!IsValid(this) || IsActorBeingDestroyed())
+	{
+		return;
+	}
 	this->LinkedObjects.Empty();
 	this->TargetAnomalyObjects.Empty();
 	this->Destroy();
@@ -142,7 +146,12 @@ void AAnomaly_Event::InteractSolveVerdict()
 
 	for (const auto& AnomalyObject : TargetAnomalyObjects)
 	{
-		if (!Cast<AAnomaly_Object_Base>(AnomalyObject)->bSolved)
+		AAnomaly_Object_Base* AnomalyBase = Cast<AAnomaly_Object_Base>(AnomalyObject);
+		if (!AnomalyBase)
+		{
+			continue;
+		}
+		if (!AnomalyBase->bSolved)
 		{
 			bAllSolved = false;
 			break;

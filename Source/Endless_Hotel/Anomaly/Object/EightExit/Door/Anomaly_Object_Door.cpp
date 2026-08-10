@@ -30,9 +30,11 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	AC_Shake = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Shake"));
 	AC_Shake->SetupAttachment(RootComponent);
+	AC_Shake->bAutoActivate = false;
 
 	AC_Voice = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Voice"));
 	AC_Voice->SetupAttachment(RootComponent);
+	AC_Voice->bAutoActivate = false;
 
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);

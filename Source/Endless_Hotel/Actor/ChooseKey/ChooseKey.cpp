@@ -17,7 +17,13 @@ void AChooseKey::BeginPlay()
     Super::BeginPlay();
 
     UGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    UStaticMesh* TargetMesh = GameSystem->ChooseKeyIndex == 1 ? KeyMesh1 : KeyMesh2;
+    const uint8 Index = GameSystem->ChooseKeyIndex;
+    UStaticMesh* TargetMesh = Index == 1 ? KeyMesh1 : KeyMesh2;
+
+    if (Index == 2)
+    {
+        Comp_Key->SetRelativeScale3D(FVector(1, 1, 1));
+    }
 
     Comp_Key->SetStaticMesh(TargetMesh);
 }

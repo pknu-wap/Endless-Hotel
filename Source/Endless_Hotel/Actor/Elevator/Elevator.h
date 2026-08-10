@@ -73,8 +73,8 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Audio")
     TObjectPtr<class UAudioComponent> Door_AC;
 
-    UPROPERTY(EditAnywhere, Category = "Audio")
-    TObjectPtr<class USoundWave> Sound_DoorMove;
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
+    TObjectPtr<class UAudioComponent> Move_AC;
 
 #pragma endregion
 
@@ -167,7 +167,6 @@ public:
 #pragma region Subsystem
 
 public:
-    UFUNCTION()
     void StartElevator();
 
 protected:

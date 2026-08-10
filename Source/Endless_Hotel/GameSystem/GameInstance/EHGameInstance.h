@@ -18,6 +18,9 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 
+private:
+	virtual void OnStart() override;
+
 #pragma endregion
 
 #pragma region Game
@@ -41,7 +44,11 @@ public:
 	void SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
 	void SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
 
+	void ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive);
+
 	const EMapDataLayer& GetCurrentDataLayer() { return CurrentDataLayer; }
+
+	UDataLayerInstance* GetDataLayerInstance(const EMapDataLayer& Target);
 
 private:
 	void WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);

@@ -50,23 +50,19 @@ static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRul
 static FAutoConsoleCommand AddAllAnomalyRule(TEXT("EHDebug.GameSystem.AddAllAnomalyRule"), TEXT(""), FConsoleCommandDelegate::CreateLambda([]()
 	{
 		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-		Subsystem->AddAnomalyRule(EAnomalyRule::EightExit);
 		Subsystem->AddAnomalyRule(EAnomalyRule::Doll);
 		Subsystem->AddAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->AddAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->AddAnomalyRule(EAnomalyRule::ResetObject);
-		Subsystem->AddAnomalyRule(EAnomalyRule::Watch);
 	}));
 
 static FAutoConsoleCommand RemoveAllAnomalyRule(TEXT("EHDebug.GameSystem.RemoveAllAnomalyRule"), TEXT(""), FConsoleCommandDelegate::CreateLambda([]()
 	{
 		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-		Subsystem->RemoveAnomalyRule(EAnomalyRule::EightExit);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Doll);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::ResetObject);
-		Subsystem->RemoveAnomalyRule(EAnomalyRule::Watch);
 	}));
 
 static void LogAnomalyIDHint()
@@ -111,10 +107,11 @@ static FAutoConsoleCommand AddSpawnAnomaly(
                 LogAnomalyIDHint();
                 return;
             }
+
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.AddToSpawnList(AnomalyID);
-            
+
             auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
             if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
             {

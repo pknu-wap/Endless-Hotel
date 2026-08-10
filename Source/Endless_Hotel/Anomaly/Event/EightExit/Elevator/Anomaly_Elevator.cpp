@@ -49,7 +49,12 @@ void AAnomaly_Elevator::SetAnomalyState()
 
 void AAnomaly_Elevator::DisableAnomaly()
 {
-    ElevatorGhost->Destroy();
+    switch (AnomalyID)
+    {
+    case EAnomalyID::ElevatorGhost:
+        ElevatorGhost->Destroy();
+        break;
+    }
     Super::DisableAnomaly();
 }
 

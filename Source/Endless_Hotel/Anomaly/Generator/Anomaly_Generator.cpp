@@ -49,7 +49,6 @@ void AAnomaly_Generator::BeginPlay()
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
-	SpawnAnomaly();
 }
 
 #pragma endregion
@@ -60,7 +59,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	auto& AssetManager = UEHAssetManager::Get();
-	
+
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
 	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
 	{
@@ -161,6 +160,7 @@ bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
 
 	NextAnomalyData = Info;
 	Sub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+	Sub->NextAnomalyID = ID;
 
 	return true;
 }
