@@ -335,7 +335,6 @@ void AEHPlayerController::TurnPlayerHandLight()
 void AEHPlayerController::DiePlayer(const EDeathReason& DeathReason)
 {
 	SetPlayerInputAble(false);
-	StopHeartbeatSound();
 }
 
 void AEHPlayerController::RevivePlayer()

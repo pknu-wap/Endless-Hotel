@@ -40,9 +40,6 @@ void AEHPlayerCameraManager::BeginPlay()
 		{
 			OnChangedDataLayer(EMapDataLayer::Lobby);
 		}), 0.1f, false);
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 }
 
 #pragma endregion
@@ -52,6 +49,7 @@ void AEHPlayerCameraManager::BeginPlay()
 void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
 
 	switch (DataLayer)
 	{

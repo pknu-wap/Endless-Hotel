@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Level/Type_Level.h"
+#include "Type/Player/Type_Death.h"
 #include <CoreMinimal.h>
 #include <GameFramework/PlayerController.h>
 #include <EHPlayerController.generated.h>
@@ -215,13 +216,6 @@ public:
 public:
 	void OnPushDoorStarted();
 	void OnPushDoorCompleted();
-
-#pragma endregion
-
-#pragma region SetInput
-	
-public:
-	void SetPlayerInputAble(bool bAble);
 
 #pragma endregion
 

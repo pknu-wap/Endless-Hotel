@@ -27,8 +27,7 @@ void UUI_PopUp_Reset::Click_Yes()
 	{
 	case EOptionCategory::Reset_Progression:
 		USaveManager::DeleteData_GameClear();
-		USaveManager::DeleteData_Manual();
-		USaveManager::DeleteData_Tutorial();
+		USaveManager::DeleteData_Progression();
 		break;
 
 	case EOptionCategory::Reset_Setting:
@@ -37,7 +36,6 @@ void UUI_PopUp_Reset::Click_Yes()
 		SettingHandle->ApplySettings(false);
 
 		USaveManager::DeleteData_Setting();
-		USaveManager::DeleteData_Key();
 
 		UUI_PopUp_Setting::Highlight.Broadcast();
 		break;

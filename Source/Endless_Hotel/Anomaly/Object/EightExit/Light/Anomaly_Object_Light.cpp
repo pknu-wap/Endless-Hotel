@@ -38,7 +38,6 @@ void AAnomaly_Object_Light::Reset()
 	Mesh_Destroy->AttachToComponent(Object, FAttachmentTransformRules::KeepRelativeTransform);
 	Mesh_Destroy->RegisterComponent();
 	Mesh_Destroy->SetRestCollection(GC_Light);
-	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::LightDestroyed);
 
 	SetGeometryCollection();
 

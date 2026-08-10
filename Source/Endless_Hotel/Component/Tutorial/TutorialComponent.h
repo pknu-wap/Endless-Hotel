@@ -27,7 +27,7 @@ public:
 private:
 	void ShowTutorialWidget();
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	FText TargetKey;
 
@@ -55,7 +55,7 @@ private:
 	UFUNCTION()
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-protected:
+private:
 	UPROPERTY()
 	TObjectPtr<class UBoxComponent> TriggerBox;
 
