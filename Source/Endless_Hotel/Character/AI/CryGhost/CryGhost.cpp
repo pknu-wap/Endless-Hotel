@@ -2,6 +2,7 @@
 
 #include "Character/AI/CryGhost/CryGhost.h"
 #include "Character/AI/CryGhost/CryGhostAnimInstance.h"
+#include "Character/AI/CryGhost/CryGhostController.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/CapsuleComponent.h>
@@ -33,6 +34,8 @@ void ACryGhost::SetCryState()
 {
 	auto* AnimInstance = Cast<UCryGhostAnimInstance>(GetMesh()->GetAnimInstance());
 	AnimInstance->bIsCry = true;
+
+	GetController<ACryGhostController>()->StopAI(TEXT("Don't Move!!!"));
 }
 
 void ACryGhost::AdvanceCryGhostState()

@@ -64,47 +64,31 @@ void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 
 void UUI_PopUp_Setting::ShowWidget()
 {
-	Super::ShowWidget();
-
-	SetVisibility(ESlateVisibility::Collapsed);
+	SetVisibility(ESlateVisibility::Hidden);
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	WidgetOpenedDataLayer = GameInstance->GetCurrentDataLayer();
-	GameInstance->SwitchDataLayer(EMapDataLayer::Lobby, false);
+	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, true);
 
+	HighlightButtons();
+	FindGearActor();
+
+	const EMapDataLayer Current = GameInstance->GetCurrentDataLayer();
+	const float PossessDuration = Current == EMapDataLayer::Lobby ? 1.f : 0.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Gear, PossessDuration);
 
-	switch (WidgetOpenedDataLayer)
+	const float ShowDuration = Current == EMapDataLayer::Lobby ? 1.f : 0.01f;
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, PossessDuration]()
+		{
+			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+			TurnOnGearLight(true);
+		}), ShowDuration, false);
+
+	if (!IsValid(AC_Gear))
 	{
-	case EMapDataLayer::Lobby:
-	{
-		FTimerHandle ShowHandle;
-		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				HighlightButtons();
-				FindGearActor();
-				SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-				TurnOnGearLight(true);
-			}), 1.f, false);
-
-		CameraManager->PossessCamera(ECameraType::Gear, 1.f);
-		break;
-	}
-	default:
-	{
-		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-
-		FTimerHandle ShowHandle;
-		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				HighlightButtons();
-				FindGearActor();
-				TurnOnGearLight(true);
-			}), 1.f, false);
-
-		CameraManager->PossessCamera(ECameraType::Gear, 0.f);
-		break;
-	}
+		AC_Gear = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gear);
+		AC_Gear->SetAutoActivate(false);
 	}
 }
 
@@ -112,24 +96,18 @@ void UUI_PopUp_Setting::HideWidget()
 {
 	Super::HideWidget();
 
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-
-	switch (WidgetOpenedDataLayer)
-	{
-	case EMapDataLayer::Lobby:
-		CameraManager->PossessCamera(ECameraType::Title, 1.f);
-		break;
-
-	default:
-		GameInstance->SwitchDataLayer(WidgetOpenedDataLayer, false);
-		CameraManager->PossessCameraToPlayer(0.f);
-		break;
-	}
+	bRotateGear = false;
 
 	SM_Gear->SetActorRotation(OriginRot);
+	AC_Gear->Stop();
 
 	TurnOnGearLight(false);
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, false);
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	GameInstance->GetCurrentDataLayer() == EMapDataLayer::Lobby ? CameraManager->PossessCamera(ECameraType::Title, 1.f) : CameraManager->PossessCameraToPlayer(0.f);
 }
 
 #pragma endregion
@@ -261,11 +239,6 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 	FinalQuat = CurrentQuat * FQuat(FVector::UpVector, FMath::DegreesToRadians(AdditionAngle));
 
 	bRotateGear = true;
-
-	if (!IsValid(AC_Gear))
-	{
-		AC_Gear = UGameplayStatics::CreateSound2D(GetWorld(), SW_Gear);
-	}
 
 	AC_Gear->FadeIn(0.5f, 1, 0);
 

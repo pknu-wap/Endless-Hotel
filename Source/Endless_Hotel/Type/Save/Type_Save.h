@@ -160,5 +160,5 @@ struct FSaveData_Manual
 	
 public:
 	UPROPERTY(SaveGame)
-	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit };
+	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 };

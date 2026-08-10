@@ -16,23 +16,6 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Light : public AAnomaly_Object_EightExit
 public:
 	AAnomaly_Object_Light(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Index")
-	int32 LightIndex = 0;
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UGeometryCollectionComponent> Mesh_Destroy;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UPointLightComponent> PointLight;
-
-	UPROPERTY()
-	TObjectPtr<class UAudioComponent> AC;
-
 #pragma endregion
 
 #pragma region Reset
@@ -48,21 +31,35 @@ public:
 	void TurnLight(bool bIsOn);
 
 private:
-	void SetGeometryCollection();
+	UPROPERTY(EditAnywhere, Category = "Index")
+	int8 LightIndex = 0;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UPointLightComponent> PointLight;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC;
 
 #pragma endregion
 
 #pragma region Destroy
 
 public:
-	void DropLight();
+	void StartDropLight();
 
-protected:
-	UFUNCTION()
-	void LightDestroyed(const struct FChaosBreakEvent& BreakEvent);
+private:
+	void SetGeometryCollection();
+	void DestroyLight();
+
+private:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UGeometryCollectionComponent> Mesh_Destroy;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_LightDestroy;
+
+	UPROPERTY(EditAnywhere, Category = "GeometryCollection")
+	TObjectPtr<class UGeometryCollection> GC_Light;
 
 #pragma endregion
 
@@ -71,11 +68,11 @@ protected:
 public:
 	void ChangeLightColor();
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> Sound_LightBlue;
 
-private:
+	UPROPERTY(EditAnywhere, Category = "Color")
 	FLinearColor OriginalColor;
 
 #pragma endregion

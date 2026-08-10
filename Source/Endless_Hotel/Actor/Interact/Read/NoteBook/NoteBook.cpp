@@ -1,6 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Actor/Interact/Read/NoteBook/NoteBook.h"
+#include "UI/Base/NoteBook/UI_NoteBook.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Base
@@ -14,6 +15,24 @@ ANoteBook::ANoteBook(const FObjectInitializer& ObjectInitializer)
 	Object->SetVisibility(false);
 
 	Component_Widget->SetupAttachment(RootComponent);
+}
+
+void ANoteBook::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TArray<UActorComponent*> Comp_Widgets = GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
+	Comp_Widgets.Sort([](const UActorComponent& First, const UActorComponent& Second)
+		{
+			return First.GetName() < Second.GetName();
+		});
+
+	for (int32 Index = 0; Index < Comp_Widgets.Num(); ++Index)
+	{
+		auto* Comp_Widget = Cast<UWidgetComponent>(Comp_Widgets[Index]);
+		auto* UI_NoteBook = Cast<UUI_NoteBook>(Comp_Widget->GetUserWidgetObject());
+		UI_NoteBook->ChangeDescription(Index);
+	}
 }
 
 #pragma endregion
@@ -47,7 +66,6 @@ void ANoteBook::FindDescription()
 	}
 
 	TArray<UActorComponent*> Array = GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Picture"));
-
 	for (auto* Target : Array)
 	{
 		SM_Descriptions.Add(Cast<UStaticMeshComponent>(Target));

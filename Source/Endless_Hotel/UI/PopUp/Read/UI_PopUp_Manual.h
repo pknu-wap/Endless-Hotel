@@ -22,10 +22,7 @@ protected:
 
 private:
 	UFUNCTION()
-	void Click_ButtonLeft();
-
-	UFUNCTION()
-	void Click_ButtonRight();
+	void Click_ButtonNext();
 
 #pragma endregion
 
@@ -33,10 +30,22 @@ private:
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Left;
+	TObjectPtr<class UButton> Button_Next;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Right;
+#pragma endregion
+
+#pragma region Animation
+
+private:
+	UFUNCTION()
+	void PlayArrowAnimation();
+
+	UFUNCTION()
+	void StopArrowAnimation();
+
+private:
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> WidgetAnim_Arrow;
 
 #pragma endregion
 

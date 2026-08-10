@@ -173,7 +173,7 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
 {
 	auto* PC = GetOwningPlayerController();
-	PC->SetViewTargetWithBlend(CameraOwner, BlendTime);
+	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 }
 
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)

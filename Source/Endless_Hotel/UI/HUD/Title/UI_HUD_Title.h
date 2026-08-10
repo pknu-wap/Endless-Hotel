@@ -104,12 +104,12 @@ private:
 	UFUNCTION()
 	void PlayBGM();
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_BGM;
 
 private:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	TObjectPtr<class UAudioComponent> AC;
 
 #pragma endregion

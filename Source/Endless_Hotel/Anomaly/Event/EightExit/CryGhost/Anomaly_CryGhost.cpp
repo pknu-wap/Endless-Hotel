@@ -3,6 +3,7 @@
 #include "Anomaly/Event/EightExit/CryGhost/Anomaly_CryGhost.h"
 #include "Anomaly/Object/EightExit/Light/Anomaly_Object_Light.h"
 #include "Character/AI/CryGhost/CryGhost.h"
+#include "Character/AI/CryGhost/CryGhostController.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
@@ -63,6 +64,7 @@ void AAnomaly_CryGhost::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 
 	case EAnomalyID::CryGhost_Light:
 		SpawnCryGhost(LightSpawnTrans);
+		CryGhost->GetController<ACryGhostController>()->ResumeAI();
 		TurnAllLights(false);
 		break;
 	}

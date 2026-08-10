@@ -108,12 +108,12 @@ protected:
 public:
 	void ShowDebugGameInfo(bool bActive);
 
+	UFUNCTION()
+	void ChangeDebugAnomaly();
+
 private:
 	UFUNCTION()
 	void AddDebugAnomalyRule(EAnomalyRule NewRule);
-
-	UFUNCTION()
-	void ChangeDebugAnomaly();
 
 protected:
 	UPROPERTY(meta = (BindWidget))

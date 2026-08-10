@@ -84,4 +84,5 @@ public:
 	virtual void Reset() override;
 
 #pragma endregion
+
 };
