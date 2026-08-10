@@ -98,7 +98,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 				continue;
 			}
 
-			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstances();
 			if (ActorLayers.Contains(TargetInstance))
 			{
 				RegisterAnomalyObject(AnomalyObject);
@@ -134,7 +134,7 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 
 				for (AActor* Actor : Level->Actors)
 				{
-					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					if (Actor && Actor->GetDataLayerInstances().Contains(TargetInstance))
 					{
 						goto ReadyCheckDone;
 					}
