@@ -27,9 +27,6 @@ protected:
 public:
 	AAnomaly_Object_Windup(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma endregion
 
 #pragma region Set
@@ -51,12 +48,6 @@ protected:
 #pragma region Sound
 
 protected:
-	UPROPERTY()
-	TObjectPtr<UAudioComponent> AC_Windup;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<USoundWave> Sound_Windup;
-
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	uint8 MaxWindupPlayCount = 5;
 
@@ -66,29 +57,15 @@ protected:
 	uint8 CurrentWindupPlayCount = 0;
 
 	FTimerHandle WindupPlayHandle;
-	
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	int WrongPlayCount = 5;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	float WrongPlayInterval = 0.5f;
-
-	uint8 CurrentWrongPlayCount = 0;
-
-	FTimerHandle WrongPlayHandle;
 
 public:
 	void WindupPlay();
-
 	void StopWindup();
 
 	void StartWindupLoop();
-
 	void WindupLoopTick();
 
 	void StartWrongLoop();
-	
-	void WrongLoopTick();
 
 #pragma endregion
 
@@ -98,7 +75,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimationAsset> WindupAnimation;
 
-	void PlayWindupAnimationOnce();
+	UPROPERTY(EditAnywhere, Category = "Animation|Wrong")
+	TObjectPtr<UAnimSequenceBase> WrongWindupAnimation;
+
+	UPROPERTY(EditAnywhere, Category = "Animation|Wrong")
+	int WrongPlayCount = 8;
+
+	void PlayWindupAnimation();
+	void PlayWrongMontage();
 
 #pragma endregion
 

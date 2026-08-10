@@ -10,14 +10,17 @@ class UBoxComponent;
 class AAnomaly_Object_Door;
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Door : public AAnomaly_Event_EightExit
+class ENDLESS_HOTEL_API AAnomaly_Door
+	: public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	AAnomaly_Door(const FObjectInitializer& ObjectInitializer);
+	AAnomaly_Door(
+		const FObjectInitializer& ObjectInitializer
+	);
 
 #pragma endregion
 
@@ -28,15 +31,39 @@ public:
 
 #pragma endregion
 
-#pragma region Door
-	
-protected:
-	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Trigger")
-	TObjectPtr<UBoxComponent> TriggerBox_Close;
-
-	UPROPERTY()
-	TObjectPtr<AAnomaly_Object_Door> TriggerTargetDoor;
-
-#pragma endregion
+//#pragma region Trigger
+//
+//protected:
+//	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+//
+//#pragma endregion
+//
+//#pragma region DoorSequence
+//
+//private:
+//	enum class EDoorSequenceState : uint8
+//	{
+//		OpenDoor,
+//		OpenHand,
+//		CloseHandAndDoor,
+//		Finished
+//	};
+//
+//	void AdvanceDoorState();
+//
+//protected:
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform OpenDoorTriggerTrans;
+//
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform OpenHandTriggerTrans;
+//
+//	UPROPERTY(EditAnywhere, Category = "Door")
+//	FTransform CloseDoorTriggerTrans;
+//
+//private:
+//	EDoorSequenceState CurrentDoorState = EDoorSequenceState::OpenDoor;
+//
+//#pragma endregion
 
 };
