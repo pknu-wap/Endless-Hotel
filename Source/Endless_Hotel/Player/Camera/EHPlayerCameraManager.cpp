@@ -12,7 +12,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
-#include <GameFramework/SpringArmComponent.h>
+#include <Camera/CameraComponent.h>
 
 #pragma region Base
 
@@ -193,19 +193,18 @@ void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
 void AEHPlayerCameraManager::ActiveCameraShake(bool bActive)
 {
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	auto* SpringArm = Player->GetSpringArm();
+	auto* Camera = Player->GetCamera();
 	auto* Mesh = Player->GetMesh();
 
 	if (bActive)
 	{
-		SpringArm->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
-		SpringArm->SetRelativeLocationAndRotation(FVector(7, 7, 0), FRotator::ZeroRotator);
-		SpringArm->TargetArmLength = 20.0f;
+		Camera->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
+		Camera->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 		return;
 	}
 
-	SpringArm->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
-	SpringArm->SetRelativeLocationAndRotation(FVector(0, 20, 170), FRotator(0, 90, 0));
+	Camera->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
+	Camera->SetRelativeLocationAndRotation(FVector(0, 30, 170), FRotator(0, 90, 0));
 }
 
 #pragma endregion

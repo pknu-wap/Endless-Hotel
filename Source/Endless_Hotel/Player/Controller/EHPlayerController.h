@@ -126,7 +126,7 @@ private:
 
 private:
 	UPROPERTY()
-	TWeakObjectPtr<class USpringArmComponent> SpringArm;
+	TWeakObjectPtr<class UCameraComponent> PlayerCamera;
 
 #pragma endregion
 

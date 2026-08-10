@@ -36,7 +36,7 @@ void AEHPlayerController::BeginPlay()
 	EHPlayer->OnDie.AddUObject(this, &ThisClass::DiePlayer);
 	EHPlayer->OnRevive.AddUObject(this, &ThisClass::RevivePlayer);
 
-	SpringArm = EHPlayer->GetSpringArm();
+	PlayerCamera = EHPlayer->GetCamera();
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -258,7 +258,7 @@ void AEHPlayerController::OnFaceCoverStarted()
 	bCanMove = false;
 
 	if (bIsFaceCovering) {
-		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+		PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 		FRotator CurrentRotation = GetControlRotation();
 		CurrentRotation.Pitch = -25.f;
@@ -284,7 +284,7 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	bCanMove = true;
 
 	if (!bIsFaceCovering) {
-		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+		PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
 }
@@ -362,7 +362,7 @@ void AEHPlayerController::RevivePlayer()
 void AEHPlayerController::OnFirstDoorOpenStarted()
 {
 	bIsPlayerDoorOpening = true;
-	SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+	PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 	FRotator CurrentRotation = GetControlRotation();
 	CurrentRotation.Pitch = -25.f;
@@ -374,7 +374,7 @@ void AEHPlayerController::OnFirstDoorOpenStarted()
 void AEHPlayerController::OnFirstDoorOpenCompleted()
 {
 	bIsPlayerDoorOpening = false;
-	SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+	PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 
 	SetPlayerInputAble(true);
 }

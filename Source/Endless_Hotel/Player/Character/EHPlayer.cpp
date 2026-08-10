@@ -8,7 +8,6 @@
 #include <Components/PointLightComponent.h>
 #include <Camera/CameraComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include <GameFramework/SpringArmComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
@@ -16,13 +15,9 @@
 AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
-	SpringArm->TargetArmLength = 20.0f;
-	SpringArm->bUsePawnControlRotation = true;
-
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm);
+	Camera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
+	Camera->bUsePawnControlRotation = true;
 
 	HeartbeatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartbeatAudioComponent"));
 	HeartbeatAudioComponent->SetupAttachment(RootComponent);
@@ -92,12 +87,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	const float AnimLength = AM_Die->GetPlayLength();
 	PlayAnimMontage(AM_Die);
 
-	SpringArm->bUsePawnControlRotation = false;
-	SpringArm->bInheritPitch = true;
-	SpringArm->bInheritYaw = true;
-	SpringArm->bInheritRoll = true;
-	SpringArm->bEnableCameraRotationLag = true;
-	SpringArm->CameraRotationLagSpeed = 20.0f;
+	Camera->bUsePawnControlRotation = false;
 
 	GetMesh()->bNoSkeletonUpdate = true;
 
@@ -126,11 +116,7 @@ void AEHPlayer::RevivePlayer()
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	CameraManager->StartEyeEffect(true);
 
-	SpringArm->bUsePawnControlRotation = true;
-	SpringArm->bInheritPitch = false;
-	SpringArm->bInheritYaw = false;
-	SpringArm->bInheritRoll = false;
-	SpringArm->bEnableCameraRotationLag = false;
+	Camera->bUsePawnControlRotation = true;
 
 	OnRevive.Broadcast();
 }

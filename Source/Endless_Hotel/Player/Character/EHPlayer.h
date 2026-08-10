@@ -26,17 +26,13 @@ protected:
 #pragma region Component
 
 public:
-	class USpringArmComponent* GetSpringArm() { return SpringArm; }
 	class UCameraComponent* GetCamera() { return Camera; }
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	TObjectPtr<class USpringArmComponent> SpringArm;
-
-	UPROPERTY(EditAnywhere, Category = "Camera")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
-	UPROPERTY(EditAnywhere, Category = "Lighter")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UPointLightComponent> Lighter;
 
 #pragma endregion
