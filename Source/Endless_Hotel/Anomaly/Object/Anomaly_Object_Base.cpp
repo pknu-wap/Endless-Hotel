@@ -49,7 +49,17 @@ void AAnomaly_Object_Base::SetOriginalTransform()
 void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-    if (bIsOrderedInteractTypes)
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    const bool bIsAnomalyTarget = IsValid(Sub) && IsValid(Sub->CurrentAnomaly) && Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this);
+    if (!bIsAnomalyTarget)
+    {
+        bSolved = false;
+        if (IsValid(Sub))
+        {
+            Sub->bWrongInteractionOccurred = true;
+        }
+    }
+    else if (bIsOrderedInteractTypes)
     {
         if (CorrectInteractTypes[0] == Info.InteractType)
         {
