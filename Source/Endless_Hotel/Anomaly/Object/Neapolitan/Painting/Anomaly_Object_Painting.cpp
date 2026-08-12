@@ -43,8 +43,8 @@ void AAnomaly_Object_Painting::Reset()
 {
 	Super::Reset();
 	Object->SetMaterial(1, OriginalMaterial);
-	Mesh_LeftEye->SetVisibleFlag(false);
-	Mesh_RightEye->SetVisibleFlag(false);
+	Mesh_LeftEye->SetVisibility(false);
+	Mesh_RightEye->SetVisibility(false);
 
 	Niagara_Blood_Left->Activate(false);
 	Niagara_Blood_Left->SetVisibility(false);
@@ -58,8 +58,8 @@ void AAnomaly_Object_Painting::Reset()
 
 void AAnomaly_Object_Painting::EyeFollowing()
 {
-	Mesh_LeftEye->SetVisibleFlag(true);
-	Mesh_RightEye->SetVisibleFlag(true);
+	Mesh_LeftEye->SetVisibility(true);
+	Mesh_RightEye->SetVisibility(true);
 
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
@@ -159,6 +159,8 @@ void AAnomaly_Object_Painting::InteractRotate()
 	OriginRotation = GetActorRotation();
 	bIsRotated = !bIsRotated;
 	InteractedMoveStep(0);
+	Mesh_LeftEye->SetVisibility(false);
+	Mesh_RightEye->SetVisibility(false);
 }
 
 void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
