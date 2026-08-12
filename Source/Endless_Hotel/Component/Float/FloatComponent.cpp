@@ -50,6 +50,12 @@ void UFloatComponent::DropObject()
 	Comp_Audio = NewObject<UAudioComponent>(this);
 	Comp_Audio->SetSound(SW_Drop);
 	Comp_Audio->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	for (auto* Target : Owner->GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+	{
+		auto* Mesh = Cast<UStaticMeshComponent>(Target);
+		Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	}
 }
 
 void UFloatComponent::OnObjectDropped(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
