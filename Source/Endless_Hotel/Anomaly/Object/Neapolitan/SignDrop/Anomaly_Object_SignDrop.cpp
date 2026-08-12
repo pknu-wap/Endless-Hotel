@@ -1,59 +1,55 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
-#include "Component/Interact/InteractComponent.h"
 #include "Actor/RoomSign/RoomSignActor.h"
-#include "Player/Controller/EHPlayerController.h"
+#include <GameFramework/PlayerController.h>
 #include <Kismet/GameplayStatics.h>
+
+#pragma region Reset
+
+void AAnomaly_Object_SignDrop::Reset()
+{
+	OriginalTransform.SetLocation(FVector::ZeroVector);
+
+	if (TargetSign.IsValid())
+	{
+		TargetSign->GetRootComponent()->SetVisibility(true, true);
+	}
+
+	Super::Reset();
+}
+
+#pragma endregion
 
 #pragma region Drop
 
-void AAnomaly_Object_SignDrop::AttachSignToMe(AActor* TargetActor)
-{
-    if (TargetActor)
-    {
-        UPrimitiveComponent* RootPrim = Cast<UPrimitiveComponent>(TargetActor->GetRootComponent());
-        if (RootPrim)
-        {
-            RootPrim->SetSimulatePhysics(false);
-        }
-
-        FAttachmentTransformRules AttachRules(
-            EAttachmentRule::KeepWorld,
-            EAttachmentRule::KeepWorld,
-            EAttachmentRule::KeepWorld,
-            false
-        );
-
-        TargetActor->AttachToComponent(this->GetRootComponent(), AttachRules);
-    }
-}
-
 void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 {
-    bSolved = false;
-    if (RoomSigns.Num() == 0) return;
+	int32 RandomIndex = FMath::RandRange(0, RoomSigns.Num() - 1);
+	TargetSign = RoomSigns[RandomIndex].Get();
+	auto* RootComp = TargetSign->GetRootComponent();
+	RootComp->SetVisibility(false, true);
 
-    int32 RandomIndex = FMath::RandRange(0, RoomSigns.Num() - 1);
-    ARoomSignActor* TargetSign = RoomSigns[RandomIndex];
+	auto* PC = GetWorld()->GetFirstPlayerController();
+	PC->ClientStartCameraShake(CameraShakeClass, 0.3f);
 
-    OriginalTransform = TargetSign->GetTransform();
+	OriginalTransform = RootComp->GetComponentTransform();
 
-    if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
-    {
-        PC->ClientStartCameraShake(CameraShakeClass, 0.3f);
-    }
-    TargetSign->DropSign();
+	FVector TargetVec = RootComp->GetComponentLocation();
+	TargetVec += RootComp->GetRightVector() * 10;
+	FRotator TargetRot = RootComp->GetComponentRotation();
 
-    FTimerHandle AttachTimerHandle;
-    GetWorld()->GetTimerManager().SetTimer(AttachTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetSign]()
-        {
-            if (!IsValid(this) || !IsValid(TargetSign)) return;
-            SetActorLocationAndRotation(TargetSign->GetActorLocation(), TargetSign->GetActorRotation());
-            AttachSignToMe(TargetSign);
-        }), 1.0f, false);
+	SetActorLocationAndRotation(TargetVec, TargetRot, false, nullptr, ETeleportType::TeleportPhysics);
 
-    RoomSigns.RemoveAt(RandomIndex);
+	DropSign();
+}
+
+void AAnomaly_Object_SignDrop::DropSign()
+{
+	Object->SetEnableGravity(true);
+	Object->SetSimulatePhysics(true);
+
+	UGameplayStatics::PlaySoundAtLocation(this, DropSound, GetActorLocation());
 }
 
 #pragma endregion
@@ -62,16 +58,16 @@ void AAnomaly_Object_SignDrop::ExecuteSignDrop()
 
 void AAnomaly_Object_SignDrop::Interact_Implementation(AEHCharacter* Interacter)
 {
-    Super::Interact_Implementation(Interacter);
+	Super::Interact_Implementation(Interacter);
 
-    auto Info = Component_Interact->GetSelectedInteractInfo();
+	auto Info = Component_Interact->GetSelectedInteractInfo();
 
-    switch (Info.InteractType)
-    {
-    case EInteractType::Restore:
-        StartRestoring();
-        break;
-    }
+	switch (Info.InteractType)
+	{
+	case EInteractType::Restore:
+		StartRestoring();
+		break;
+	}
 }
 
 #pragma endregion

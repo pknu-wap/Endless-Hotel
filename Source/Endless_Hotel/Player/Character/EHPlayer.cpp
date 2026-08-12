@@ -123,10 +123,6 @@ void AEHPlayer::FreezeAnimation()
 
 #pragma endregion
 
-#pragma region Sound
-
-#pragma endregion
-
 #pragma region Animation
 
 void AEHPlayer::PlayAnimation(UAnimMontage* Montage)

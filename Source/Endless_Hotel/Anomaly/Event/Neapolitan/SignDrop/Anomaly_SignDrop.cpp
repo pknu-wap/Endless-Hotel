@@ -3,17 +3,6 @@
 #include "Anomaly/Event/Neapolitan/SignDrop/Anomaly_SignDrop.h"
 #include "Anomaly/Object/Neapolitan/SignDrop/Anomaly_Object_SignDrop.h"
 
-#pragma region Base
-
-void AAnomaly_SignDrop::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SetActorLocation(SpawnLocation);
-}
-
-#pragma endregion
-
 #pragma region Activity
 
 void AAnomaly_SignDrop::SetAnomalyState()
@@ -26,6 +15,7 @@ void AAnomaly_SignDrop::SetAnomalyState()
 		SetupAnomalyAction<AAnomaly_Object_SignDrop>(&AAnomaly_Object_SignDrop::ExecuteSignDrop, FAnomalyActionInfo({ EInteractType::Restore }));
 		break;
 	}
+
 	ActiveTrigger();
 }
 

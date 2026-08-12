@@ -24,11 +24,7 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
-	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
-
 	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
-
 	if (!Data.bIsFirstPlay)
 	{
 		return;
@@ -47,6 +43,9 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
+	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
+
 	if (!USaveManager::LoadData_Tutorial().bIsFirstPlay)
 	{
 		return;
@@ -69,7 +68,6 @@ void UTutorialComponent::HideTutorialWidget()
 {
 	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
 	Data.bIsFirstPlay = false;
-
 	USaveManager::SaveData_Tutorial(Data);
 
 	if (UI_Tutorial.IsValid())
