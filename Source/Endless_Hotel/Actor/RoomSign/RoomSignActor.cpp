@@ -2,10 +2,7 @@
 
 #include "Actor/RoomSign/RoomSignActor.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include <Components/StaticMeshComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
-#include <Components/AudioComponent.h>
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -19,6 +16,7 @@ ARoomSignActor::ARoomSignActor(const FObjectInitializer& ObjectInitializer)
 void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
+
 	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
 }
@@ -38,40 +36,6 @@ void ARoomSignActor::Reset()
 	DynamicMaterial->GetVectorParameterValue(FName("OffsetUV"), Offset);
 	Offset.G = GValue;
 	DynamicMaterial->SetVectorParameterValue(FName("OffsetUV"), Offset);
-}
-
-#pragma endregion
-
-#pragma region Drop
-
-void ARoomSignActor::DropSign()
-{
-	if (bDropped || !SignMesh) return;
-
-	bDropped = true;
-
-	SignMesh->SetSimulatePhysics(true);
-	SignMesh->SetEnableGravity(true);
-
-	if (DropSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			DropSound,
-			GetActorLocation()
-		);
-	}
-
-	FTimerHandle PhysicTimer;
-	GetWorld()->GetTimerManager().SetTimer(
-		PhysicTimer,
-		FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				SignMesh->SetSimulatePhysics(false);
-			}),
-		1.0f,
-		false
-	);
 }
 
 #pragma endregion
