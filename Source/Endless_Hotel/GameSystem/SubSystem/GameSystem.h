@@ -114,8 +114,8 @@ public:
 
 public:
 	EAnomalyVerdictMode VerdictMode;
-
 	bool bPassed = false;
+	bool bWrongInteractionOccurred = false;
 
 #pragma endregion
 
