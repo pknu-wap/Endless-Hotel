@@ -20,14 +20,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	Camera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
 	Camera->bUsePawnControlRotation = true;
 
-	HeartbeatAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartbeatAudioComponent"));
-	HeartbeatAudioComponent->SetupAttachment(RootComponent);
-	HeartbeatAudioComponent->bAutoActivate = false;
-
-	ElevatorMoveAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("ElevatorMoveAudioComponent"));
-	ElevatorMoveAudioComponent->SetupAttachment(RootComponent);
-	ElevatorMoveAudioComponent->bAutoActivate = false;
-
 	Lighter = CreateDefaultSubobject<UPointLightComponent>(TEXT("Lighter"));
 	Lighter->SetVisibility(false);
 	Lighter->SetupAttachment(GetMesh());
@@ -125,15 +117,6 @@ void AEHPlayer::RevivePlayer()
 	Camera->bUsePawnControlRotation = true;
 
 	OnRevive.Broadcast();
-}
-
-#pragma endregion
-
-#pragma region Sound
-
-void AEHPlayer::PlayElevatorSound(bool bIsPlay)
-{
-	bIsPlay ? ElevatorMoveAudioComponent->Play() : ElevatorMoveAudioComponent->Stop();
 }
 
 #pragma endregion

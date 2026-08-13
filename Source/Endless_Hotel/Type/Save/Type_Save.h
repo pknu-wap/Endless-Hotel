@@ -171,7 +171,7 @@ struct FSaveData_Progression
 
 public:
 	UPROPERTY(SaveGame)
-	EGameProgression Progression = EGameProgression::CheckIn;
+	EGameProgression Progression = EGameProgression::Tutorial;
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;
