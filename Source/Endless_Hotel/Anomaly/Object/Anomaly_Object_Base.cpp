@@ -35,6 +35,12 @@ void AAnomaly_Object_Base::Reset()
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    
+    for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+    {
+        auto* Mesh = Cast<UStaticMeshComponent>(Target);
+        Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+    }
 }
 
 void AAnomaly_Object_Base::SetOriginalTransform()
@@ -49,7 +55,17 @@ void AAnomaly_Object_Base::SetOriginalTransform()
 void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-    if (bIsOrderedInteractTypes)
+    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    const bool bIsAnomalyTarget = IsValid(Sub) && IsValid(Sub->CurrentAnomaly) && Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this);
+    if (!bIsAnomalyTarget)
+    {
+        bSolved = false;
+        if (IsValid(Sub))
+        {
+            Sub->bWrongInteractionOccurred = true;
+        }
+    }
+    else if (bIsOrderedInteractTypes)if (bIsOrderedInteractTypes)
     {
         if (CorrectInteractTypes[0] == Info.InteractType)
         {
@@ -124,6 +140,12 @@ void AAnomaly_Object_Base::StartRestoring(float Duration)
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    
+    for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+    {
+        auto* Mesh = Cast<UStaticMeshComponent>(Target);
+        Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+    }
 
     FLatentActionInfo LatentInfo;
     LatentInfo.UUID = __LINE__;

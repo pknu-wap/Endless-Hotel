@@ -19,7 +19,7 @@ void AAnomaly_Painting::SetAnomalyState()
 		break;
 	case EAnomalyID::Painting_Blood:
 		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BloodDropping, FAnomalyActionInfo({ EInteractType::Rotate }));
-		ActiveTrigger();
+		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Blur:
 		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BlurPaint, FAnomalyActionInfo({ EInteractType::Rotate }));

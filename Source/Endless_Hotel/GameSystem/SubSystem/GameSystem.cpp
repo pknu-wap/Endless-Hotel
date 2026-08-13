@@ -209,6 +209,11 @@ void UGameSystem::ApplyVerdict()
 
 void UGameSystem::TryInteractSolveVerdict()
 {
+	if (bWrongInteractionOccurred)
+	{
+		SetIsAnomalySolved(false);
+		return;
+	}
 	if (AAnomaly_Event* Neo = Cast<AAnomaly_Event>(CurrentAnomaly))
 	{
 		Neo->InteractSolveVerdict();
