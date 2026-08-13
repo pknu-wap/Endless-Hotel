@@ -35,6 +35,12 @@ void AAnomaly_Object_Base::Reset()
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    
+    for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+    {
+        auto* Mesh = Cast<UStaticMeshComponent>(Target);
+        Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+    }
 }
 
 void AAnomaly_Object_Base::SetOriginalTransform()
@@ -134,6 +140,12 @@ void AAnomaly_Object_Base::StartRestoring(float Duration)
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+    
+    for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+    {
+        auto* Mesh = Cast<UStaticMeshComponent>(Target);
+        Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+    }
 
     FLatentActionInfo LatentInfo;
     LatentInfo.UUID = __LINE__;
