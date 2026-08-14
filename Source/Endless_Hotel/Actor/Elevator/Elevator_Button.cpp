@@ -59,6 +59,12 @@ void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
     MoveToButtonPlayer();
 }
 
+void AElevator_Button::CanPressButton(bool bCanPress)
+{
+    Component_Interact->ShowInteracting(bCanPress);
+    bCanPress ? Component_Interact->RestoreInteract() : Component_Interact->DeactiveInteract();
+}
+
 void AElevator_Button::MoveToButtonPlayer()
 {
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);

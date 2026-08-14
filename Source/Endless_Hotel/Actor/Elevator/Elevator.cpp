@@ -184,7 +184,11 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
     if (bIsStart)
     {
-        SetDelay(StartDelayHandle, [this] { MoveDoors(true); }, ElevatorMoveDuration + 0.1f);
+        SetDelay(StartDelayHandle, [this] 
+            { 
+                MoveDoors(true);
+                InsideButton->CanPressButton(true);
+            }, ElevatorMoveDuration + 0.1f);
     }
     else
     {
@@ -303,6 +307,8 @@ void AElevator::StartElevator()
         Player->SetActorEnableCollision(true);
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
+
+        InsideButton->CanPressButton(false);
 
         FTimerHandle RestoreHandle;
         GetWorld()->GetTimerManager().SetTimer(RestoreHandle, FTimerDelegate::CreateWeakLambda(this, [this]

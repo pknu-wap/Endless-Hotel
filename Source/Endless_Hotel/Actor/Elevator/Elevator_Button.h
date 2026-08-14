@@ -62,6 +62,8 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
     class UArrowComponent* InteractAnchor;
 
+    void CanPressButton(bool bCanPress);
+
 protected:
     UPROPERTY(EditAnywhere, Category = "Interact")
     float PlayerToElevatorDistance = 50.0f;
