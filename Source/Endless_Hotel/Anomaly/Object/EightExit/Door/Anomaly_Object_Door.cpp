@@ -51,6 +51,16 @@ void AAnomaly_Object_Door::Reset()
 	Component_Interact->DeactiveInteract();
 	SetLight(false);
 
+	TL_Door->Stop();
+	CurrentDoorShake = 0;
+
+	TL_Handle->Stop();
+	CurrentHandleShake = 0;
+
+	GetWorld()->GetTimerManager().ClearTimer(StartHandle);
+	GetWorld()->GetTimerManager().ClearTimer(HandleShakeHandle);
+	GetWorld()->GetTimerManager().ClearTimer(DoorShakeHandle);
+
 	// Door_Close 전용 GhostHand 정리 로직
 	//if (IsValid(SpawnedGhostHandActor))
 	//{
@@ -115,7 +125,6 @@ void AAnomaly_Object_Door::StartShaking()
 	}
 
 	int32 RandInt = FMath::RandRange(1, 5);
-	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			AC_Shake->Stop();

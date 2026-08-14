@@ -83,6 +83,7 @@ private:
 	const uint8 MaxDoorShake = 4;
 	uint8 CurrentDoorShake = 0;
 
+	FTimerHandle StartHandle;
 	FTimerHandle HandleShakeHandle;
 	FTimerHandle DoorShakeHandle;
 
