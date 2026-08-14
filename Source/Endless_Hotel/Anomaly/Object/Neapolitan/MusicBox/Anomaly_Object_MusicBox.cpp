@@ -36,6 +36,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 			{
 				AC->Stop();
 				bSolved = false;
+				Component_Interact->ShowInteracting(false);
 				Component_Interact->DeactiveInteract();
 			}), LimitTime, false);
 }
