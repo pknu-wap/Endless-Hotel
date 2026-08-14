@@ -23,15 +23,12 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Base::Reset()
 {
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    Sub->bWrongInteractionOccurred = false;
     if(!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
     {
         bSolved = true;
     }
 
     SetActorTransform(OriginalTransform);
-
-    bSolved = true;
 
     Component_Interact->RestoreInteract();
 

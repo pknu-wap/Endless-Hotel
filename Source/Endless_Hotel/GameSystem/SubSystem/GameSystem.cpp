@@ -205,6 +205,7 @@ void UGameSystem::ApplyVerdict()
 		}
 	}
 	bIsAnomalySolved = false;
+	bWrongInteractionOccurred = false;
 	bIsFirstStartFloor = false;
 	LoadNextMap();
 }
