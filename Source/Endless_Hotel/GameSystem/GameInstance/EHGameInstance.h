@@ -18,12 +18,6 @@ class ENDLESS_HOTEL_API UEHGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 
-private:
-	virtual void OnStart() override;
-
-private:
-	FTimerHandle InitialBroadcastHandle;
-
 #pragma endregion
 
 #pragma region Game

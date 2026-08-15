@@ -34,27 +34,6 @@ void UEHGameInstance::Init()
 	}
 }
 
-void UEHGameInstance::OnStart()
-{
-	Super::OnStart();
-	if (GetWorld())
-	{
-		OnDataLayerChanged.Broadcast(CurrentDataLayer);
-		return;
-	}
-
-	GetTimerManager().SetTimer(InitialBroadcastHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this]()
-		{
-			if (!GetWorld())
-			{
-				return;
-			}
-			OnDataLayerChanged.Broadcast(CurrentDataLayer);
-			GetTimerManager().ClearTimer(InitialBroadcastHandle);
-		}), 0.1f, true);
-}
-
 #pragma endregion
 
 #pragma region Game

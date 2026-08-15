@@ -95,7 +95,7 @@ public:
 	EOptionValue Overlap = EOptionValue::Off;
 
 	UPROPERTY(SaveGame)
-	float Brightness = 0.5f;
+	float Brightness = 1.f;
 
 public:
 	// System
