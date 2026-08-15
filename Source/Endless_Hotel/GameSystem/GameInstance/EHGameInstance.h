@@ -21,6 +21,9 @@ public:
 private:
 	virtual void OnStart() override;
 
+private:
+	FTimerHandle InitialBroadcastHandle;
+
 #pragma endregion
 
 #pragma region Game
