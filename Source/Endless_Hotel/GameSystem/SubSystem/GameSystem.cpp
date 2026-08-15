@@ -68,7 +68,18 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 	}
-	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
+	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+	if (!World)
+	{
+		FTimerHandle RetryHandle;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			GI->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
+				[this, DataLayer]() { OnChangedDataLayer(DataLayer); }));
+		}
+		return;
+	}
+	//WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
 void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
@@ -145,7 +156,7 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 		ReadyCheckDone:
 			if (!bAlreadyRegistered)
 			{
-				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
+				//RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
 				VisitedDataLayers.Add(DataLayer);
 			}
 
@@ -317,7 +328,6 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
-	Object->SetOriginalTransform();
 	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
 	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 }

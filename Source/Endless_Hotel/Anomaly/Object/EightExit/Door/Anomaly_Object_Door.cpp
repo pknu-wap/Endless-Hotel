@@ -48,8 +48,17 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Door::Reset()
 {
 	Super::Reset();
-	Component_Interact->DeactiveInteract();
-	SetLight(false);
+
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (GameSystem->Floor == STARTFLOOR)
+	{
+		SetLight(true);
+	}
+	else
+	{
+		SetLight(false);
+		Component_Interact->DeactiveInteract();
+	}
 
 	TL_Door->Stop();
 	CurrentDoorShake = 0;
@@ -446,8 +455,6 @@ void AAnomaly_Object_Door::ReadyDoor()
 {
 	bIsDoorOpened = false;
 	Component_Interact->RestoreInteract();
-	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-	Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	GetRootComponent()->SetWorldTransform(OriginalTransform);
 
 	Timeline_Open->Stop();
