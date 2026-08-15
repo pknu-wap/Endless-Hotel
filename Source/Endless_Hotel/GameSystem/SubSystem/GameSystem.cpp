@@ -69,6 +69,17 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 	}
+	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+	if (!World)
+	{
+		FTimerHandle RetryHandle;
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			GI->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
+				[this, DataLayer]() { OnChangedDataLayer(DataLayer); }));
+		}
+		return;
+	}
 	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
