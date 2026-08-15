@@ -279,7 +279,7 @@ void UGameSystem::SubFloor()
 
 void UGameSystem::AddFloor()
 {
-	if (Floor < 8)
+	if (Floor < STARTFLOOR)
 	{
 		Floor++;
 	}
