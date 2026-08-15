@@ -10,7 +10,7 @@
 #include <Delegates/DelegateCombinations.h>
 #include <GameSystem.generated.h>
 
-#define STARTFLOOR 9
+#define STARTFLOOR 8
 
 #pragma region Declare
 
