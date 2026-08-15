@@ -25,15 +25,18 @@ void AAnomaly_Object_Base::BeginPlay()
     Super::BeginPlay();
 
     OriginalTransform = GetActorTransform();
-
+    
     auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
     GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    GameSystem->RegisterAnomalyObject(this);
 }
 
 void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
     GameSystem->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
+
+    SetActorTransform(OriginalTransform);
 
     Super::EndPlay(EndPlayReason);
 }
