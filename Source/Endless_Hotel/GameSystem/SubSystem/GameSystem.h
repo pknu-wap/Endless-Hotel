@@ -137,7 +137,7 @@ public:
 	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
 	EMapDataLayer CurrentDataLayer;
 
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch, EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
 	
 	bool bIsStartInBed = false;
 
