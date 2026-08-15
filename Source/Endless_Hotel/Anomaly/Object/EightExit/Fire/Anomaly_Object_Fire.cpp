@@ -19,16 +19,14 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 {
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
 	NiagaraComponent->SetupAttachment(RootComponent);
-	NiagaraComponent->SetAutoActivate(false);
-	NiagaraComponent->Deactivate();
+	NiagaraComponent->SetAutoActivate(true);
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(NiagaraComponent);
-	AudioComponent->SetAutoActivate(false);
+	AudioComponent->SetAutoActivate(true);
 
 	DeathTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DeathTrigger"));
 	DeathTrigger->SetupAttachment(NiagaraComponent);
-	DeathTrigger->OnComponentBeginOverlap.Clear();
 	DeathTrigger->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnDeathRange);
 }
 
@@ -36,11 +34,8 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 
 #pragma region Fire
 
-void AAnomaly_Object_Fire::StartFire(UNiagaraSystem* Effect)
+void AAnomaly_Object_Fire::StartFire()
 {
-	NiagaraComponent->SetAsset(Effect);
-	NiagaraComponent->Activate();
-
 	if (bIsFirst)
 	{
 		AudioComponent->SetSound(SW_First);

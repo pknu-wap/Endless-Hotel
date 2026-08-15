@@ -40,9 +40,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Fire")
 	TArray<FVector> FireSpawnPositions;
 
-	UPROPERTY(EditAnywhere, Category = "Fire")
-	TObjectPtr<class UNiagaraSystem> NS_Fire;
-
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<class AAnomaly_Object_Fire>> SpawnedFires;
