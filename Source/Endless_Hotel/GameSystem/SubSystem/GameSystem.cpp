@@ -11,6 +11,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
+#include <GameFramework/Actor.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/World.h>
@@ -109,7 +110,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 				continue;
 			}
 
-			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstances();
 			if (ActorLayers.Contains(TargetInstance))
 			{
 				RegisterAnomalyObject(AnomalyObject);
@@ -145,7 +146,7 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 
 				for (AActor* Actor : Level->Actors)
 				{
-					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					if (Actor && Actor->GetDataLayerInstances().Contains(TargetInstance))
 					{
 						goto ReadyCheckDone;
 					}
@@ -196,8 +197,8 @@ void UGameSystem::ApplyVerdict()
 			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 		}
 	}
-	else 
-	{ 
+	else
+	{
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
@@ -205,7 +206,7 @@ void UGameSystem::ApplyVerdict()
 
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		NextAnomalyMap = EMapDataLayer::Hotel;
-		if(Cast<AEHPlayer>(Player)->bIsDead)
+		if (Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			bIsStartInBed = true;
 			RemoveTargetElevator();
@@ -246,7 +247,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
+	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
 	{
 		++ActIndex;
 	}
@@ -290,7 +291,7 @@ void UGameSystem::SubFloor()
 
 void UGameSystem::AddFloor()
 {
-	if (Floor < 8)
+	if (Floor < STARTFLOOR)
 	{
 		Floor++;
 	}
@@ -343,7 +344,7 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		{
 			AnomalyObjectPool.Remove(TargetClass);
 		}
-		if(IsValid(CurrentAnomaly))
+		if (IsValid(CurrentAnomaly))
 		{
 			CurrentAnomaly->LinkedObjects.Remove(Object);
 		}
