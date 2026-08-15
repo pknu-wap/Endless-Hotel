@@ -11,6 +11,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
+#include <GameFramework/Actor.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/World.h>
@@ -185,8 +186,8 @@ void UGameSystem::ApplyVerdict()
 			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 		}
 	}
-	else 
-	{ 
+	else
+	{
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
@@ -194,7 +195,7 @@ void UGameSystem::ApplyVerdict()
 
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		NextAnomalyMap = EMapDataLayer::Hotel;
-		if(Cast<AEHPlayer>(Player)->bIsDead)
+		if (Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			bIsStartInBed = true;
 			RemoveTargetElevator();
@@ -235,7 +236,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
+	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
 	{
 		++ActIndex;
 	}
@@ -333,7 +334,7 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		{
 			AnomalyObjectPool.Remove(TargetClass);
 		}
-		if(IsValid(CurrentAnomaly))
+		if (IsValid(CurrentAnomaly))
 		{
 			CurrentAnomaly->LinkedObjects.Remove(Object);
 		}
