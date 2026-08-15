@@ -11,11 +11,11 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
+#include <GameFramework/Actor.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/World.h>
 #include <WorldPartition/WorldPartitionSubsystem.h>
-#include <WorldPartition/DataLayer/DataLayerInstance.h>
 
 #pragma region Base
 
@@ -99,7 +99,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 				continue;
 			}
 
-			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstances();
 			if (ActorLayers.Contains(TargetInstance))
 			{
 				RegisterAnomalyObject(AnomalyObject);
@@ -119,32 +119,14 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 		return;
 	}
 
-	World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
-
-	TWeakObjectPtr<UWorld> WeakWorld(World);
-	TWeakObjectPtr<const UDataLayerInstance> WeakTargetInstance(TargetInstance);
-
 	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, WeakWorld, DataLayer, WeakTargetInstance, bAlreadyRegistered]()
+		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
 		{
-			UWorld* World = WeakWorld.Get();
-			const UDataLayerInstance* TargetInstance = WeakTargetInstance.Get();
-			if (!World || !TargetInstance)
-			{
-				if (World)
-				{
-					World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
-				}
-				return;
-			}
-
 			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
-
-			bool bFound = false;
 			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
 			{
 				if (!StreamingLevel) continue;
@@ -153,20 +135,15 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 
 				for (AActor* Actor : Level->Actors)
 				{
-					if (IsValid(Actor) && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					if (Actor && Actor->GetDataLayerInstances().Contains(TargetInstance))
 					{
-						bFound = true;
-						break;
+						goto ReadyCheckDone;
 					}
 				}
-				if (bFound) break;
 			}
+			return;
 
-			if (!bFound)
-			{
-				return;
-			}
-
+		ReadyCheckDone:
 			if (!bAlreadyRegistered)
 			{
 				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
@@ -209,8 +186,8 @@ void UGameSystem::ApplyVerdict()
 			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 		}
 	}
-	else 
-	{ 
+	else
+	{
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
@@ -218,7 +195,7 @@ void UGameSystem::ApplyVerdict()
 
 		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 		NextAnomalyMap = EMapDataLayer::Hotel;
-		if(Cast<AEHPlayer>(Player)->bIsDead)
+		if (Cast<AEHPlayer>(Player)->bIsDead)
 		{
 			bIsStartInBed = true;
 			RemoveTargetElevator();
@@ -259,7 +236,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
+	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
 	{
 		++ActIndex;
 	}
@@ -357,7 +334,7 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		{
 			AnomalyObjectPool.Remove(TargetClass);
 		}
-		if(IsValid(CurrentAnomaly))
+		if (IsValid(CurrentAnomaly))
 		{
 			CurrentAnomaly->LinkedObjects.Remove(Object);
 		}
