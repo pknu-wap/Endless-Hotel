@@ -63,7 +63,8 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	if (bIsDead) return;
 
 	bIsDead = true;
-	Cast<AEHPlayerController>(GetController())->SetPlayerInputAble(false);
+	auto* PC = Cast<AEHPlayerController>(GetController());
+	PC->SetPlayerInputAble(false);
 
 	UAnimMontage* DeathAnim = DeathAnims[DeathReason];
 
@@ -97,12 +98,14 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		}), AnimLength, false);
 
 	FTimerHandle DeathHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubSystem]()
+	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubSystem, PC]()
 		{
 			GetMesh()->bNoSkeletonUpdate = false;
 			Third_Mesh->bNoSkeletonUpdate = false;
 			SpringArm->bUsePawnControlRotation = true;
 			SpringArm->bEnableCameraRotationLag = false;
+
+			PC->RevivePlayer();
 
 			SubSystem->ApplyVerdict();
 			bIsDead = false;

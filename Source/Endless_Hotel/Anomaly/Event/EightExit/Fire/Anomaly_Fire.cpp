@@ -75,8 +75,10 @@ void AAnomaly_Fire::SpawnFires()
 	constexpr float FireSpawnDuration = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator);
-			SpawnedFire->StartFire(NS_Fire);
+			FActorSpawnParameters Params;
+			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator, Params);
+			SpawnedFire->StartFire();
 
 			SpawnedFires.Add(SpawnedFire);
 

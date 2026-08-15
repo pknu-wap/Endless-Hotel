@@ -28,7 +28,7 @@ public:
 #pragma region Fire
 
 public:
-	void StartFire(class UNiagaraSystem* Effect);
+	void StartFire();
 
 protected:
 	UPROPERTY(EditAnywhere)
