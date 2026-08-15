@@ -15,6 +15,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Engine/World.h>
 #include <WorldPartition/WorldPartitionSubsystem.h>
+#include <WorldPartition/DataLayer/DataLayerInstance.h>
 
 #pragma region Base
 
@@ -118,14 +119,32 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 		return;
 	}
 
+	World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+
+	TWeakObjectPtr<UWorld> WeakWorld(World);
+	TWeakObjectPtr<const UDataLayerInstance> WeakTargetInstance(TargetInstance);
+
 	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
+		[this, WeakWorld, DataLayer, WeakTargetInstance, bAlreadyRegistered]()
 		{
+			UWorld* World = WeakWorld.Get();
+			const UDataLayerInstance* TargetInstance = WeakTargetInstance.Get();
+			if (!World || !TargetInstance)
+			{
+				if (World)
+				{
+					World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+				}
+				return;
+			}
+
 			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
+
+			bool bFound = false;
 			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
 			{
 				if (!StreamingLevel) continue;
@@ -134,15 +153,20 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 
 				for (AActor* Actor : Level->Actors)
 				{
-					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
+					if (IsValid(Actor) && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
 					{
-						goto ReadyCheckDone;
+						bFound = true;
+						break;
 					}
 				}
+				if (bFound) break;
 			}
-			return;
 
-		ReadyCheckDone:
+			if (!bFound)
+			{
+				return;
+			}
+
 			if (!bAlreadyRegistered)
 			{
 				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
