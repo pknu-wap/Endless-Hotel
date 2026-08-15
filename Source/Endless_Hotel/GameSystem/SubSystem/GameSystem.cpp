@@ -72,7 +72,6 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
 	if (!World)
 	{
-		FTimerHandle RetryHandle;
 		if (UGameInstance* GI = GetGameInstance())
 		{
 			GI->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
@@ -80,7 +79,7 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 		}
 		return;
 	}
-	//WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
+	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
 void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
@@ -130,38 +129,25 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 		return;
 	}
 
+	TWeakObjectPtr<UWorld> WeakWorld = World;
+
 	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
+		[this, WeakWorld, DataLayer, TargetInstance]()
 		{
-			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
+			UWorld* SafeWorld = WeakWorld.Get();
+			if (!SafeWorld)
+			{
+				return;
+			}
+			UWorldPartitionSubsystem* WPSubsystem = SafeWorld->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
-			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
-			{
-				if (!StreamingLevel) continue;
-				ULevel* Level = StreamingLevel->GetLoadedLevel();
-				if (!Level || !Level->bIsVisible) continue;
 
-				for (AActor* Actor : Level->Actors)
-				{
-					if (Actor && Actor->GetDataLayerInstances().Contains(TargetInstance))
-					{
-						goto ReadyCheckDone;
-					}
-				}
-			}
-			return;
-
-		ReadyCheckDone:
-			if (!bAlreadyRegistered)
-			{
-				//RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
-				VisitedDataLayers.Add(DataLayer);
-			}
-
-			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			VisitedDataLayers.Add(DataLayer);
+			CurrentDataLayer = DataLayer;
 			FloorChange_Reset.Broadcast();
 		}), 0.1f, true);
 }
@@ -331,6 +317,11 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 	UClass* ActorClass = Object->GetClass();
 	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
 	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
+
+	if (VisitedDataLayers.Contains(CurrentDataLayer))
+	{
+		Object->Reset();
+	}
 }
 
 void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
