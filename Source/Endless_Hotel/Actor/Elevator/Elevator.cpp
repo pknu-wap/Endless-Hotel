@@ -119,10 +119,6 @@ void AElevator::SetLightOn(bool bIsOn)
 
 void AElevator::MoveDoors(bool bWillOpen)
 {
-    if (bIsDoorMoving)
-    {
-        return;
-    }
     if (Move_AC->IsPlaying())
     {
         Move_AC->Stop();
@@ -130,16 +126,17 @@ void AElevator::MoveDoors(bool bWillOpen)
     bIsDoorOpened = bWillOpen;
     Door_AC->Activate(true);
     Door_AC->Play();
+    DoorTimeline->Stop();
 
     if (bWillOpen)
     {
-        DoorTimeline->PlayFromStart();
+        DoorTimeline->Play();
         LeftDoor->SetLightingChannels(true, true, false);
         RightDoor->SetLightingChannels(true, true, false);
     }
     else
     {
-        DoorTimeline->ReverseFromEnd();
+        DoorTimeline->Reverse();
     }
 }
 

@@ -61,7 +61,10 @@ void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
 
 void AElevator_Button::CanPressButton(bool bCanPress)
 {
-    Component_Interact->ShowInteracting(bCanPress);
+    if(!bCanPress)
+    {
+        Component_Interact->ShowInteracting(false);
+    }
     bCanPress ? Component_Interact->RestoreInteract() : Component_Interact->DeactiveInteract();
 }
 
