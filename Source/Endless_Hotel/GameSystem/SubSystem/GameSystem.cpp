@@ -1,415 +1,28 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem.h"
-#include "Anomaly/Generator/Anomaly_Generator.h"
-#include "Asset/Manager/EHAssetManager.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
-#include "GameSystem/SaveGame/SaveManager.h"
-#include "Anomaly/Event/Anomaly_Event.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
-#include "Player/Controller/EHPlayerController.h"
-#include "Player/Character/EHPlayer.h"
-#include "Actor/Elevator/Elevator.h"
-#include <GameFramework/Actor.h>
-#include <GameFramework/Character.h>
-#include <Kismet/GameplayStatics.h>
-#include <Engine/World.h>
-#include <WorldPartition/WorldPartitionSubsystem.h>
+
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include <Engine/GameInstance.h>
+#include <Math/UnrealMathUtility.h>
 
 #pragma region Base
-
-UGameSystem::UGameSystem()
-{
-	GameClearEvent.AddDynamic(this, &ThisClass::GameClear);
-}
 
 void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	auto& AssetManager = UEHAssetManager::Get();
-	AssetManager.InitAnomalyEntries();
-
-	Floor = STARTFLOOR;
-	ActIndex = 0;
-
-	bIsClear = USaveManager::LoadData_GameClear();
-	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
-	FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
-	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
-
-	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
-
-	AnomalyRules = Data_Manual.ActiveRules;
-	if (bIsClear && bExceptClearedAnomaly)
-	{
-		const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
-
-		AssetManager.ResetClearedAnomaly();
-		for (const auto& ID : LoadedHistory)
-		{
-			AssetManager.MarkAnomalyCleared(ID);
-		}
-	}
-
-	InitializePool();
+	Collection.InitializeDependency<UFloorProgressSubsystem>();
+	Collection.InitializeDependency<UDataLayerStreamingSubsystem>();
+	Collection.InitializeDependency<UAnomalyPoolSubsystem>();
+	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
+	Collection.InitializeDependency<UElevatorManagerSubsystem>();
 
 	ChooseKeyIndex = FMath::RandRange(1, 2);
-}
-
-#pragma endregion
-
-#pragma region Level
-
-void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
-{
-	if (bIsFirstStartFloor)
-	{
-		bIsStartInBed = true;
-	}
-	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
-	if (!World)
-	{
-		if (UGameInstance* GI = GetGameInstance())
-		{
-			GI->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
-				[this, DataLayer]() { OnChangedDataLayer(DataLayer); }));
-		}
-		return;
-	}
-	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
-}
-
-void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLayerInstance* TargetInstance)
-{
-	if (!World || !TargetInstance)
-	{
-		return;
-	}
-
-	for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
-	{
-		if (!StreamingLevel)
-		{
-			continue;
-		}
-		ULevel* Level = StreamingLevel->GetLoadedLevel();
-		if (!Level)
-		{
-			continue;
-		}
-
-		for (AActor* Actor : Level->Actors)
-		{
-			AAnomaly_Object_Base* AnomalyObject = Cast<AAnomaly_Object_Base>(Actor);
-			if (!AnomalyObject)
-			{
-				continue;
-			}
-
-			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstances();
-			if (ActorLayers.Contains(TargetInstance))
-			{
-				RegisterAnomalyObject(AnomalyObject);
-			}
-		}
-	}
-}
-
-void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered)
-{
-	UWorld* World = GetWorld();
-	UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance());
-	const UDataLayerInstance* TargetInstance = GameInstance ? GameInstance->GetDataLayerInstance(DataLayer) : nullptr;
-
-	if (!World || !TargetInstance)
-	{
-		return;
-	}
-
-	TWeakObjectPtr<UWorld> WeakWorld = World;
-
-	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, WeakWorld, DataLayer, TargetInstance]()
-		{
-			UWorld* SafeWorld = WeakWorld.Get();
-			if (!SafeWorld)
-			{
-				return;
-			}
-			UWorldPartitionSubsystem* WPSubsystem = SafeWorld->GetSubsystem<UWorldPartitionSubsystem>();
-			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
-			{
-				return;
-			}
-
-			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
-			VisitedDataLayers.Add(DataLayer);
-			CurrentDataLayer = DataLayer;
-			FloorChange_Reset.Broadcast();
-		}), 0.1f, true);
-}
-
-#pragma endregion
-
-#pragma region Verdict
-
-bool UGameSystem::ComputeVerdict() const
-{
-	switch (VerdictMode)
-	{
-	case EAnomalyVerdictMode::Both_AND:
-		return bIsAnomalySolved && !bIsElevatorNormal;
-	case EAnomalyVerdictMode::Normal:
-		return bIsAnomalySolved && bIsElevatorNormal;
-	default:
-		return false;
-	}
-}
-
-void UGameSystem::ApplyVerdict()
-{
-	auto& AssetManager = UEHAssetManager::Get();
-	bPassed = ComputeVerdict();
-	if (bPassed)
-	{
-		SubFloor();
-		bIsStartInBed = false;
-		if (bExceptClearedAnomaly)
-		{
-			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
-			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
-		}
-	}
-	else
-	{
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-		PC->SetPlayerInputAble(true);
-		ResetFloor();
-
-		UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-		NextAnomalyMap = EMapDataLayer::Hotel;
-		if (Cast<AEHPlayer>(Player)->bIsDead)
-		{
-			bIsStartInBed = true;
-			RemoveTargetElevator();
-		}
-		else
-		{
-			bIsStartInBed = false;
-		}
-	}
-	bIsAnomalySolved = false;
-	bWrongInteractionOccurred = false;
-	bIsFirstStartFloor = false;
-	LoadNextMap();
-}
-
-void UGameSystem::TryInteractSolveVerdict()
-{
-	if (bWrongInteractionOccurred)
-	{
-		SetIsAnomalySolved(false);
-		return;
-	}
-	if (AAnomaly_Event* Neo = Cast<AAnomaly_Event>(CurrentAnomaly))
-	{
-		Neo->InteractSolveVerdict();
-	}
-}
-
-#pragma endregion
-
-#pragma region Anomaly
-
-void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
-{
-	CurrentAnomaly = Anomaly;
-	CurrentAnomalyID = AnomalyID;
-	CurrentAnomaly->AnomalyID = AnomalyID;
-	CurrentDataLayer = AnomalyMap;
-	SetTargetElevator();
-	CurrentAnomaly->SetAnomalyState();
-	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
-	{
-		++ActIndex;
-	}
-	StartAllElevator();
-}
-
-void UGameSystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
-{
-	NextAnomalyID = AnomalyID;
-	NextAnomalyMap = AnomalyMap;
-}
-
-void UGameSystem::LoadNextMap()
-{
-	FloorChange_Disable.Broadcast();
-	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	const EMapDataLayer ActualCurrentLayer = GameInstance->GetCurrentDataLayer();
-	const EMapDataLayer TargetLayer = NextAnomalyMap;
-	GameInstance->SwitchDataLayer(TargetLayer);
-	if (ActualCurrentLayer == TargetLayer)
-	{
-		FloorChange_Reset.Broadcast();
-	}
-}
-
-#pragma endregion
-
-#pragma region Floor
-
-void UGameSystem::SubFloor()
-{
-	if (Floor > 1)
-	{
-		Floor--;
-	}
-	else
-	{
-		GameClearEvent.Broadcast();
-	}
-}
-
-void UGameSystem::AddFloor()
-{
-	if (Floor < STARTFLOOR)
-	{
-		Floor++;
-	}
-}
-
-#pragma endregion
-
-#pragma region Pool & Reset
-
-void UGameSystem::InitializePool()
-{
-	auto& AssetManager = UEHAssetManager::Get();
-	AnomalyCount = AssetManager.GetOriginAnomaly().Num();
-	AssetManager.RebuildActAnomalyFromOrigin();
-
-	ActIndex = 0;
-
-	AssetManager.RemoveNoRuleAnomaly(AnomalyRules);
-
-	if (bExceptClearedAnomaly && !AssetManager.IsClearedAnomalySetEmpty() && AssetManager.GetClearedAnomalyCount() < AnomalyCount)
-	{
-		AssetManager.RemoveClearedAnomaly();
-	}
-
-	AssetManager.ShuffleActAnomaly();
-
-	// Reset Index
-	ActIndex = 0;
-}
-
-void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
-{
-	if (!IsValid(Object))
-	{
-		return;
-	}
-	UClass* ActorClass = Object->GetClass();
-	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
-	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
-
-	if (VisitedDataLayers.Contains(CurrentDataLayer))
-	{
-		Object->Reset();
-	}
-}
-
-void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
-{
-	if (!Object) return;
-	UClass* TargetClass = Object->GetClass();
-	if (FAnomalyObjectArray* FoundStruct = AnomalyObjectPool.Find(TargetClass))
-	{
-		FoundStruct->Objects.Remove(Object);
-		if (FoundStruct->Objects.IsEmpty())
-		{
-			AnomalyObjectPool.Remove(TargetClass);
-		}
-		if (IsValid(CurrentAnomaly))
-		{
-			CurrentAnomaly->LinkedObjects.Remove(Object);
-		}
-	}
-}
-
-void UGameSystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
-{
-	AnomalyRules.AddUnique(AnomalyRule);
-	FSaveData_Manual SavedRules;
-	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
-	InitializePool();
-	OnAddAnomalyRule.Broadcast(AnomalyRule);
-}
-
-void UGameSystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
-{
-	AnomalyRules.Remove(AnomalyRule);
-	FSaveData_Manual SavedRules;
-	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
-	InitializePool();
-	OnAddAnomalyRule.Broadcast(AnomalyRule);
-}
-
-#pragma endregion
-
-#pragma region Clear
-
-void UGameSystem::GameClear()
-{
-	bIsClear = true;
-	Floor = STARTFLOOR;
-
-	USaveManager::SaveData_GameClear(true);
-}
-
-void UGameSystem::RegisterElevator(class AElevator* Elevator)
-{
-	Elevators.Add(Elevator->ElevatorID, Elevator);
-}
-
-void UGameSystem::UnRegisterElevator(FName ElevatorID)
-{
-	Elevators.Remove(ElevatorID);
-}
-
-void UGameSystem::SetTargetElevator()
-{
-	TargetElevator = Elevators.FindRef(CurrentAnomaly->TargetElevatorID);
-}
-
-void UGameSystem::RemoveTargetElevator()
-{
-	TargetElevator = nullptr;
-}
-
-void UGameSystem::StartAllElevator()
-{
-	for (const auto& Elevator : Elevators)
-	{
-		Elevator.Value->StartElevator();
-	}
-}
-
-AElevator* UGameSystem::GetElevatorByID(FName TargetID)
-{
-	return Elevators.FindRef(TargetID).Get();
-}
-
-bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
-{
-	return (TargetElevator == Elevator) ? true : false;
 }
 
 #pragma endregion
@@ -418,31 +31,36 @@ bool UGameSystem::IsTargetElevator(const AElevator* Elevator)
 
 void UGameSystem::ResetGameSystem()
 {
-	Floor = STARTFLOOR;
-	bIsFirstStartFloor = true;
-	bPassed = false;
-	bIsAnomalySolved = false;
-	bIsElevatorNormal = false;
+	UGameInstance* GameInstance = GetGameInstance();
+	if (!GameInstance)
+	{
+		return;
+	}
 
-	AnomalyCount = 0;
-	ActIndex = 0;
-	CurrentAnomaly = nullptr;
-	CurrentAnomalyID = EAnomalyID::None;
-	NextAnomalyID = EAnomalyID::None;
-	NextAnomalyMap = EMapDataLayer::Hotel;
-	CurrentDataLayer = EMapDataLayer::Hotel;
-	bIsStartInBed = false;
+	if (UFloorProgressSubsystem* FloorSys = GameInstance->GetSubsystem<UFloorProgressSubsystem>())
+	{
+		FloorSys->ResetFloorProgress();
+	}
 
-	TargetElevator = nullptr;
-	RelativePlayerLocation = FVector::ZeroVector;
-	RelativePlayerRotation = FRotator::ZeroRotator;
-	ElevatorOffset = FRotator::ZeroRotator;
-	PlayerVelocity = 0.f;
+	if (UDataLayerStreamingSubsystem* DataLayerSys = GameInstance->GetSubsystem<UDataLayerStreamingSubsystem>())
+	{
+		DataLayerSys->ResetDataLayerState();
+	}
 
-	bIsClear = USaveManager::LoadData_GameClear();
-	FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
-	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
-	InitializePool();
+	if (UAnomalyVerdictSubsystem* VerdictSys = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>())
+	{
+		VerdictSys->ResetVerdict();
+	}
+
+	if (UElevatorManagerSubsystem* ElevatorSys = GameInstance->GetSubsystem<UElevatorManagerSubsystem>())
+	{
+		ElevatorSys->ResetElevatorState();
+	}
+
+	if (UAnomalyPoolSubsystem* PoolSys = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>())
+	{
+		PoolSys->ResetPool();
+	}
 }
 
 #pragma endregion

@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include <Components/TimelineComponent.h>
@@ -39,8 +39,8 @@ void AAnomaly_Object_WChair::BeginPlay()
 
 void AAnomaly_Object_WChair::StartMove()
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(Sub->CurrentAnomaly);
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(VerdictSub->CurrentAnomaly);
 	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &ThisClass::OnCrawlChildSpawnedHandler);
 
 	Timeline_WheelSpin->PlayFromStart();

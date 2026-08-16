@@ -2,7 +2,9 @@
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Component/Float/FloatComponent.h"
 #include <Kismet/KismetSystemLibrary.h>
 
@@ -26,15 +28,16 @@ void AAnomaly_Object_Base::BeginPlay()
 
     OriginalTransform = GetActorTransform();
     
-    auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
-    GameSystem->RegisterAnomalyObject(this);
+    auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+    FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    AnomalySub->RegisterAnomalyObject(this);
 }
 
 void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-    auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    GameSystem->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
+    auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    FloorSub->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
 
     SetActorTransform(OriginalTransform);
 
@@ -47,8 +50,8 @@ void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 void AAnomaly_Object_Base::Reset()
 {
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if (!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+    if (!IsValid(VerdictSub->CurrentAnomaly) || !VerdictSub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
     {
         bSolved = true;
     }
@@ -75,14 +78,14 @@ void AAnomaly_Object_Base::Reset()
 void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    const bool bIsAnomalyTarget = IsValid(Sub) && IsValid(Sub->CurrentAnomaly) && Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this);
+    auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+    const bool bIsAnomalyTarget = IsValid(VerdictSub) && IsValid(VerdictSub->CurrentAnomaly) && VerdictSub->CurrentAnomaly->TargetAnomalyObjects.Contains(this);
     if (!bIsAnomalyTarget)
     {
         bSolved = false;
-        if (IsValid(Sub))
+        if (IsValid(VerdictSub))
         {
-            Sub->bWrongInteractionOccurred = true;
+            VerdictSub->bWrongInteractionOccurred = true;
         }
     }
     else if (bIsOrderedInteractTypes)

@@ -5,7 +5,9 @@
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include <EngineUtils.h>
 
@@ -18,8 +20,8 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 		return;
 	}
 
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	auto ObjectPool = Sub->GetAnomalyObject();
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	auto ObjectPool = AnomalySub->GetAnomalyObject();
 
 	const EAnomalyID TargetAnomalyName = static_cast<EAnomalyID>(CurrentAnomaly->AnomalyID);
 
@@ -46,8 +48,8 @@ void AAnomaly_Generator::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_O
 void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
 }
 
@@ -57,11 +59,12 @@ void AAnomaly_Generator::BeginPlay()
 
 void AAnomaly_Generator::SpawnAnomaly()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* FloorSubsystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 	auto& AssetManager = UEHAssetManager::Get();
 
 	FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
-	if (Subsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
+	if (FloorSubsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
 	{
 		const FAnomalyEntry& NormalData = AssetManager.GetNormalAnomalyData();
 		CurrentData.bIsNormal = true;
@@ -74,29 +77,29 @@ void AAnomaly_Generator::SpawnAnomaly()
 
 	TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = AssetManager.GetObjectByID(CurrentAnomaly->AnomalyID);
 	AnomalyObjectLinker(TargetClasses);
-	Subsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
+	VerdictSubsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
 	NextAnomalyData = DecideNext();
-	Subsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+	VerdictSubsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
 	if (bIsInitialFloor)
 	{
 		bIsInitialFloor = false;
 	}
 	else
 	{
-		Subsystem->OnAnomalySpawned.Broadcast();
+		VerdictSubsystem->OnAnomalySpawned.Broadcast();
 	}
 }
 
 FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNormal)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto& AssetManager = UEHAssetManager::Get();
 	bool bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
 
 	if (!bHasAnomaly)
 	{
-		Sub->InitializePool();
-		Index = Sub->ActIndex;
+		AnomalySub->InitializePool();
+		Index = AnomalySub->ActIndex;
 		bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
 	}
 	const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? AssetManager.GetNormalAnomalyData() : AssetManager.GetActAnomalyByIndex(Index);
@@ -112,11 +115,11 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNorm
 
 FAnomalySpawnInfo AAnomaly_Generator::DecideNext()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	constexpr int32 NormalChance = 15;
 	const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance;
 
-	return DecideAnomaly(Subsystem->ActIndex, bForceNormal);
+	return DecideAnomaly(AnomalySub->ActIndex, bForceNormal);
 }
 
 AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel)
@@ -143,7 +146,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
 {
 	auto& AssetManager = UEHAssetManager::Get();
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
 	FAnomalyEntry Data;
 	if (!AssetManager.TryGetActAnomalyEntryByID(ID, Data))
@@ -159,8 +162,8 @@ bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
 	Info.EventClass = Data.Event;
 
 	NextAnomalyData = Info;
-	Sub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
-	Sub->NextAnomalyID = ID;
+	VerdictSub->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+	VerdictSub->NextAnomalyID = ID;
 
 	return true;
 }

@@ -4,7 +4,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include "Character/AI/MazeMonster/MazeMonster.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "Character/AI/BaseAIController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
@@ -79,8 +79,8 @@ void AAnomaly_Object_Maze::StartAI()
 
 void AAnomaly_Object_Maze::SetElevator()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Elevator = Subsystem->GetElevatorByID(TakeOnElevatorID);
+	auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+	Elevator = ElevatorSub->GetElevatorByID(TakeOnElevatorID);
 	ElevatorWall = Elevator->ElevatorUnderWall;
 	ElevatorEntrance = Elevator->LinkedEntrance;
 	Elevator->SetActorLocation(FVector(-5210, 1435, -2927));
@@ -91,7 +91,6 @@ void AAnomaly_Object_Maze::SetElevator()
 
 void AAnomaly_Object_Maze::SetElevatorPos()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Elevator->SetActorLocation(ElevatorPoint.ElevatorLocation);
 	Elevator->SetActorRotation(ElevatorPoint.ElevatorRotation);
 	Elevator->StandardPos = ElevatorPoint.ElevatorLocation;

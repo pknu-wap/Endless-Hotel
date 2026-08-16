@@ -2,7 +2,7 @@
 
 
 #include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 
 #pragma region Base
 

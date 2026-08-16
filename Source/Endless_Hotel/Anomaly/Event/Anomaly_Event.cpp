@@ -1,7 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
@@ -26,7 +27,7 @@ void AAnomaly_Event::BeginPlay()
 
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 
-	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* SubSystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	SubSystem->FloorChange_Disable.AddUniqueDynamic(this, &ThisClass::DisableAnomaly);
 }
 
@@ -63,7 +64,7 @@ void AAnomaly_Event::StartAnomalyAction()
 
 void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 	Sub->SetVerdictMode(NewMode); // VerdictMode Setting
 }
 
@@ -141,7 +142,7 @@ void AAnomaly_Event::ScheduleAnomaly(float Delay)
 
 void AAnomaly_Event::InteractSolveVerdict()
 {
-	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 	bool bAllSolved = true;
 
 	for (const auto& AnomalyObject : TargetAnomalyObjects)

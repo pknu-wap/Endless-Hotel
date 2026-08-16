@@ -2,7 +2,7 @@
 
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Components/ArrowComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
@@ -38,7 +38,7 @@ void AElevator_Button::BeginPlay()
 
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
     Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
 }
 #pragma endregion

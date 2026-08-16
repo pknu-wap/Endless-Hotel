@@ -2,7 +2,9 @@
 
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
@@ -21,10 +23,12 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Player->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
 
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
-	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
-	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	FloorSub->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
+	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
+	VerdictSub->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
 
 	AddDebugAnomalyRule(EAnomalyRule::None);
 	ChangeDebugAnomaly();
@@ -175,8 +179,8 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 {
 	VB_Rule->ClearChildren();
 
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	for (auto Rule : Subsystem->AnomalyRules)
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	for (auto Rule : AnomalySub->AnomalyRules)
 	{
 		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
 		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
@@ -187,10 +191,10 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 
 void UUI_HUD_InGame::ChangeDebugAnomaly()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
-	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->CurrentAnomalyID)));
-	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->NextAnomalyID)));
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->NextAnomalyID)));
 }
 
 #pragma endregion

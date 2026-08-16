@@ -7,7 +7,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
@@ -51,8 +51,8 @@ void AAnomaly_Object_CrawlChild::BeginPlay()
 
 void AAnomaly_Object_CrawlChild::SetupCrawlChildObject()
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(Sub->CurrentAnomaly);
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(VerdictSub->CurrentAnomaly);
 	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &ThisClass::OnCrawlChildSpawnedHandler);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
