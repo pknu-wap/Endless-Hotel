@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/ShelfBook/Anomaly_Object_ShelfBook.h"
 #include <Components/AudioComponent.h>
@@ -33,6 +33,17 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 		OriginalBookRelativeTransforms.Add(Comp->GetRelativeTransform());
 	}
 }
+#pragma endregion
+
+#pragma region Reset
+
+void AAnomaly_Object_ShelfBook::Reset()
+{
+	Super::Reset();
+
+	StartRestoring();
+}
+
 #pragma endregion
 
 #pragma region Fall

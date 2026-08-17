@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #pragma once
 
@@ -18,6 +18,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+#pragma endregion
+
+#pragma region Reset
+
+public:
+	virtual void Reset() override { StopRadio(); }
 
 #pragma endregion
 
