@@ -15,6 +15,23 @@ AAnomaly_Object_Windup::AAnomaly_Object_Windup(const FObjectInitializer& ObjectI
 
 #pragma endregion
 
+#pragma region Reset
+
+void AAnomaly_Object_Windup::Reset()
+{
+	Super::Reset();
+
+	SKM_Windup->SetHiddenInGame(true);
+	SKM_Windup->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SKM_Windup->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+
+	Object->SetHiddenInGame(true);
+	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+}
+
+#pragma endregion
+
 #pragma region Set
 
 void AAnomaly_Object_Windup::SetWindup()

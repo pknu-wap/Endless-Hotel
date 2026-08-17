@@ -75,8 +75,10 @@ void AAnomaly_Fire::SpawnFires()
 	constexpr float FireSpawnDuration = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator);
-			SpawnedFire->StartFire(NS_Fire);
+			FActorSpawnParameters Params;
+			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator, Params);
+			SpawnedFire->StartFire();
 
 			SpawnedFires.Add(SpawnedFire);
 
@@ -114,7 +116,7 @@ void AAnomaly_Fire::SmokeTimer(bool bIsCrouch)
 
 void AAnomaly_Fire::SpawnSmokes()
 {
-	constexpr float FireSpawnDuration = 5.0f;
+	constexpr float SmokeSpawnDuration = 2.0f;
 	GetWorld()->GetTimerManager().SetTimer(SmokeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			auto* NS = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_Smoke, SmokeTransform[SmokeSpawnIndex].GetLocation(), SmokeTransform[SmokeSpawnIndex].Rotator());
@@ -126,7 +128,7 @@ void AAnomaly_Fire::SpawnSmokes()
 			{
 				GetWorld()->GetTimerManager().ClearTimer(SmokeHandle);
 			}
-		}), FireSpawnDuration, true);
+		}), SmokeSpawnDuration, true);
 }
 
 #pragma endregion

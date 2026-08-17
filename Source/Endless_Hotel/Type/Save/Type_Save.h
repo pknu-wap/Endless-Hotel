@@ -100,7 +100,7 @@ public:
 	EOptionValue CameraShake = EOptionValue::On;
 
 	UPROPERTY(SaveGame)
-	float Brightness = 0.5f;
+	float Brightness = 1.f;
 
 public:
 	// System
@@ -183,5 +183,5 @@ public:
 	bool bReadManual = false;
 
 	UPROPERTY(SaveGame)
-	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
+	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch,EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
 };

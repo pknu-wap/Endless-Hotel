@@ -10,7 +10,7 @@
 #include <Delegates/DelegateCombinations.h>
 #include <GameSystem.generated.h>
 
-#define STARTFLOOR 9
+#define STARTFLOOR 8
 
 #pragma region Declare
 
@@ -137,7 +137,7 @@ public:
 	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
 	EMapDataLayer CurrentDataLayer;
 
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch, EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
 	
 	bool bIsStartInBed = false;
 

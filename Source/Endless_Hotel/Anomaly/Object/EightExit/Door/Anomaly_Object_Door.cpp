@@ -48,8 +48,27 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 void AAnomaly_Object_Door::Reset()
 {
 	Super::Reset();
-	Component_Interact->DeactiveInteract();
-	SetLight(false);
+
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (GameSystem->Floor == STARTFLOOR)
+	{
+		SetLight(true);
+	}
+	else
+	{
+		SetLight(false);
+		Component_Interact->DeactiveInteract();
+	}
+
+	TL_Door->Stop();
+	CurrentDoorShake = 0;
+
+	TL_Handle->Stop();
+	CurrentHandleShake = 0;
+
+	GetWorld()->GetTimerManager().ClearTimer(StartHandle);
+	GetWorld()->GetTimerManager().ClearTimer(HandleShakeHandle);
+	GetWorld()->GetTimerManager().ClearTimer(DoorShakeHandle);
 
 	// Door_Close 전용 GhostHand 정리 로직
 	//if (IsValid(SpawnedGhostHandActor))
@@ -115,7 +134,6 @@ void AAnomaly_Object_Door::StartShaking()
 	}
 
 	int32 RandInt = FMath::RandRange(1, 5);
-	FTimerHandle StartHandle;
 	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			AC_Shake->Stop();
@@ -440,8 +458,6 @@ void AAnomaly_Object_Door::ReadyDoor()
 {
 	bIsDoorOpened = false;
 	Component_Interact->RestoreInteract();
-	Object->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
-	Object->SetCollisionResponseToChannel(ECC_Camera, ECR_Block);
 	GetRootComponent()->SetWorldTransform(OriginalTransform);
 
 	Timeline_Open->Stop();

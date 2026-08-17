@@ -34,12 +34,6 @@ void UEHGameInstance::Init()
 	}
 }
 
-void UEHGameInstance::OnStart()
-{
-	Super::OnStart();
-	OnDataLayerChanged.Broadcast(CurrentDataLayer);
-}
-
 #pragma endregion
 
 #pragma region Game

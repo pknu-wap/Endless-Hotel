@@ -28,7 +28,7 @@ public:
 	TArray<FAnomalyEntry> GetAnomalyData(TArray<uint8> Indexes);
 	TArray<FAnomalyEntry> GetAnomalyData(TArray<EAnomalyID> IDs);
 
-	bool IsValidIndexAnomalyData(uint8 Index) { return Data_Anomalies.IsValidIndex(Index); }
+	bool IsValidIndexAnomalyData(uint8 Index) { return ActAnomaly.IsValidIndex(Index); }
 
 private:
 	void LoadAnomalyData();

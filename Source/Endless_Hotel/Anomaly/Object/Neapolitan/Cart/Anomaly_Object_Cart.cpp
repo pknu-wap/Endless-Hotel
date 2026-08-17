@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Cart/Anomaly_Object_Cart.h"
 #include <Components/StaticMeshComponent.h>
@@ -18,6 +18,7 @@ AAnomaly_Object_Cart::AAnomaly_Object_Cart(const FObjectInitializer& ObjectIniti
 
 	AC_Move = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Move"));
 	AC_Move->SetupAttachment(Object);
+	AC_Move->SetAutoActivate(false);
 }
 
 void AAnomaly_Object_Cart::BeginPlay()

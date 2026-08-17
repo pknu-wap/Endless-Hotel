@@ -17,6 +17,10 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Base : public AInteractBase
 public:
 	AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer);
 
+protected:
+	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
 #pragma endregion
 
 #pragma region Reset
@@ -24,8 +28,6 @@ public:
 public:
 	UFUNCTION()
 	virtual void Reset();
-
-	void SetOriginalTransform();
 
 #pragma endregion
 

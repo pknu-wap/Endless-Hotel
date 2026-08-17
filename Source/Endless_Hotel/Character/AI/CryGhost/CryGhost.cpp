@@ -36,6 +36,8 @@ void ACryGhost::SetCryState()
 	AnimInstance->bIsCry = true;
 
 	GetController<ACryGhostController>()->StopAI(TEXT("Don't Move!!!"));
+
+	DeathTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ACryGhost::AdvanceCryGhostState()
@@ -111,6 +113,8 @@ void ACryGhost::AdjustGhostRotation()
 
 void ACryGhost::RunCryGhost()
 {
+	DeathTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 	PlayAnimMontage(AM_Run);
 
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;

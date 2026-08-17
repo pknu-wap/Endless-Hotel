@@ -20,10 +20,35 @@ AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectIniti
 
 }
 
+void AAnomaly_Object_Base::BeginPlay()
+{
+    Super::BeginPlay();
+
+    OriginalTransform = GetActorTransform();
+    
+    auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    GameSystem->RegisterAnomalyObject(this);
+}
+
+void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+    auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    GameSystem->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
+
+    SetActorTransform(OriginalTransform);
+
+    Super::EndPlay(EndPlayReason);
+}
+
+#pragma endregion
+
+#pragma region Reset
+
 void AAnomaly_Object_Base::Reset()
 {
     auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if(!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    if (!IsValid(Sub->CurrentAnomaly) || !Sub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
     {
         bSolved = true;
     }
@@ -35,17 +60,12 @@ void AAnomaly_Object_Base::Reset()
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
     Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
-    
+
     for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
     {
         auto* Mesh = Cast<UStaticMeshComponent>(Target);
         Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
     }
-}
-
-void AAnomaly_Object_Base::SetOriginalTransform()
-{
-    OriginalTransform = GetActorTransform();
 }
 
 #pragma endregion
@@ -65,7 +85,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
             Sub->bWrongInteractionOccurred = true;
         }
     }
-    else if (bIsOrderedInteractTypes)if (bIsOrderedInteractTypes)
+    else if (bIsOrderedInteractTypes)
     {
         if (CorrectInteractTypes[0] == Info.InteractType)
         {

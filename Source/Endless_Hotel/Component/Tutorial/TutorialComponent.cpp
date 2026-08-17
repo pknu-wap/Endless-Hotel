@@ -5,6 +5,7 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
 #include <Components/BoxComponent.h>
 
@@ -50,6 +51,8 @@ void UTutorialComponent::ShowTutorialWidget()
 	{
 		return;
 	}
+	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
 
 	UI_Tutorial->ShowTutorialAnimation(true);
 
@@ -90,6 +93,12 @@ void UTutorialComponent::HideTutorialWidget()
 
 void UTutorialComponent::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	auto* Player = Cast<AEHPlayer>(OtherActor);
+	if (!IsValid(Player))
+	{
+		return;
+	}
+
 	ShowTutorialWidget();
 
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);

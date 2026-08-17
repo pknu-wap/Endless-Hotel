@@ -11,6 +11,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
+#include <GameFramework/Actor.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/World.h>
@@ -68,6 +69,16 @@ void UGameSystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 	{
 		bIsStartInBed = true;
 	}
+	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
+	if (!World)
+	{
+		if (UGameInstance* GI = GetGameInstance())
+		{
+			GI->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this,
+				[this, DataLayer]() { OnChangedDataLayer(DataLayer); }));
+		}
+		return;
+	}
 	WaitForDataLayerReady(DataLayer, VisitedDataLayers.Contains(DataLayer));
 }
 
@@ -98,7 +109,7 @@ void UGameSystem::RegisterAnomalyObjectsInDataLayer(UWorld* World, const UDataLa
 				continue;
 			}
 
-			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstancesForLevel();
+			const TArray<const UDataLayerInstance*> ActorLayers = Actor->GetDataLayerInstances();
 			if (ActorLayers.Contains(TargetInstance))
 			{
 				RegisterAnomalyObject(AnomalyObject);
@@ -118,38 +129,25 @@ void UGameSystem::WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAl
 		return;
 	}
 
+	TWeakObjectPtr<UWorld> WeakWorld = World;
+
 	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, World, DataLayer, TargetInstance, bAlreadyRegistered]()
+		[this, WeakWorld, DataLayer, TargetInstance]()
 		{
-			UWorldPartitionSubsystem* WPSubsystem = World->GetSubsystem<UWorldPartitionSubsystem>();
+			UWorld* SafeWorld = WeakWorld.Get();
+			if (!SafeWorld)
+			{
+				return;
+			}
+			UWorldPartitionSubsystem* WPSubsystem = SafeWorld->GetSubsystem<UWorldPartitionSubsystem>();
 			if (!WPSubsystem || !WPSubsystem->IsStreamingCompleted())
 			{
 				return;
 			}
-			for (ULevelStreaming* StreamingLevel : World->GetStreamingLevels())
-			{
-				if (!StreamingLevel) continue;
-				ULevel* Level = StreamingLevel->GetLoadedLevel();
-				if (!Level || !Level->bIsVisible) continue;
 
-				for (AActor* Actor : Level->Actors)
-				{
-					if (Actor && Actor->GetDataLayerInstancesForLevel().Contains(TargetInstance))
-					{
-						goto ReadyCheckDone;
-					}
-				}
-			}
-			return;
-
-		ReadyCheckDone:
-			if (!bAlreadyRegistered)
-			{
-				RegisterAnomalyObjectsInDataLayer(World, TargetInstance);
-				VisitedDataLayers.Add(DataLayer);
-			}
-
-			World->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
+			VisitedDataLayers.Add(DataLayer);
+			CurrentDataLayer = DataLayer;
 			FloorChange_Reset.Broadcast();
 		}), 0.1f, true);
 }
@@ -203,6 +201,7 @@ void UGameSystem::ApplyVerdict()
 		}
 	}
 	bIsAnomalySolved = false;
+	bWrongInteractionOccurred = false;
 	bIsFirstStartFloor = false;
 	LoadNextMap();
 }
@@ -232,7 +231,7 @@ void UGameSystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyI
 	CurrentDataLayer = AnomalyMap;
 	SetTargetElevator();
 	CurrentAnomaly->SetAnomalyState();
-	if(CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
+	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
 	{
 		++ActIndex;
 	}
@@ -276,7 +275,7 @@ void UGameSystem::SubFloor()
 
 void UGameSystem::AddFloor()
 {
-	if (Floor < 8)
+	if (Floor < STARTFLOOR)
 	{
 		Floor++;
 	}
@@ -314,9 +313,13 @@ void UGameSystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		return;
 	}
 	UClass* ActorClass = Object->GetClass();
-	Object->SetOriginalTransform();
 	FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
 	AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
+
+	if (VisitedDataLayers.Contains(CurrentDataLayer))
+	{
+		Object->Reset();
+	}
 }
 
 void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
@@ -330,7 +333,7 @@ void UGameSystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
 		{
 			AnomalyObjectPool.Remove(TargetClass);
 		}
-		if(IsValid(CurrentAnomaly))
+		if (IsValid(CurrentAnomaly))
 		{
 			CurrentAnomaly->LinkedObjects.Remove(Object);
 		}
