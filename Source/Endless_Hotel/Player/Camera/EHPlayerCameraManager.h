@@ -23,17 +23,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Data Layer
-
-private:
-	UFUNCTION()
-	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
-
-private:
-	bool bIsFirstHotel = true;
-
-#pragma endregion
-
 #pragma region Post Processing
 
 private:
@@ -52,7 +41,7 @@ private:
 
 public:
 	void StartEyeEffect(bool bIsOpen);
-	void LoadingEyeEffect();
+	float LoadingEyeEffect();
 
 private:
 	void SetEyeEffect();
@@ -60,7 +49,7 @@ private:
 	UFUNCTION()
 	void OnValueChangedEyeEffect(float Value);
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> M_EyeEffect;
 
@@ -68,16 +57,21 @@ protected:
 	TObjectPtr<UCurveFloat> CV_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
+	TObjectPtr<UCurveFloat> CV_EyeClose;
+
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> CV_Loading;
 
-private:
-	FTimerHandle WaitHandle;
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_EyeOpen;
 
 	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> TimeLine_Eye;
+	TObjectPtr<class UTimelineComponent> TimeLine_EyeClose;
 
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Loading;
+
+	FTimerHandle BindHandle;
 
 #pragma endregion
 
@@ -90,15 +84,21 @@ public:
 
 #pragma endregion
 
-#pragma region Camera
+#pragma region Register
 
 public:
 	void RegisterCamera(const ECameraType& CameraType, class AEHCameraActor* Camera) { Cameras.Add(CameraType, Camera); }
-	void ActiveCameraShake(bool bActive);
 
 private:
 	UPROPERTY()
 	TMap<ECameraType, TObjectPtr<class AEHCameraActor>> Cameras;
+
+#pragma endregion
+
+#pragma region Option
+
+public:
+	void ActiveCameraShake(bool bActive);
 
 #pragma endregion
 

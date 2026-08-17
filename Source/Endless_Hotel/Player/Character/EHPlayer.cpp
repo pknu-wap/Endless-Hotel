@@ -2,10 +2,8 @@
 
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Player/Camera/EHPlayerCameraManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include <Components/AudioComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Camera/CameraComponent.h>
 #include <Kismet/GameplayStatics.h>
@@ -34,7 +32,7 @@ void AEHPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	RespawnPlayer();
+	RevivePlayer();
 }
 
 #pragma endregion
@@ -92,13 +90,6 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	SubSystem->ApplyVerdict();
 
-	FTimerHandle EyeHandle;
-	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-			CameraManager->StartEyeEffect(false);
-		}), AnimLength, false);
-
 	constexpr float ReviveDuration = 6.f;
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ThisClass::RevivePlayer, AnimLength + ReviveDuration, false);
@@ -110,10 +101,7 @@ void AEHPlayer::RevivePlayer()
 
 	RespawnPlayer();
 	SetWalkSpeed(WALK_SPEED);
-
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->StartEyeEffect(true);
-
+	
 	Camera->bUsePawnControlRotation = true;
 
 	OnRevive.Broadcast();

@@ -46,7 +46,7 @@ void AEHPlayerController::BeginPlay()
 	IMC_Backup = IMC_Default;
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OpenHUDWidget);
 
 	OpenHUDWidget(EMapDataLayer::Lobby);
 }

@@ -39,27 +39,19 @@ protected:
 
 public:
 	void SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
-	void SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
-
 	void ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive);
 
 	const EMapDataLayer& GetCurrentDataLayer() { return CurrentDataLayer; }
-
 	UDataLayerInstance* GetDataLayerInstance(const EMapDataLayer& Target);
 
 private:
-	void WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
-
 	UDataLayerAsset* GetDataLayerAsset(const EMapDataLayer& Target);
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EMapDataLayer&, DataLayer);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDataLayerChanged, const EMapDataLayer&);
 	FOnDataLayerChanged OnDataLayerChanged;
 
 private:
-	FTimerHandle SwitchHandle;
-	FTimerHandle WaitHandle;
-
 	EMapDataLayer CurrentDataLayer = EMapDataLayer::Lobby;
 
 #pragma endregion

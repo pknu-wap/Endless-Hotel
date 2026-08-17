@@ -183,5 +183,7 @@ public:
 	bool bReadManual = false;
 
 	UPROPERTY(SaveGame)
-	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch,EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
+	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 };
+
+#pragma endregion

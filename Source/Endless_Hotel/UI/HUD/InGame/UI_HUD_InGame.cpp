@@ -6,6 +6,7 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Components/TextBlock.h>
@@ -20,12 +21,12 @@ void UUI_HUD_InGame::NativeOnInitialized()
 
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Player->CanInteract.AddUObject(this, &ThisClass::ChangeCrosshair);
-	Player->OnRevive.AddUObject(this, &ThisClass::RemoveEyeEffectBlur);
+	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
+	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
-	Subsystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
-	Subsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
+	Subsystem->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
+	Subsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
 
 	AddDebugAnomalyRule(EAnomalyRule::None);
 	ChangeDebugAnomaly();
@@ -42,7 +43,11 @@ void UUI_HUD_InGame::ShowWidget()
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
 
-	ShowCrosshair(true);
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCameraToPlayer();
+	CameraManager->StartEyeEffect(true);
+
+	StartInGameHUD(true);
 }
 
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
@@ -57,33 +62,25 @@ void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
 
 void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 {
-	if (bCanInteract)
+	if (bCanInteract == bIsCrosshairInteractMode)
 	{
-		if (!bIsCrosshairInteractMode)
-		{
-			PlayAnimation(WidgetAnim_Interact);
-			bIsCrosshairInteractMode = true;
-		}
+		return;
 	}
-	else
-	{
-		if (bIsCrosshairInteractMode)
-		{
-			PlayAnimation(WidgetAnim_Normal);
-			bIsCrosshairInteractMode = false;
-		}
-	}
+
+	UWidgetAnimation* TargetAnim = bCanInteract ? WidgetAnim_Interact : WidgetAnim_Normal;
+	PlayAnimation(TargetAnim);
+
+	bIsCrosshairInteractMode = !bIsCrosshairInteractMode;
 }
 
 void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
 {
-	if (bIsStart)
+	if (!bIsStart)
 	{
-		PlayAnimation(WidgetAnim_ShowCrosshair);
 		return;
 	}
-	
-	Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
+
+	PlayAnimation(WidgetAnim_ShowCrosshair);
 }
 
 #pragma endregion
@@ -121,21 +118,6 @@ void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
 			}
 		}), 0.01f, true);
-}
-
-void UUI_HUD_InGame::RemoveEyeEffectBlur()
-{
-	BackBlur->SetBlurStrength(0.f);
-}
-
-#pragma endregion
-
-#pragma region Demo
-
-void UUI_HUD_InGame::OpenDemoWidget()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_Demo);
 }
 
 #pragma endregion

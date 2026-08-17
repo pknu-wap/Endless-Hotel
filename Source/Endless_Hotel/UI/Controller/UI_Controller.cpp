@@ -9,7 +9,7 @@
 
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
+UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Duration)
 {
 	if (WidgetStack.Contains(WidgetType))
 	{
@@ -41,7 +41,11 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 		CachedWidgets.Add(WidgetType, CreatedWidget);
 	}
 
-	CreatedWidget->ShowWidget();
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, CreatedWidget]()
+		{
+			CreatedWidget->ShowWidget();
+		}), Duration, false);
 
 	switch (CreatedWidget->WidgetLayer)
 	{
@@ -63,7 +67,7 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 	return CreatedWidget;
 }
 
-void UUI_Controller::CloseWidget()
+void UUI_Controller::CloseWidget(float Duration)
 {
 	UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
 
@@ -72,7 +76,12 @@ void UUI_Controller::CloseWidget()
 		return;
 	}
 
-	TopWidget->HideWidget();
+	FTimerHandle HideHandle;
+	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this, TopWidget]()
+		{
+			TopWidget->HideWidget();
+		}), Duration, false);
+
 	WidgetStack.Pop();
 
 	TopWidget = CachedWidgets[WidgetStack.Top()];

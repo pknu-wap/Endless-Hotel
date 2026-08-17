@@ -1,16 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Slider/Loading/UI_Slider_Loading.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 
 #pragma region Base
-
-void UUI_Slider_Loading::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
-
-	GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-}
 
 void UUI_Slider_Loading::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {

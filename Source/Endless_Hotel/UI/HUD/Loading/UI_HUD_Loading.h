@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Type/Level/Type_Level.h"
 #include "UI/HUD/UI_HUD_Base.h"
 #include <CoreMinimal.h>
 #include <UI_HUD_Loading.generated.h>
@@ -22,18 +21,9 @@ public:
 
 #pragma region Loading
 
-public:
-	bool IsLoadingCompleted();
-
 private:
-	void OnPossessedCamera();
-
-protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UUI_Slider_Loading> Slider_Loading;
-
-private:
-	FTimerHandle PossessHandle;
 	
 #pragma endregion
 
@@ -41,27 +31,24 @@ private:
 
 public:
 	void StartLoadingEyeEffect();
-	bool IsCompletedEyeEffect() { return bIsCompletedEyeEffect; }
-
-private:
-	void WaitEyeEffect();
 
 private:
 	FTimerHandle WaitHandle;
-	bool bIsCompletedEyeEffect = false;
 
 #pragma endregion
 
 #pragma region SandClock
 
-protected:
+public:
+	void SpawnSandClock();
+
+private:
 	UPROPERTY(EditAnywhere, Category = "SandClock")
 	TSubclassOf<class ASandClock> SandClockClass;
 
 	UPROPERTY(EditAnywhere, Category = "SandClock")
 	FTransform ClockSpawnTrans;
 
-private:
 	UPROPERTY()
 	TObjectPtr<class ASandClock> SandClock;
 

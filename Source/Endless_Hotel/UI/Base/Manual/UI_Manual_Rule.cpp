@@ -17,7 +17,7 @@ void UUI_Manual_Rule::NativeOnInitialized()
 	Text_Description->SetText(Description);
 
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->OnAddAnomalyRule.AddDynamic(this, &ThisClass::ChangeTextState);
+	GameSystem->OnAddAnomalyRule.AddUObject(this, &ThisClass::ChangeTextState);
 
 	if (GameSystem->AnomalyRules.Contains(AnomalyRule))
 	{

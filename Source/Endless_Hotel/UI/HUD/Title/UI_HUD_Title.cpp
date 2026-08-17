@@ -1,8 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/HUD/Title/UI_HUD_Title.h"
+#include "UI/HUD/Loading/UI_HUD_Loading.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
@@ -31,8 +31,10 @@ void UUI_HUD_Title::ShowWidget()
 	Super::ShowWidget();
 
 	SetLogoImage();
-
 	PlayBGM();
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Title);
 }
 
 #pragma endregion
@@ -44,31 +46,24 @@ void UUI_HUD_Title::Click_Start()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->ResetGameSystem();
 
+	constexpr float Duration = 2.f;
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+
 	switch (USaveManager::LoadData_Progression().Progression)
 	{
 	case EGameProgression::CheckIn:
-	{
-		constexpr float Duration = 2.f;
-
-		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-		CameraManager->PossessCameraToPlayer(Duration);
-
 		SetVisibility(ESlateVisibility::Hidden);
 
-		FTimerHandle DelayHandle;
-		GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-			{
-				auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-				UICon->OpenWidget(EWidgetType::HUD_InGame);
-			}), Duration, false);
+		UICon->OpenWidget(EWidgetType::HUD_InGame, Duration);
 		break;
-	}
+
 	default:
-	{
-		UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-		GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
+		auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading, Duration));
+		UI_Loading->SpawnSandClock();
+
+		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+		CameraManager->PossessCamera(ECameraType::SandClock, Duration);
 		break;
-	}
 	}
 }
 
@@ -132,6 +127,7 @@ void UUI_HUD_Title::SetLogoImage()
 {
 	if (!USaveManager::LoadData_GameClear())
 	{
+		Image_Logo->SetBrushFromTexture(Texture_NoClear);
 		return;
 	}
 

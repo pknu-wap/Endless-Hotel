@@ -14,12 +14,7 @@ class ENDLESS_HOTEL_API UUI_Slider_Loading : public UUI_Slider_Base
 #pragma region Base
 
 protected:
-	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-
-private:
-	UPROPERTY()
-	TWeakObjectPtr<class UEHGameInstance> GameInstance;
 
 #pragma endregion
 

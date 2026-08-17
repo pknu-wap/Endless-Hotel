@@ -40,7 +40,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On ? true : false;
 
 	auto* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnChangedDataLayer);
 
 	AnomalyRules = Data_Progression.ActiveRules;
 	if (bIsClear && bExceptClearedAnomaly)

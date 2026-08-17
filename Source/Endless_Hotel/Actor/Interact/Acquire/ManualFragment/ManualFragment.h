@@ -41,7 +41,6 @@ private:
 #pragma region Setting
 
 private:
-	UFUNCTION()
 	void SetManualFragment();
 
 private:

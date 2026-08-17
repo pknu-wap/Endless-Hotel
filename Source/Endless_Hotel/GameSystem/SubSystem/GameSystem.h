@@ -137,11 +137,11 @@ public:
 	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
 	EMapDataLayer CurrentDataLayer;
 
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch, EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 	
 	bool bIsStartInBed = false;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
+	DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
 	FAnomalySpawned OnAnomalySpawned;
 
 private:
@@ -162,7 +162,7 @@ public:
 public:
 	uint8 ActIndex = 0;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule);
 	FOnAddAnomalyRule OnAddAnomalyRule;
 
 private:

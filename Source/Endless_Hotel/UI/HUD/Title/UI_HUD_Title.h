@@ -28,7 +28,7 @@ public:
 
 #pragma region Click
 
-protected:
+private:
 	UFUNCTION()
 	void Click_Start();
 
@@ -46,7 +46,7 @@ public:
 	void PlayButtonAnim_Hover(ETitleButtonType ButtonType);
 	void PlayButtonAnim_Unhover(ETitleButtonType ButtonType);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<class UWidgetAnimation> Anim_Hover_Start;
 
@@ -69,7 +69,7 @@ protected:
 
 #pragma region Button
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Start;
 
@@ -86,9 +86,12 @@ protected:
 protected:
 	void SetLogoImage();
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Logo;
+
+	UPROPERTY(EditAnywhere, Category = "Logo")
+	TObjectPtr<class UTexture2D> Texture_NoClear;
 
 	UPROPERTY(EditAnywhere, Category = "Logo")
 	TObjectPtr<class UTexture2D> Texture_Clear;
@@ -105,12 +108,11 @@ private:
 	void PlayBGM();
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> SW_BGM;
-
-private:
 	UPROPERTY(Transient)
 	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<class USoundWave> SW_BGM;
 
 #pragma endregion
 
