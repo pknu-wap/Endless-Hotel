@@ -22,6 +22,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Reset
+
+public:
+	virtual void Reset() override { StopMusicBox(); }
+
+#pragma endregion
+
 #pragma region Sound
 
 protected:

@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #pragma once
 
@@ -26,6 +26,13 @@ protected:
 
 public:
 	AAnomaly_Object_Windup(const FObjectInitializer& ObjectInitializer);
+
+#pragma endregion
+
+#pragma region Reset
+
+public:
+	virtual void Reset() override;
 
 #pragma endregion
 

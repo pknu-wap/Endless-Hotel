@@ -41,8 +41,12 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 
 void AAnomaly_Object_Painting::Reset()
 {
+	GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
+
 	Super::Reset();
+
 	Object->SetMaterial(1, OriginalMaterial);
+
 	Mesh_LeftEye->SetVisibility(false);
 	Mesh_RightEye->SetVisibility(false);
 
@@ -195,6 +199,7 @@ void AAnomaly_Object_Painting::ChangePicture()
 	Object->SetMaterial(1, AnomalyMaterial);
 }
 
+#pragma endregion
 
 #pragma region Die
 
