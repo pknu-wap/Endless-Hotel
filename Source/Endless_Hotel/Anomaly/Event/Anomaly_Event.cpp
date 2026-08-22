@@ -90,6 +90,7 @@ void AAnomaly_Event::SetAnomalyState()
 		}
 
 		TargetAnomalyObjects.Add(AnomalyObject);
+		AnomalyObject->SetOwnerAnomalyEvent(this);
 	}
 }
 
@@ -98,6 +99,13 @@ void AAnomaly_Event::DisableAnomaly()
 	if (!IsValid(this) || IsActorBeingDestroyed())
 	{
 		return;
+	}
+	for (const auto& Obj : TargetAnomalyObjects)
+	{
+		if (auto* Base = Cast<AAnomaly_Object_Base>(Obj))
+		{
+			Base->ClearOwnerAnomalyEvent();
+		}
 	}
 	this->LinkedObjects.Empty();
 	this->TargetAnomalyObjects.Empty();

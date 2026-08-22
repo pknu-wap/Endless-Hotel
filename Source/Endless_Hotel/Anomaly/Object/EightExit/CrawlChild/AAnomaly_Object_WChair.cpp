@@ -1,8 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include <Components/TimelineComponent.h>
 
@@ -31,6 +32,10 @@ void AAnomaly_Object_WChair::BeginPlay()
 	FOnTimelineFloat Update_Move;
 	Update_Move.BindUFunction(this, "UpdateMove");
 	Timeline_Move->AddInterpFloat(CV_Move, Update_Move);
+
+	FOnTimelineEvent End_Move;
+	End_Move.BindUFunction(this, "EndMove");
+	Timeline_Move->SetTimelineFinishedFunc(End_Move);
 }
 
 #pragma endregion
@@ -39,10 +44,6 @@ void AAnomaly_Object_WChair::BeginPlay()
 
 void AAnomaly_Object_WChair::StartMove()
 {
-	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(VerdictSub->CurrentAnomaly);
-	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &ThisClass::OnCrawlChildSpawnedHandler);
-
 	Timeline_WheelSpin->PlayFromStart();
 	Timeline_Move->PlayFromStart();
 }
@@ -61,6 +62,11 @@ void AAnomaly_Object_WChair::UpdateMove(float Value)
 {
 	FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Value);
 	SetActorLocation(NewLocation);
+}
+
+void AAnomaly_Object_WChair::EndMove()
+{
+	OwnerAnomalyEvent->DispatchToObject<AAnomaly_Object_Door>(&AAnomaly_Object_Door::CloseDoor);
 }
 
 #pragma endregion

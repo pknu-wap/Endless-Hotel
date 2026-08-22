@@ -38,6 +38,7 @@ protected:
 
 public:
 	void SetupCrawlChildObject();
+	void OnCrawlChildSpawnedHandler(class  ACrawlChild* SpawnedCrawlChild);
 
 #pragma endregion
 
@@ -90,11 +91,7 @@ protected:
 	FTransform AIEndTransform;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
-	TWeakObjectPtr<ACrawlChild> CrawlChild;
-
-public:
-	UFUNCTION()
-	void OnCrawlChildSpawnedHandler(ACrawlChild* SpawnedCrawlChild);
+	TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
 #pragma endregion
 

@@ -44,6 +44,9 @@ protected:
 	UFUNCTION()
 	void UpdateMove(float Value);
 
+	UFUNCTION()
+	void EndMove();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Moving|Wheel")
 	TObjectPtr<class UCurveFloat> CV_WheelSpin;
@@ -69,7 +72,6 @@ private:
 #pragma region AI
 
 public:
-	UFUNCTION()
 	void OnCrawlChildSpawnedHandler(class ACrawlChild* SpawnedCrawlChild);
 
 #pragma endregion

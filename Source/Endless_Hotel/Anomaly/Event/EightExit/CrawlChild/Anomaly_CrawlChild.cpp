@@ -5,6 +5,7 @@
 #include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
 #include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
+#include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
@@ -21,6 +22,8 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 	{
 	case EAnomalyID::CrawlChild:
 		SetupAnomalyAction<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::SetupCrawlChildObject);
+		SetupAnomalyAction<ThisClass>(&ThisClass::StartCrawlChild);
+		SetupAnomalyAction<AAnomaly_Object_Ceiling>(&AAnomaly_Object_Ceiling::SetupCrawlChildCeilingObject);
 		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::OpenDoor);
 		SetupAnomalyAction<AAnomaly_Object_WChair>(&AAnomaly_Object_WChair::StartMove);
 		ActiveTrigger();
@@ -60,15 +63,11 @@ void AAnomaly_CrawlChild::ShowSubTitle()
 void AAnomaly_CrawlChild::StartCrawlChild()
 {
 	CrawlChild = GetWorld()->SpawnActor<ACrawlChild>(CrawlChildClass, AIStartTransform);
-	OnCrawlChildSpawned.Broadcast(CrawlChild.Get());
+	CrawlChild->SetOwnerAnomalyEvent(this);
+	DispatchToObject<AAnomaly_Object_WChair>(&AAnomaly_Object_WChair::OnCrawlChildSpawnedHandler, CrawlChild.Get());
+	DispatchToObject<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler, CrawlChild.Get());
 	ACrawlChildController* CrawlChildController = Cast<ACrawlChildController>(CrawlChild->GetController());
 	CrawlChildController->StartWithWheelChair();
-}
-
-void AAnomaly_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	Super::OnTriggerBox(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	StartCrawlChild();
 }
 
 #pragma endregion

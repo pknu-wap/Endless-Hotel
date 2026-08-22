@@ -50,8 +50,7 @@ void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 void AAnomaly_Object_Base::Reset()
 {
-    auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-    if (!IsValid(VerdictSub->CurrentAnomaly) || !VerdictSub->CurrentAnomaly->TargetAnomalyObjects.Contains(this))
+    if (!OwnerAnomalyEvent.IsValid())
     {
         bSolved = true;
     }
