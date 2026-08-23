@@ -14,7 +14,7 @@ AAnomaly_Object_Cart::AAnomaly_Object_Cart(const FObjectInitializer& ObjectIniti
 	SM_Cart_Wheel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Cart_Wheel"));
 	SM_Cart_Wheel->SetupAttachment(Object);
 
-	Timeline_WheelSpin = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_WheelSpin"));
+	Timeline_FrontWheelSpin = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_FrontWheelSpin"));
 
 	AC_Move = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Move"));
 	AC_Move->SetupAttachment(Object);
@@ -29,11 +29,11 @@ void AAnomaly_Object_Cart::BeginPlay()
 
 	FOnTimelineFloat Update_WheelSpin;
 	Update_WheelSpin.BindUFunction(this, "UpdateWheelSpin");
-	Timeline_WheelSpin->AddInterpFloat(CV_WheelSpin, Update_WheelSpin);
+	Timeline_FrontWheelSpin->AddInterpFloat(CV_WheelSpin, Update_WheelSpin);
 
 	FOnTimelineEvent Finish_WheelSpin;
 	Finish_WheelSpin.BindUFunction(this, "StartWheelSpin");
-	Timeline_WheelSpin->SetTimelineFinishedFunc(Finish_WheelSpin);
+	Timeline_FrontWheelSpin->SetTimelineFinishedFunc(Finish_WheelSpin);
 
 	AC_Move->SetSound(Sound_Move);
 }
@@ -57,7 +57,7 @@ void AAnomaly_Object_Cart::CartMoving()
 
 	GetWorld()->GetTimerManager().SetTimer(MoveHandle, this, &AAnomaly_Object_Cart::MoveTick, 0.02f, true);
 
-	Timeline_WheelSpin->PlayFromStart();
+	Timeline_FrontWheelSpin->PlayFromStart();
 }
 
 #pragma endregion
@@ -90,7 +90,7 @@ void AAnomaly_Object_Cart::FinishMove()
 	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
 	bIsPlaying = false;
 
-	Timeline_WheelSpin->Stop();
+	Timeline_FrontWheelSpin->Stop();
 
 	AC_Move->Stop();
 }
@@ -101,7 +101,7 @@ void AAnomaly_Object_Cart::FinishMove()
 
 void AAnomaly_Object_Cart::StartWheelSpin()
 {
-	Timeline_WheelSpin->PlayFromStart();
+	Timeline_FrontWheelSpin->PlayFromStart();
 }
 
 void AAnomaly_Object_Cart::UpdateWheelSpin(float Value)

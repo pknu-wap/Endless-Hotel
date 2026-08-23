@@ -36,7 +36,7 @@ public:
 public:
 	void SetSolvedFalse() { bSolved = false; }
 	void SetAnomalyName(EAnomalyID ID) { AnomalyID = ID; }
-	void SetOwnerAnomalyEvent(class AAnomaly_Event* NewEvent) { OwnerAnomalyEvent = NewEvent; }
+	void SetOwnerAnomalyEvent(class AAnomaly_Event* NewEvent);
 	void ClearOwnerAnomalyEvent() { OwnerAnomalyEvent = nullptr; }
 
 public:

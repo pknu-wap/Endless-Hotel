@@ -70,6 +70,11 @@ void AAnomaly_Object_Base::Reset()
     }
 }
 
+void AAnomaly_Object_Base::SetOwnerAnomalyEvent(AAnomaly_Event* NewEvent)
+{
+    OwnerAnomalyEvent = NewEvent;
+}
+
 #pragma endregion
 
 #pragma region Interact
