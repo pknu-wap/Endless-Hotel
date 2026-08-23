@@ -79,8 +79,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Destruction")
 	TObjectPtr<class UGeometryCollectionComponent> GeometryCollection_Ceiling;
 
+	UPROPERTY(EditAnywhere, Category = "Ceiling|Collapse")
+	TSubclassOf<class AFieldSystemActor> FieldSystemActorClass;
+
+	UPROPERTY()
+	TWeakObjectPtr<class AFieldSystemActor> ActiveCollapseFieldWeak;
+
 	UPROPERTY(EditAnywhere, Category = "Destruction")
-	FBox CollapseRegion;
+	TObjectPtr<class UBoxComponent> CollapseRegionBox;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	TWeakObjectPtr<class ACrawlChild> CrawlChild;

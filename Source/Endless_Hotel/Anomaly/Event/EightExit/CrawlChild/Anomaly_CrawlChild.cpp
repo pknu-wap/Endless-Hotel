@@ -37,7 +37,10 @@ void AAnomaly_CrawlChild::SetAnomalyState()
 
 void AAnomaly_CrawlChild::DisableAnomaly()
 {
-	CrawlChild->Destroy();
+	if(CrawlChild.IsValid())
+	{
+		CrawlChild->Destroy();
+	}
 	Super::DisableAnomaly();
 }
 
