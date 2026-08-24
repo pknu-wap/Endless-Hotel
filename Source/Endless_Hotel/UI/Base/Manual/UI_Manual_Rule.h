@@ -22,13 +22,13 @@ protected:
 #pragma region Data
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Data")
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
-	UPROPERTY(EditAnywhere, Category = "Data")
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
 	FText Index;
 
-	UPROPERTY(EditAnywhere, Category = "Data")
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
 	FText Description;
 
 #pragma endregion
@@ -41,7 +41,7 @@ public:
 private:
 	void ChangeTextState(EAnomalyRule Rule);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Index;
 

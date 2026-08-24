@@ -19,7 +19,6 @@ enum class EWidgetType : uint8
 	PopUp_ResetSetting		UMETA(DisplayName = "PopUp_ResetSetting"),
 	PopUp_MainMenuCheck		UMETA(DisplayName = "PopUp_MainMenuCheck"),
 	PopUp_QuitCheck			UMETA(DisplayName = "PopUp_QuitCheck"),
-	PopUp_Tutorial			UMETA(DisplayName = "PopUp_Tutorial"),
 	PopUp_Manual			UMETA(DisplayName = "PopUp_Manual"),
 	PopUp_Acquire			UMETA(DisplayName = "PopUp_Acquire")
 };

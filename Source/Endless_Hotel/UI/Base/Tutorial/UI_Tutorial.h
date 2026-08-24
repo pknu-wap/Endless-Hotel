@@ -17,7 +17,7 @@ public:
 	void SetTargetKey(const FText& Name);
 	void SetTargetDescription(const FText& Name);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Key;
 
@@ -31,7 +31,7 @@ protected:
 public:
 	void ShowTutorialAnimation(bool bIsShow);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> Anim_Show;
 

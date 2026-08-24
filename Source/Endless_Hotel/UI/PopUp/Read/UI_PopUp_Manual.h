@@ -28,7 +28,7 @@ private:
 
 #pragma region Button
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Next;
 
