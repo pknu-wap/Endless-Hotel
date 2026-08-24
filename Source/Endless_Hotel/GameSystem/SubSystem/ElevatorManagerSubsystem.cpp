@@ -1,7 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-
 #include "Actor/Elevator/Elevator.h"
 
 #pragma region Registry
