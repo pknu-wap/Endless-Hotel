@@ -27,7 +27,7 @@ public:
 	UFUNCTION()
 	virtual void Slide_Slider(float Value);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class USlider> Slider_Default;
 

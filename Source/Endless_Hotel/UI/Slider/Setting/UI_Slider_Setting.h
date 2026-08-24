@@ -22,7 +22,7 @@ protected:
 #pragma region Category
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting|Category")
+	UPROPERTY(EditDefaultsOnly, Category = "Setting|Category")
 	EOptionCategory OptionCategory;
 
 #pragma endregion
@@ -32,7 +32,7 @@ public:
 public:
 	virtual void Slide_Slider(float Value) override;
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Value;
 
@@ -46,7 +46,7 @@ public:
 
 	void ShowOffImage(bool bIsCheck);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Off;
 

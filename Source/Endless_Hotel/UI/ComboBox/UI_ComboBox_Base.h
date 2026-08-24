@@ -13,8 +13,8 @@ class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UComboBoxKey
 	
 #pragma region Font
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|Font")
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Setting|Font")
 	FSlateFontInfo Font_ComboBox;
 
 #pragma endregion
@@ -36,7 +36,7 @@ public:
 public:
 	void BindEvents();
 
-protected:
+private:
 	UFUNCTION()
 	UWidget* GenerateItem(FName InKey);
 

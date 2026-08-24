@@ -20,18 +20,18 @@ protected:
 
 #pragma region Button
 
-protected:
+private:
 	UFUNCTION()
 	void ButtonHover();
 
 	UFUNCTION()
 	void ButtonUnhover();
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Hover")
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Hover")
 	FString Color_Hover;
 
-	UPROPERTY(EditAnywhere, Category = "Hover")
+	UPROPERTY(EditDefaultsOnly, Category = "Hover")
 	FString Color_Unhover;
 
 #pragma endregion

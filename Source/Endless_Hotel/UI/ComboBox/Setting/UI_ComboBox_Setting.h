@@ -18,11 +18,11 @@ public:
 	virtual void ActiveComboBox() override;
 	virtual void DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue) override;
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|Active")
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Setting|Active")
 	FLinearColor OutlineColor_Normal;
 
-	UPROPERTY(EditAnywhere, Category = "Setting|Active")
+	UPROPERTY(EditDefaultsOnly, Category = "Setting|Active")
 	FLinearColor OutlineColor_Focus;
 
 #pragma endregion
@@ -30,28 +30,28 @@ protected:
 #pragma region Option
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting|Option")
+	UPROPERTY(EditDefaultsOnly, Category = "Setting|Option")
 	EOptionCategory OptionCategory;
 
 #pragma endregion
 
 #pragma region Screen
 
-protected:
+private:
 	void SetOption_Resolution(FName OptionValue);
 
 #pragma endregion
 
 #pragma region Grapic
 
-protected:
+private:
 	void SetOption_Grapic(FName OptionValue);
 
 #pragma endregion
 
 #pragma region System
 
-protected:
+private:
 	void SetOption_Language(FName OptionValue);
 
 #pragma endregion

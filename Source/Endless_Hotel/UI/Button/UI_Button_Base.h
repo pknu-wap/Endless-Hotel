@@ -20,9 +20,6 @@ protected:
 
 #pragma region Owner
 
-private:
-	void SetWidgetOwner();
-
 protected:
 	UPROPERTY()
 	TWeakObjectPtr<class UUI_Base> Owner;

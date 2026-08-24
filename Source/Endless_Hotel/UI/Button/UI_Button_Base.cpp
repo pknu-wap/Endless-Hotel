@@ -6,18 +6,9 @@
 
 TSharedRef<SWidget> UUI_Button_Base::RebuildWidget()
 {
-	SetWidgetOwner();
+	Owner = GetTypedOuter<UUI_Base>();
 
 	return Super::RebuildWidget();
-}
-
-#pragma endregion
-
-#pragma region Owner
-
-void UUI_Button_Base::SetWidgetOwner()
-{
-	Owner = GetTypedOuter<UUI_Base>();
 }
 
 #pragma endregion

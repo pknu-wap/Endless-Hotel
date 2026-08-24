@@ -6,7 +6,7 @@
 #include <Components/CheckBox.h>
 #include <UI_CheckBox_Base.generated.h>
 
-UCLASS()
+UCLASS(Meta = (DisableNativeTick))
 class ENDLESS_HOTEL_API UUI_CheckBox_Base : public UCheckBox
 {
 	GENERATED_BODY()
