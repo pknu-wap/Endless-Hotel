@@ -26,7 +26,8 @@ public class Endless_Hotel : ModuleRules
             "AdvancedWidgets",
             "Chaos",            
             "ChaosSolverEngine",
-            "GeometryCollectionEngine"
+            "GeometryCollectionEngine",
+            "FieldSystemEngine"
         });
 
         PrivateIncludePaths.Add("Endless_Hotel");

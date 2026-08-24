@@ -19,6 +19,10 @@ public:
 protected:
 	virtual void Tick(float Deltatime) override;
 
+private:
+	UPROPERTY(EditAnywhere, Category = "Eye")
+	TObjectPtr<UStaticMeshComponent> EyeMesh;
+
 #pragma endregion
 
 #pragma region Attack
@@ -27,5 +31,21 @@ private:
 	void AttackPlayer();
 
 #pragma endregion
-	
+
+#pragma region Look
+
+private:
+	void UpdateLookAtPlayer(float DeltaTime);
+
+public:
+	void SetShouldLookAtPlayer(bool bValue) { bShouldLookAtPlayer = bValue; }
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Look")
+	float TurnInterpSpeed = 3.f;
+
+	bool bShouldLookAtPlayer = false;
+
+#pragma endregion
+
 };

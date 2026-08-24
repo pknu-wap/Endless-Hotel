@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Actor/RoomSign/RoomSignActor.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Materials/MaterialInstanceDynamic.h>
 
 #pragma region Base
@@ -17,7 +17,7 @@ void ARoomSignActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
 }
 
@@ -29,7 +29,7 @@ void ARoomSignActor::Reset()
 {
 	DynamicMaterial = SignMesh->CreateAndSetMaterialInstanceDynamic(2);
 	FLinearColor Offset = FLinearColor::Black;
-	UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	uint8 UVFloorValue = FMath::Clamp(Sub->Floor, 1, 8);
 	EFloorUV UVFloor = static_cast<EFloorUV>(UVFloorValue);
 	float GValue = GetOffsetG(UVFloor);

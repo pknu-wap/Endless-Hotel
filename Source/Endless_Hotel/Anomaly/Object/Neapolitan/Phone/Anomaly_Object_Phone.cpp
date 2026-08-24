@@ -17,8 +17,8 @@ AAnomaly_Object_Phone::AAnomaly_Object_Phone(const FObjectInitializer& ObjectIni
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
 
-	Timeline_Move = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Move"));
-	Timeline_Move->SetLooping(false);
+	Timeline_FrontMove = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_FrontMove"));
+	Timeline_FrontMove->SetLooping(false);
 
 	Timeline_Ringing = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_Ringing"));
 	Timeline_Ringing->SetLooping(false);
@@ -32,7 +32,7 @@ void AAnomaly_Object_Phone::BeginPlay()
 
 	FOnTimelineFloat Update_Move;
 	Update_Move.BindUFunction(this, "UpdateMove");
-	Timeline_Move->AddInterpFloat(CV_Move, Update_Move);
+	Timeline_FrontMove->AddInterpFloat(CV_Move, Update_Move);
 
 	FOnTimelineFloat Update_Ringing;
 	Update_Ringing.BindUFunction(this, "UpdateShake");
@@ -52,7 +52,7 @@ void AAnomaly_Object_Phone::Reset()
 	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
 	GetWorld()->GetTimerManager().ClearTimer(ShakeHandle);
 
-	Timeline_Move->Stop();
+	Timeline_FrontMove->Stop();
 	Timeline_Ringing->Stop();
 }
 
@@ -75,7 +75,7 @@ void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
 	GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
 	GetWorld()->GetTimerManager().ClearTimer(ShakeHandle);
 
-	Timeline_Move->Stop();
+	Timeline_FrontMove->Stop();
 	Timeline_Ringing->Stop();
 
 	AC->Stop();
@@ -114,7 +114,7 @@ void AAnomaly_Object_Phone::RingingPhone()
 
 void AAnomaly_Object_Phone::MovePhone()
 {
-	Timeline_Move->PlayFromStart();
+	Timeline_FrontMove->PlayFromStart();
 }
 
 void AAnomaly_Object_Phone::ShakePhone()

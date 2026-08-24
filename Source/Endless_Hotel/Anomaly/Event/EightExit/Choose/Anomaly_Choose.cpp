@@ -2,6 +2,7 @@
 
 #include "Anomaly/Event/EightExit/Choose/Anomaly_Choose.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 
 #pragma region Activity
 

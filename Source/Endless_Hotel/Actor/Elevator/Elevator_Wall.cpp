@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Actor/Elevator/Elevator_Wall.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -15,7 +15,7 @@ AElevator_Wall::AElevator_Wall(const FObjectInitializer& ObjectInitializer)
 
 void AElevator_Wall::ResetWall()
 {
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
     FVector StartLocation = Subsystem->bIsStartInBed && bIsOver ? StandardLocation + End : StandardLocation + Start;
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;

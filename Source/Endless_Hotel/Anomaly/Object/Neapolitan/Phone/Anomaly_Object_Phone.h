@@ -65,7 +65,7 @@ protected:
 	TObjectPtr<class USoundWave> SW_Voice;
 
 	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> Timeline_Move;
+	TObjectPtr<class UTimelineComponent> Timeline_FrontMove;
 
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> Timeline_Ringing;

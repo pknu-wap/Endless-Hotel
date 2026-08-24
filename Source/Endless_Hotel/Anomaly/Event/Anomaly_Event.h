@@ -137,6 +137,21 @@ public:
 
 #pragma region Templete
 
+public:
+	template<typename T, typename... Args>
+	T* DispatchToObject(void (T::* Func)(Args...), Args&&... InArgs)
+	{
+		for (UObject* Obj : TargetAnomalyObjects)
+		{
+			if (T* TypedObj = Cast<T>(Obj))
+			{
+				(TypedObj->*Func)(Forward<Args>(InArgs)...);
+				return TypedObj;
+			}
+		}
+		return nullptr;
+	}
+
 protected:
 	template<typename ObjectType, typename... Args>
 	void SetupAnomalyAction(void (ObjectType::* SelectedFunc)(Args...), FAnomalyActionInfo ActionInfo = FAnomalyActionInfo(), Args&&... FuncArgs)

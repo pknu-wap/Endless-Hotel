@@ -3,7 +3,7 @@
 #include "Anomaly/Object/Neapolitan/Doll/Anomaly_Object_Doll.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Character/AI/ComingDoll/ComingDoll.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Niagara/Public/NiagaraComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/AudioComponent.h>
@@ -128,10 +128,10 @@ void AAnomaly_Object_Doll::BurnTick()
 		Object->SetHiddenInGame(true);
 		Niagara_Fire->Deactivate();
 
-		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-		if (Subsystem->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
+		auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+		if (VerdictSub->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
 		{
-			Subsystem->CurrentAnomaly->InteractSolveVerdict();
+			VerdictSub->CurrentAnomaly->InteractSolveVerdict();
 		}
 
 		GetWorld()->GetTimerManager().ClearTimer(BurnHandle);

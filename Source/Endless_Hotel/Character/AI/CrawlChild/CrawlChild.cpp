@@ -2,7 +2,9 @@
 
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "CrawlChildAnimInstance.h"
+#include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/BoxComponent.h>
@@ -23,6 +25,15 @@ void ACrawlChild::BeginPlay()
 	Super::BeginPlay();
 	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 	this->SetActorEnableCollision(true);
+}
+
+#pragma endregion
+
+#pragma region Setting
+
+void ACrawlChild::SetOwnerAnomalyEvent(AAnomaly_CrawlChild* NewEvent)
+{
+	OwnerAnomalyEvent = NewEvent;
 }
 
 #pragma endregion
@@ -58,7 +69,10 @@ void ACrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	PC->bIsRunning = false;
 	PC->bCanCrouch = false;
 	Move->MaxWalkSpeed = LockSpeed;
-	AnomalyObjectRef->ActiveTriggerBox();
+	if (OwnerAnomalyEvent.IsValid())
+	{
+		OwnerAnomalyEvent->DispatchToObject<AAnomaly_Object_CrawlChild>(&AAnomaly_Object_CrawlChild::ActiveTriggerBox);
+	}
 	if (UCrawlChildAnimInstance* AnimInstance = Cast<UCrawlChildAnimInstance>(GetMesh()->GetAnimInstance()))
 	{
 		AnimInstance->bIsCrawling = false;

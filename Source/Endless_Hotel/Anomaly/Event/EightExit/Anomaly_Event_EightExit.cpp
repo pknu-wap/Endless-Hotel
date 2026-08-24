@@ -1,8 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/EightExit/Anomaly_Event_EightExit.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 
 #pragma region Base
 

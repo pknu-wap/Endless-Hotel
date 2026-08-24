@@ -1,13 +1,14 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
+#include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChildController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
@@ -51,14 +52,16 @@ void AAnomaly_Object_CrawlChild::BeginPlay()
 
 void AAnomaly_Object_CrawlChild::SetupCrawlChildObject()
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-	AAnomaly_CrawlChild* OwnerEvent = Cast<AAnomaly_CrawlChild>(Sub->CurrentAnomaly);
-	OwnerEvent->OnCrawlChildSpawned.AddUniqueDynamic(this, &ThisClass::OnCrawlChildSpawnedHandler);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 	Object->SetWorldTransform(StartTransform);
 	Object->SetVisibility(false);
 	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler(ACrawlChild* SpawnedCrawlChild)
+{
+	CrawlChild = SpawnedCrawlChild;
 }
 
 #pragma endregion
@@ -86,6 +89,7 @@ void AAnomaly_Object_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedCom
 	PC->bCanCrouch = true;
 	Move->MaxWalkSpeed = PC->WalkSpeed;
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	OwnerAnomalyEvent->DispatchToObject<AAnomaly_Object_Ceiling>(&AAnomaly_Object_Ceiling::TriggerCeilingCollapse);
 }
 
 #pragma endregion
@@ -105,16 +109,6 @@ void AAnomaly_Object_CrawlChild::OnFallTimelineFinished()
 	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	ObjectAC->Play();
 	ChildAC->Play();
-}
-
-#pragma endregion
-
-#pragma region AI
-
-void AAnomaly_Object_CrawlChild::OnCrawlChildSpawnedHandler(ACrawlChild* SpawnedCrawlChild)
-{
-	this->CrawlChild = SpawnedCrawlChild;
-	SpawnedCrawlChild->AnomalyObjectRef = this;
 }
 
 #pragma endregion

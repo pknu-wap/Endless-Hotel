@@ -56,7 +56,11 @@ protected:
 	float WalkSpeed;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Look")
+	float LookAtDelay = 2.f;
+
 	FTimerHandle EnterElevatorHandle;
+	FTimerHandle LookAtDelayHandle;
 
 #pragma endregion
 
