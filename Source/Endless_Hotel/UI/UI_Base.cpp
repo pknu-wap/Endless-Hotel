@@ -14,22 +14,8 @@ void UUI_Base::NativeOnInitialized()
 void UUI_Base::NativeConstruct()
 {
 	Super::NativeConstruct();
-
+	
 	SetKeyboardFocus();
-}
-
-#pragma endregion
-
-#pragma region Show & Hide
-
-void UUI_Base::ShowWidget()
-{
-	SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-}
-
-void UUI_Base::HideWidget()
-{
-	SetVisibility(ESlateVisibility::Collapsed);
 }
 
 #pragma endregion

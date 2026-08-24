@@ -7,7 +7,6 @@
 #include "Type/Save/Type_Save.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <UI_PopUp_Setting.generated.h>
 
 UCLASS()

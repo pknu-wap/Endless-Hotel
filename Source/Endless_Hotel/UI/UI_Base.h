@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <Blueprint/UserWidget.h>
+#include <Delegates/DelegateCombinations.h>
 #include <UI_Base.generated.h>
 
 UCLASS(Abstract, Meta = (DisableNativeTick))
@@ -20,24 +20,19 @@ protected:
 
 #pragma endregion
 
-#pragma region Show & Hide
+#pragma region Active
 
 public:
-	virtual void ShowWidget();
-	virtual void HideWidget();
-
-	bool IsActivatedWidget() { return GetVisibility() == ESlateVisibility::SelfHitTestInvisible; }
+	virtual void ActiveWidget() {}
+	virtual void DeactiveWidget() { SetVisibility(ESlateVisibility::Collapsed); }
 
 #pragma endregion
 
-#pragma region Type
+#pragma region Show & Hide
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Type")
-	EWidgetLayer WidgetLayer = EWidgetLayer::None;
-
-	UPROPERTY(EditAnywhere, Category = "Type")
-	EWidgetInputMode WidgetInputMode = EWidgetInputMode::None;
+	virtual void ShowWidget() { SetVisibility(ESlateVisibility::SelfHitTestInvisible); }
+	virtual void HideWidget(){ SetVisibility(ESlateVisibility::Hidden); }
 
 #pragma endregion
 

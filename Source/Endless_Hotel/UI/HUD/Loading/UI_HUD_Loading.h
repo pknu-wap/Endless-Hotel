@@ -11,11 +11,18 @@ class ENDLESS_HOTEL_API UUI_HUD_Loading : public UUI_HUD_Base
 {
 	GENERATED_BODY()
 
-#pragma region Show & Hide
+#pragma region Active
+
+public:
+	virtual void ActiveWidget() override;
+	virtual void DeactiveWidget() override;
+
+#pragma endregion
+
+#pragma region Show
 
 public:
 	virtual void ShowWidget() override;
-	virtual void HideWidget() override;
 
 #pragma endregion
 
@@ -39,14 +46,14 @@ private:
 
 #pragma region SandClock
 
-public:
+private:
 	void SpawnSandClock();
 
 private:
-	UPROPERTY(EditAnywhere, Category = "SandClock")
+	UPROPERTY(EditDefaultsOnly, Category = "SandClock")
 	TSubclassOf<class ASandClock> SandClockClass;
 
-	UPROPERTY(EditAnywhere, Category = "SandClock")
+	UPROPERTY(EditDefaultsOnly, Category = "SandClock")
 	FTransform ClockSpawnTrans;
 
 	UPROPERTY()

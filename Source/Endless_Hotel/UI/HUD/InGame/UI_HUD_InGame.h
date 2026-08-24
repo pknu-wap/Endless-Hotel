@@ -20,11 +20,27 @@ protected:
 
 #pragma endregion
 
-#pragma region Show
+#pragma region Active
 
 public:
-	virtual void ShowWidget() override;
+	virtual void ActiveWidget() override;
+
+#pragma endregion
+
+#pragma region Effect
+
+public:
+	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+
+private:
 	void StartInGameHUD(bool bIsStart);
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBackgroundBlur> BackBlur;
+
+	FTimerHandle BlurHandle;
+	float CurrentStrength = 0.f;
 
 #pragma endregion
 
@@ -35,9 +51,6 @@ private:
 	void ChangeCrosshair(bool bCanInteract);
 
 private:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image_Crosshair_Center;
-
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_ShowCrosshair;
 
@@ -60,20 +73,6 @@ public:
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Brightness;
-
-#pragma endregion
-
-#pragma region Blur
-
-public:
-	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
-
-private:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBackgroundBlur> BackBlur;
-
-	FTimerHandle BlurHandle;
-	float CurrentStrength = 0.f;
 
 #pragma endregion
 

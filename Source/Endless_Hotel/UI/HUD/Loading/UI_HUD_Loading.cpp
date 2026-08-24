@@ -9,6 +9,29 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
 
+#pragma region Active
+
+void UUI_HUD_Loading::ActiveWidget()
+{
+	Super::ActiveWidget();
+
+	SpawnSandClock();
+}
+
+void UUI_HUD_Loading::DeactiveWidget()
+{
+	SandClock->StopRotateClock();
+
+	Slider_Loading->bStartLoading = false;
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
+
+	Super::DeactiveWidget();
+}
+
+#pragma endregion
+
 #pragma region Show
 
 void UUI_HUD_Loading::ShowWidget()
@@ -28,18 +51,6 @@ void UUI_HUD_Loading::ShowWidget()
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
-}
-
-void UUI_HUD_Loading::HideWidget()
-{
-	SandClock->StopRotateClock();
-
-	Slider_Loading->bStartLoading = false;
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
-
-	Super::HideWidget();
 }
 
 #pragma endregion
@@ -65,6 +76,10 @@ void UUI_HUD_Loading::StartLoadingEyeEffect()
 			UICon->OpenWidget(EWidgetType::HUD_InGame);
 		}), Duration, false);
 }
+
+#pragma endregion
+
+#pragma region SandClock
 
 void UUI_HUD_Loading::SpawnSandClock()
 {

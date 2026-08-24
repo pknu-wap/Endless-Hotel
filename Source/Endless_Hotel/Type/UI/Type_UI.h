@@ -15,15 +15,13 @@ enum class EWidgetType : uint8
 	PopUp_Setting			UMETA(DisplayName = "PopUp_Setting"),
 	PopUp_Read				UMETA(DisplayName = "PopUp_Read"),
 	PopUp_NoteBook			UMETA(DisplayName = "PopUp_NoteBook"),
-	PopUp_ResetNote			UMETA(DisplayName = "PopUp_ResetNote"),
+	PopUp_ResetProgression	UMETA(DisplayName = "PopUp_ResetProgression"),
 	PopUp_ResetSetting		UMETA(DisplayName = "PopUp_ResetSetting"),
 	PopUp_MainMenuCheck		UMETA(DisplayName = "PopUp_MainMenuCheck"),
 	PopUp_QuitCheck			UMETA(DisplayName = "PopUp_QuitCheck"),
 	PopUp_Tutorial			UMETA(DisplayName = "PopUp_Tutorial"),
 	PopUp_Manual			UMETA(DisplayName = "PopUp_Manual"),
-	PopUp_Acquire			UMETA(DisplayName = "PopUp_Acquire"),
-	PopUp_Demo				UMETA(DisplayName = "PopUp_Demo"),
-	PopUp_Demo_QR			UMETA(DisplayName = "PopUp_Demo_QR")
+	PopUp_Acquire			UMETA(DisplayName = "PopUp_Acquire")
 };
 
 UENUM(BlueprintType)

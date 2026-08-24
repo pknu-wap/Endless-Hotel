@@ -34,26 +34,58 @@ void UUI_HUD_InGame::NativeOnInitialized()
 
 #pragma endregion
 
-#pragma region Show
+#pragma region Active
 
-void UUI_HUD_InGame::ShowWidget()
+void UUI_HUD_InGame::ActiveWidget()
 {
-	Super::ShowWidget();
+	Super::ActiveWidget();
 
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
 
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCameraToPlayer();
-	CameraManager->StartEyeEffect(true);
+	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	const float Duration = bCheckInState ? 2.f : 0.f;
 
-	StartInGameHUD(true);
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCameraToPlayer(Duration);
+
+	if (!bCheckInState)
+	{
+		CameraManager->StartEyeEffect(true);
+		StartInGameHUD(true);
+	}
 }
+
+#pragma endregion
+
+#pragma region Effect
 
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
 {
 	ShowCrosshair(bIsStart);
 	EyeEffectBlur(!bIsStart, 0.5f);
+}
+
+void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
+{
+	const float TargetStrength = bIsStart ? 20.f : 0.f;
+	CurrentStrength = bIsStart ? 0.f : 20.f;
+
+	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, Value, bIsStart]()
+		{
+			const float AddValue = bIsStart ? 0.1f * Value : -0.1f * Value;
+			CurrentStrength += AddValue;
+			BackBlur->SetBlurStrength(CurrentStrength);
+
+			if (bIsStart && CurrentStrength >= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+			else if (!bIsStart && CurrentStrength <= TargetStrength)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
+			}
+		}), 0.01f, true);
 }
 
 #pragma endregion
@@ -96,32 +128,6 @@ void UUI_HUD_InGame::SetBrightness(float Value)
 
 #pragma endregion
 
-#pragma region Blur
-
-void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
-{
-	const float TargetStrength = bIsStart ? 20.f : 0.f;
-	CurrentStrength = bIsStart ? 0.f : 20.f;
-
-	GetWorld()->GetTimerManager().SetTimer(BlurHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetStrength, Value, bIsStart]()
-		{
-			const float AddValue = bIsStart ? 0.1f * Value : -0.1f * Value;
-			CurrentStrength += AddValue;
-			BackBlur->SetBlurStrength(CurrentStrength);
-
-			if (bIsStart && CurrentStrength >= TargetStrength)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-			}
-			else if (!bIsStart && CurrentStrength <= TargetStrength)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(BlurHandle);
-			}
-		}), 0.01f, true);
-}
-
-#pragma endregion
-
 #pragma region SubTitle
 
 void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
@@ -137,8 +143,8 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 	FTimerHandle HideHandle;
 	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Image_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
-			Text_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
+			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
 		}), Delay + Duration, false);
 }
 

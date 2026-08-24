@@ -24,6 +24,20 @@ void UUI_HUD_Title::NativeOnInitialized()
 
 #pragma endregion
 
+#pragma region Active
+
+void UUI_HUD_Title::ActiveWidget()
+{
+	Super::ActiveWidget();
+
+	PlayBGM();
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Title);
+}
+
+#pragma endregion
+
 #pragma region Show
 
 void UUI_HUD_Title::ShowWidget()
@@ -31,10 +45,10 @@ void UUI_HUD_Title::ShowWidget()
 	Super::ShowWidget();
 
 	SetLogoImage();
-	PlayBGM();
 
+	constexpr float Duration = 1.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::Title);
+	CameraManager->PossessCamera(ECameraType::Title, Duration);
 }
 
 #pragma endregion
@@ -52,14 +66,13 @@ void UUI_HUD_Title::Click_Start()
 	switch (USaveManager::LoadData_Progression().Progression)
 	{
 	case EGameProgression::CheckIn:
-		SetVisibility(ESlateVisibility::Hidden);
+		HideWidget();
 
 		UICon->OpenWidget(EWidgetType::HUD_InGame, Duration);
 		break;
 
 	default:
-		auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading, Duration));
-		UI_Loading->SpawnSandClock();
+		UICon->OpenWidget(EWidgetType::HUD_Loading, Duration);
 
 		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 		CameraManager->PossessCamera(ECameraType::SandClock, Duration);
@@ -75,7 +88,7 @@ void UUI_HUD_Title::Click_Setting()
 
 void UUI_HUD_Title::Click_Quit()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 

@@ -19,6 +19,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Active
+
+public:
+	virtual void ActiveWidget() override;
+
+#pragma endregion
+
 #pragma region Show
 
 public:
@@ -83,7 +90,7 @@ private:
 
 #pragma region Logo
 
-protected:
+private:
 	void SetLogoImage();
 
 private:

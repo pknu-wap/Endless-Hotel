@@ -316,7 +316,7 @@ void UUI_Button_Option::SetOption_CameraShake()
 void UUI_Button_Option::PopUpOption_ResetNote()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_ResetNote);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetProgression);
 }
 
 void UUI_Button_Option::PopUpOption_ResetSetting()
