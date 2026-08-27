@@ -2,55 +2,58 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
+#include "UI/UI_Base.h"
 #include <Components/ComboBoxKey.h>
+#include <CoreMinimal.h>
 #include <UI_ComboBox_Base.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UComboBoxKey
+UCLASS(Abstract, Meta = (DisableNativeTick))
+class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UUI_Base
 {
 	GENERATED_BODY()
 	
-#pragma region Font
+#pragma region Base
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
+#pragma region ComboBox
+
+public:
+	UComboBoxKey* GetComboBox() { return ComboBox; }
+
+protected:
+	UFUNCTION()
+	virtual void OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue) PURE_VIRTUAL(ThisClass::OnSelectionChanged, );
+
+	template <typename EnumType>
+	void GenerateItem(EnumType InKey);
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Setting|Font")
+	UFUNCTION()
+	UWidget* SetItemStyle(FName InKey);
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UComboBoxKey> ComboBox;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Font")
 	FSlateFontInfo Font_ComboBox;
 
 #pragma endregion
 
-#pragma region Option
-
-public:
-	template <class EnumType>
-	void AddEnumOption(EnumType Value)
-	{
-		UEnum* EnumObj = StaticEnum<EnumType>();
-		AddOption(EnumObj->GetNameByIndex(static_cast<int64>(Value)));
-	}
-
-#pragma endregion
-
-#pragma region Generate
-
-public:
-	void BindEvents();
-
-private:
-	UFUNCTION()
-	UWidget* GenerateItem(FName InKey);
-
-#pragma endregion
-
-#pragma region Active
-
-public:
-	UFUNCTION()
-	virtual void ActiveComboBox() PURE_VIRTUAL(ThisClass::ActiveComboBox, );
-
-	UFUNCTION()
-	virtual void DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue) PURE_VIRTUAL(ThisClass::DeactiveComboBox, );
-
-#pragma endregion
-
 };
+
+#pragma region ComboBox
+
+template <typename EnumType>
+FORCEINLINE void UUI_ComboBox_Base::GenerateItem(EnumType InKey)
+{
+	UEnum* EnumObj = StaticEnum<EnumType>();
+	ComboBox->AddOption(EnumObj->GetNameByIndex(static_cast<int64>(InKey)));
+}
+
+#pragma endregion

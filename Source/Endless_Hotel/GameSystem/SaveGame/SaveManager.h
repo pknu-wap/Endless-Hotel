@@ -53,7 +53,7 @@ class ENDLESS_HOTEL_API USaveManager : public USaveGame
 public:
 	DATA_SAVE_DEFINITION(FSaveData_Setting, Data_Setting);
 
-protected:
+private:
 	UPROPERTY(SaveGame)
 	FSaveData_Setting Data_Setting;
 
@@ -64,7 +64,7 @@ protected:
 public:
 	DATA_SAVE_DEFINITION(bool, Data_GameClear);
 
-protected:
+private:
 	UPROPERTY(SaveGame)
 	bool Data_GameClear = false;
 
@@ -75,7 +75,7 @@ protected:
 public:
 	DATA_SAVE_DEFINITION(TArray<EAnomalyID>, ClearedAnomalyID);
 
-protected:
+private:
 	UPROPERTY(SaveGame)
 	TArray<EAnomalyID> ClearedAnomalyID;
 
@@ -86,7 +86,7 @@ protected:
 public:
 	DATA_SAVE_DEFINITION(FSaveData_Progression, Data_Progression);
 
-protected:
+private:
 	UPROPERTY(SaveGame)
 	FSaveData_Progression Data_Progression;
 

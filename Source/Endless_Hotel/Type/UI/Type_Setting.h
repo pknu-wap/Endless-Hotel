@@ -51,7 +51,7 @@ enum class EOptionValue : uint8
 	UHD					UMETA(DisplayName = "3840 X 2160 (UHD)"),
 	Windowed			UMETA(DisplayName = "Windowed"),
 	FullScreen			UMETA(DisplayName = "FullScreen"),
-	WindowedFullScreen	UMETA(DisplayName = "WindowedFullScreen"),
+	WindowedFullScreen	UMETA(DisplayName = "Windowed FullScreen"),
 	W16H9				UMETA(DisplayName = "16:9"),
 	W21H9				UMETA(DisplayName = "21:9"),
 	W4H3				UMETA(DisplayName = "4:3"),
@@ -86,15 +86,15 @@ enum class EOptionCategory : uint8
 	BGM					UMETA(DisplayName = "BGM"),
 	SFX					UMETA(DisplayName = "SFX"),
 	Voice				UMETA(DisplayName = "Voice"),
-	Interface			UMETA(DisplayName = "Interface"),
+	UI					UMETA(DisplayName = "UI"),
 
 	// Control
 	Sensitivity			UMETA(DisplayName = "Sensitivity"),
 
 	// Gameplay
-	Overlap			UMETA(DisplayName = "Overlap"),
-	CameraShake		UMETA(DisplayName = "CameraShake"),
-	Brightness		UMETA(DisplayName = "Brightness"),
+	Overlap				UMETA(DisplayName = "Overlap"),
+	CameraShake			UMETA(DisplayName = "CameraShake"),
+	Brightness			UMETA(DisplayName = "Brightness"),
 
 	// System
 	Reset_Progression	UMETA(DisplayName = "Reset Progression"),
@@ -103,22 +103,46 @@ enum class EOptionCategory : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FOptionInfo
+struct FOptionValuePair
 {
 	GENERATED_BODY()
 
 public:
-	FOptionInfo() {}
+	UPROPERTY(EditDefaultsOnly, Category = "Value")
+	EOptionValue Value;
 
-	FOptionInfo(EOptionCategory Cat, EOptionValue Val)
-		:Category(Cat), Value(Val) {}
+	UPROPERTY(EditDefaultsOnly, Category = "Translation")
+	FText Translation;
+};
+
+USTRUCT(BlueprintType)
+struct FOptionData
+{
+	GENERATED_BODY()
+	
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting")
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSoftClassPtr<class UUI_Base> Class;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	FText Name;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
 	EOptionCategory Category = EOptionCategory::None;
 
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	EOptionValue Value = EOptionValue::None;
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	TArray<FOptionValuePair> Values;
+};
+
+USTRUCT(BlueprintType)
+struct FOptionList
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "List")
+	TArray<FOptionData> List;
 };
 
 UENUM(BlueprintType)

@@ -16,7 +16,7 @@ UUI_Button_Key::FKeyHighlight UUI_Button_Key::Highlight;
 
 void UUI_Button_Key::BindEvents()
 {
-	for (auto* Check : GetAllChildren())
+	/*for (auto* Check : GetAllChildren())
 	{
 		if (auto* Target = Cast<UInputKeySelector>(Check))
 		{
@@ -35,7 +35,7 @@ void UUI_Button_Key::BindEvents()
 	OnClicked.AddDynamic(this, &ThisClass::ResetInputButtons);
 
 	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
-	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);
+	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);*/
 }
 
 #pragma endregion

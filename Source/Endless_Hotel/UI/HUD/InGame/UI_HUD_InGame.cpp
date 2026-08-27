@@ -27,9 +27,6 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 	Subsystem->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
 	Subsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
-
-	AddDebugAnomalyRule(EAnomalyRule::None);
-	ChangeDebugAnomaly();
 }
 
 #pragma endregion
@@ -40,8 +37,8 @@ void UUI_HUD_InGame::ActiveWidget()
 {
 	Super::ActiveWidget();
 
-	auto Data = USaveManager::LoadData_Setting();
-	SetBrightness(0.05f + Data.Brightness * 0.95f);
+	AddDebugAnomalyRule(EAnomalyRule::None);
+	ChangeDebugAnomaly();
 
 	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
 	const float Duration = bCheckInState ? 2.f : 0.f;
@@ -54,6 +51,18 @@ void UUI_HUD_InGame::ActiveWidget()
 		CameraManager->StartEyeEffect(true);
 		StartInGameHUD(true);
 	}
+}
+
+#pragma endregion
+
+#pragma region Show
+
+void UUI_HUD_InGame::ShowWidget()
+{
+	Super::ShowWidget();
+
+	auto Data = USaveManager::LoadData_Setting();
+	SetBrightness(0.05f + Data.Brightness * 0.95f);
 }
 
 #pragma endregion

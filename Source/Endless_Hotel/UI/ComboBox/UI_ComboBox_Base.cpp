@@ -4,33 +4,31 @@
 #include "Type/UI/Type_Setting.h"
 #include <Components/TextBlock.h>
 
-#pragma region Generate
+#pragma region Base
 
-void UUI_ComboBox_Base::BindEvents()
+void UUI_ComboBox_Base::NativeOnInitialized()
 {
-	OnOpening.Clear();
-	OnOpening.AddDynamic(this, &ThisClass::ActiveComboBox);
+	Super::NativeOnInitialized();
 
-	OnSelectionChanged.Clear();
-	OnSelectionChanged.AddDynamic(this, &ThisClass::DeactiveComboBox);
-
-	OnGenerateItemWidget.Clear();
-	OnGenerateItemWidget.BindUFunction(this, TEXT("GenerateItem"));
-
-	OnGenerateContentWidget.Clear();
-	OnGenerateContentWidget.BindUFunction(this, TEXT("GenerateItem"));
+	ComboBox->OnSelectionChanged.AddDynamic(this, &ThisClass::OnSelectionChanged);
+	ComboBox->OnGenerateItemWidget.BindUFunction(this, TEXT("SetItemStyle"));
+	ComboBox->OnGenerateContentWidget.BindUFunction(this, TEXT("SetItemStyle"));
 }
 
-UWidget* UUI_ComboBox_Base::GenerateItem(FName InKey)
+#pragma endregion
+
+#pragma region Generate
+
+UWidget* UUI_ComboBox_Base::SetItemStyle(FName InKey)
 {
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
 	const int32& Index = EnumObj->GetIndexByName(InKey);
 	const EOptionValue& EnumValue = static_cast<EOptionValue>(EnumObj->GetValueByIndex(Index));
 
-	UTextBlock* TextBlock = NewObject<UTextBlock>(this);
+	UTextBlock* TextBlock = NewObject<UTextBlock>(ComboBox);
 	TextBlock->SetText(EnumObj->GetDisplayNameTextByIndex(Index));
 	TextBlock->SetFont(Font_ComboBox);
-	TextBlock->SetColorAndOpacity(GetForegroundColor());
+	TextBlock->SetColorAndOpacity(ComboBox->GetForegroundColor());
 
 	return TextBlock;
 }

@@ -18,6 +18,5 @@ class ENDLESS_HOTEL_API IOptionInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	void InitOption(EOptionCategory Category, TArray<EOptionValue> Values);
+	virtual void InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values) PURE_VIRTUAL(ThisClass::InitOption, );
 };

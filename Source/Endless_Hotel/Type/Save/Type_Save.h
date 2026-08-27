@@ -69,7 +69,7 @@ public:
 	float Voice = 0.5f;
 
 	UPROPERTY(SaveGame)
-	float Interface = 0.5f;
+	float UI = 0.5f;
 
 	UPROPERTY(SaveGame)
 	uint8 EnableMaster = 1;
@@ -84,7 +84,7 @@ public:
 	uint8 EnableVoice = 1;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableInterface = 1;
+	uint8 EnableUI = 1;
 
 public:
 	// Control

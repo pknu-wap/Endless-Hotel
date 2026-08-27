@@ -3,56 +3,38 @@
 #pragma once
 
 #include "UI/ComboBox/UI_ComboBox_Base.h"
-#include "Type/UI/Type_Setting.h"
+#include "Interface/UI/OptionInterface.h"
 #include <CoreMinimal.h>
 #include <UI_ComboBox_Setting.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_ComboBox_Setting : public UUI_ComboBox_Base
+class ENDLESS_HOTEL_API UUI_ComboBox_Setting : public UUI_ComboBox_Base, public IOptionInterface
 {
 	GENERATED_BODY()
 
-#pragma region Active
+#pragma region Interface
 
 public:
-	virtual void ActiveComboBox() override;
-	virtual void DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue) override;
+	virtual void InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values) override;
 
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "Setting|Active")
-	FLinearColor OutlineColor_Normal;
+#pragma endregion
 
-	UPROPERTY(EditDefaultsOnly, Category = "Setting|Active")
-	FLinearColor OutlineColor_Focus;
+#pragma region ComboBox
+
+public:
+	virtual void OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue) override;
 
 #pragma endregion
 
 #pragma region Option
 
-public:
-	UPROPERTY(EditDefaultsOnly, Category = "Setting|Option")
-	EOptionCategory OptionCategory;
-
-#pragma endregion
-
-#pragma region Screen
-
 private:
 	void SetOption_Resolution(FName OptionValue);
-
-#pragma endregion
-
-#pragma region Grapic
-
-private:
 	void SetOption_Grapic(FName OptionValue);
-
-#pragma endregion
-
-#pragma region System
+	void SetOption_Language(FName OptionValue);
 
 private:
-	void SetOption_Language(FName OptionValue);
+	EOptionCategory OptionCategory;
 
 #pragma endregion
 

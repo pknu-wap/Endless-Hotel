@@ -17,7 +17,7 @@ void UUI_PopUp_Option::NativeOnInitialized()
 
 	ComboBox_Default = Cast<UUI_ComboBox_Setting>(GetWidgetFromName(TEXT("ComboBox")));
 
-	if (ComboBox_Default)
+	/*if (ComboBox_Default)
 	{
 		ComboBox_Default->ClearOptions();
 		ComboBox_Default->BindEvents();
@@ -26,7 +26,7 @@ void UUI_PopUp_Option::NativeOnInitialized()
 		{
 			ComboBox_Default->AddEnumOption<EOptionValue>(Value);
 		}
-	}
+	}*/
 }
 
 #pragma endregion
@@ -43,7 +43,7 @@ void UUI_PopUp_Option::HighlightOptions()
 
 	for (auto* Child : Widgets)
 	{
-		if (auto* Target = Cast<UUI_ComboBox_Setting>(Child))
+		/*if (auto* Target = Cast<UUI_ComboBox_Setting>(Child))
 		{
 			EOptionValue Value;
 
@@ -63,9 +63,9 @@ void UUI_PopUp_Option::HighlightOptions()
 			}
 
 			Target->SetSelectedOption(EnumObj->GetNameByValue(static_cast<int64>(Value)));
-		}
+		}*/
 
-		if (auto* Target = Cast<UUI_Button_Option>(Child))
+		/*if (auto* Target = Cast<UUI_Button_Option>(Child))
 		{
 			FOptionInfo OptionInfo = Target->OptionInfo;
 
@@ -121,9 +121,9 @@ void UUI_PopUp_Option::HighlightOptions()
 			}
 
 			Target->OnHighlight.Broadcast(OptionInfo);
-		}
+		}*/
 
-		if (auto* Target = Cast<UUI_Slider_Setting>(Child))
+		/*if (auto* Target = Cast<UUI_Slider_Setting>(Child))
 		{
 			float TargetValue = 0;
 
@@ -149,8 +149,8 @@ void UUI_PopUp_Option::HighlightOptions()
 				Target->ShowOffImage(static_cast<bool>(Data.EnableVoice));
 				break;
 
-			case EOptionCategory::Interface:
-				TargetValue = Data.Interface;
+			case EOptionCategory::UI:
+				TargetValue = Data.UI;
 				Target->ShowOffImage(static_cast<bool>(Data.EnableInterface));
 				break;
 
@@ -164,13 +164,13 @@ void UUI_PopUp_Option::HighlightOptions()
 			}
 
 			Target->Slide_Slider(TargetValue);
-		}
+		}*/
 
-		if (auto* Target = Cast<UUI_Button_Key>(Child))
+		/*if (auto* Target = Cast<UUI_Button_Key>(Child))
 		{
 			Target->BindEvents();
 			Target->SetSavedOption();
-		}
+		}*/
 	}
 }
 

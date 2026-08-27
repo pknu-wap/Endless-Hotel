@@ -11,13 +11,6 @@ class ENDLESS_HOTEL_API UUI_Button_Text : public UUI_Button_Base
 {
 	GENERATED_BODY()
 	
-#pragma region Base
-
-protected:
-	virtual void SynchronizeProperties() override;
-
-#pragma endregion
-
 #pragma region Button
 
 private:

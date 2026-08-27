@@ -367,7 +367,7 @@ FReply UUI_PopUp_Setting::NativeOnMouseWheel(const FGeometry& InGeometry, const 
 		AdjustCategoryIndex(false);
 	}
 
-	CategoryButtons[CategoryIndex]->ClickCategoryButton();
+	//CategoryButtons[CategoryIndex]->ClickCategoryButton();
 
 	return Super::NativeOnMouseWheel(InGeometry, InMouseEvent);
 }

@@ -2,35 +2,27 @@
 
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/Button/Setting/UI_Button_Option.h"
-#include "Type/Save/Type_Save.h"
 #include <GameFramework/GameUserSettings.h>
-#include <Components/Border.h>
 #include <Internationalization/Internationalization.h>
 
-#pragma region Active
+#pragma region Interface
 
-void UUI_ComboBox_Setting::ActiveComboBox()
+void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values)
 {
-	UBorder* Outline = Cast<UBorder>(GetParent());
+	OptionCategory = Category;
 
-	FSlateBrush& Brush = Outline->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = OutlineColor_Focus;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Outline->SetBrush(Brush);
+	for (FOptionValuePair Value : Values)
+	{
+		GenerateItem<EOptionValue>(Value.Value);
+	}
 }
 
-void UUI_ComboBox_Setting::DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue)
+#pragma endregion
+
+#pragma region ComboBox
+
+void UUI_ComboBox_Setting::OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue)
 {
-	UBorder* Outline = Cast<UBorder>(GetParent());
-
-	FSlateBrush& Brush = Outline->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = OutlineColor_Normal;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Outline->SetBrush(Brush);
-
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Resolution:
@@ -49,7 +41,7 @@ void UUI_ComboBox_Setting::DeactiveComboBox(FName NameValue, ESelectInfo::Type E
 
 #pragma endregion
 
-#pragma region Screen
+#pragma region Option
 
 void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 {
@@ -81,10 +73,6 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 	}
 }
 
-#pragma endregion
-
-#pragma region Grapic
-
 void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 {
 	UGameUserSettings* SettingHandle = UGameUserSettings::GetGameUserSettings();
@@ -111,19 +99,9 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 
 		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
-
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::AntiAliasing, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shadow, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Texture, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::PostProcessing, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shading, Value));
 		break;
 	}
 }
-
-#pragma endregion
-
-#pragma region System
 
 void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 {

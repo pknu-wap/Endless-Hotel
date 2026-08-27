@@ -12,27 +12,26 @@ class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
-
-#pragma endregion
-
 #pragma region Active
 
 public:
-	virtual void ActiveWidget() {}
-	virtual void DeactiveWidget() { SetVisibility(ESlateVisibility::Collapsed); }
+	virtual void ActiveWidget();
+	virtual void DeactiveWidget();
 
 #pragma endregion
 
 #pragma region Show & Hide
 
 public:
-	virtual void ShowWidget() { SetVisibility(ESlateVisibility::SelfHitTestInvisible); }
-	virtual void HideWidget(){ SetVisibility(ESlateVisibility::Hidden); }
+	virtual void ShowWidget();
+	virtual void HideWidget();
+
+#pragma endregion
+
+#pragma region Sync
+
+private:
+	void SyncChildWidget(void (UUI_Base::* Func)());
 
 #pragma endregion
 
