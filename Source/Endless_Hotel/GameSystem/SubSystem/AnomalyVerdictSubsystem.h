@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
@@ -49,9 +50,12 @@ private:
 
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
-	bool ComputeVerdict() const;
+	bool ComputeVerdict();
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
+
+private:
+	void EvaluateIncorrectRules();
 
 public:
 	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Normal;
@@ -72,6 +76,9 @@ public:
 	EAnomalyID GetCurrentAnomalyID() const { return CurrentAnomalyID; }
 	EMapDataLayer GetNextAnomalyMap() const { return NextAnomalyMap; }
 
+	EAnomalyRule GetIncorrectRule() const { return IncorrectRule; }
+	TArray<EAnomalyRule> GetIncorrectRules() const { return IncorrectRules; }
+
 public:
 	TObjectPtr<AAnomaly_Event> CurrentAnomaly;
 	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
@@ -86,6 +93,8 @@ public:
 
 private:
 	bool bIsAnomalyReady = false;
+	EAnomalyRule IncorrectRule = EAnomalyRule::None;
+	TArray<EAnomalyRule> IncorrectRules;
 
 #pragma endregion
 

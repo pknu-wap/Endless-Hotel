@@ -107,6 +107,7 @@ FAnomalySpawnInfo AAnomaly_Generator::DecideAnomaly(uint8 Index, bool bForceNorm
 	FAnomalySpawnInfo Info;
 	Info.bIsNormal = bForceNormal || !bHasAnomaly;
 	Info.AnomalyID = Data.ID;
+	Info.Rule = Data.Rule;
 	Info.DataLayer = Data.DataLayer;
 	Info.EventClass = Data.Event;
 
@@ -158,6 +159,7 @@ bool AAnomaly_Generator::SetNextAnomalyForced(EAnomalyID ID)
 	FAnomalySpawnInfo Info;
 	Info.bIsNormal = false;
 	Info.AnomalyID = Data.ID;
+	Info.Rule = Data.Rule;
 	Info.DataLayer = Data.DataLayer;
 	Info.EventClass = Data.Event;
 

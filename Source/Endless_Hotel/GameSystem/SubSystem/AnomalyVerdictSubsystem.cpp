@@ -45,10 +45,42 @@ bool UAnomalyVerdictSubsystem::ComputeVerdict() const
 	}
 }
 
+void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
+{
+	switch (VerdictMode)
+	{
+	case EAnomalyVerdictMode::Both_AND:
+		if (bIsElevatorNormal)
+		{
+			IncorrectRules.AddUnique(EAnomalyRule::EightExit);
+		}
+		break;
+	case EAnomalyVerdictMode::Normal:
+		if (!bIsElevatorNormal)
+		{
+			IncorrectRules.AddUnique(EAnomalyRule::EightExit);
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (!bIsAnomalySolved && CurrentAnomaly)
+	{
+		IncorrectRule = CurrentAnomaly->Rule;
+		IncorrectRules.AddUnique(CurrentAnomaly->Rule);
+	}
+	if (bWrongInteractionOccurred)
+	{
+		IncorrectRules.AddUnique(EAnomalyRule::Touch);
+	}
+}
+
 void UAnomalyVerdictSubsystem::ApplyVerdict()
 {
 	auto& AssetManager = UEHAssetManager::Get();
-	bPassed = ComputeVerdict();
+	IncorrectRules.Empty();
+	bPassed = ComputeVerdict() && !bWrongInteractionOccurred;
 
 	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 	UAnomalyPoolSubsystem* PoolSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>() : nullptr;
@@ -70,10 +102,10 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 	}
 	else
 	{
+		EvaluateIncorrectRules();
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);
-
 		if (FloorSys)
 		{
 			FloorSys->ResetFloor();
@@ -108,7 +140,6 @@ void UAnomalyVerdictSubsystem::TryInteractSolveVerdict()
 {
 	if (bWrongInteractionOccurred)
 	{
-		SetIsAnomalySolved(false);
 		return;
 	}
 	if (AAnomaly_Event* Neo = Cast<AAnomaly_Event>(CurrentAnomaly))
@@ -197,6 +228,8 @@ void UAnomalyVerdictSubsystem::ResetVerdict()
 	NextAnomalyID = EAnomalyID::None;
 	NextAnomalyMap = EMapDataLayer::Hotel;
 	bIsStartInBed = false;
+	IncorrectRule = EAnomalyRule::None;
+	IncorrectRules.Empty();
 }
 
 #pragma endregion

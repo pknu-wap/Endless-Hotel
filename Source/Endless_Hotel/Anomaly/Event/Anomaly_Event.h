@@ -70,6 +70,7 @@ protected:
 
 public:
 	EAnomalyID AnomalyID;
+	EAnomalyRule Rule;
 
 protected:
 	TArray<TFunction<void(UObject*)>> AnomalyActions;
