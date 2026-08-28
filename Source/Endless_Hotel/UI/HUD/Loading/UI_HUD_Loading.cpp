@@ -18,21 +18,9 @@ void UUI_HUD_Loading::ActiveWidget()
 	SpawnSandClock();
 }
 
-void UUI_HUD_Loading::DeactiveWidget()
-{
-	SandClock->StopRotateClock();
-
-	Slider_Loading->bStartLoading = false;
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
-
-	Super::DeactiveWidget();
-}
-
 #pragma endregion
 
-#pragma region Show
+#pragma region Show & Hide
 
 void UUI_HUD_Loading::ShowWidget()
 {
@@ -51,6 +39,18 @@ void UUI_HUD_Loading::ShowWidget()
 				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
+}
+
+void UUI_HUD_Loading::HideWidget()
+{
+	SandClock->StopRotateClock();
+
+	Slider_Loading->bStartLoading = false;
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
+
+	Super::HideWidget();
 }
 
 #pragma endregion

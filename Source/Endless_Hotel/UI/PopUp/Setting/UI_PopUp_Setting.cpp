@@ -3,9 +3,11 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
 #include "UI/Button/Setting/UI_Button_Setting.h"
+#include "UI/Controller/UI_Controller.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
+#include "Asset/DataAsset/Widget/PDA_Setting.h"
 #include <Components/Button.h>
 #include <Components/Border.h>
 #include <Components/TextBlock.h>
@@ -13,15 +15,10 @@
 #include <Components/SpotLightComponent.h>
 #include <Components/ExponentialHeightFogComponent.h>
 #include <Components/CanvasPanel.h>
+#include <Components/CanvasPanelSlot.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Kismet/GameplayStatics.h>
 #include <Engine/StaticMeshActor.h>
-
-#pragma region Declare
-
-UUI_PopUp_Setting::FSettingHighlight UUI_PopUp_Setting::Highlight;
-
-#pragma endregion
 
 #pragma region Base
 
@@ -29,21 +26,25 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	Button_Normal->OnClicked.AddDynamic(this, &ThisClass::Click_Normal);
-	Button_Input->OnClicked.AddDynamic(this, &ThisClass::Click_Input);
-
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 
-	Highlight.AddDynamic(this, &ThisClass::HighlightButtons);
+	UCanvasPanel* Canvas = Cast<UCanvasPanel>(GetRootWidget());
 
-	CategoryButtons.Empty();
-
-	for (auto* Check : UI_Gear->GetAllChildren())
+	for (const auto& Pair : PDA_Setting->Setting)
 	{
-		if (auto* Target = Cast<UUI_Button_Setting>(Check))
+		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, OptionClass);
+		ChildWidget->InitOption(Pair.Value);
+		OptionWidgets.Add(Pair.Key, ChildWidget);
+
+		UCanvasPanelSlot* CanvasSlot = Canvas->AddChildToCanvas(ChildWidget);
+		CanvasSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
+		CanvasSlot->SetOffsets(FMargin(0.0f));
+		
+		ChildWidget->HideWidget();
+		if (Pair.Key == ESettingCategory::Screen)
 		{
-			CategoryButtons.Add(Target);
+			ChildWidget->ShowWidget();
 		}
 	}
 }
@@ -64,12 +65,13 @@ void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 
 void UUI_PopUp_Setting::ShowWidget()
 {
+	Data_Setting = USaveManager::LoadData_Setting();
+
 	SetVisibility(ESlateVisibility::Hidden);
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, true);
 
-	HighlightButtons();
 	FindGearActor();
 
 	const EMapDataLayer Current = GameInstance->GetCurrentDataLayer();
@@ -108,117 +110,6 @@ void UUI_PopUp_Setting::HideWidget()
 
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	GameInstance->GetCurrentDataLayer() == EMapDataLayer::Lobby ? CameraManager->PossessCamera(ECameraType::Title, 1.f) : CameraManager->PossessCameraToPlayer(0.f);
-}
-
-#pragma endregion
-
-#pragma region Highlight
-
-void UUI_PopUp_Setting::HighlightButtons()
-{
-	Data_Setting = USaveManager::LoadData_Setting();
-
-	UI_Screen->HighlightOptions();
-	UI_Grapic->HighlightOptions();
-	UI_Sound->HighlightOptions();
-	UI_Control_Normal->HighlightOptions();
-	UI_Control_Input->HighlightOptions();
-	UI_Gameplay->HighlightOptions();
-	UI_System->HighlightOptions();
-
-	Border_HideBox->SetVisibility(ESlateVisibility::Collapsed);
-}
-
-#pragma endregion
-
-#pragma region Category
-
-void UUI_PopUp_Setting::SetCurrentCategoryText(FText Value)
-{
-	Text_CurrentCategory->SetText(Value);
-}
-
-#pragma endregion
-
-#pragma region Option
-
-void UUI_PopUp_Setting::ShowCategoryOption(ESettingCategory Target)
-{
-	UI_Screen->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Grapic->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Sound->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Control_Normal->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Control_Input->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Gameplay->SetVisibility(ESlateVisibility::Collapsed);
-	UI_System->SetVisibility(ESlateVisibility::Collapsed);
-
-	Border_HideBox->SetVisibility(ESlateVisibility::Collapsed);
-	Border_HideBox2->SetVisibility(ESlateVisibility::Collapsed);
-
-	Button_Normal->SetVisibility(ESlateVisibility::Collapsed);
-	Button_Input->SetVisibility(ESlateVisibility::Collapsed);
-
-	switch (Target)
-	{
-	case ESettingCategory::Screen:
-		UI_Screen->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		break;
-
-	case ESettingCategory::Grapic:
-	{
-		UI_Grapic->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		if (Data_Setting.Grapic != EOptionValue::Custom)
-		{
-			Border_HideBox->SetVisibility(ESlateVisibility::Visible);
-		}
-		break;
-	}
-
-	case ESettingCategory::Sound:
-		UI_Sound->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		break;
-
-	case ESettingCategory::Control_Normal:
-		UI_Control_Normal->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		Button_Normal->SetVisibility(ESlateVisibility::Visible);
-		Button_Input->SetVisibility(ESlateVisibility::Visible);
-		break;
-
-	case ESettingCategory::Control_Input:
-		UI_Control_Input->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		Button_Normal->SetVisibility(ESlateVisibility::Visible);
-		Button_Input->SetVisibility(ESlateVisibility::Visible);
-		break;
-
-	case ESettingCategory::Gameplay:
-	{
-		UI_Gameplay->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		ESlateVisibility SlateVisibility = USaveManager::LoadData_GameClear() ? ESlateVisibility::Hidden : ESlateVisibility::Visible;
-		Border_HideBox2->SetVisibility(SlateVisibility);
-		break;
-	}
-
-	case ESettingCategory::System:
-		UI_System->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		break;
-	}
-}
-
-void UUI_PopUp_Setting::SetHideBoxVisibility(ESlateVisibility Option)
-{
-	Border_HideBox->SetVisibility(Option);
-}
-
-void UUI_PopUp_Setting::Click_Normal()
-{
-	UI_Control_Normal->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	UI_Control_Input->SetVisibility(ESlateVisibility::Collapsed);
-}
-
-void UUI_PopUp_Setting::Click_Input()
-{
-	UI_Control_Normal->SetVisibility(ESlateVisibility::Collapsed);
-	UI_Control_Input->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 }
 
 #pragma endregion

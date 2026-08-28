@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/UI_Base.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include <Components/ComboBoxKey.h>
 #include <CoreMinimal.h>
 #include <UI_ComboBox_Base.generated.h>
@@ -29,7 +30,7 @@ protected:
 	virtual void OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue) PURE_VIRTUAL(ThisClass::OnSelectionChanged, );
 
 	template <typename EnumType>
-	void GenerateItem(EnumType InKey);
+	void GenerateItem(EnumType InKey, FText Trans);
 
 private:
 	UFUNCTION()
@@ -41,7 +42,13 @@ protected:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Font")
-	FSlateFontInfo Font_ComboBox;
+	FSlateFontInfo Font_Style;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Font")
+	FSlateColor Font_Color;
+
+	UPROPERTY()
+	TMap<FName, FText> Translations;
 
 #pragma endregion
 
@@ -50,10 +57,13 @@ private:
 #pragma region ComboBox
 
 template <typename EnumType>
-FORCEINLINE void UUI_ComboBox_Base::GenerateItem(EnumType InKey)
+FORCEINLINE void UUI_ComboBox_Base::GenerateItem(EnumType InKey, FText Trans)
 {
 	UEnum* EnumObj = StaticEnum<EnumType>();
-	ComboBox->AddOption(EnumObj->GetNameByIndex(static_cast<int64>(InKey)));
+	const FName Key = EnumConverter::GetEnumAsName(InKey);
+	ComboBox->AddOption(Key);
+
+	Translations.Add(Key, Trans);
 }
 
 #pragma endregion

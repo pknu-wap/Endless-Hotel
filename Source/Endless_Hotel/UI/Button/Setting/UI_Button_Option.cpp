@@ -44,7 +44,7 @@ void UUI_Button_Option::SetOptionInfo(EOptionCategory Category, FOptionValuePair
 void UUI_Button_Option::Click_Button()
 {
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 
 	switch (OptionCategory)
 	{

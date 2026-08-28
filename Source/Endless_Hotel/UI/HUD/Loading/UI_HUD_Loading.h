@@ -15,14 +15,14 @@ class ENDLESS_HOTEL_API UUI_HUD_Loading : public UUI_HUD_Base
 
 public:
 	virtual void ActiveWidget() override;
-	virtual void DeactiveWidget() override;
 
 #pragma endregion
 
-#pragma region Show
+#pragma region Show & Hide
 
 public:
 	virtual void ShowWidget() override;
+	virtual void HideWidget() override;
 
 #pragma endregion
 

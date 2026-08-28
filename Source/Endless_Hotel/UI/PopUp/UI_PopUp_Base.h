@@ -21,6 +21,7 @@ protected:
 #pragma region Input
 
 protected:
+	UFUNCTION()
 	virtual void Input_ESC();
 
 #pragma endregion

@@ -12,13 +12,6 @@ void UUI_Base::ActiveWidget()
 	SyncChildWidget(&ThisClass::ActiveWidget);
 }
 
-void UUI_Base::DeactiveWidget()
-{
-	SetVisibility(ESlateVisibility::Collapsed);
-
-	SyncChildWidget(&ThisClass::DeactiveWidget);
-}
-
 #pragma endregion
 
 #pragma region Show & Hide
@@ -34,7 +27,7 @@ void UUI_Base::ShowWidget()
 
 void UUI_Base::HideWidget()
 {
-	SetVisibility(ESlateVisibility::Hidden);
+	SetVisibility(ESlateVisibility::Collapsed);
 
 	SyncChildWidget(&ThisClass::HideWidget);
 }

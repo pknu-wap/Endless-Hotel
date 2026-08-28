@@ -39,10 +39,9 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Durati
 	{
 		CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetInfo.Class.LoadSynchronous());
 		CreatedWidget->AddToViewport();
+		CreatedWidget->ActiveWidget();
 		CachedWidgets.Add(WidgetType, CreatedWidget);
 	}
-
-	CreatedWidget->ActiveWidget();
 
 	FTimerHandle ShowHandle;
 	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, CreatedWidget]()
@@ -88,7 +87,6 @@ void UUI_Controller::CloseWidget(float Duration)
 	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this, TopWidget]()
 		{
 			TopWidget->HideWidget();
-			TopWidget->DeactiveWidget();
 		}), Duration, false);
 
 	WidgetStack.Pop();
@@ -116,7 +114,6 @@ void UUI_Controller::CloseAllWidgets()
 	{
 		UUI_Base* Target = CachedWidgets[Type];
 		Target->HideWidget();
-		Target->DeactiveWidget();
 	}
 
 	WidgetStack.Empty();

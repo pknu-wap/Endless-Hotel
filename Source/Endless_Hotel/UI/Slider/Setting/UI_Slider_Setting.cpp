@@ -56,7 +56,7 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 	TextBlock->SetText(FText::FromString(FString::FromInt(Value * 100)));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 
 	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
 

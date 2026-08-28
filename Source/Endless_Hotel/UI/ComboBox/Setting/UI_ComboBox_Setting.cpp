@@ -2,6 +2,9 @@
 
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
+#include "GameSystem/Enum/EnumConverter.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include <Components/Image.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Internationalization/Internationalization.h>
 
@@ -13,8 +16,27 @@ void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionVa
 
 	for (FOptionValuePair Value : Values)
 	{
-		GenerateItem<EOptionValue>(Value.Value);
+		GenerateItem<EOptionValue>(Value.Value, Value.Translation);
 	}
+
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
+	EOptionValue Value = EOptionValue::None;
+	switch (OptionCategory)
+	{
+	case EOptionCategory::Resolution:
+		Value = Data.Resolution;
+		break;
+
+	case EOptionCategory::Grapic:
+		Value = Data.Grapic;
+		break;
+
+	case EOptionCategory::Language:
+		Value = Data.Language;
+		break;
+	}
+
+	ComboBox->SetSelectedOption(EnumConverter::GetEnumAsName(Value));
 }
 
 #pragma endregion
@@ -50,7 +72,7 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Resolution = Value;
 
 	switch (Value)
@@ -81,15 +103,16 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Grapic = Value;
 
+	UImage* HideBox = Cast<UImage>(GetWidgetFromName(TEXT("Image_HideBox")));
 	switch (Value)
 	{
 	case EOptionValue::Custom:
-		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Collapsed);
+		HideBox->SetVisibility(ESlateVisibility::Collapsed);
 		break;
-
+		
 	default:
 		Data.AntiAliasing = Value;
 		Data.Shadow = Value;
@@ -97,7 +120,7 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 		Data.PostProcessing = Value;
 		Data.Shading = Value;
 
-		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
+		HideBox->SetVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
 		break;
 	}
@@ -109,7 +132,7 @@ void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Language = Value;
 
 	switch (Value)

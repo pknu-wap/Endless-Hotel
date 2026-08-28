@@ -6,17 +6,13 @@
 #include <Kismet/GameplayStatics.h>
 #include <Components/InputKeySelector.h>
 
-#pragma region Declare
+#pragma region Base
 
-UUI_Button_Key::FKeyHighlight UUI_Button_Key::Highlight;
-
-#pragma endregion
-
-#pragma region Bind
-
-void UUI_Button_Key::BindEvents()
+void UUI_Button_Key::NativeOnInitialized()
 {
-	/*for (auto* Check : GetAllChildren())
+	Super::NativeOnInitialized();
+
+	/*for (auto* Check : Button->GetAllChildren())
 	{
 		if (auto* Target = Cast<UInputKeySelector>(Check))
 		{
@@ -25,17 +21,12 @@ void UUI_Button_Key::BindEvents()
 		}
 	}
 
-	if (Selector)
+	if (IsValid(Selector))
 	{
-		Selector->OnKeySelected.RemoveDynamic(this, &ThisClass::SelectedKeyValue);
 		Selector->OnKeySelected.AddDynamic(this, &ThisClass::SelectedKeyValue);
 	}
 
-	OnClicked.RemoveDynamic(this, &ThisClass::ResetInputButtons);
-	OnClicked.AddDynamic(this, &ThisClass::ResetInputButtons);
-
-	Highlight.RemoveDynamic(this, &ThisClass::SetSavedOption);
-	Highlight.AddDynamic(this, &ThisClass::SetSavedOption);*/
+	Button->OnClicked.AddDynamic(this, &ThisClass::ResetInputButtons);*/
 }
 
 #pragma endregion
@@ -44,12 +35,10 @@ void UUI_Button_Key::BindEvents()
 
 void UUI_Button_Key::ResetInputButtons()
 {
-	USaveManager::LoadData_Setting().ResetKeySetting();
+	/*USaveManager::LoadData_Setting().ResetKeySetting();
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->SetKeyMapping(SettingInfo, FKey());
-
-	Highlight.Broadcast();
+	PC->SetKeyMapping(SettingInfo, FKey());*/
 }
 
 #pragma endregion
@@ -58,7 +47,7 @@ void UUI_Button_Key::ResetInputButtons()
 
 void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 {
-	SettingInfo.Value = SelectedChord.Key;
+	/*SettingInfo.Value = SelectedChord.Key;
 
 	FSaveData_Setting Data = USaveManager::LoadData_Setting();
 
@@ -114,12 +103,12 @@ void UUI_Button_Key::SelectedKeyValue(FInputChord SelectedChord)
 	
 	USaveManager::SaveData_Setting(Data);
 
-	ConvertLongText(SelectedChord);
+	ConvertLongText(SelectedChord);*/
 }
 
 void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
 {
-	FKey Key = SelectedChord.Key;
+	/*FKey Key = SelectedChord.Key;
 	FText Target = Selector->GetNoKeySpecifiedText();
 
 	if (Key == EKeys::LeftShift)
@@ -163,7 +152,7 @@ void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
 		Target = FText::FromString(TEXT("MMB"));
 	}
 
-	Selector->SetNoKeySpecifiedText(Target);
+	Selector->SetNoKeySpecifiedText(Target);*/
 }
 
 #pragma endregion
@@ -172,7 +161,7 @@ void UUI_Button_Key::ConvertLongText(FInputChord SelectedChord)
 
 void UUI_Button_Key::SetSavedOption()
 {
-	FSaveData_Setting Data = USaveManager::LoadData_Setting();
+	/*FSaveData_Setting Data = USaveManager::LoadData_Setting();
 	
 	switch (SettingInfo.Type)
 	{
@@ -211,7 +200,7 @@ void UUI_Button_Key::SetSavedOption()
 	case EKeySettingType::Flash:
 		Selector->SetSelectedKey(FInputChord(Data.Flash.Value));
 		break;
-	}
+	}*/
 }
 
 #pragma endregion

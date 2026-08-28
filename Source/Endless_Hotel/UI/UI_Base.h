@@ -16,7 +16,6 @@ class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 
 public:
 	virtual void ActiveWidget();
-	virtual void DeactiveWidget();
 
 #pragma endregion
 

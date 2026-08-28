@@ -32,7 +32,7 @@ void UUI_CheckBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionVa
 void UUI_CheckBox_Setting::Click_CheckBox(bool bIsCheck)
 {
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 
 	ESoundClassType Type = ESoundClassType::None;
 	float Value = 0.f;

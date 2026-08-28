@@ -5,7 +5,6 @@
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
-#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <UI_PopUp_Setting.generated.h>
 
@@ -30,79 +29,27 @@ public:
 
 #pragma endregion
 
-#pragma region Delegate
-
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingHighlight);
-	static FSettingHighlight Highlight;
-
-#pragma endregion
-
-#pragma region Highlight
+#pragma region Data
 
 private:
-	UFUNCTION()
-	void HighlightButtons();
-
-#pragma endregion
-
-#pragma region Category
-
-public:
-	void SetCurrentCategoryText(FText Value);
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text_CurrentCategory;
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	TObjectPtr<class UPDA_Setting> PDA_Setting;
 
 #pragma endregion
 
 #pragma region Option
 
 public:
-	void ShowCategoryOption(ESettingCategory Target);
-	void SetHideBoxVisibility(ESlateVisibility Option);
+	FSaveData_Setting& GetSettingData() { return Data_Setting; }
 
 private:
-	UFUNCTION()
-	void Click_Normal();
+	FSaveData_Setting Data_Setting;
 
-	UFUNCTION()
-	void Click_Input();
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	TSubclassOf<class UUI_PopUp_Option> OptionClass;
 
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Screen;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Grapic;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Sound;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control_Normal;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control_Input;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Gameplay;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_System;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBorder> Border_HideBox;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBorder> Border_HideBox2;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Normal;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Input;
+	UPROPERTY()
+	TMap<ESettingCategory, TObjectPtr<class UUI_PopUp_Option>> OptionWidgets;
 
 #pragma endregion
 
@@ -154,13 +101,6 @@ private:
 
 private:
 	bool bRotateGear = false;
-
-#pragma endregion
-
-#pragma region Save
-
-public:
-	FSaveData_Setting Data_Setting;
 
 #pragma endregion
 

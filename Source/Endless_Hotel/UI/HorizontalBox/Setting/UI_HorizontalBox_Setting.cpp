@@ -1,7 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "UI/HorizontalBox/Setting/UI_HorizontalBox_Setting.h"
+#include "UI/Controller/UI_Controller.h"
 #include "UI/Button/Setting/UI_Button_Option.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/Button.h>
 
 #pragma region Interface
@@ -10,16 +12,66 @@ void UUI_HorizontalBox_Setting::InitOption(EOptionCategory Category, TArray<FOpt
 {
 	for (FOptionValuePair Value : Values)
 	{
-		UUI_Button_Option* AttachButton = CreateWidget<UUI_Button_Option>(this, ButtonClass);
-		AttachButton->SetOptionInfo(Category, Value);
-		Buttons.Add(AttachButton);
-
-		constexpr float SizeValue = 1.f;
-		FSlateChildSize Size = FSlateChildSize(ESlateSizeRule::Fill);
-		Size.Value = SizeValue;
-		UHorizontalBoxSlot* HBSlot = HorizontalBox->AddChildToHorizontalBox(AttachButton);
-		HBSlot->SetSize(Size);
+		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+		UUI_Button_Option* ChildWidget = UICon->MakeChildWidget<UUI_Button_Option, UHorizontalBox, UHorizontalBoxSlot>(HorizontalBox, ButtonClass);
+		ChildWidget->SetOptionInfo(Category, Value);
+		Buttons.Add(ChildWidget);
 	}
+
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
+	EOptionValue Value = EOptionValue::None;
+	switch (Category)
+	{
+	case EOptionCategory::Window:
+		Value = Data.Window;
+		break;
+
+	case EOptionCategory::Aspect:
+		Value = Data.Aspect;
+		break;
+
+	case EOptionCategory::Frame:
+		Value = Data.Frame;
+		break;
+
+	case EOptionCategory::VSync:
+		Value = Data.VSync;
+		break;
+
+	case EOptionCategory::HDR:
+		Value = Data.HDR;
+		break;
+
+	case EOptionCategory::AntiAliasing:
+		Value = Data.AntiAliasing;
+		break;
+
+	case EOptionCategory::Shadow:
+		Value = Data.Shadow;
+		break;
+
+	case EOptionCategory::Texture:
+		Value = Data.Texture;
+		break;
+
+	case EOptionCategory::PostProcessing:
+		Value = Data.PostProcessing;
+		break;
+
+	case EOptionCategory::Shading:
+		Value = Data.Shading;
+		break;
+
+	case EOptionCategory::Overlap:
+		Value = Data.Overlap;
+		break;
+
+	case EOptionCategory::CameraShake:
+		Value = Data.CameraShake;
+		break;
+	}
+
+	Highlight(Value);
 }
 
 #pragma endregion

@@ -141,6 +141,9 @@ struct FOptionList
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "Category")
+	FText Name;
+
 	UPROPERTY(EditDefaultsOnly, Category = "List")
 	TArray<FOptionData> List;
 };

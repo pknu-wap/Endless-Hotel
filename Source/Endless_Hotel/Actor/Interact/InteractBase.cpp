@@ -12,7 +12,7 @@ AInteractBase::AInteractBase(const FObjectInitializer& ObjectInitializer)
 	Object = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Object"));
 	SetRootComponent(Object);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UIFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/InGame/WBP_Interact.WBP_Interact_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UIFinder(TEXT("/Game/EndlessHotel/UI/Blueprint/Miscellaneous/InGame/WBP_Interact.WBP_Interact_C"));
 
 	Component_Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Component_Widget"));
 	Component_Widget->SetupAttachment(RootComponent);
