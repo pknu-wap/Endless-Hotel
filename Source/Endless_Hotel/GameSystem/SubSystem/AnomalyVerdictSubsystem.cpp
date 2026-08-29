@@ -99,10 +99,14 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
 			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 		}
+		PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
 	}
 	else
 	{
-		EvaluateIncorrectRules();
+		if(bSuperCowardMode)
+		{
+			EvaluateIncorrectRules();
+		}
 		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
 		PC->SetPlayerInputAble(true);

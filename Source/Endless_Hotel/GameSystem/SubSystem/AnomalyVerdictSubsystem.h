@@ -50,7 +50,7 @@ private:
 
 public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
-	bool ComputeVerdict();
+	bool ComputeVerdict() const;
 	void ApplyVerdict();
 	void TryInteractSolveVerdict();
 
@@ -61,6 +61,7 @@ public:
 	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Normal;
 	bool bPassed = false;
 	bool bWrongInteractionOccurred = false;
+	bool bSuperCowardMode = false;	// 임시 이름
 
 #pragma endregion
 
