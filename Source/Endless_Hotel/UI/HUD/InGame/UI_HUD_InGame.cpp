@@ -2,7 +2,9 @@
 
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
@@ -24,9 +26,10 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
 	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
-	Subsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
+	VerdictSub->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
 }
 
 #pragma endregion
@@ -174,8 +177,8 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 {
 	VB_Rule->ClearChildren();
 
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	for (auto Rule : Subsystem->AnomalyRules)
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	for (auto Rule : AnomalySub->AnomalyRules)
 	{
 		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
 		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
@@ -186,10 +189,10 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 
 void UUI_HUD_InGame::ChangeDebugAnomaly()
 {
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
-	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->CurrentAnomalyID)));
-	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(Subsystem->NextAnomalyID)));
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->NextAnomalyID)));
 }
 
 #pragma endregion

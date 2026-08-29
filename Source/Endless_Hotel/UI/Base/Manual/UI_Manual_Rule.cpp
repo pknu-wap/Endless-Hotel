@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "UI/Base/Manual/UI_Manual_Rule.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include <Components/TextBlock.h>
 #include <Components/RichTextBlock.h>
 
@@ -16,10 +16,10 @@ void UUI_Manual_Rule::NativeOnInitialized()
 	Text_Index->SetText(Index);
 	Text_Description->SetText(Description);
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->OnAddAnomalyRule.AddUObject(this, &ThisClass::ChangeTextState);
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::ChangeTextState);
 
-	if (GameSystem->AnomalyRules.Contains(AnomalyRule))
+	if (AnomalySub->AnomalyRules.Contains(AnomalyRule))
 	{
 		SetVisibility(ESlateVisibility::Visible);
 	}

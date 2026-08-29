@@ -36,8 +36,13 @@ public:
 public:
 	void SetSolvedFalse() { bSolved = false; }
 	void SetAnomalyName(EAnomalyID ID) { AnomalyID = ID; }
+	void SetOwnerAnomalyEvent(class AAnomaly_Event* NewEvent);
+	void ClearOwnerAnomalyEvent() { OwnerAnomalyEvent = nullptr; }
 
 public:
+	UPROPERTY(VisibleAnywhere, Category = "Anomaly")
+	TWeakObjectPtr<class AAnomaly_Event> OwnerAnomalyEvent;
+
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
 

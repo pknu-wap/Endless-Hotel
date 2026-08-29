@@ -1,6 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Generator/Anomaly_Generator.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "UI/Controller/UI_Controller.h"
@@ -15,7 +16,7 @@ static FAutoConsoleCommand SetExceptClearedAnomaly(TEXT("EHDebug.GameSystem.SetE
 		{
 			return;
 		}
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
 	}));
 
@@ -25,7 +26,7 @@ static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEX
 		{
 			return;
 		}
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 		Subsystem->bIsClear = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
 	}));
 
@@ -35,7 +36,7 @@ static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRul
 		{
 			return;
 		}
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		const UEnum* RuleEnum = StaticEnum<EAnomalyRule>();
 		uint8 RuleValue = RuleEnum->GetValueByNameString(Args[0]);
 		if (RuleValue == INDEX_NONE)
@@ -49,7 +50,7 @@ static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRul
 
 static FAutoConsoleCommand AddAllAnomalyRule(TEXT("EHDebug.GameSystem.AddAllAnomalyRule"), TEXT(""), FConsoleCommandDelegate::CreateLambda([]()
 	{
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->AddAnomalyRule(EAnomalyRule::Doll);
 		Subsystem->AddAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->AddAnomalyRule(EAnomalyRule::TurnOffSound);
@@ -58,7 +59,7 @@ static FAutoConsoleCommand AddAllAnomalyRule(TEXT("EHDebug.GameSystem.AddAllAnom
 
 static FAutoConsoleCommand RemoveAllAnomalyRule(TEXT("EHDebug.GameSystem.RemoveAllAnomalyRule"), TEXT(""), FConsoleCommandDelegate::CreateLambda([]()
 	{
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Doll);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);

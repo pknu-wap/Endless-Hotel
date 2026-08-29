@@ -24,8 +24,14 @@ protected:
 #pragma region Setting
 
 public:
-	TWeakObjectPtr<class AAnomaly_Object_CrawlChild> AnomalyObjectRef;
-	TWeakObjectPtr<class AAnomaly_Object_WChair> WheelChairObjectRef;
+	void SetOwnerAnomalyEvent(class AAnomaly_CrawlChild* NewEvent);
+
+public:
+	TWeakObjectPtr<class AAnomaly_Object_WChair>WheelChairObjectRef;
+
+protected:
+	UPROPERTY()
+	TWeakObjectPtr<class AAnomaly_CrawlChild> OwnerAnomalyEvent;
 
 #pragma endregion
 

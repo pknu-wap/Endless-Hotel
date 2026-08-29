@@ -2,7 +2,7 @@
 
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/PointLightComponent.h>
 #include <Camera/CameraComponent.h>
@@ -87,8 +87,9 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 	GetMesh()->bNoSkeletonUpdate = true;
 
-	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	SubSystem->ApplyVerdict();
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSub->bIsStartInBed = true;
+	VerdictSub->ApplyVerdict();
 
 	constexpr float ReviveDuration = 6.f;
 	FTimerHandle DeathHandle;

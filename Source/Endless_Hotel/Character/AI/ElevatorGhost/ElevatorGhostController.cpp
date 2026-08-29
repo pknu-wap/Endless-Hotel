@@ -67,7 +67,6 @@ void AElevatorGhostController::StartWalkingIntoElevator()
 
 void AElevatorGhostController::OnGhostReachedElevator()
 {
-    ElevatorGhost->SetActorRotation(TargetRotation);
     ElevatorGhost->SetActorTickEnabled(true);
     ElevatorGhost->SetActorEnableCollision(true);
 
@@ -80,6 +79,14 @@ void AElevatorGhostController::OnGhostReachedElevator()
     {
         AnimInst->bIsMoving = false;
     }
+
+    GetWorld()->GetTimerManager().SetTimer(LookAtDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+        {
+            if (ElevatorGhost.IsValid())
+            {
+                ElevatorGhost->SetShouldLookAtPlayer(true);
+            }
+        }), LookAtDelay, false);
 }
 
 #pragma endregion

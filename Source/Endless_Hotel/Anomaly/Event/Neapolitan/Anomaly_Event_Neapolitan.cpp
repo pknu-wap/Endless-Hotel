@@ -1,8 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
-
 #include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 
 // Anomaly_Event_Neapolitan.cpp

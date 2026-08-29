@@ -7,7 +7,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Type/Save/Type_Save.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
@@ -257,16 +257,16 @@ void UUI_Button_Option::SetOption_Shading()
 
 void UUI_Button_Option::SetOption_AnomalyOverlap()
 {
-	auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 
 	switch (OptionValue)
 	{
 	case EOptionValue::On:
-		Sub->bExceptClearedAnomaly = true;
+		AnomalySub->bExceptClearedAnomaly = true;
 		break;
 
 	case EOptionValue::Off:
-		Sub->bExceptClearedAnomaly = false;
+		AnomalySub->bExceptClearedAnomaly = false;
 		break;
 	}
 }

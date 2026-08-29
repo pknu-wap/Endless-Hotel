@@ -1,7 +1,10 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/Normal/Normal.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 
 #pragma region Activities
@@ -10,17 +13,20 @@ void ANormal::SetAnomalyState()
 {
     SetVerdictMode(EAnomalyVerdictMode::Normal);
     Super::SetAnomalyState();
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if (Subsystem->bIsStartInBed || Subsystem->bIsFirstStartFloor)
+    auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+    auto* FloorSubsystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    auto* ElevatorSubsystem = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+
+    if (VerdictSubsystem->bIsStartInBed || FloorSubsystem->bIsFirstStartFloor)
     {
-        Subsystem->RemoveTargetElevator();
+        ElevatorSubsystem->RemoveTargetElevator();
     }
-    if (Subsystem->bIsFirstStartFloor)
+    if (FloorSubsystem->bIsFirstStartFloor)
     {
         SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoor);
 		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::SetLight, FAnomalyActionInfo(), true);
     }
-    else if (Subsystem->Floor == STARTFLOOR)
+    else if (FloorSubsystem->Floor == STARTFLOOR)
     {
         SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoorOpened);
         SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::SetLight, FAnomalyActionInfo(), true);
