@@ -41,6 +41,10 @@ private:
 
 public:
 	FSaveData_Setting& GetSettingData() { return Data_Setting; }
+	void ShowOptionWidget(ESettingCategory Category);
+
+private:
+	void CreateOptionWidgets();
 
 private:
 	FSaveData_Setting Data_Setting;
@@ -64,22 +68,21 @@ private:
 	const int32 GetShortestAdditionAngle(int32 Cur, int32 Tar);
 	void TurnOnGearLight(bool bOn);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> UI_Gear;
 
-	UPROPERTY(EditAnywhere, Category = "Sound")
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_Gear;
 
-private:
 	UPROPERTY()
-	TWeakObjectPtr<class AStaticMeshActor> SM_Gear;
+	TObjectPtr<class AStaticMeshActor> SM_Gear;
 
 	UPROPERTY()
-	TWeakObjectPtr<class USpotLightComponent> Comp_SpotLight;
+	TObjectPtr<class USpotLightComponent> Comp_SpotLight;
 
 	UPROPERTY()
-	TWeakObjectPtr<class UExponentialHeightFogComponent> Comp_Fog;
+	TObjectPtr<class UExponentialHeightFogComponent> Comp_Fog;
 
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Gear;
@@ -90,16 +93,13 @@ private:
 	float FinalAngle = 0.f;
 	const float RotateSpeed = 45.f;
 
-private:
 	// Actor
 	FRotator OriginRot;
 	FQuat CurrentQuat;
 	FQuat FinalQuat;
 
-private:
 	FTimerHandle LightHandle;
 
-private:
 	bool bRotateGear = false;
 
 #pragma endregion
@@ -107,23 +107,29 @@ private:
 #pragma region Control
 
 private:
+	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
 	UFUNCTION()
 	void Click_Apply();
 
-	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
-
-	void AdjustCategoryIndex(bool bUp);
-
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
 
+#pragma endregion
+
+#pragma region Category
+
+private:
+	void FindCategoryButton();
+	void AdjustCategoryIndex(bool bUp);
+
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UUI_Button_Setting>> CategoryButtons;
+	TArray<TObjectPtr<class UUI_Button_Category>> CategoryButtons;
 
 	int8 CategoryIndex = 0;
 

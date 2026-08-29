@@ -30,7 +30,7 @@ public:
 
 private:
 	UFUNCTION()
-	void Click_CheckBox(bool bIsCheck);
+	void Click_CheckBox(bool bIsMute);
 
 #pragma endregion
 

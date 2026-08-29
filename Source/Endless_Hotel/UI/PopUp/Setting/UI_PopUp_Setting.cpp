@@ -2,15 +2,12 @@
 
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
-#include "UI/Button/Setting/UI_Button_Setting.h"
-#include "UI/Controller/UI_Controller.h"
+#include "UI/Button/Setting/UI_Button_Category.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Asset/DataAsset/Widget/PDA_Setting.h"
 #include <Components/Button.h>
-#include <Components/Border.h>
-#include <Components/TextBlock.h>
 #include <Components/AudioComponent.h>
 #include <Components/SpotLightComponent.h>
 #include <Components/ExponentialHeightFogComponent.h>
@@ -29,24 +26,7 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Apply->OnClicked.AddDynamic(this, &ThisClass::Click_Apply);
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 
-	UCanvasPanel* Canvas = Cast<UCanvasPanel>(GetRootWidget());
-
-	for (const auto& Pair : PDA_Setting->Setting)
-	{
-		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, OptionClass);
-		ChildWidget->InitOption(Pair.Value);
-		OptionWidgets.Add(Pair.Key, ChildWidget);
-
-		UCanvasPanelSlot* CanvasSlot = Canvas->AddChildToCanvas(ChildWidget);
-		CanvasSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
-		CanvasSlot->SetOffsets(FMargin(0.0f));
-		
-		ChildWidget->HideWidget();
-		if (Pair.Key == ESettingCategory::Screen)
-		{
-			ChildWidget->ShowWidget();
-		}
-	}
+	CreateOptionWidgets();
 }
 
 void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -114,6 +94,46 @@ void UUI_PopUp_Setting::HideWidget()
 
 #pragma endregion
 
+#pragma region Option
+
+void UUI_PopUp_Setting::ShowOptionWidget(ESettingCategory Category)
+{
+	for (const auto& Pair : OptionWidgets)
+	{
+		if (Pair.Key == Category)
+		{
+			Pair.Value->ShowWidget();
+			continue;
+		}
+
+		Pair.Value->HideWidget();
+	}
+}
+
+void UUI_PopUp_Setting::CreateOptionWidgets()
+{
+	UCanvasPanel* Canvas = Cast<UCanvasPanel>(GetRootWidget());
+
+	for (const auto& Pair : PDA_Setting->Setting)
+	{
+		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, OptionClass);
+		ChildWidget->InitOption(Pair.Value);
+		OptionWidgets.Add(Pair.Key, ChildWidget);
+
+		UCanvasPanelSlot* CanvasSlot = Canvas->AddChildToCanvas(ChildWidget);
+		CanvasSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
+		CanvasSlot->SetOffsets(FMargin(0.0f));
+
+		ChildWidget->HideWidget();
+		if (Pair.Key == ESettingCategory::Screen)
+		{
+			ChildWidget->ShowWidget();
+		}
+	}
+}
+
+#pragma endregion
+
 #pragma region Gear
 
 void UUI_PopUp_Setting::StartRotateGear(float Target)
@@ -138,7 +158,7 @@ void UUI_PopUp_Setting::StartRotateGear(float Target)
 
 void UUI_PopUp_Setting::FindGearActor()
 {
-	if (SM_Gear.IsValid())
+	if (IsValid(SM_Gear))
 	{
 		return;
 	}
@@ -258,9 +278,24 @@ FReply UUI_PopUp_Setting::NativeOnMouseWheel(const FGeometry& InGeometry, const 
 		AdjustCategoryIndex(false);
 	}
 
-	//CategoryButtons[CategoryIndex]->ClickCategoryButton();
+	CategoryButtons[CategoryIndex]->Click_Button();
 
 	return Super::NativeOnMouseWheel(InGeometry, InMouseEvent);
+}
+
+#pragma endregion
+
+#pragma region Category
+
+void UUI_PopUp_Setting::FindCategoryButton()
+{
+	for (auto* Child : UI_Gear->GetAllChildren())
+	{
+		if (auto* Target = Cast<UUI_Button_Category>(Child))
+		{
+			CategoryButtons.Add(Target);
+		}
+	}
 }
 
 void UUI_PopUp_Setting::AdjustCategoryIndex(bool bUp)

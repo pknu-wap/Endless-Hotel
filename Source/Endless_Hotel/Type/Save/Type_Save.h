@@ -72,19 +72,19 @@ public:
 	float UI = 0.5f;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableMaster = 1;
+	uint8 MuteMaster = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableBGM = 1;
+	uint8 MuteBGM = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableSFX = 1;
+	uint8 MuteSFX = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableVoice = 1;
+	uint8 MuteVoice = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableUI = 1;
+	uint8 MuteUI = 0;
 
 public:
 	// Control

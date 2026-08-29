@@ -19,18 +19,15 @@ enum class ESettingCategory : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FSettingCategory
+struct FCategoryButtonInfo
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnyWhere, Category = "Setting")
-	ESettingCategory Enum = ESettingCategory::None;
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	ESettingCategory Category = ESettingCategory::None;
 
-	UPROPERTY(EditAnyWhere, Category = "Setting")
-	FText Name;
-
-	UPROPERTY(EditAnyWhere, Category = "Setting")
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	float Angle = 0;
 };
 

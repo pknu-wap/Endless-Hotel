@@ -3,12 +3,14 @@
 #include "UI/Slider/Setting/UI_Slider_Setting.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
+#include "UI/CheckBox/Setting/UI_CheckBox_Setting.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Components/TextBlock.h>
 #include <Components/Image.h>
+#include <Blueprint/WidgetTree.h>
 
 #pragma region Interface
 
@@ -43,6 +45,17 @@ void UUI_Slider_Setting::InitOption(EOptionCategory Category, TArray<FOptionValu
 	}
 
 	Slide_Slider(Value);
+
+	TArray<UWidget*> Childs;
+	WidgetTree->GetChildWidgets(GetRootWidget(), OUT Childs);
+	for (auto* Child : Childs)
+	{
+		if (auto* CheckBox = Cast<UUI_CheckBox_Setting>(Child))
+		{
+			CheckBox->InitOption(Category, Values);
+			break;
+		}
+	}
 }
 
 #pragma endregion
@@ -64,27 +77,27 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 	{
 	case EOptionCategory::Master:
 		Data.Master = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableMaster);
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.MuteMaster);
 		break;
 
 	case EOptionCategory::BGM:
 		Data.BGM = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::BGM, Value * Data.EnableBGM);
+		SoundCon->SetSoundClassValue(ESoundClassType::BGM, Value * Data.MuteBGM);
 		break;
 
 	case EOptionCategory::SFX:
 		Data.SFX = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::SFX, Value * Data.EnableSFX);
+		SoundCon->SetSoundClassValue(ESoundClassType::SFX, Value * Data.MuteSFX);
 		break;
 
 	case EOptionCategory::Voice:
 		Data.Voice = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Voice, Value * Data.EnableVoice);
+		SoundCon->SetSoundClassValue(ESoundClassType::Voice, Value * Data.MuteVoice);
 		break;
 
 	case EOptionCategory::UI:
 		Data.UI = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::UI, Value * Data.EnableUI);
+		SoundCon->SetSoundClassValue(ESoundClassType::UI, Value * Data.MuteUI);
 		break;
 
 	case EOptionCategory::Sensitivity:
