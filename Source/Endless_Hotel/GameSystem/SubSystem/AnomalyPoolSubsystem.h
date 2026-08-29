@@ -87,6 +87,9 @@ public:
     DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);
     FOnAddAnomalyRule OnAddAnomalyRule;
 
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddFakeManualEntry, const FFakeManualEntry&, Entry);
+    FOnAddFakeManualEntry OnAddFakeManualEntry;
+
 private:
     UPROPERTY()
     TArray<FFakeManualEntry> FakeManualEntries;
