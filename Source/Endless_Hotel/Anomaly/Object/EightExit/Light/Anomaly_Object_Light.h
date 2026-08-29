@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
+#include <Physics/Experimental/ChaosEventType.h>
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Light.generated.h>
 
@@ -50,6 +51,9 @@ public:
 private:
 	void SetGeometryCollection();
 	void DestroyLight();
+
+	UFUNCTION()
+	void OnGeometryCollectionBreak(const FChaosBreakEvent& BreakEvent);
 
 private:
 	UPROPERTY(EditAnywhere)
