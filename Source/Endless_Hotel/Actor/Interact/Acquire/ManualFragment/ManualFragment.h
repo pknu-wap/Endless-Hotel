@@ -58,7 +58,7 @@ private:
     bool bHasFakeRule = false;
 
     UPROPERTY(EditAnywhere, Category = "Setting|Fake", meta = (EditCondition = "bHasFakeRule"))
-    EAnomalyRule FakeRule = EAnomalyRule::None;
+    EFakeRule FakeRule = EFakeRule::None;
 
 #pragma endregion
 

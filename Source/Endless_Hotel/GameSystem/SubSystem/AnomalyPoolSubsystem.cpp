@@ -152,7 +152,7 @@ void UAnomalyPoolSubsystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
     OnAddAnomalyRule.Broadcast(AnomalyRule);
 }
 
-void UAnomalyPoolSubsystem::AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnomalyRule FakeAction, EAnomalyRule RealRule)
+void UAnomalyPoolSubsystem::AddFakeManualEntry(EAnomalyID TargetAnomalyID, EFakeRule FakeAction, EAnomalyRule RealRule)
 {
     FFakeManualEntry NewEntry;
     NewEntry.TargetAnomalyID = TargetAnomalyID;

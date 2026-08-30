@@ -33,7 +33,7 @@ public:
     EAnomalyID TargetAnomalyID = EAnomalyID::None;
 
     UPROPERTY(EditAnywhere)
-    EAnomalyRule DisplayedFakeAction = EAnomalyRule::None;
+    EFakeRule DisplayedFakeAction = EFakeRule::None;
 
     UPROPERTY(EditAnywhere)
     EAnomalyRule RealRuleToSolve = EAnomalyRule::None;
@@ -77,7 +77,7 @@ private:
 public:
     void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
     void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
-    void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnomalyRule FakeAction, EAnomalyRule RealRule);
+    void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EFakeRule FakeAction, EAnomalyRule RealRule);
     void ClearFakeManualEntry(EAnomalyID TargetAnomalyID);
 
 public:
