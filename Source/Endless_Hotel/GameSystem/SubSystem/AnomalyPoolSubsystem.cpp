@@ -160,7 +160,7 @@ void UAnomalyPoolSubsystem::AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnom
     NewEntry.RealRuleToSolve = RealRule;
 
     FakeManualEntries.Add(NewEntry);
-    OnAddFakeManualEntry.Broadcast(FakeAction);
+    OnAddFakeManualEntry.Broadcast(NewEntry);
 }
 
 void UAnomalyPoolSubsystem::ClearFakeManualEntry(EAnomalyID TargetAnomalyID)
