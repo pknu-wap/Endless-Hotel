@@ -28,9 +28,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
 	TSubclassOf<class UUI_Button_Setting> ButtonClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Widget")
-	TSubclassOf<class UUI_Button_Setting> ButtonClass_Brightness;
-
 #pragma endregion
 
 #pragma region TextBlock

@@ -14,8 +14,7 @@ void UUI_PopUp_Option::InitOption(FOptionList List)
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	for (FOptionData Data : List.List)
 	{
-		auto TargetClass = Data.Category != EOptionCategory::Brightness ? ButtonClass : ButtonClass_Brightness;
-		auto* ChildWidget = UICon->MakeChildWidget<UUI_Button_Setting, UVerticalBox, UVerticalBoxSlot>(VerticalBox, TargetClass, ESlateSizeRule::Automatic);
+		auto* ChildWidget = UICon->MakeChildWidget<UUI_Button_Setting, UVerticalBox, UVerticalBoxSlot>(VerticalBox, ButtonClass, ESlateSizeRule::Automatic);
 		ChildWidget->InitOption(Data);
 	}
 
