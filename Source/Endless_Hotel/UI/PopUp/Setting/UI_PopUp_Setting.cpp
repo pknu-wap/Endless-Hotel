@@ -105,7 +105,13 @@ void UUI_PopUp_Setting::CreateOptionWidgets()
 
 	for (const auto& Pair : PDA_Setting->Setting)
 	{
-		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, OptionClass);
+		auto TargetClass = OptionClass;
+		if (Pair.Key == ESettingCategory::Control_Normal || Pair.Key == ESettingCategory::Control_Input)
+		{
+			TargetClass = OptionClass_Control;
+		}
+
+		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, TargetClass);
 		ChildWidget->InitOption(Pair.Value);
 		OptionWidgets.Add(Pair.Key, ChildWidget);
 
