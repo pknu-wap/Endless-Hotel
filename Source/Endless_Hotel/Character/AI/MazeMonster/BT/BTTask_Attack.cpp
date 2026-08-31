@@ -26,54 +26,70 @@ UBTTask_Attack::UBTTask_Attack()
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	Super::ExecuteTask(OwnerComp, NodeMemory);
+    Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	AAIController* AIController = OwnerComp.GetAIOwner();
-	APawn* AIPawn = AIController->GetPawn();
-	AMazeMonster* MazeMonster = Cast<AMazeMonster>(AIPawn);
-	ACharacter* Character = Cast<ACharacter>(AIPawn);
-	UBaseAIAnimInstance* AnimInst = Cast<UBaseAIAnimInstance>(Character->GetMesh()->GetAnimInstance());
-	AnimInst->State = EAIAnimState::Attacking;
+    AAIController* AIController = OwnerComp.GetAIOwner();
+    APawn* AIPawn = AIController->GetPawn();
+    AMazeMonster* MazeMonster = Cast<AMazeMonster>(AIPawn);
+    ACharacter* Character = Cast<ACharacter>(AIPawn);
+    UBaseAIAnimInstance* AnimInst = Cast<UBaseAIAnimInstance>(Character->GetMesh()->GetAnimInstance());
+    AnimInst->State = EAIAnimState::Attacking;
 
+    UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+    UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
 
-	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-	UObject* TargetObject = BlackboardComp->GetValueAsObject(AMazeMonsterController::Key_TargetPlayer);
+    AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
+    if (!Player || MazeMonster->bIsAttacked)
+    {
+        return EBTNodeResult::Failed;
+    }
 
-	AEHPlayer* Player = Cast<AEHPlayer>(TargetObject);
-	if (!Player || MazeMonster->bIsAttacked) 
-	{
-		return EBTNodeResult::Failed;
-	}
+    MazeMonster->bIsAttacked = true;
 
-	MazeMonster->bIsAttacked = true;
+    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+    PC->SetPlayerInputAble(false);
 
-	AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-	PC->SetPlayerInputAble(false);
+    MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+    MazeMonster->GetCharacterMovement()->StopMovementImmediately();
 
-	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, true);
-	MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-	MazeMonster->GetCharacterMovement()->StopMovementImmediately(); 
-	MazeMonster->GetMesh()->AttachToComponent(Player->GetMesh(), AttachRules, TEXT("JumpScare_MazeMonster"));
-	MazeMonster->SetActorRelativeLocation(FVector::ZeroVector);
-	MazeMonster->SetActorRelativeRotation(FRotator::ZeroRotator);
-	MazeMonster->AttachAttackSoundTo(Player->GetMesh(), TEXT("JumpScare_MazeMonster"));
-	MazeMonster->StopHeartbeatSound();
-	MazeMonster->PlayAttackSound();
+    const FVector PlayerEyeLocation = Player->GetActorLocation();
+    const FVector MonsterLocation = MazeMonster->GetActorLocation();
+    TargetLookAtRot = UKismetMathLibrary::FindLookAtRotation(PlayerEyeLocation, MonsterLocation);
 
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController, MazeMonster, &OwnerComp]()
-		{
-			AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
-			BaseAIController->StopAI(TEXT("Attack"));
-			Player->DieDelegate.Broadcast(EDeathReason::Attack);
-			MazeMonster->StopAttackSound();
-			MazeMonster->RestoreAttackSoundAttachment();
-			MazeMonster->GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}), DieDelay, false);
+    GetWorld()->GetTimerManager().SetTimer(LookAtRotTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, PC]()
+        {
+            if (!PC) return;
 
-	return EBTNodeResult::InProgress;
+            const FRotator CurrentRot = PC->GetControlRotation();
+            const FRotator NewRot = FMath::RInterpTo(CurrentRot, TargetLookAtRot, GetWorld()->GetDeltaSeconds(), LookAtInterpSpeed);
+            PC->SetControlRotation(NewRot);
+
+            if (NewRot.Equals(TargetLookAtRot, 0.5f))
+            {
+                GetWorld()->GetTimerManager().ClearTimer(LookAtRotTimerHandle);
+            }
+        }), 0.016f, true);
+
+    MazeMonster->AttachAttackSoundTo(MazeMonster->GetMesh(), TEXT("JumpScare_MazeMonster"));
+    MazeMonster->StopHeartbeatSound();
+    MazeMonster->PlayAttackSound();
+
+    FTimerHandle DelayHandle;
+    GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, AIController, MazeMonster, &OwnerComp]()
+        {
+            AMazeMonsterController* BaseAIController = Cast<AMazeMonsterController>(AIController);
+            BaseAIController->StopAI(TEXT("Attack"));
+            Player->DieDelegate.Broadcast(EDeathReason::Attack);
+            MazeMonster->StopAttackSound();
+            MazeMonster->RestoreAttackSoundAttachment();
+
+            GetWorld()->GetTimerManager().ClearTimer(LookAtRotTimerHandle);
+
+            FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        }), DieDelay, false);
+
+    return EBTNodeResult::InProgress;
 }
 
 #pragma endregion

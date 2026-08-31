@@ -27,6 +27,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Setting")
 	float DieDelay = 2;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float LookAtInterpSpeed = 10.0f;
+
+private:
+	FRotator TargetLookAtRot;
+	FTimerHandle LookAtRotTimerHandle;
+
 #pragma endregion
 
 };

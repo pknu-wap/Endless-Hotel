@@ -23,11 +23,6 @@ AAnomaly_Object_Ceiling::AAnomaly_Object_Ceiling(const FObjectInitializer& Objec
 	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 	GeometryCollection_Ceiling = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollection_Ceiling"));
 	GeometryCollection_Ceiling->SetupAttachment(RootComponent);
-
-	CollapseRegionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollapseRegionBox"));
-	CollapseRegionBox->SetupAttachment(RootComponent);
-	CollapseRegionBox->SetBoxExtent(FVector(100.f, 100.f, 50.f));
-	CollapseRegionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AAnomaly_Object_Ceiling::BeginPlay()
@@ -37,8 +32,6 @@ void AAnomaly_Object_Ceiling::BeginPlay()
 	FOnTimelineFloat UpdateFunc;
 	UpdateFunc.BindUFunction(this, FName("CeilingRotate"));
 	Timeline->AddInterpFloat(Curve_CeilingRotate, UpdateFunc);
-	FBox FullBounds = GeometryCollection_Ceiling->Bounds.GetBox();
-	GeometryCollection_Ceiling->SetAnchoredByBox(FullBounds, true, -1);
 }
 
 void AAnomaly_Object_Ceiling::Reset()
@@ -58,14 +51,6 @@ void AAnomaly_Object_Ceiling::Reset()
 	ActiveCollapseFieldWeak = nullptr;
 	GeometryCollection_Ceiling->SetVisibility(false);
 	GeometryCollection_Ceiling->SetSimulatePhysics(false);
-
-	const UGeometryCollection* CurrentRestCollection = GeometryCollection_Ceiling->GetRestCollection();
-	GeometryCollection_Ceiling->SetRestCollection(CurrentRestCollection, false);
-	GeometryCollection_Ceiling->RecreatePhysicsState();
-	GeometryCollection_Ceiling->SetSimulatePhysics(true);
-
-	FBox FullBounds = GeometryCollection_Ceiling->Bounds.GetBox();
-	GeometryCollection_Ceiling->SetAnchoredByBox(FullBounds, true, -1);
 }
 
 #pragma endregion
@@ -116,40 +101,31 @@ void AAnomaly_Object_Ceiling::CeilingBloodDripping()
 	), BloodInterval, true);
 }
 
+#pragma endregion
+
+#pragma region Ceiling_Collapse
+
 void AAnomaly_Object_Ceiling::TriggerCeilingCollapse()
 {
 	if (bHasCollapsed) 
 	{
 		return;
 	}
-	FBox CollapseRegion = CollapseRegionBox->Bounds.GetBox();
-	FVector RegionCenter = CollapseRegion.GetCenter();
-	FVector RegionExtent = CollapseRegion.GetSize() * 0.5f;
+	FVector CeilingLocation = GeometryCollection_Ceiling->GetComponentLocation();
+	float Radius = 100000.f;
+	int32 PropagationDepth = 0;
+	float PropagationFactor = 0.f;
+	float Strain = 999999.f;
 
-	FTransform SpawnTransform(FRotator::ZeroRotator, RegionCenter, RegionExtent);
-	AFieldSystemActor* SpawnedField = GetWorld()->SpawnActor<AFieldSystemActor>(FieldSystemActorClass, SpawnTransform);
-	if (!SpawnedField)
-	{
-		return;
-	}
-	ActiveCollapseFieldWeak = SpawnedField;
-	UBoxFalloff* BoxFalloff = NewObject<UBoxFalloff>(SpawnedField);
-	BoxFalloff->MinRange = 0.f;
-	BoxFalloff->MaxRange = 1.f;
-	BoxFalloff->Magnitude = 9999999.f;
-	BoxFalloff->Transform = SpawnTransform;
-	BoxFalloff->Falloff = EFieldFalloffType::Field_Falloff_Linear;
-
-	GeometryCollection_Ceiling->ApplyPhysicsField(true, EGeometryCollectionPhysicsTypeEnum::Chaos_ExternalClusterStrain, nullptr, BoxFalloff);
-
+	GeometryCollection_Ceiling->ApplyExternalStrain(0, CeilingLocation, Radius, PropagationDepth, PropagationFactor, Strain);
 	GeometryCollection_Ceiling->WakeAllRigidBodies();
-	SpawnedField->SetLifeSpan(0.2f);
 	bHasCollapsed = true;
 }
 
 void AAnomaly_Object_Ceiling::SetupCrawlChildCeilingObject()
 {
 	Object->SetVisibility(false);
+	GeometryCollection_Ceiling->SetSimulatePhysics(true);
 	GeometryCollection_Ceiling->SetVisibility(true);
 }
 

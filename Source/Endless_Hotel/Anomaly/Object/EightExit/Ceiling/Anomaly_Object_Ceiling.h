@@ -85,9 +85,6 @@ public:
 	UPROPERTY()
 	TWeakObjectPtr<class AFieldSystemActor> ActiveCollapseFieldWeak;
 
-	UPROPERTY(EditAnywhere, Category = "Destruction")
-	TObjectPtr<class UBoxComponent> CollapseRegionBox;
-
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
