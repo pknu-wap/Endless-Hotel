@@ -22,7 +22,6 @@ public:
     TArray<TObjectPtr<AAnomaly_Object_Base>> Objects;
 };
 
-
 USTRUCT(BlueprintType)
 struct FFakeManualEntry
 {
@@ -33,7 +32,7 @@ public:
     EAnomalyID TargetAnomalyID = EAnomalyID::None;
 
     UPROPERTY(EditAnywhere)
-    EFakeRule DisplayedFakeAction = EFakeRule::None;
+    EAnomalyRule DisplayedFakeAction = EAnomalyRule::None;
 
     UPROPERTY(EditAnywhere)
     EAnomalyRule RealRuleToSolve = EAnomalyRule::None;
@@ -77,7 +76,7 @@ private:
 public:
     void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
     void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
-    void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EFakeRule FakeAction, EAnomalyRule RealRule);
+    void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnomalyRule FakeAction, EAnomalyRule RealRule);
     void ClearFakeManualEntry(EAnomalyID TargetAnomalyID);
 
 public:
@@ -86,9 +85,6 @@ public:
 
     DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);
     FOnAddAnomalyRule OnAddAnomalyRule;
-
-    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddFakeManualEntry, const FFakeManualEntry&, Entry);
-    FOnAddFakeManualEntry OnAddFakeManualEntry;
 
 private:
     UPROPERTY()

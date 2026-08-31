@@ -16,12 +16,3 @@ enum class EAnomalyRule : uint8
 	ResetObject			= 6		UMETA(DisplayName = "ResetObject"),
 	Watch				= 7		UMETA(DisplayName = "Watch")
 };
-
-UENUM(BlueprintType)
-enum class EFakeRule : uint8
-{
-	None				= 0		UMETA(DisplayName = "None"),
-	FakePaintingBurn	= 1		UMETA(DisplayName = "FakePaintingBurn"),
-	FakeDollFlip		= 2		UMETA(DisplayName = "FakeDollFlip"),
-	FakeWatchTouch		= 3		UMETA(DisplayName = "FakeWatchTouch"),
-};
