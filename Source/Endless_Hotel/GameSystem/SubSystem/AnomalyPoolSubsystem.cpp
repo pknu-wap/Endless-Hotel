@@ -23,9 +23,9 @@ void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	AssetManager.InitAnomalyEntries();
 
 	const FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
-	const FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
+	const FSaveData_Progression Data_Progression = USaveManager::LoadData_Progression();
 	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
-	AnomalyRules = Data_Manual.ActiveRules;
+	AnomalyRules = Data_Progression.ActiveRules;
 
 	bool bIsClear = false;
 	if (const UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
@@ -85,7 +85,7 @@ void UAnomalyPoolSubsystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
 	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 	if (FloorSys)
 	{
-		FloorSys->FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
+		FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::Reset);
 	}
 
 	const UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
@@ -123,9 +123,9 @@ void UAnomalyPoolSubsystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
 	AnomalyRules.AddUnique(AnomalyRule);
 
-	FSaveData_Manual SavedRules;
+	FSaveData_Progression SavedRules;
 	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
+	USaveManager::SaveData_Progression(SavedRules);
 
 	InitializePool();
 	OnAddAnomalyRule.Broadcast(AnomalyRule);
@@ -135,9 +135,9 @@ void UAnomalyPoolSubsystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
 	AnomalyRules.Remove(AnomalyRule);
 
-	FSaveData_Manual SavedRules;
+	FSaveData_Progression SavedRules;
 	SavedRules.ActiveRules = AnomalyRules;
-	USaveManager::SaveData_Manual(SavedRules);
+	USaveManager::SaveData_Progression(SavedRules);
 
 	InitializePool();
 	OnAddAnomalyRule.Broadcast(AnomalyRule);

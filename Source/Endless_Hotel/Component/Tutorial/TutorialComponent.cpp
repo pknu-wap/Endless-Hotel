@@ -25,8 +25,8 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
-	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
+	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
 
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	if (Data.Progression != EGameProgression::Tutorial)
@@ -53,7 +53,7 @@ void UTutorialComponent::ShowTutorialWidget()
 	}
 	
 	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
 
 	UI_Tutorial->ShowTutorialAnimation(true);
 

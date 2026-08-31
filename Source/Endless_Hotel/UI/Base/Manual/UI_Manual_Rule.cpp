@@ -17,7 +17,7 @@ void UUI_Manual_Rule::NativeOnInitialized()
 	Text_Description->SetText(Description);
 
 	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::ChangeTextState);
+	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::ChangeTextState);
 
 	if (AnomalySub->AnomalyRules.Contains(AnomalyRule))
 	{

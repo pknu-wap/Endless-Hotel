@@ -26,8 +26,10 @@ protected:
 #pragma region Reset
 
 public:
-	UFUNCTION()
 	virtual void Reset();
+
+private:
+	FDelegateHandle ResetHandle;
 
 #pragma endregion
 

@@ -47,7 +47,7 @@ public:
     TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch,
         EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
 
-    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule, Rule);
+    DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule);
     FOnAddAnomalyRule OnAddAnomalyRule;
 
 private:

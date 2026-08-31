@@ -27,6 +27,7 @@ void UUI_PopUp_Setting::NativeOnInitialized()
 	Button_Cancel->OnClicked.AddDynamic(this, &ThisClass::Input_ESC);
 
 	CreateOptionWidgets();
+	FindCategoryButton();
 }
 
 void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -45,6 +46,8 @@ void UUI_PopUp_Setting::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 
 void UUI_PopUp_Setting::ShowWidget()
 {
+	Super::ShowWidget();
+
 	Data_Setting = USaveManager::LoadData_Setting();
 
 	SetVisibility(ESlateVisibility::Hidden);
@@ -63,6 +66,7 @@ void UUI_PopUp_Setting::ShowWidget()
 	FTimerHandle ShowHandle;
 	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, PossessDuration]()
 		{
+			ShowCurrentCategoryWidget();
 			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			TurnOnGearLight(true);
 		}), ShowDuration, false);
@@ -76,11 +80,8 @@ void UUI_PopUp_Setting::ShowWidget()
 
 void UUI_PopUp_Setting::HideWidget()
 {
-	Super::HideWidget();
-
 	bRotateGear = false;
 
-	SM_Gear->SetActorRotation(OriginRot);
 	AC_Gear->Stop();
 
 	TurnOnGearLight(false);
@@ -90,25 +91,13 @@ void UUI_PopUp_Setting::HideWidget()
 
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	GameInstance->GetCurrentDataLayer() == EMapDataLayer::Lobby ? CameraManager->PossessCamera(ECameraType::Title, 1.f) : CameraManager->PossessCameraToPlayer(0.f);
+
+	Super::HideWidget();
 }
 
 #pragma endregion
 
 #pragma region Option
-
-void UUI_PopUp_Setting::ShowOptionWidget(ESettingCategory Category)
-{
-	for (const auto& Pair : OptionWidgets)
-	{
-		if (Pair.Key == Category)
-		{
-			Pair.Value->ShowWidget();
-			continue;
-		}
-
-		Pair.Value->HideWidget();
-	}
-}
 
 void UUI_PopUp_Setting::CreateOptionWidgets()
 {
@@ -123,12 +112,6 @@ void UUI_PopUp_Setting::CreateOptionWidgets()
 		UCanvasPanelSlot* CanvasSlot = Canvas->AddChildToCanvas(ChildWidget);
 		CanvasSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
 		CanvasSlot->SetOffsets(FMargin(0.0f));
-
-		ChildWidget->HideWidget();
-		if (Pair.Key == ESettingCategory::Screen)
-		{
-			ChildWidget->ShowWidget();
-		}
 	}
 }
 
@@ -311,6 +294,18 @@ void UUI_PopUp_Setting::AdjustCategoryIndex(bool bUp)
 	else if (CategoryIndex > MaxIndex)
 	{
 		CategoryIndex = 0;
+	}
+}
+
+void UUI_PopUp_Setting::ShowCurrentCategoryWidget()
+{
+	for (const auto& Target : OptionWidgets)
+	{
+		Target.Value->HideWidget();
+		if (Target.Key == CurrentCategory)
+		{
+			Target.Value->ShowWidget();
+		}
 	}
 }
 

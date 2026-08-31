@@ -49,7 +49,6 @@ public:
 #pragma region Reset
 
 public:
-    UFUNCTION()
     void Reset();
 
 #pragma endregion

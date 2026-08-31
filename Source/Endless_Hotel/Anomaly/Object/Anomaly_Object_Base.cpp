@@ -30,14 +30,14 @@ void AAnomaly_Object_Base::BeginPlay()
     
     auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
     auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    ResetHandle = FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::Reset);
     AnomalySub->RegisterAnomalyObject(this);
 }
 
 void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-    FloorSub->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
+    FloorSub->FloorChange_Reset.Remove(ResetHandle);
 
     SetActorTransform(OriginalTransform);
 

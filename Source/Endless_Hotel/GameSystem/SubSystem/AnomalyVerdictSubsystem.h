@@ -81,7 +81,7 @@ public:
 
 	bool bIsStartInBed = false;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAnomalySpawned);
+	DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
 	FAnomalySpawned OnAnomalySpawned;
 
 private:

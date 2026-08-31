@@ -41,7 +41,6 @@ private:
 
 public:
 	FSaveData_Setting& GetSettingData() { return Data_Setting; }
-	void ShowOptionWidget(ESettingCategory Category);
 
 private:
 	void CreateOptionWidgets();
@@ -123,9 +122,15 @@ private:
 
 #pragma region Category
 
+public:
+	void ShowCurrentCategoryWidget();
+
 private:
 	void FindCategoryButton();
 	void AdjustCategoryIndex(bool bUp);
+
+public:
+	ESettingCategory CurrentCategory = ESettingCategory::Screen;
 
 private:
 	UPROPERTY()

@@ -42,6 +42,14 @@ void UUI_Slider_Setting::InitOption(EOptionCategory Category, TArray<FOptionValu
 	case EOptionCategory::UI:
 		Value = Data.UI;
 		break;
+
+	case EOptionCategory::Sensitivity:
+		Value = Data.Sensitivity;
+		break;
+
+	case EOptionCategory::Brightness:
+		Value = Data.Brightness;
+		break;
 	}
 
 	Slide_Slider(Value);

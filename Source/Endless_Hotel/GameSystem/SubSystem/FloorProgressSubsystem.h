@@ -36,10 +36,10 @@ public:
 	uint8 Floor = STARTFLOOR;
 	bool bIsFirstStartFloor = true;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
+	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 	FOnFloorChange_Reset FloorChange_Reset;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
+	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 	FOnFloorChange_Disable FloorChange_Disable;
 
 #pragma endregion

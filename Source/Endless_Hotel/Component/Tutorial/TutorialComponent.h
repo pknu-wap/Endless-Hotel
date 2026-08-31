@@ -21,7 +21,6 @@ protected:
 #pragma region Widget
 
 public:
-	UFUNCTION()
 	void HideTutorialWidget();
 
 private:

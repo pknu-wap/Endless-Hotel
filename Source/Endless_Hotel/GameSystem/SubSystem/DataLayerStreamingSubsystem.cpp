@@ -21,7 +21,7 @@ void UDataLayerStreamingSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 
 	if (UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance()))
 	{
-		GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
+		GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnChangedDataLayer);
 	}
 }
 
