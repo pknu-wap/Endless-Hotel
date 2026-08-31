@@ -59,17 +59,6 @@ private:
 
 #pragma endregion
 
-#pragma region Clear
-
-public:
-	DATA_SAVE_DEFINITION(bool, Data_GameClear);
-
-private:
-	UPROPERTY(SaveGame)
-	bool Data_GameClear = false;
-
-#pragma endregion
-
 #pragma region Anomaly
 
 public:

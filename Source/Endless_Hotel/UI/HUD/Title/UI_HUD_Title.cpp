@@ -40,7 +40,7 @@ void UUI_HUD_Title::ShowWidget()
 
 void UUI_HUD_Title::SetLogoImage()
 {
-	if (!USaveManager::LoadData_GameClear())
+	if (!USaveManager::LoadData_Progression().bGameClear)
 	{
 		Image_Logo->SetBrushFromTexture(Texture_NoClear);
 		return;

@@ -25,7 +25,6 @@ void UUI_PopUp_Reset::Click_Yes()
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Reset_Progression:
-		USaveManager::DeleteData_GameClear();
 		USaveManager::DeleteData_Progression();
 		break;
 

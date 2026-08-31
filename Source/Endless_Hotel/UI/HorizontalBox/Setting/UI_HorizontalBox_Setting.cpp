@@ -10,17 +10,19 @@
 
 void UUI_HorizontalBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values)
 {
+	SettingCategory = Category;
+
 	for (FOptionValuePair Value : Values)
 	{
 		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 		UUI_Button_Option* ChildWidget = UICon->MakeChildWidget<UUI_Button_Option, UHorizontalBox, UHorizontalBoxSlot>(HorizontalBox, ButtonClass);
-		ChildWidget->SetOptionInfo(Category, Value);
+		ChildWidget->SetOptionInfo(SettingCategory, Value);
 		Buttons.Add(ChildWidget);
 	}
 
 	FSaveData_Setting Data = USaveManager::LoadData_Setting();
 	EOptionValue Value = EOptionValue::None;
-	switch (Category)
+	switch (SettingCategory)
 	{
 	case EOptionCategory::Window:
 		Value = Data.Window;
@@ -72,6 +74,24 @@ void UUI_HorizontalBox_Setting::InitOption(EOptionCategory Category, TArray<FOpt
 	}
 
 	Highlight(Value);
+}
+
+#pragma endregion
+
+#pragma region Show
+
+void UUI_HorizontalBox_Setting::ShowWidget()
+{
+	Super::ShowWidget();
+
+	if (SettingCategory != EOptionCategory::Overlap)
+	{
+		return;
+	}
+
+	UWidget* HideBox = GetWidgetFromName(TEXT("Image_HideBox"));
+	ESlateVisibility SV = USaveManager::LoadData_Progression().bGameClear ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
+	HideBox->SetVisibility(SV);
 }
 
 #pragma endregion

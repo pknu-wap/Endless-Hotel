@@ -19,6 +19,20 @@ public:
 
 #pragma endregion
 
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
+
+#pragma endregion
+
+#pragma region Category
+
+private:
+	EOptionCategory SettingCategory = EOptionCategory::None;
+
+#pragma endregion
+
 #pragma region Highlight
 
 public:

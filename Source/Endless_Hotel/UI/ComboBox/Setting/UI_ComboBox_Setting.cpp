@@ -4,7 +4,6 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include <Components/Image.h>
 #include <GameFramework/GameUserSettings.h>
 #include <Internationalization/Internationalization.h>
 
@@ -28,9 +27,14 @@ void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionVa
 		break;
 
 	case EOptionCategory::Grapic:
+	{
 		Value = Data.Grapic;
-		break;
 
+		UWidget* HideBox = GetWidgetFromName(TEXT("Image_HideBox"));
+		ESlateVisibility SV = Value == EOptionValue::Custom ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
+		HideBox->SetVisibility(SV);
+		break;
+	}
 	case EOptionCategory::Language:
 		Value = Data.Language;
 		break;
@@ -106,7 +110,7 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Grapic = Value;
 
-	UImage* HideBox = Cast<UImage>(GetWidgetFromName(TEXT("Image_HideBox")));
+	UWidget* HideBox = GetWidgetFromName(TEXT("Image_HideBox"));
 	switch (Value)
 	{
 	case EOptionValue::Custom:

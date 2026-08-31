@@ -171,6 +171,9 @@ struct FSaveData_Progression
 
 public:
 	UPROPERTY(SaveGame)
+	bool bGameClear = false;
+
+	UPROPERTY(SaveGame)
 	EGameProgression Progression = EGameProgression::Tutorial;
 
 	UPROPERTY(SaveGame)

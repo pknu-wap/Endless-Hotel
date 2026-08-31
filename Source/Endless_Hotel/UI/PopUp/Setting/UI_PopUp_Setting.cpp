@@ -272,6 +272,8 @@ FReply UUI_PopUp_Setting::NativeOnMouseWheel(const FGeometry& InGeometry, const 
 
 void UUI_PopUp_Setting::FindCategoryButton()
 {
+	CategoryButtons.Empty();
+
 	for (auto* Child : UI_Gear->GetAllChildren())
 	{
 		if (auto* Target = Cast<UUI_Button_Category>(Child))

@@ -20,7 +20,7 @@ void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
 
 	Floor = STARTFLOOR;
-	bIsClear = USaveManager::LoadData_GameClear();
+	bIsClear = USaveManager::LoadData_Progression().bGameClear;
 }
 
 #pragma endregion
@@ -66,7 +66,9 @@ void UFloorProgressSubsystem::GameClear()
 	bIsClear = true;
 	Floor = STARTFLOOR;
 
-	USaveManager::SaveData_GameClear(true);
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	Data.bGameClear = true;
+	USaveManager::SaveData_Progression(Data);
 }
 
 #pragma endregion
@@ -78,7 +80,7 @@ void UFloorProgressSubsystem::ResetFloorProgress()
 	Floor = STARTFLOOR;
 	bIsFirstStartFloor = true;
 
-	bIsClear = USaveManager::LoadData_GameClear();
+	bIsClear = USaveManager::LoadData_Progression().bGameClear;
 }
 
 #pragma endregion
