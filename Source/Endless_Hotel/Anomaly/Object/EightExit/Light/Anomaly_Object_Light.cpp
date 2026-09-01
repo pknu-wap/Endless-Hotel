@@ -65,10 +65,13 @@ void AAnomaly_Object_Light::TurnLight(bool bIsOn)
 
 void AAnomaly_Object_Light::SetGeometryCollection()
 {
+	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Mesh_Destroy->SetRestCollection(GC_Light);
 	Mesh_Destroy->SetVisibility(false);
 	Mesh_Destroy->SetSimulatePhysics(false);
-	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh_Destroy->RecreatePhysicsState();
 	Mesh_Destroy->SetNotifyBreaks(true);
+	Mesh_Destroy->OnChaosBreakEvent.AddUniqueDynamic(this, &ThisClass::OnGeometryCollectionBreak);
 }
 
 void AAnomaly_Object_Light::StartDropLight()
@@ -87,13 +90,19 @@ void AAnomaly_Object_Light::DestroyLight()
 
 	Mesh_Destroy->SetVisibility(true);
 	Mesh_Destroy->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Mesh_Destroy->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	Mesh_Destroy->SetEnableGravity(true);
 	Mesh_Destroy->SetSimulatePhysics(true);
+}
 
+void AAnomaly_Object_Light::OnGeometryCollectionBreak(const FChaosBreakEvent& BreakEvent)
+{
 	TurnLight(false);
 
 	AC->Sound = Sound_LightDestroy;
 	AC->Play();
+
+	Mesh_Destroy->SetNotifyBreaks(false);
 }
 
 #pragma endregion

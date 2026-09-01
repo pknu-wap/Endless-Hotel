@@ -43,6 +43,11 @@ void AManualFragment::SaveAcquireData()
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	Subsystem->AddAnomalyRule(NewRule);
+
+	if (bHasFakeRule)
+	{
+		Subsystem->AddFakeManualEntry(AppearAnomaly, FakeRule, NewRule);
+	}
 }
 
 #pragma endregion
