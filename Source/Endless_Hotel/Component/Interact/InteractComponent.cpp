@@ -60,6 +60,14 @@ FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 	return List_Interact[CurrentIndex];
 }
 
+void UInteractComponent::ActiveInteract(bool bActive)
+{
+	for (auto& Info : List_Interact)
+	{
+		Info.bIsInteracted = bActive;
+	}
+}
+
 #pragma endregion
 
 #pragma region Index

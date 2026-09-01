@@ -25,12 +25,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Reference
-
-
-
-#pragma endregion
-
 #pragma region Interact
 
 public:
@@ -38,8 +32,7 @@ public:
 	bool CanInteract() { return !List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && !List_Interact[CurrentIndex].bIsInteracted; }
 	void Interact(class AEHCharacter* Interacter);
 	FInteractInfo GetSelectedInteractInfo();
-	void RestoreInteract() { bIsInteracted = false; }
-	void DeactiveInteract() { bIsInteracted = true; }
+	void ActiveInteract(bool bActive);
 
 private:
 	bool HasManyInteracting() { return List_Interact.Num() > 1; }
