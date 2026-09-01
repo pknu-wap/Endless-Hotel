@@ -105,15 +105,12 @@ void UUI_PopUp_Setting::CreateOptionWidgets()
 
 	for (const auto& Pair : PDA_Setting->Setting)
 	{
-		auto TargetClass = OptionClass;
-		if (Pair.Key == ESettingCategory::Control_Normal || Pair.Key == ESettingCategory::Control_Input)
-		{
-			TargetClass = OptionClass_Control;
-		}
+		ESettingCategory Category = Pair.Key;
+		FOptionList OptionList = Pair.Value;
 
-		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, TargetClass);
-		ChildWidget->InitOption(Pair.Value);
-		OptionWidgets.Add(Pair.Key, ChildWidget);
+		auto* ChildWidget = CreateWidget<UUI_PopUp_Option>(this, OptionList.Class.LoadSynchronous());
+		ChildWidget->InitOption(OptionList);
+		OptionWidgets.Add(Category, ChildWidget);
 
 		UCanvasPanelSlot* CanvasSlot = Canvas->AddChildToCanvas(ChildWidget);
 		CanvasSlot->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));

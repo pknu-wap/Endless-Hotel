@@ -536,7 +536,7 @@ void AEHPlayerController::SetKeyMapping(FKeySettingInfo NewInfo, FKey OldKey)
 		IA_Target = IA_FaceCover;
 		break;
 
-	case EKeySettingType::Flash:
+	case EKeySettingType::Lighter:
 		IA_Target = IA_Light;
 		break;
 

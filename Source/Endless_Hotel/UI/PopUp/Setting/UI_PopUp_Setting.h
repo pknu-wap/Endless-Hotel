@@ -48,12 +48,6 @@ private:
 private:
 	FSaveData_Setting Data_Setting;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Option")
-	TSubclassOf<class UUI_PopUp_Option> OptionClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Option")
-	TSubclassOf<class UUI_PopUp_Option> OptionClass_Control;
-
 	UPROPERTY()
 	TMap<ESettingCategory, TObjectPtr<class UUI_PopUp_Option>> OptionWidgets;
 

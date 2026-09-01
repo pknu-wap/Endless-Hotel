@@ -3,6 +3,7 @@
 #pragma once
 
 #include "UI/Button/UI_Button_Base.h"
+#include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
 #include <UI_Button_Key.generated.h>
 
@@ -15,6 +16,14 @@ class ENDLESS_HOTEL_API UUI_Button_Key : public UUI_Button_Base
 
 protected:
 	virtual void NativeOnInitialized() override;
+
+#pragma endregion
+
+#pragma region Option
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	FKeySettingInfo SettingInfo;
 
 #pragma endregion
 
@@ -32,19 +41,9 @@ private:
 	UFUNCTION()
 	void SelectedKeyValue(FInputChord SelectedChord);
 
-	void ConvertLongText(FInputChord SelectedChord);
-
 private:
-	UPROPERTY()
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UInputKeySelector> Selector;
-
-#pragma endregion
-
-#pragma region Highlight
-
-public:
-	UFUNCTION()
-	void SetSavedOption();
 
 #pragma endregion
 

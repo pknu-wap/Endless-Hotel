@@ -112,14 +112,14 @@ public:
 	void ResetKeySetting()
 	{
 		Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
-		Down = FKeySettingInfo(EKeySettingType::Up, EKeys::S);
-		Left = FKeySettingInfo(EKeySettingType::Up, EKeys::A);
-		Right = FKeySettingInfo(EKeySettingType::Up, EKeys::D);
-		Run = FKeySettingInfo(EKeySettingType::Up, EKeys::LeftShift);
-		Sit = FKeySettingInfo(EKeySettingType::Up, EKeys::SpaceBar);
-		Interact = FKeySettingInfo(EKeySettingType::Up, EKeys::E);
-		Hide = FKeySettingInfo(EKeySettingType::Up, EKeys::RightMouseButton);
-		Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
+		Down = FKeySettingInfo(EKeySettingType::Down, EKeys::S);
+		Left = FKeySettingInfo(EKeySettingType::Left, EKeys::A);
+		Right = FKeySettingInfo(EKeySettingType::Right, EKeys::D);
+		Run = FKeySettingInfo(EKeySettingType::Run, EKeys::LeftShift);
+		Sit = FKeySettingInfo(EKeySettingType::Sit, EKeys::SpaceBar);
+		Interact = FKeySettingInfo(EKeySettingType::Interact, EKeys::E);
+		Hide = FKeySettingInfo(EKeySettingType::Hide, EKeys::RightMouseButton);
+		Lighter = FKeySettingInfo(EKeySettingType::Lighter, EKeys::Q);
 	}
 
 public:
@@ -128,28 +128,28 @@ public:
 	FKeySettingInfo Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Down = FKeySettingInfo(EKeySettingType::Up, EKeys::S);
+	FKeySettingInfo Down = FKeySettingInfo(EKeySettingType::Down, EKeys::S);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Left = FKeySettingInfo(EKeySettingType::Up, EKeys::A);
+	FKeySettingInfo Left = FKeySettingInfo(EKeySettingType::Left, EKeys::A);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Right = FKeySettingInfo(EKeySettingType::Up, EKeys::D);
+	FKeySettingInfo Right = FKeySettingInfo(EKeySettingType::Right, EKeys::D);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Run = FKeySettingInfo(EKeySettingType::Up, EKeys::LeftShift);
+	FKeySettingInfo Run = FKeySettingInfo(EKeySettingType::Run, EKeys::LeftShift);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Sit = FKeySettingInfo(EKeySettingType::Up, EKeys::SpaceBar);
+	FKeySettingInfo Sit = FKeySettingInfo(EKeySettingType::Sit, EKeys::SpaceBar);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Interact = FKeySettingInfo(EKeySettingType::Up, EKeys::E);
+	FKeySettingInfo Interact = FKeySettingInfo(EKeySettingType::Interact, EKeys::E);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Hide = FKeySettingInfo(EKeySettingType::Up, EKeys::RightMouseButton);
+	FKeySettingInfo Hide = FKeySettingInfo(EKeySettingType::Hide, EKeys::RightMouseButton);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
+	FKeySettingInfo Lighter = FKeySettingInfo(EKeySettingType::Lighter, EKeys::Q);
 };
 
 #pragma endregion

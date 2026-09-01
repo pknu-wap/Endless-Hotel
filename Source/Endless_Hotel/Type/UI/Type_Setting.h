@@ -138,6 +138,9 @@ struct FOptionList
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	TSoftClassPtr<class UUI_PopUp_Option> Class;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Category")
 	FText Name;
 
@@ -157,7 +160,7 @@ enum class EKeySettingType : uint8
 	Sit			UMETA(DisplayName = "Sit"),
 	Interact	UMETA(DisplayName = "Interact"),
 	Hide		UMETA(DisplayName = "Hide"),
-	Flash		UMETA(DisplayName = "Flash"),
+	Lighter		UMETA(DisplayName = "Lighter"),
 	Reset		UMETA(DisplayName = "Reset")
 };
 
