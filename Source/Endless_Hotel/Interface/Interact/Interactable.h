@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Character/EHCharacter.h"
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
 #include <Interactable.generated.h>
@@ -18,6 +17,5 @@ class ENDLESS_HOTEL_API IInteractable
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent)
-	void Interact(AEHCharacter* Interacter);
+	virtual void Interact(class AEHCharacter* Interacter) PURE_VIRTUAL(&ThisClass::Interact, );
 };

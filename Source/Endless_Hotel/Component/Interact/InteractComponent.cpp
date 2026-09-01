@@ -14,8 +14,8 @@ void UInteractComponent::BeginPlay()
 	Super::BeginPlay();
 
 	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
-	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-	UI_Interact->ShowDescription(false, false);
+	UI_Description = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
+	UI_Description->ShowDescription(false, false);
 }
 
 #pragma endregion
@@ -24,65 +24,13 @@ void UInteractComponent::BeginPlay()
 
 void UInteractComponent::ShowInteracting(bool bIsShow)
 {
-	ShowDescriptionWidget(bIsShow);
-	ShowInteractingHighlight(bIsShow);
-}
-
-void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
-{
-	if (!List_Interact.IsValidIndex(CurrentIndex))
+	if (List_Interact.IsValidIndex(CurrentIndex) && CanInteract() && UI_Description.IsValid())
 	{
-		return;
+		UI_Description->SetDescription(GetDescription());
+		UI_Description->ShowDescription(bIsShow, HasManyInteracting());
 	}
 
-	if (!CanInteract())
-	{
-		return;
-	}
-
-	if (UI_Interact.IsValid())
-	{
-		UI_Interact->SetDescription(GetDescription());
-		UI_Interact->ShowDescription(bIsShow, HasManyInteracting());
-	}
-}
-
-void UInteractComponent::TryChangeIndex(bool bUp)
-{
-	if (!HasManyInteracting() || bChangingIndex)
-	{
-		return;
-	}
-
-	UI_Interact->PlayChangeAnimation(bUp);
-	
-	bChangingIndex = true;
-
-	constexpr float ChangeDuration = 0.3f;
-
-	FTimerHandle TextHandle;
-	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ChangeIndex, bUp), ChangeDuration, false);
-}
-
-void UInteractComponent::ChangeIndex(bool bUp)
-{
-	bChangingIndex = false;
-
-	if (bUp)
-	{
-		CurrentIndex++;
-		if (CurrentIndex >= List_Interact.Num())
-		{
-			CurrentIndex = 0;
-		}
-		return;
-	}
-
-	CurrentIndex--;
-	if (CurrentIndex < 0)
-	{
-		CurrentIndex = List_Interact.Num() - 1;
-	}
+	ShowHighlight(bIsShow);
 }
 
 void UInteractComponent::Interact(AEHCharacter* Interacter)
@@ -114,9 +62,51 @@ FInteractInfo UInteractComponent::GetSelectedInteractInfo()
 
 #pragma endregion
 
+#pragma region Index
+
+void UInteractComponent::TryChangeIndex(bool bUp)
+{
+	if (!HasManyInteracting() || bChangingIndex)
+	{
+		return;
+	}
+
+	UI_Description->PlayChangeAnimation(bUp);
+
+	bChangingIndex = true;
+
+	constexpr float ChangeDuration = 0.3f;
+
+	FTimerHandle TextHandle;
+	GetWorld()->GetTimerManager().SetTimer(TextHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ChangeIndex, bUp), ChangeDuration, false);
+}
+
+void UInteractComponent::ChangeIndex(bool bUp)
+{
+	bChangingIndex = false;
+
+	bUp ? ++CurrentIndex : --CurrentIndex;
+
+	if (CurrentIndex >= List_Interact.Num())
+	{
+		CurrentIndex = 0;
+	}
+	else if (CurrentIndex < 0)
+	{
+		CurrentIndex = List_Interact.Num() - 1;
+	}
+
+	if (List_Interact[CurrentIndex].bIsInteracted)
+	{
+		ChangeIndex(bUp);
+	}
+}
+
+#pragma endregion
+
 #pragma region Hightight
 
-void UInteractComponent::ShowInteractingHighlight(bool bActive)
+void UInteractComponent::ShowHighlight(bool bActive)
 {
 	if (!CanInteract())
 	{

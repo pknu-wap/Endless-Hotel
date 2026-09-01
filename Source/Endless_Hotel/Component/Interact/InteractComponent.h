@@ -27,9 +27,7 @@ protected:
 
 #pragma region Reference
 
-private:
-	UPROPERTY()
-	TWeakObjectPtr<class UUI_Interact> UI_Interact;
+
 
 #pragma endregion
 
@@ -37,25 +35,41 @@ private:
 
 public:
 	void ShowInteracting(bool bIsShow);
-	bool CanInteract() { return !List_Interact.IsEmpty() && !bIsInteracted; }
-	void TryChangeIndex(bool bUp);
+	bool CanInteract() { return !List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && !List_Interact[CurrentIndex].bIsInteracted; }
 	void Interact(class AEHCharacter* Interacter);
 	FInteractInfo GetSelectedInteractInfo();
 	void RestoreInteract() { bIsInteracted = false; }
 	void DeactiveInteract() { bIsInteracted = true; }
 
 private:
-	void ShowDescriptionWidget(bool bIsShow);
-	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
-	void ChangeIndex(bool bUp);
 	bool HasManyInteracting() { return List_Interact.Num() > 1; }
 
-public:
+private:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
 
+#pragma endregion
+
+#pragma region Description
+
 private:
-	bool bIsInteracted = false;
+	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
+
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class UUI_Interact> UI_Description;
+
+#pragma endregion
+
+#pragma region Index
+
+public:
+	void TryChangeIndex(bool bUp);
+
+private:
+	void ChangeIndex(bool bUp);
+
+private:
 	int8 CurrentIndex = 0;
 	bool bChangingIndex = false;
 
@@ -64,7 +78,7 @@ private:
 #pragma region Highlight
 
 public:
-	void ShowInteractingHighlight(bool bActive);
+	void ShowHighlight(bool bActive);
 
 #pragma endregion
 
