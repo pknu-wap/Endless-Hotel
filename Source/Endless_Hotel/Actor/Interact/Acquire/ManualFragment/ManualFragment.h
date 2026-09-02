@@ -11,48 +11,54 @@
 UCLASS()
 class ENDLESS_HOTEL_API AManualFragment : public AInteractAcquire
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	AManualFragment(const FObjectInitializer& ObjectInitializer);
+    AManualFragment(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
 #pragma endregion
 
 #pragma region Acquire
 
 protected:
-	virtual void SaveAcquireData() override;
+    virtual void SaveAcquireData() override;
 
 #pragma endregion
 
 #pragma region Description
 
 private:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UWidgetComponent> Comp_Description;
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<class UWidgetComponent> Comp_Description;
 
 #pragma endregion
 
 #pragma region Setting
 
 private:
-	UFUNCTION()
-	void SetManualFragment();
+    UFUNCTION()
+    void SetManualFragment();
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	EAnomalyRule NewRule;
+    UPROPERTY(EditAnywhere, Category = "Setting")
+    EAnomalyRule NewRule;
 
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	EAnomalyID AppearAnomaly;
+    UPROPERTY(EditAnywhere, Category = "Setting")
+    EAnomalyID AppearAnomaly;
 
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	FText Description;
+    UPROPERTY(EditAnywhere, Category = "Setting")
+    FText Description;
+
+    UPROPERTY(EditAnywhere, Category = "Setting|Fake")
+    bool bHasFakeRule = false;
+
+    UPROPERTY(EditAnywhere, Category = "Setting|Fake", meta = (EditCondition = "bHasFakeRule"))
+    EAnomalyRule FakeRule = EAnomalyRule::None;
 
 #pragma endregion
 

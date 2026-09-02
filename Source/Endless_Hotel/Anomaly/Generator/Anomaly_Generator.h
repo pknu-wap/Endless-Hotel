@@ -4,6 +4,7 @@
 
 #include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Generator.generated.h>
@@ -19,6 +20,7 @@ struct FAnomalySpawnInfo
 	bool bIsNormal = false;
 	EAnomalyID AnomalyID = EAnomalyID::None;
 	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
+	EAnomalyRule Rule = EAnomalyRule::None;
 	UPROPERTY()
 	TSoftClassPtr<AAnomaly_Event> EventClass;
 };

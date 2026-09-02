@@ -2,13 +2,14 @@
 
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
-#include "GameSystem/SubSystem/GameSystem.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -72,7 +73,7 @@ void AElevator::BeginPlay()
     FOnTimelineFloat UpdateFunc;
     FOnTimelineEvent FinishedFunc;
 
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     Sub->RegisterElevator(this);
 
     UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
@@ -118,10 +119,6 @@ void AElevator::SetLightOn(bool bIsOn)
 
 void AElevator::MoveDoors(bool bWillOpen)
 {
-    if (bIsDoorMoving)
-    {
-        return;
-    }
     if (Move_AC->IsPlaying())
     {
         Move_AC->Stop();
@@ -129,16 +126,17 @@ void AElevator::MoveDoors(bool bWillOpen)
     bIsDoorOpened = bWillOpen;
     Door_AC->Activate(true);
     Door_AC->Play();
+    DoorTimeline->Stop();
 
     if (bWillOpen)
     {
-        DoorTimeline->PlayFromStart();
+        DoorTimeline->Play();
         LeftDoor->SetLightingChannels(true, true, false);
         RightDoor->SetLightingChannels(true, true, false);
     }
     else
     {
-        DoorTimeline->ReverseFromEnd();
+        DoorTimeline->Reverse();
     }
 }
 
@@ -243,13 +241,14 @@ void AElevator::NotifySubsystem()
     FVector PreVelocity = CMC->Velocity;
     float HorizontalSpeed = FVector(PreVelocity.X, PreVelocity.Y, 0.f).Size();
     FVector PreForward = Player->GetActorForwardVector();
-    UGameSystem* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
+    auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
 
-    Sub->SetIsElevatorNormal(this->bIsNormalElevator);
-    Sub->SetPlayerVelocity(HorizontalSpeed);
-    Sub->TryInteractSolveVerdict();
-    Sub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
-    Sub->ApplyVerdict();
+    VerdictSub->SetIsElevatorNormal(this->bIsNormalElevator);
+    ElevatorSub->SetPlayerVelocity(HorizontalSpeed);
+    VerdictSub->TryInteractSolveVerdict();
+    ElevatorSub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
+    VerdictSub->ApplyVerdict();
 }
 
 void AElevator::StartElevator()
@@ -273,8 +272,8 @@ void AElevator::StartElevator()
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-    auto* Sub = GetGameInstance()->GetSubsystem<UGameSystem>();
-    if (Sub->IsTargetElevator(this))
+    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+    if (ElevatorSub->IsTargetElevator(this))
     {
         if(LinkedEntrance.IsValid())
         {
@@ -290,9 +289,9 @@ void AElevator::StartElevator()
         
         Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         Car->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        FVector SavedRelative = Sub->GetPlayerinElevatorLocation();
-        FRotator SavedRotation = Sub->GetPlayerinElevatorRotation();
-        SavedRotation -= Sub->GetElevatorOffset() - this->GetActorRotation();
+        FVector SavedRelative = ElevatorSub->GetPlayerinElevatorLocation();
+        FRotator SavedRotation = ElevatorSub->GetPlayerinElevatorRotation();
+        SavedRotation -= ElevatorSub->GetElevatorOffset() - this->GetActorRotation();
         FRotator ForPlayerSavedRotation = FRotator(0, SavedRotation.Yaw, SavedRotation.Roll);
         FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
         FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
@@ -309,7 +308,7 @@ void AElevator::StartElevator()
         Player->SetBase(nullptr);
         Player->SetActorEnableCollision(true);
         FVector NewForward = Player->GetActorForwardVector();
-        CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * Sub->GetPlayerVelocity();
+        CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * ElevatorSub->GetPlayerVelocity();
 
         if(InsideButton.IsValid())
         {

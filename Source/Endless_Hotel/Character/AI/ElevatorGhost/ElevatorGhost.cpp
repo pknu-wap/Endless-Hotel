@@ -15,11 +15,19 @@ AElevatorGhost::AElevatorGhost(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
+    EyeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EyeMesh"));
+    EyeMesh->SetupAttachment(GetMesh(), TEXT("EyeSocket"));
+    EyeMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AElevatorGhost::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if (bShouldLookAtPlayer)
+    {
+        UpdateLookAtPlayer(DeltaTime);
+    }
 
     AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
@@ -28,6 +36,26 @@ void AElevatorGhost::Tick(float DeltaTime)
         AttackPlayer();
         SetActorTickEnabled(false);
     }
+}
+
+#pragma endregion
+
+#pragma region Look
+
+void AElevatorGhost::UpdateLookAtPlayer(float DeltaTime)
+{
+    AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!Player)
+    {
+        return;
+    }
+
+    FRotator TargetRot = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Player->GetActorLocation());
+    TargetRot.Pitch = 0.f;
+    TargetRot.Roll = 0.f;
+
+    FRotator NewRot = FMath::RInterpTo(GetActorRotation(), TargetRot, DeltaTime, TurnInterpSpeed);
+    SetActorRotation(NewRot);
 }
 
 #pragma endregion
@@ -46,6 +74,7 @@ void AElevatorGhost::AttackPlayer()
     {
         AnimInst->bIsAttacking = true;
         Player->DieDelegate.Broadcast(EDeathReason::Attack);
+        bShouldLookAtPlayer = false;
     }
 }
 

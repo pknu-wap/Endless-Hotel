@@ -4,7 +4,7 @@
 #include "Actor/Elevator/Elevator.h"
 #include "Character/AI/ElevatorGhost/ElevatorGhost.h"
 #include "Character/AI/ElevatorGhost/ElevatorGhostController.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
@@ -22,7 +22,7 @@ void AAnomaly_Elevator::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 void AAnomaly_Elevator::SetAnomalyState()
 {
     AnomalyActions.Empty();
-    auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    auto* SubSystem = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     switch (AnomalyID)
     {
     case EAnomalyID::ElevatorNoFloor:

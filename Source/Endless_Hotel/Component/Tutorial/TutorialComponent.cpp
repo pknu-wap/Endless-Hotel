@@ -2,7 +2,7 @@
 
 #include "Component/Tutorial/TutorialComponent.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include "Player/Character/EHPlayer.h"
@@ -44,8 +44,8 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
-	auto* GameSystem = GetWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
+	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::HideTutorialWidget);
 
 	UI_Tutorial->ShowTutorialAnimation(true);
 

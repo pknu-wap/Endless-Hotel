@@ -3,7 +3,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <Components/CapsuleComponent.h>
@@ -78,8 +78,8 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 	SpringArm->bEnableCameraRotationLag = true;
 	SpringArm->CameraRotationLagSpeed = 20.0f;
 
-	auto* SubSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	SubSystem->bIsStartInBed = true;
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSub->bIsStartInBed = true;
 
 	const float AnimLength = DeathAnim->GetPlayLength();
 	const float FreezeTime = FMath::Max(0.0f, AnimLength - 0.3f);
@@ -98,7 +98,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 		}), AnimLength, false);
 
 	FTimerHandle DeathHandle;
-	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this, SubSystem, PC]()
+	GetWorld()->GetTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateWeakLambda(this, [this, VerdictSub, PC]()
 		{
 			GetMesh()->bNoSkeletonUpdate = false;
 			Third_Mesh->bNoSkeletonUpdate = false;
@@ -107,7 +107,7 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 			PC->RevivePlayer();
 
-			SubSystem->ApplyVerdict();
+			VerdictSub->ApplyVerdict();
 			bIsDead = false;
 		}), AnimLength + 6, false);
 }

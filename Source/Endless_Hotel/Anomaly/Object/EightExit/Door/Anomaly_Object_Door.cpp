@@ -4,7 +4,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Animation/SkeletalMeshActor.h>
 #include <Engine/SkeletalMesh.h>
@@ -49,8 +49,8 @@ void AAnomaly_Object_Door::Reset()
 {
 	Super::Reset();
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	if (GameSystem->Floor == STARTFLOOR)
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSub->Floor == STARTFLOOR)
 	{
 		SetLight(true);
 	}

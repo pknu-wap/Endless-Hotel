@@ -18,6 +18,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Reset() override;
 
 #pragma endregion
 
@@ -44,6 +45,17 @@ protected:
 	UFUNCTION()
 	void UpdateMove(float Value);
 
+	UFUNCTION()
+	void EndMove();
+
+	UFUNCTION()
+	void UpdateRotate(float Value);
+
+	UFUNCTION()
+	void EndRotate();
+
+	void StartRotate();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Moving|Wheel")
 	TObjectPtr<class UCurveFloat> CV_WheelSpin;
@@ -51,25 +63,43 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Moving|Position")
 	TObjectPtr<class UCurveFloat> CV_Move;
 
+	UPROPERTY(EditAnywhere, Category = "Moving|Rotation")
+	TObjectPtr<class UCurveFloat> CV_Rotate;
+
 	UPROPERTY(EditAnywhere, Category = "Moving|Wheel")
 	FRotator OriginalWheelRotation;
 
 	UPROPERTY(EditAnywhere, Category = "Moving|Position")
-	FVector StartLocation;
+	FVector StartLocation1;
 
 	UPROPERTY(EditAnywhere, Category = "Moving|Position")
-	FVector EndLocation;
+	FVector EndLocation1;
+
+	UPROPERTY(EditAnywhere, Category = "Moving|Position")
+	FVector StartLocation2;
+
+	UPROPERTY(EditAnywhere, Category = "Moving|Position")
+	FVector EndLocation2;
+
+	UPROPERTY(EditAnywhere, Category = "Moving|Rotation")
+	FRotator StartRotation;
+
+	UPROPERTY(EditAnywhere, Category = "Moving|Rotation")
+	FRotator EndRotation;
 
 private:
 	TObjectPtr<class UTimelineComponent> Timeline_WheelSpin;
-	TObjectPtr<class UTimelineComponent> Timeline_Move;
+	TObjectPtr<class UTimelineComponent> Timeline_RotateMove;
+	TObjectPtr<class UTimelineComponent> Timeline_FrontMove;
+
+	bool bIsFirstMove;
+	int WheelMovement;
 
 #pragma endregion
 
 #pragma region AI
 
 public:
-	UFUNCTION()
 	void OnCrawlChildSpawnedHandler(class ACrawlChild* SpawnedCrawlChild);
 
 #pragma endregion

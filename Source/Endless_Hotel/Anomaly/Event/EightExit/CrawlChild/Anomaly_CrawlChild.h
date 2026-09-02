@@ -32,10 +32,6 @@ public:
 
 #pragma region AI
 
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCrawlChildSpawned, ACrawlChild*, SpawnedCrawlChild);
-	FOnCrawlChildSpawned OnCrawlChildSpawned;
-
 protected:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TSubclassOf<class ACrawlChild> CrawlChildClass;
@@ -44,10 +40,6 @@ protected:
 	FTransform AIStartTransform;
 
 	TWeakObjectPtr<class ACrawlChild> CrawlChild;
-
-protected:
-	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 private:
 	void StartCrawlChild();
