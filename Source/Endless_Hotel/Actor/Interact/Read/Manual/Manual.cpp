@@ -30,9 +30,9 @@ void AManual::BeginPlay()
 
 #pragma region Interact
 
-void AManual::Interact_Implementation(AEHCharacter* Interacter)
+void AManual::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	auto Data = USaveManager::LoadData_Progression();
 	Data.bReadManual = true;

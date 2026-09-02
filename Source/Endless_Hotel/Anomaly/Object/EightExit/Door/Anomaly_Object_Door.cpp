@@ -4,12 +4,13 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
+#include "Component/Tutorial/TutorialComponent.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Animation/SkeletalMeshActor.h>
 #include <Engine/SkeletalMesh.h>
-#include <Components/SkeletalMeshComponent.h>
 #include <Animation/AnimationAsset.h>
+#include <Components/SkeletalMeshComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
@@ -57,7 +58,7 @@ void AAnomaly_Object_Door::Reset()
 	else
 	{
 		SetLight(false);
-		Component_Interact->DeactiveInteract();
+		Component_Interact->ActiveInteract(false);
 	}
 
 	TL_Door->Stop();
@@ -271,17 +272,17 @@ void AAnomaly_Object_Door::PlayHandleTwistSound()
 	AC_DoorMove->Play();
 }
 
-void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_Door::Interact(AEHCharacter* Interacter)
 {
+	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
+
 	if (!USaveManager::LoadData_Progression().bReadManual)
 	{
-		Component_Interact->RestoreInteract();
+		Component_Interact->ActiveInteract(true);
+
+		Comp_Tutorial->ShowTutorialWidget();
 		return;
 	}
-
-	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	Data.Progression = EGameProgression::Loop;
-	USaveManager::SaveData_Progression(Data);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 	switch (Info.InteractType)
@@ -289,6 +290,7 @@ void AAnomaly_Object_Door::Interact_Implementation(AEHCharacter* Interacter)
 	case EInteractType::DoorOpen:
 		MoveToHandlePlayer();
 		PlayHandleTwistSound();
+		Comp_Tutorial->HideTutorialWidget();
 		break;
 	}
 }
@@ -457,7 +459,7 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 void AAnomaly_Object_Door::ReadyDoor()
 {
 	bIsDoorOpened = false;
-	Component_Interact->RestoreInteract();
+	Component_Interact->ActiveInteract(true);
 	GetRootComponent()->SetWorldTransform(OriginalTransform);
 
 	Timeline_Open->Stop();

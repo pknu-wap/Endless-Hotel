@@ -47,7 +47,6 @@ public:
 #pragma region Clear
 
 public:
-	UFUNCTION()
 	void GameClear();
 
 	bool IsGameClear() const { return bIsClear; }
@@ -55,7 +54,7 @@ public:
 public:
 	bool bIsClear = false;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
+	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
@@ -66,4 +65,12 @@ public:
 	void ResetFloorProgress();
 
 #pragma endregion
+
+#pragma region Progression
+
+private:
+	void ProgressGameState();
+
+#pragma endregion
+
 };

@@ -10,9 +10,9 @@
 
 #pragma region Interact
 
-void AInteractRead::Interact_Implementation(AEHCharacter* Interacter)
+void AInteractRead::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
@@ -30,7 +30,7 @@ void AInteractRead::Interact_Implementation(AEHCharacter* Interacter)
 
 void AInteractRead::PossessCamera(bool bIsReading)
 {
-	constexpr float Duration = 0.5f;
+	constexpr float Duration = 0.8f;
 
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PC->SetPlayerInputAble(!bIsReading);
@@ -43,7 +43,7 @@ void AInteractRead::PossessCamera(bool bIsReading)
 	if (!bIsReading)
 	{
 		auto* Comp_Interact = FindComponentByClass<UInteractComponent>();
-		Comp_Interact->RestoreInteract();
+		Comp_Interact->ActiveInteract(true);
 		return;
 	}
 

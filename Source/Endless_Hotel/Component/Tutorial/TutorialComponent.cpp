@@ -2,8 +2,8 @@
 
 #include "Component/Tutorial/TutorialComponent.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/WidgetComponent.h>
@@ -15,7 +15,7 @@ void UTutorialComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Comp_Widget = Owner->FindComponentByTag<UWidgetComponent>(FName("Tutorial"));
+	auto* Comp_Widget = Owner->FindComponentByTag<UWidgetComponent>(FName("Tutorial"));
 	Comp_Widget->SetVisibility(true);
 	Comp_Widget->InitWidget();
 
@@ -25,20 +25,14 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
-	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
-
-	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	if (Data.Progression != EGameProgression::Tutorial)
-	{
-		return;
-	}
-
 	TriggerBox = NewObject<UBoxComponent>(Owner.Get());
 	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	TriggerBox->SetWorldTransform(TriggerTrans);
-	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBeginOverlap);
 	TriggerBox->RegisterComponent();
+
+	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
 }
 
 #pragma endregion
@@ -47,44 +41,38 @@ void UTutorialComponent::BeginPlay()
 
 void UTutorialComponent::ShowTutorialWidget()
 {
-	if (USaveManager::LoadData_Progression().Progression != EGameProgression::Tutorial)
+	if (USaveManager::LoadData_Progression().Progression != TargetProgression)
 	{
 		return;
 	}
 	
-	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
-
 	UI_Tutorial->ShowTutorialAnimation(true);
 
 	if (Comp_Interact.IsValid())
 	{
-		Comp_Interact->ShowInteractingHighlight(true);
+		Comp_Interact->ShowHighlight(true);
 	}
 	else
 	{
 		FTimerHandle HideHandle;
-		GetWorld()->GetTimerManager().SetTimer(HideHandle, this, &ThisClass::HideTutorialWidget, 10.f, false);
+		GetWorld()->GetTimerManager().SetTimer(HideHandle, this, &ThisClass::HideTutorialWidget, WidgetDuration, false);
 	}
 }
 
 void UTutorialComponent::HideTutorialWidget()
 {
-	if (UI_Tutorial.IsValid())
+	if (USaveManager::LoadData_Progression().Progression == TargetProgression)
 	{
-		if (USaveManager::LoadData_Progression().Progression == EGameProgression::Tutorial)
-		{
-			UI_Tutorial->ShowTutorialAnimation(false);
-		}
-		else
-		{
-			UI_Tutorial->HideWidget();
-		}
+		UI_Tutorial->ShowTutorialAnimation(false);
+	}
+	else
+	{
+		UI_Tutorial->HideWidget();
 	}
 
 	if (Comp_Interact.IsValid())
 	{
-		Comp_Interact->ShowInteractingHighlight(false);
+		Comp_Interact->ShowHighlight(false);
 	}
 }
 

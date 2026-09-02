@@ -41,7 +41,10 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 {
 	if (!bIsStart)
 	{
-		AC->Stop();
+		if (IsValid(AC))
+		{
+			AC->Stop();
+		}
 		GetWorld()->GetTimerManager().ClearTimer(FadeOutHandle);
 		return;
 	}

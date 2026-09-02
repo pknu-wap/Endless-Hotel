@@ -29,10 +29,10 @@ protected:
 
 public:
 	void ShowInteracting(bool bIsShow);
-	bool CanInteract() { return !List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && !List_Interact[CurrentIndex].bIsInteracted; }
+	bool CanInteract() { return !List_Interact.IsEmpty() && !bIsInteracted; }
 	void Interact(class AEHCharacter* Interacter);
-	FInteractInfo GetSelectedInteractInfo();
-	void ActiveInteract(bool bActive);
+	FInteractInfo GetSelectedInteractInfo() { return List_Interact.IsEmpty() ? FInteractInfo() : List_Interact[CurrentIndex]; }
+	void ActiveInteract(bool bActive) { bIsInteracted = !bActive; }
 
 private:
 	bool HasManyInteracting() { return List_Interact.Num() > 1; }
@@ -40,6 +40,11 @@ private:
 private:
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TArray<FInteractInfo> List_Interact;
+
+	bool bIsInteracted = false;
+
+	UPROPERTY()
+	TWeakObjectPtr<class UTutorialComponent> Comp_Tutorial;
 
 #pragma endregion
 

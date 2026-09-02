@@ -56,9 +56,9 @@ void AAnomaly_Object_SignDrop::DropSign()
 
 #pragma region Interact
 
-void AAnomaly_Object_SignDrop::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_SignDrop::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	auto Info = Component_Interact->GetSelectedInteractInfo();
 

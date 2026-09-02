@@ -89,7 +89,8 @@ void UDataLayerStreamingSubsystem::WaitForDataLayerReady(const EMapDataLayer& Da
 
 			if (UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr)
 			{
-				FloorSys->FloorChange_Reset.Broadcast();
+				// 데이터 레이어 바뀌는 것에 층 변화 관련 델리게이트 호출이 왜 있는지 모르겟음 -> 이거 때매 자꾸 오류 남 (역할에 맞게 바인딩했는데 역할에 맞지 않게 자꾸 Broadcast 하니까 그럼)
+				//FloorSys->FloorChange_Reset.Broadcast();
 			}
 		}), 0.1f, true);
 }

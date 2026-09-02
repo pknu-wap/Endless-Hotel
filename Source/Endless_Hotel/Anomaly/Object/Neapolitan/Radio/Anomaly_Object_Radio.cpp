@@ -1,4 +1,4 @@
-// Copyright by 2026-1 WAP Game 2 team
+﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Radio/Anomaly_Object_Radio.h"
 #include <Components/StaticMeshComponent.h>
@@ -69,9 +69,9 @@ void AAnomaly_Object_Radio::UpdatePointerSpin(float Value)
 
 #pragma region Interact
 
-void AAnomaly_Object_Radio::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_Radio::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

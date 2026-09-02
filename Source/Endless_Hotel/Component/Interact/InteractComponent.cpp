@@ -16,6 +16,8 @@ void UInteractComponent::BeginPlay()
 	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
 	UI_Description = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
 	UI_Description->ShowDescription(false, false);
+
+	Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
 }
 
 #pragma endregion
@@ -24,10 +26,26 @@ void UInteractComponent::BeginPlay()
 
 void UInteractComponent::ShowInteracting(bool bIsShow)
 {
-	if (List_Interact.IsValidIndex(CurrentIndex) && CanInteract() && UI_Description.IsValid())
+	if (!CanInteract())
+	{
+		return;
+	}
+
+	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
+	{
+		ChangeIndex(true);
+		return;
+	}
+
+	if (List_Interact.IsValidIndex(CurrentIndex))
 	{
 		UI_Description->SetDescription(GetDescription());
 		UI_Description->ShowDescription(bIsShow, HasManyInteracting());
+	}
+
+	if (Comp_Tutorial.IsValid() && !Comp_Tutorial->bIsCheckTutorial && USaveManager::LoadData_Progression().Progression == EGameProgression::Tutorial)
+	{
+		return;
 	}
 
 	ShowHighlight(bIsShow);
@@ -41,31 +59,14 @@ void UInteractComponent::Interact(AEHCharacter* Interacter)
 	InteractInfo.bIsInteracted = true;
 	bIsInteracted = true;
 
-	auto* Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
-	if (IsValid(Comp_Tutorial))
+	if (Comp_Tutorial.IsValid() && !Comp_Tutorial->bIsCheckTutorial)
 	{
+		Comp_Tutorial->bIsCheckTutorial = true;
 		Comp_Tutorial->HideTutorialWidget();
 	}
 
-	IInteractable::Execute_Interact(Owner.Get(), Interacter);
-}
-
-FInteractInfo UInteractComponent::GetSelectedInteractInfo()
-{
-	if (List_Interact.IsEmpty())
-	{
-		return FInteractInfo();
-	}
-
-	return List_Interact[CurrentIndex];
-}
-
-void UInteractComponent::ActiveInteract(bool bActive)
-{
-	for (auto& Info : List_Interact)
-	{
-		Info.bIsInteracted = bActive;
-	}
+	auto* Interface = Cast<IInteractable>(Owner);
+	Interface->Interact(Interacter);
 }
 
 #pragma endregion
@@ -104,9 +105,10 @@ void UInteractComponent::ChangeIndex(bool bUp)
 		CurrentIndex = List_Interact.Num() - 1;
 	}
 
-	if (List_Interact[CurrentIndex].bIsInteracted)
+	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
 	{
-		ChangeIndex(bUp);
+		ChangeIndex(true);
+		return;
 	}
 }
 
@@ -116,11 +118,6 @@ void UInteractComponent::ChangeIndex(bool bUp)
 
 void UInteractComponent::ShowHighlight(bool bActive)
 {
-	if (!CanInteract())
-	{
-		return;
-	}
-
 	TArray<UMeshComponent*> Comps;
 	Owner->GetComponents<UMeshComponent>(OUT Comps);
 

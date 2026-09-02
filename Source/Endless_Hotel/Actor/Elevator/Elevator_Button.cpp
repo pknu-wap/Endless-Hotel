@@ -47,14 +47,14 @@ void AElevator_Button::BeginPlay()
 
 void AElevator_Button::Reset()
 {
-    Component_Interact->RestoreInteract();
+    Component_Interact->ActiveInteract(true);
 }
 
 #pragma endregion
 
 #pragma region Interact
 
-void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
+void AElevator_Button::Interact(AEHCharacter* Interacter)
 {
     MoveToButtonPlayer();
 }
@@ -65,7 +65,7 @@ void AElevator_Button::CanPressButton(bool bCanPress)
     {
         Component_Interact->ShowInteracting(false);
     }
-    bCanPress ? Component_Interact->RestoreInteract() : Component_Interact->DeactiveInteract();
+    bCanPress ? Component_Interact->ActiveInteract(true) : Component_Interact->ActiveInteract(false);
 }
 
 void AElevator_Button::MoveToButtonPlayer()

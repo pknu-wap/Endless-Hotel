@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Component/EHComponent.h"
+#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <TutorialComponent.generated.h>
 
@@ -21,10 +22,11 @@ protected:
 #pragma region Widget
 
 public:
+	void ShowTutorialWidget();
 	void HideTutorialWidget();
 
-private:
-	void ShowTutorialWidget();
+public:
+	bool bIsCheckTutorial = false;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Widget")
@@ -36,9 +38,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	float WidgetDuration = 10.f;
 
-private:
-	UPROPERTY()
-	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	EGameProgression TargetProgression = EGameProgression::Tutorial;
 
 	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> Comp_Interact;
