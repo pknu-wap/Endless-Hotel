@@ -61,7 +61,7 @@ public:
 	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Normal;
 	bool bPassed = false;
 	bool bWrongInteractionOccurred = false;
-	bool bSuperCowardMode = false;	// 임시 이름
+	bool bSuperCowardMode = true;	// 임시 이름
 
 #pragma endregion
 
@@ -91,6 +91,9 @@ public:
 
 	DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
 	FAnomalySpawned OnAnomalySpawned;
+
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOccurIncorrectRule, TArray<EAnomalyRule>);
+	FOccurIncorrectRule OnOccurIncorrectRule;
 
 private:
 	bool bIsAnomalyReady = false;

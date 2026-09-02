@@ -40,6 +40,8 @@ public:
 
 private:
 	void ChangeTextState(EAnomalyRule Rule);
+	void DrawUnderLineText(TArray<EAnomalyRule> Rules);
+	FText RemoveRichTextTags(const FText& Source);
 
 private:
 	UPROPERTY(meta = (BindWidget))

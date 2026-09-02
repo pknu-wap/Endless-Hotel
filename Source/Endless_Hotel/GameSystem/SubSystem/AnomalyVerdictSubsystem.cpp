@@ -74,6 +74,8 @@ void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
 	{
 		IncorrectRules.AddUnique(EAnomalyRule::Touch);
 	}
+
+	OnOccurIncorrectRule.Broadcast(IncorrectRules);
 }
 
 void UAnomalyVerdictSubsystem::ApplyVerdict()

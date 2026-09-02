@@ -33,11 +33,12 @@ void AAnomaly_Object_Light::Reset()
 
 	Object->SetVisibility(true);
 
-	Mesh_Destroy->DestroyComponent();
+	// 임시
+	/*Mesh_Destroy->DestroyComponent();
 	Mesh_Destroy = NewObject<UGeometryCollectionComponent>(this);
 	Mesh_Destroy->AttachToComponent(Object, FAttachmentTransformRules::KeepRelativeTransform);
 	Mesh_Destroy->RegisterComponent();
-	Mesh_Destroy->SetRestCollection(GC_Light);
+	Mesh_Destroy->SetRestCollection(GC_Light);*/
 
 	SetGeometryCollection();
 
