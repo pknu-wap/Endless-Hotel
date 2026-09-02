@@ -22,13 +22,13 @@ protected:
 #pragma region Data
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, Category = "Data")
 	EAnomalyRule AnomalyRule = EAnomalyRule::None;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, Category = "Data")
 	FText Index;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, Category = "Data")
 	FText Description;
 
 #pragma endregion
