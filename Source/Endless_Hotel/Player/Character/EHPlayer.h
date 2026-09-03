@@ -4,8 +4,8 @@
 
 #include "Character/EHCharacter.h"
 #include "Type/Player/Type_Death.h"
+#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <EHPlayer.generated.h>
 
 UCLASS()
@@ -23,42 +23,67 @@ protected:
 
 #pragma endregion
 
-#pragma region Start
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FTransform StartTransform = FTransform(FRotator(0, 180, 0), FVector(-1200, 1100, 680), FVector(0.75f, 0.75f, 0.75f));
-
-public:
-	FVector GetStartScale() const { return StartTransform.GetScale3D(); }
-
-#pragma endregion
-
 #pragma region Component
 
 public:
 	class UCameraComponent* GetCamera() { return Camera; }
-	class USkeletalMeshComponent* GetThirdMesh() { return Third_Mesh; }
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	TObjectPtr<class USpringArmComponent> SpringArm;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+private:
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
-	TObjectPtr<class USkeletalMeshComponent> Third_Mesh;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UPointLightComponent> Lighter;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lighter")
-	TObjectPtr<class UPointLightComponent> FlashLight;
+#pragma endregion
+
+#pragma region Movement
+
+#define WALK_SPEED 300.f
+#define RUN_SPEED 600.f
+
+public:
+	void SetWalkSpeed(float Value);
+
+#pragma endregion
+
+#pragma region Spawn
+
+private:
+	void RespawnPlayer();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	TMap<EGameProgression, FTransform> SpawnTransform;
+
+#pragma endregion
+
+#pragma region Die & Revive
+
+private:
+	void DiePlayer(const EDeathReason& DeathReason);
+	void RevivePlayer();
+
+public:
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDie, const EDeathReason&);
+	FOnDie OnDie;
+
+	DECLARE_MULTICAST_DELEGATE(FOnRevive)
+	FOnRevive OnRevive;
+
+	// 삭제 예정 (현재 다른 코드들 때문에 임시로 남김)
+	bool bIsDead = false;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Die")
+	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;
 
 #pragma endregion
 
 #pragma region Interact
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCanInteract, bool, bCanInteract);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FCanInteract, bool);
 	FCanInteract CanInteract;
 
 #pragma endregion
@@ -66,34 +91,8 @@ public:
 #pragma region Crouch
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrouchDelegate, bool, bIsCrouch);
-	FCrouchDelegate CrouchDelegate;
-
-#pragma endregion
-
-#pragma region Death
-
-protected:
-	UFUNCTION()
-	void DiePlayer(const EDeathReason& DeathReason);
-	void FreezeAnimation();
-
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDieDelegate, const EDeathReason&, DeathReason);
-	FDieDelegate DieDelegate;
-
-	bool bIsDead = false;
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Death")
-	TMap<EDeathReason, TObjectPtr<class UAnimMontage>> DeathAnims;
-
-#pragma endregion
-
-#pragma region Animation
-
-public:
-	void PlayAnimation(UAnimMontage* Montage);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnCrouched, bool);
+	FOnCrouched OnCrouched;
 
 #pragma endregion
 

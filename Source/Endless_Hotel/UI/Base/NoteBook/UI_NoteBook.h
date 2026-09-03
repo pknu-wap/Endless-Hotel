@@ -17,7 +17,7 @@ class ENDLESS_HOTEL_API UUI_NoteBook : public UUI_Base
 public:
 	void ChangeDescription(uint8 Index);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Picture;
 

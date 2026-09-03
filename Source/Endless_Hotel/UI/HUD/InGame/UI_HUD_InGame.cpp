@@ -8,6 +8,7 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Image.h>
 #include <Components/BackgroundBlur.h>
 #include <Components/TextBlock.h>
@@ -20,18 +21,39 @@ void UUI_HUD_InGame::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Player->CanInteract.AddDynamic(this, &ThisClass::ChangeCrosshair);
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->CanInteract.AddUObject(this, &ThisClass::ChangeCrosshair);
+	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
+	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
-	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	FloorSub->GameClearEvent.AddDynamic(this, &ThisClass::OpenDemoWidget);
-	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::AddDebugAnomalyRule);
-	VerdictSub->OnAnomalySpawned.AddDynamic(this, &ThisClass::ChangeDebugAnomaly);
+	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
+	VerdictSub->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
+}
+
+#pragma endregion
+
+#pragma region Active
+
+void UUI_HUD_InGame::ActiveWidget()
+{
+	Super::ActiveWidget();
 
 	AddDebugAnomalyRule(EAnomalyRule::None);
 	ChangeDebugAnomaly();
+
+	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	const float Duration = bCheckInState ? 2.f : 0.f;
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCameraToPlayer(Duration);
+
+	if (!bCheckInState)
+	{
+		CameraManager->StartEyeEffect(true);
+		StartInGameHUD(true);
+	}
 }
 
 #pragma endregion
@@ -46,62 +68,15 @@ void UUI_HUD_InGame::ShowWidget()
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
 }
 
+#pragma endregion
+
+#pragma region Effect
+
 void UUI_HUD_InGame::StartInGameHUD(bool bIsStart)
 {
 	ShowCrosshair(bIsStart);
 	EyeEffectBlur(!bIsStart, 0.5f);
 }
-
-#pragma endregion
-
-#pragma region Crosshair
-
-void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
-{
-	if (bCanInteract)
-	{
-		if (!bIsCrosshairInteractMode)
-		{
-			PlayAnimation(WidgetAnim_Interact);
-			bIsCrosshairInteractMode = true;
-		}
-	}
-	else
-	{
-		if (bIsCrosshairInteractMode)
-		{
-			PlayAnimation(WidgetAnim_Normal);
-			bIsCrosshairInteractMode = false;
-		}
-	}
-}
-
-void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
-{
-	if (bIsStart)
-	{
-		PlayAnimation(WidgetAnim_ShowCrosshair);
-	}
-	else
-	{
-		Image_Crosshair_Center->SetVisibility(ESlateVisibility::Hidden);
-	}
-}
-
-#pragma endregion
-
-#pragma region Brightness
-
-void UUI_HUD_InGame::SetBrightness(float Value)
-{
-	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
-	Color.A = (1 - Value) * 0.8f;
-	Image_Brightness->SetColorAndOpacity(Color);
-}
-
-#pragma endregion
-
-#pragma region Blur
 
 void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 {
@@ -125,19 +100,42 @@ void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 		}), 0.01f, true);
 }
 
-void UUI_HUD_InGame::RemoveEyeEffectBlur()
+#pragma endregion
+
+#pragma region Crosshair
+
+void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 {
-	BackBlur->SetBlurStrength(0.f);
+	if (bCanInteract == bIsCrosshairInteractMode)
+	{
+		return;
+	}
+
+	UWidgetAnimation* TargetAnim = bCanInteract ? WidgetAnim_Interact : WidgetAnim_Normal;
+	PlayAnimation(TargetAnim);
+
+	bIsCrosshairInteractMode = !bIsCrosshairInteractMode;
+}
+
+void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
+{
+	if (!bIsStart)
+	{
+		return;
+	}
+
+	PlayAnimation(WidgetAnim_ShowCrosshair);
 }
 
 #pragma endregion
 
-#pragma region Demo
+#pragma region Brightness
 
-void UUI_HUD_InGame::OpenDemoWidget()
+void UUI_HUD_InGame::SetBrightness(float Value)
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_Demo);
+	FLinearColor Color = Image_Brightness->GetColorAndOpacity();
+	Color.A = (1 - Value) * 0.8f;
+	Image_Brightness->SetColorAndOpacity(Color);
 }
 
 #pragma endregion
@@ -157,8 +155,8 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 	FTimerHandle HideHandle;
 	GetWorld()->GetTimerManager().SetTimer(HideHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			Image_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
-			Text_SubTitle->SetVisibility(ESlateVisibility::Collapsed);
+			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
 		}), Delay + Duration, false);
 }
 

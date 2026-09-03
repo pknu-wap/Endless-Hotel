@@ -31,19 +31,19 @@ protected:
 
 #pragma region Type
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Type")
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Type")
 	EQuitButtonType QuitType;
 
 #pragma endregion
 
 #pragma region Button
 
-protected:
+private:
 	UFUNCTION()
 	void Click_Yes();
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Yes;
 

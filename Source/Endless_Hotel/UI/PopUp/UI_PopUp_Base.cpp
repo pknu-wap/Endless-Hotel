@@ -2,25 +2,14 @@
 
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/Button/UI_Button_Base.h"
 
 #pragma region Base
-
-FReply UUI_PopUp_Base::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	return FReply::Handled();
-}
 
 FReply UUI_PopUp_Base::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey Key = InKeyEvent.GetKey();
 
-	if (Key == EKeys::Enter)
-	{
-		Input_Enter();
-		return FReply::Handled();
-	}
-	else if (Key == EKeys::Escape)
+	if (Key == EKeys::Escape)
 	{
 		Input_ESC();
 		return FReply::Handled();

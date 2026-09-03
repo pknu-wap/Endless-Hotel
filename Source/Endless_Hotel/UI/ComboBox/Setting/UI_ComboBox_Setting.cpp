@@ -2,35 +2,53 @@
 
 #include "UI/ComboBox/Setting/UI_ComboBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/Button/Setting/UI_Button_Option.h"
-#include "Type/Save/Type_Save.h"
+#include "GameSystem/Enum/EnumConverter.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <GameFramework/GameUserSettings.h>
-#include <Components/Border.h>
 #include <Internationalization/Internationalization.h>
 
-#pragma region Active
+#pragma region Interface
 
-void UUI_ComboBox_Setting::ActiveComboBox()
+void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values)
 {
-	UBorder* Outline = Cast<UBorder>(GetParent());
+	OptionCategory = Category;
 
-	FSlateBrush& Brush = Outline->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = OutlineColor_Focus;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Outline->SetBrush(Brush);
+	for (FOptionValuePair Value : Values)
+	{
+		GenerateItem<EOptionValue>(Value.Value, Value.Translation);
+	}
+
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
+	EOptionValue Value = EOptionValue::None;
+	switch (OptionCategory)
+	{
+	case EOptionCategory::Resolution:
+		Value = Data.Resolution;
+		break;
+
+	case EOptionCategory::Grapic:
+	{
+		Value = Data.Grapic;
+
+		UWidget* HideBox = GetWidgetFromName(TEXT("Image_HideBox"));
+		ESlateVisibility SV = Value == EOptionValue::Custom ? ESlateVisibility::Collapsed : ESlateVisibility::Visible;
+		HideBox->SetVisibility(SV);
+		break;
+	}
+	case EOptionCategory::Language:
+		Value = Data.Language;
+		break;
+	}
+
+	ComboBox->SetSelectedOption(EnumConverter::GetEnumAsName(Value));
 }
 
-void UUI_ComboBox_Setting::DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue)
+#pragma endregion
+
+#pragma region ComboBox
+
+void UUI_ComboBox_Setting::OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue)
 {
-	UBorder* Outline = Cast<UBorder>(GetParent());
-
-	FSlateBrush& Brush = Outline->Background;
-	Brush.DrawAs = ESlateBrushDrawType::RoundedBox;
-	Brush.OutlineSettings.Color = OutlineColor_Normal;
-	Brush.OutlineSettings.RoundingType = ESlateBrushRoundingType::FixedRadius;
-	Outline->SetBrush(Brush);
-
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Resolution:
@@ -49,7 +67,7 @@ void UUI_ComboBox_Setting::DeactiveComboBox(FName NameValue, ESelectInfo::Type E
 
 #pragma endregion
 
-#pragma region Screen
+#pragma region Option
 
 void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 {
@@ -58,7 +76,7 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Resolution = Value;
 
 	switch (Value)
@@ -81,10 +99,6 @@ void UUI_ComboBox_Setting::SetOption_Resolution(FName OptionValue)
 	}
 }
 
-#pragma endregion
-
-#pragma region Grapic
-
 void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 {
 	UGameUserSettings* SettingHandle = UGameUserSettings::GetGameUserSettings();
@@ -93,15 +107,16 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Grapic = Value;
 
+	UWidget* HideBox = GetWidgetFromName(TEXT("Image_HideBox"));
 	switch (Value)
 	{
 	case EOptionValue::Custom:
-		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Collapsed);
+		HideBox->SetVisibility(ESlateVisibility::Collapsed);
 		break;
-
+		
 	default:
 		Data.AntiAliasing = Value;
 		Data.Shadow = Value;
@@ -109,21 +124,11 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 		Data.PostProcessing = Value;
 		Data.Shading = Value;
 
-		UI_Setting->SetHideBoxVisibility(ESlateVisibility::Visible);
+		HideBox->SetVisibility(ESlateVisibility::Visible);
 		SettingHandle->SetOverallScalabilityLevel(Index);
-
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::AntiAliasing, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shadow, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Texture, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::PostProcessing, Value));
-		UUI_Button_Option::OnHighlight.Broadcast(FOptionInfo(EOptionCategory::Shading, Value));
 		break;
 	}
 }
-
-#pragma endregion
-
-#pragma region System
 
 void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 {
@@ -131,7 +136,7 @@ void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 	Data.Language = Value;
 
 	switch (Value)

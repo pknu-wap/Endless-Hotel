@@ -24,7 +24,7 @@ public:
 	void SetDescription(FText Value);
 	void ShowDescription(bool bIsShow, bool bNeedArrow);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Description;
 
@@ -35,7 +35,7 @@ protected:
 public:
 	void PlayChangeAnimation(bool bUp);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> Anim_Left;
 
@@ -46,7 +46,7 @@ protected:
 
 #pragma region Arrow
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Left;
 

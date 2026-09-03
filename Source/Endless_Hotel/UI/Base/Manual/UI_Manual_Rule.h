@@ -39,10 +39,11 @@ public:
 	void SetDescriptionText(FText Text);
 
 private:
-	UFUNCTION()
 	void ChangeTextState(EAnomalyRule Rule);
+	void DrawUnderLineText(TArray<EAnomalyRule> Rules);
+	FText RemoveRichTextTags(const FText& Source);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Index;
 

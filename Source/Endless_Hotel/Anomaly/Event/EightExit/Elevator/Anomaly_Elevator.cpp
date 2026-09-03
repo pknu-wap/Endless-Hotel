@@ -16,7 +16,7 @@ void AAnomaly_Elevator::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor
 {
     AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
     if (!Player) return;
-    Player->DieDelegate.Broadcast(EDeathReason::Fall);
+    Player->OnDie.Broadcast(EDeathReason::Fall);
 }
 
 void AAnomaly_Elevator::SetAnomalyState()

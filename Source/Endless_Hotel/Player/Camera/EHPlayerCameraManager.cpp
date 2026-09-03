@@ -1,16 +1,14 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Player/Camera/EHPlayerCameraManager.h"
+#include "Player/Character/EHPlayer.h"
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "GameFramework/Character.h"
-#include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_HUD_InGame.h"
-#include "UI/HUD/Loading/UI_HUD_Loading.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/TimelineComponent.h>
+#include <Camera/CameraComponent.h>
 
 #pragma region Base
 
@@ -19,8 +17,12 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	TimeLine_Eye = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Eye"));
+	TimeLine_EyeOpen = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeOpen"));
+	TimeLine_EyeClose = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeClose"));
 	TimeLine_Loading = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Loading"));
+
+	ViewPitchMin = -70.0f;
+	ViewPitchMax = 70.0f;
 }
 
 void AEHPlayerCameraManager::BeginPlay()
@@ -29,46 +31,17 @@ void AEHPlayerCameraManager::BeginPlay()
 
 	FindPPV();
 	SetEyeEffect();
+	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+	GetWorld()->GetTimerManager().SetTimer(BindHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			OnChangedDataLayer(EMapDataLayer::Lobby);
-		}), 0.1f, false);
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddUniqueDynamic(this, &ThisClass::OnChangedDataLayer);
-}
-
-#pragma endregion
-
-#pragma region Data Layer
-
-void AEHPlayerCameraManager::OnChangedDataLayer(const EMapDataLayer& DataLayer)
-{
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-
-	switch (DataLayer)
-	{
-	case EMapDataLayer::Hotel:
-	{
-		PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)));
-		if (bIsFirstHotel)
-		{
-			DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
-			StartEyeEffect(true);
-			bIsFirstHotel = false;
-		}
-		break;
-	}
-	case EMapDataLayer::Lobby:
-	{
-		PossessCamera(ECameraType::Title);
-		bIsFirstHotel = true;
-		DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
-		break;
-	}
-	}
+			if (auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+			{
+				Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartEyeEffect(false); });
+				Player->OnRevive.AddWeakLambda(this, [this]() {StartEyeEffect(true); });
+				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
+			}			
+		}), 0.1f, true);
 }
 
 #pragma endregion
@@ -94,48 +67,17 @@ void AEHPlayerCameraManager::FindPPV()
 
 void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 {
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, bIsOpen]()
-		{
-			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-			auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	bIsOpen ? TimeLine_EyeOpen->PlayFromStart() : TimeLine_EyeClose->PlayFromStart();
 
-			if (IsValid(UI_InGame) && UI_InGame->IsActivatedWidget())
-			{
-				if (bIsOpen)
-				{
-					UI_InGame->StartInGameHUD(true);
-					TimeLine_Eye->PlayFromStart();
-				}
-				else
-				{
-					UI_InGame->StartInGameHUD(false);
-					TimeLine_Eye->ReverseFromEnd();
-				}
-
-				auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-				SoundCon->FadeSFXSound(bIsOpen);
-
-				FTimerHandle StopHandle;
-				GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-					{
-						TimeLine_Eye->Stop();
-					}), 6.f, false);
-
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
-			}
-		}), 0.01f, true);
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(bIsOpen);
 }
 
-void AEHPlayerCameraManager::LoadingEyeEffect()
+float AEHPlayerCameraManager::LoadingEyeEffect()
 {
 	TimeLine_Loading->PlayFromStart();
 
-	constexpr float StopDuration = 2.f;
-	FTimerHandle StopHandle;
-	GetWorld()->GetTimerManager().SetTimer(StopHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			TimeLine_Loading->Stop();
-		}), StopDuration, false);
+	return TimeLine_Loading->GetTimelineLength();
 }
 
 void AEHPlayerCameraManager::SetEyeEffect()
@@ -147,7 +89,11 @@ void AEHPlayerCameraManager::SetEyeEffect()
 
 	FOnTimelineFloat Update_Open;
 	Update_Open.BindUFunction(this, FName("OnValueChangedEyeEffect"));
-	TimeLine_Eye->AddInterpFloat(CV_EyeOpen, Update_Open);
+	TimeLine_EyeOpen->AddInterpFloat(CV_EyeOpen, Update_Open);
+
+	FOnTimelineFloat Update_Close;
+	Update_Close.BindUFunction(this, FName("OnValueChangedEyeEffect"));
+	TimeLine_EyeClose->AddInterpFloat(CV_EyeClose, Update_Close);
 
 	FOnTimelineFloat Update_Loading;
 	Update_Loading.BindUFunction(this, FName("OnValueChangedEyeEffect"));
@@ -172,6 +118,12 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
 {
+	TimeLine_EyeOpen->Stop();
+	TimeLine_EyeClose->Stop();
+	TimeLine_Loading->Stop();
+
+	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
+
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 }
@@ -179,6 +131,27 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
 {
 	PossessCamera(Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)), BlendTime);
+}
+
+#pragma endregion
+
+#pragma region Option
+
+void AEHPlayerCameraManager::ActiveCameraShake(bool bActive)
+{
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	auto* Camera = Player->GetCamera();
+	auto* Mesh = Player->GetMesh();
+
+	if (bActive)
+	{
+		Camera->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("HeadSocket"));
+		Camera->SetRelativeLocationAndRotation(FVector(7, 7, 0), FRotator::ZeroRotator);
+		return;
+	}
+
+	Camera->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform);
+	Camera->SetRelativeLocationAndRotation(FVector(0, 30, 170), FRotator(0, 90, 0));
 }
 
 #pragma endregion

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "Type/UI/Type_UI.h"
+#include <Components/PanelWidget.h>
+#include <Components/PanelSlot.h>
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <UI_Controller.generated.h>
@@ -15,8 +17,8 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 #pragma region Open & Close
 
 public:
-	class UUI_Base* OpenWidget(const EWidgetType& WidgetType);
-	void CloseWidget();
+	class UUI_Base* OpenWidget(const EWidgetType& WidgetType, float Duration = 0.01f);
+	void CloseWidget(float Duration = 0.01f);
 
 private:
 	void CloseAllWidgets();
@@ -28,6 +30,14 @@ private:
 public:
 	void ShowHUDWidget(bool bShow);
 	void ShowPopUpWidget(bool bShow);
+
+#pragma endregion
+
+#pragma region Child
+
+public:
+	template <typename WidgetType, typename OuterType, typename OuterSlotType>
+	WidgetType* MakeChildWidget(OuterType* Outer, TSubclassOf<class UUI_Base> Class, ESlateSizeRule::Type Rule = ESlateSizeRule::Fill, float Size = 1.f);
 
 #pragma endregion
 
@@ -75,3 +85,20 @@ public:
 #pragma endregion
 
 };
+
+#pragma region Inline
+
+template <typename WidgetType, typename OuterType, typename OuterSlotType>
+FORCEINLINE WidgetType* UUI_Controller::MakeChildWidget(OuterType* Outer, TSubclassOf<class UUI_Base> Class, ESlateSizeRule::Type Rule, float Size)
+{
+	WidgetType* ChildWidget = CreateWidget<WidgetType>(Outer, Class);
+
+	FSlateChildSize SlateChildSize = FSlateChildSize(Rule);
+	SlateChildSize.Value = Size;
+	OuterSlotType* PanelSlot = Cast<OuterSlotType>(Outer->AddChild(ChildWidget));
+	PanelSlot->SetSize(SlateChildSize);
+
+	return ChildWidget;
+}
+
+#pragma endregion

@@ -45,6 +45,7 @@ private:
 	TArray<TObjectPtr<class AAnomaly_Object_Fire>> SpawnedFires;
 
 	FTimerHandle FireHandle;
+	FDelegateHandle SmokeDelegate;
 
 	uint8 FireSpawnIndex = 0;
 
@@ -53,9 +54,7 @@ private:
 #pragma region Smoke
 
 private:
-	UFUNCTION()
 	void SmokeTimer(bool bIsCrouch);
-
 	void SpawnSmokes();
 
 protected:

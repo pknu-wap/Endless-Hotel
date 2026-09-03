@@ -2,13 +2,25 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
+#include "UI/UI_Base.h"
 #include <Components/CheckBox.h>
+#include <CoreMinimal.h>
 #include <UI_CheckBox_Base.generated.h>
 
-UCLASS()
-class ENDLESS_HOTEL_API UUI_CheckBox_Base : public UCheckBox
+UCLASS(Abstract, Meta = (DisableNativeTick))
+class ENDLESS_HOTEL_API UUI_CheckBox_Base : public UUI_Base
 {
 	GENERATED_BODY()
 	
+#pragma region CheckBox
+
+public:
+	UCheckBox* GetCheckBox() { return CheckBox; }
+
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCheckBox> CheckBox;
+
+#pragma endregion
+
 };

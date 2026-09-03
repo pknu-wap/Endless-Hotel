@@ -3,55 +3,41 @@
 #pragma once
 
 #include "UI/Slider/UI_Slider_Base.h"
-#include "Type/UI/Type_Setting.h"
+#include "Interface/UI/OptionInterface.h"
 #include <CoreMinimal.h>
 #include <UI_Slider_Setting.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base
+class ENDLESS_HOTEL_API UUI_Slider_Setting : public UUI_Slider_Base, public IOptionInterface
 {
 	GENERATED_BODY()
-	
-#pragma region Base
 
-protected:
-	virtual void NativeOnInitialized() override;
-
-#pragma endregion
-
-#pragma region Category
+#pragma region Interface
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting|Category")
-	EOptionCategory OptionCategory;
+	virtual void InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values) override;
 
 #pragma endregion
 
 #pragma region Slider
 
-public:
-	virtual void Slide_Slider(float Value) override;
-
 protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text_Value;
+	virtual void Slide_Slider(float Value) override;
 
 #pragma endregion
 
-#pragma region CheckBox
+#pragma region Option
 
-public:
-	UFUNCTION()
-	void Click_CheckBox(bool bIsCheck);
+private:
+	EOptionCategory OptionCategory = EOptionCategory::None;
 
-	void ShowOffImage(bool bIsCheck);
+#pragma endregion
 
-protected:
+#pragma region TextBlock
+
+private:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image_Off;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_CheckBox_Setting> CheckBox_Off;
+	TObjectPtr<class UTextBlock> TextBlock;
 
 #pragma endregion
 

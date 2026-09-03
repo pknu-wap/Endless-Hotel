@@ -2,9 +2,7 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
-#include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
@@ -15,8 +13,6 @@
 #include <EnhancedInputSubsystems.h>
 #include <InputMappingContext.h>
 #include <Camera/CameraComponent.h>
-#include <GameFramework/Character.h>
-#include <GameFramework/CharacterMovementComponent.h>
 #include <GameFramework/SpringArmComponent.h>
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
@@ -30,27 +26,17 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	bRevive = false;
-	bCanMove = true;
-	bCanFaceCover = true;
-	bIsCameraFixed = false;
-	bIsPlayerDead = false;
 }
 
 void AEHPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EHPlayer = Cast<AEHPlayer>(GetCharacter());
-	UCameraComponent* PlayerCamera = EHPlayer->FindComponentByClass<UCameraComponent>();
+	EHPlayer = Cast<AEHPlayer>(GetPawn());
+	EHPlayer->OnDie.AddUObject(this, &ThisClass::DiePlayer);
+	EHPlayer->OnRevive.AddUObject(this, &ThisClass::RevivePlayer);
 
-	EHPlayer->FindComponentByClass<UPointLightComponent>()->SetVisibility(false);
-
-	SpringArm = EHPlayer->FindComponentByClass<USpringArmComponent>();
-
-	PlayerCameraManager->ViewPitchMin = -70.0f;
-	PlayerCameraManager->ViewPitchMax = 70.0f;
+	PlayerCamera = EHPlayer->GetCamera();
 
 	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -60,7 +46,7 @@ void AEHPlayerController::BeginPlay()
 	IMC_Backup = IMC_Default;
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddDynamic(this, &ThisClass::OpenHUDWidget);
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OpenHUDWidget);
 
 	OpenHUDWidget(EMapDataLayer::Lobby);
 }
@@ -68,6 +54,7 @@ void AEHPlayerController::BeginPlay()
 void AEHPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
 	CheckForInteractables();
 }
 
@@ -75,53 +62,42 @@ void AEHPlayerController::Tick(float DeltaSeconds)
 
 #pragma region Input
 
+void AEHPlayerController::SetPlayerInputAble(bool bAble)
+{
+	bCanMove = bAble;
+	bCanRun = bAble;
+	bCanFaceCover = bAble;
+	bCanCrouch = bAble;
+	bIsCameraFixed = !bAble;
+
+	bAble ? ResetIgnoreLookInput() : SetIgnoreLookInput(true);
+}
+
 void AEHPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		// Move - 2D Vector로 통합
-		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
+	UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(InputComponent);
 
-		// Look - 2D Vector로 통합
-		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
+	EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
 
-		// Run - Started/Completed 사용
-		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Started, this, &ThisClass::OnRunStarted);
-		EnhancedInputComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &ThisClass::OnRunCompleted);
+	EIC->BindAction(IA_Look, ETriggerEvent::Triggered, this, &ThisClass::Look);
 
-		// Interact
-		EnhancedInputComponent->BindAction(IA_Interact, ETriggerEvent::Started, this, &ThisClass::OnInteract);
-		EnhancedInputComponent->BindAction(IA_ChangeInteract, ETriggerEvent::Started, this, &ThisClass::ChangeInteract);
+	EIC->BindAction(IA_Run, ETriggerEvent::Started, this, &ThisClass::OnRunStarted);
+	EIC->BindAction(IA_Run, ETriggerEvent::Completed, this, &ThisClass::OnRunCompleted);
 
-		// Crouch - Started/Completed 사용
-		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Started, this, &ThisClass::OnCrouchStarted);
-		EnhancedInputComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &ThisClass::OnCrouchCompleted);
+	EIC->BindAction(IA_Interact, ETriggerEvent::Started, this, &ThisClass::OnInteract);
+	EIC->BindAction(IA_ChangeInteract, ETriggerEvent::Started, this, &ThisClass::ChangeInteract);
 
-		// FaceCover
-		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Started, this, &ThisClass::OnFaceCoverStarted);
-		EnhancedInputComponent->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
+	EIC->BindAction(IA_Crouch, ETriggerEvent::Started, this, &ThisClass::OnCrouchStarted);
+	EIC->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &ThisClass::OnCrouchCompleted);
 
-		// Light
-		EnhancedInputComponent->BindAction(IA_Light, ETriggerEvent::Started, this, &ThisClass::TurnPlayerHandLight);
+	EIC->BindAction(IA_FaceCover, ETriggerEvent::Started, this, &ThisClass::OnFaceCoverStarted);
+	EIC->BindAction(IA_FaceCover, ETriggerEvent::Completed, this, &ThisClass::OnFaceCoverCompleted);
 
-		//ESC
-		EnhancedInputComponent->BindAction(IA_ESC, ETriggerEvent::Started, this, &ThisClass::EscapeStarted);
-	}
-}
+	EIC->BindAction(IA_Light, ETriggerEvent::Started, this, &ThisClass::TurnPlayerHandLight);
 
-#pragma endregion
-
-#pragma region Component
-
-UCameraComponent* AEHPlayerController::GetPlayerCamera() const
-{
-	if (EHPlayer.IsValid())
-	{
-		return EHPlayer->FindComponentByClass<UCameraComponent>();
-	}
-	return nullptr;
+	EIC->BindAction(IA_ESC, ETriggerEvent::Started, this, &ThisClass::EscapeStarted);
 }
 
 #pragma endregion
@@ -135,25 +111,18 @@ void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 	switch (DataLayer)
 	{
 	case EMapDataLayer::Hotel:
-	{
 		UICon->OpenWidget(EWidgetType::HUD_InGame);
-		if (USaveManager::LoadData_Tutorial().bIsFirstPlay)
-		{
-			UICon->OpenWidget(EWidgetType::PopUp_Tutorial);
-		}
 		break;
-	}
+
 	case EMapDataLayer::Lobby:
-	{
 		UICon->OpenWidget(EWidgetType::HUD_Title);
 		break;
-	}
 	}
 }
 
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Escape);
 }
 
@@ -163,9 +132,10 @@ void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 
 void AEHPlayerController::Move(const FInputActionValue& Value)
 {
-	if (!bCanMove) return;
-
-	if (!EHPlayer.IsValid()) return;
+	if (!bCanMove)
+	{
+		return;
+	}
 
 	const FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -217,10 +187,7 @@ void AEHPlayerController::OnRunStarted()
 
 	bIsRunning = true;
 
-	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
-	{
-		MovementComp->MaxWalkSpeed = RunSpeed;
-	}
+	EHPlayer->SetWalkSpeed(RUN_SPEED);
 }
 
 void AEHPlayerController::OnRunCompleted()
@@ -232,10 +199,7 @@ void AEHPlayerController::OnRunCompleted()
 
 	bIsRunning = false;
 
-	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
-	{
-		MovementComp->MaxWalkSpeed = WalkSpeed;
-	}
+	EHPlayer->SetWalkSpeed(WALK_SPEED);
 }
 
 #pragma endregion
@@ -254,7 +218,7 @@ void AEHPlayerController::OnCrouchStarted()
 	bIsCrouching = true;
 
 	EHPlayer->Crouch();
-	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
+	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
 }
 
 void AEHPlayerController::OnCrouchCompleted()
@@ -269,7 +233,7 @@ void AEHPlayerController::OnCrouchCompleted()
 	bIsCrouching = false;
 
 	EHPlayer->UnCrouch();
-	EHPlayer->CrouchDelegate.Broadcast(bIsCrouching);
+	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
 }
 
 #pragma endregion
@@ -293,7 +257,7 @@ void AEHPlayerController::OnFaceCoverStarted()
 	bCanMove = false;
 
 	if (bIsFaceCovering) {
-		SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+		PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 		FRotator CurrentRotation = GetControlRotation();
 		CurrentRotation.Pitch = -25.f;
@@ -319,7 +283,7 @@ void AEHPlayerController::OnFaceCoverCompleted()
 	bCanMove = true;
 
 	if (!bIsFaceCovering) {
-		SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+		PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
 }
@@ -349,7 +313,7 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 
 void AEHPlayerController::TurnPlayerHandLight()
 {
-	bHasFlash = USaveManager::LoadData_Tutorial().bHasFlash;
+	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
 
 	if (!bCanMove || !bHasFlash)
 	{
@@ -366,54 +330,27 @@ void AEHPlayerController::TurnPlayerHandLight()
 
 #pragma endregion
 
-#pragma region State_Death
+#pragma region Die & Revive
 
-void AEHPlayerController::PlayDeathSequence()
+void AEHPlayerController::DiePlayer(const EDeathReason& DeathReason)
 {
-	if (!EHPlayer.IsValid()) return;
-
-	bRevive = false;
-	bIsPlayerDead = true;
 	SetPlayerInputAble(false);
 }
 
 void AEHPlayerController::RevivePlayer()
 {
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn)
-	{
-		const FVector ReviveLocation = FVector(-1200, 1100, 680);
-		const FRotator ReviveRotation = FRotator::ZeroRotator;
-		ControlledPawn->SetActorLocationAndRotation(ReviveLocation, ReviveRotation, false, nullptr, ETeleportType::TeleportPhysics);
-		SetControlRotation(ReviveRotation);
-	}
-
-	bRevive = true;
-	bIsPlayerDead = false;
 	SetPlayerInputAble(true);
 
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	auto* BlurWidget = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
-	BlurWidget->RemoveEyeEffectBlur();
+	bIsButtonPressing = false;
+	bIsPlayerDoorOpening = false;
+	bIsPlayerPushingDoor = false;
 
-	TWeakObjectPtr<AEHPlayerController> WeakThis(this);
-	TWeakObjectPtr<APawn> WeakPawn(ControlledPawn);
+	bIsCrouching ? EHPlayer->UnCrouch() : EHPlayer->Crouch();
+	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
+	bIsCrouching = false;
 
-	FTimerHandle EyeDelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(EyeDelayHandle, [WeakThis, WeakPawn]()
-		{
-			AEHPlayerController* StrongThis = WeakThis.Get();
-			APawn* StrongPawn = WeakPawn.Get();
-
-			if (StrongThis && StrongPawn)
-			{
-				if (AEHPlayerCameraManager* EHCameraManager = Cast<AEHPlayerCameraManager>(StrongThis->PlayerCameraManager))
-				{
-					EHCameraManager->PossessCamera(StrongPawn);
-					EHCameraManager->StartEyeEffect(true);
-				}
-			}
-		}, 3.0f, false);
+	bIsFaceCovering = false;
+	bIsFaceCoverTransitioning = false;
 }
 
 #pragma endregion
@@ -423,7 +360,7 @@ void AEHPlayerController::RevivePlayer()
 void AEHPlayerController::OnFirstDoorOpenStarted()
 {
 	bIsPlayerDoorOpening = true;
-	SpringArm->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
+	PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 	FRotator CurrentRotation = GetControlRotation();
 	CurrentRotation.Pitch = -25.f;
@@ -435,7 +372,7 @@ void AEHPlayerController::OnFirstDoorOpenStarted()
 void AEHPlayerController::OnFirstDoorOpenCompleted()
 {
 	bIsPlayerDoorOpening = false;
-	SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
+	PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 
 	SetPlayerInputAble(true);
 }
@@ -547,11 +484,7 @@ bool AEHPlayerController::IsActorOnScreen(AActor* TargetActor) const
 
 AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 {
-	UCameraComponent* Camera = GetPlayerCamera();
-	if (!Camera)
-	{
-		return nullptr;
-	}
+	UCameraComponent* Camera = EHPlayer->GetCamera();
 
 	FVector Start = Camera->GetComponentLocation();
 	FVector End = Start + Camera->GetForwardVector() * Distance;
@@ -563,27 +496,6 @@ AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 	GetWorld()->LineTraceSingleByChannel(OUT HitResult, Start, End, ECC_Visibility, Params);
 
 	return HitResult.GetActor();
-}
-
-#pragma endregion
-
-#pragma region SetInput
-
-void AEHPlayerController::SetPlayerInputAble(bool bAble)
-{
-	bCanMove = bAble;
-	bCanFaceCover = bAble;
-	bCanCrouch = bAble;
-	bIsCameraFixed = !bAble;
-
-	if (bAble)
-	{
-		ResetIgnoreLookInput();
-	}
-	else
-	{
-		SetIgnoreLookInput(true);
-	}
 }
 
 #pragma endregion
@@ -624,7 +536,7 @@ void AEHPlayerController::SetKeyMapping(FKeySettingInfo NewInfo, FKey OldKey)
 		IA_Target = IA_FaceCover;
 		break;
 
-	case EKeySettingType::Flash:
+	case EKeySettingType::Lighter:
 		IA_Target = IA_Light;
 		break;
 
@@ -655,59 +567,6 @@ void AEHPlayerController::SetKeyMapping(FKeySettingInfo NewInfo, FKey OldKey)
 	Mapping.Modifiers = SaveModifiers;
 
 	Subsystem->RequestRebuildControlMappings();
-}
-
-#pragma endregion
-
-#pragma region State_Reset
-
-void AEHPlayerController::ResetPlayerState()
-{
-	SetPlayerInputAble(true);
-	bCanRun = true;
-	bCanCrouch = true;
-	bCanFaceCover = true;
-	bIsPlayerDead = false;
-
-	if (UCharacterMovementComponent* MovementComp = EHPlayer->GetCharacterMovement())
-	{
-		if (bIsRunning)
-		{
-			MovementComp->MaxWalkSpeed = RunSpeed;
-		}
-		else
-		{
-			MovementComp->MaxWalkSpeed = WalkSpeed;
-		}
-	}
-
-	if (bIsCrouching)
-	{
-		EHPlayer->Crouch();
-		EHPlayer->CrouchDelegate.Broadcast(true);
-	}
-	else
-	{
-		EHPlayer->UnCrouch();
-		EHPlayer->CrouchDelegate.Broadcast(false);
-	}
-
-	if (bIsFaceCovering || bIsFaceCoverTransitioning)
-	{
-		bIsFaceCovering = false;
-		bIsFaceCoverTransitioning = false;
-		if (SpringArm)
-		{
-			SpringArm->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f)); 
-		}
-	}
-
-	bIsButtonPressing = false;
-	bIsPlayerDoorOpening = false;
-	bIsPlayerPushingDoor = false;
-
-	EHPlayer->SetActorScale3D(EHPlayer->GetStartScale());
-	
 }
 
 #pragma endregion

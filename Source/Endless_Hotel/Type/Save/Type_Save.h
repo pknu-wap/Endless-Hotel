@@ -7,6 +7,8 @@
 #include <CoreMinimal.h>
 #include <Type_Save.generated.h>
 
+#pragma region Setting
+
 USTRUCT()
 struct FSaveData_Setting
 {
@@ -67,22 +69,22 @@ public:
 	float Voice = 0.5f;
 
 	UPROPERTY(SaveGame)
-	float Interface = 0.5f;
+	float UI = 0.5f;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableMaster = 1;
+	uint8 MuteMaster = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableBGM = 1;
+	uint8 MuteBGM = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableSFX = 1;
+	uint8 MuteSFX = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableVoice = 1;
+	uint8 MuteVoice = 0;
 
 	UPROPERTY(SaveGame)
-	uint8 EnableInterface = 1;
+	uint8 MuteUI = 0;
 
 public:
 	// Control
@@ -95,70 +97,96 @@ public:
 	EOptionValue Overlap = EOptionValue::Off;
 
 	UPROPERTY(SaveGame)
+	EOptionValue CameraShake = EOptionValue::On;
+
+	UPROPERTY(SaveGame)
 	float Brightness = 1.f;
 
 public:
 	// System
 	UPROPERTY(SaveGame)
 	EOptionValue Language = EOptionValue::Korean;
-};
-
-USTRUCT()
-struct FSaveData_Key
-{
-	GENERATED_BODY()
 
 public:
+	// Keyboard
+	void ResetKeySetting()
+	{
+		Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
+		Down = FKeySettingInfo(EKeySettingType::Down, EKeys::S);
+		Left = FKeySettingInfo(EKeySettingType::Left, EKeys::A);
+		Right = FKeySettingInfo(EKeySettingType::Right, EKeys::D);
+		Run = FKeySettingInfo(EKeySettingType::Run, EKeys::LeftShift);
+		Sit = FKeySettingInfo(EKeySettingType::Sit, EKeys::SpaceBar);
+		Interact = FKeySettingInfo(EKeySettingType::Interact, EKeys::E);
+		Hide = FKeySettingInfo(EKeySettingType::Hide, EKeys::RightMouseButton);
+		Lighter = FKeySettingInfo(EKeySettingType::Lighter, EKeys::Q);
+	}
+
+public:
+	// Keyboard
 	UPROPERTY(SaveGame)
 	FKeySettingInfo Up = FKeySettingInfo(EKeySettingType::Up, EKeys::W);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Down = FKeySettingInfo(EKeySettingType::Up, EKeys::S);
+	FKeySettingInfo Down = FKeySettingInfo(EKeySettingType::Down, EKeys::S);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Left = FKeySettingInfo(EKeySettingType::Up, EKeys::A);
+	FKeySettingInfo Left = FKeySettingInfo(EKeySettingType::Left, EKeys::A);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Right = FKeySettingInfo(EKeySettingType::Up, EKeys::D);
+	FKeySettingInfo Right = FKeySettingInfo(EKeySettingType::Right, EKeys::D);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Run = FKeySettingInfo(EKeySettingType::Up, EKeys::LeftShift);
+	FKeySettingInfo Run = FKeySettingInfo(EKeySettingType::Run, EKeys::LeftShift);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Sit = FKeySettingInfo(EKeySettingType::Up, EKeys::SpaceBar);
+	FKeySettingInfo Sit = FKeySettingInfo(EKeySettingType::Sit, EKeys::SpaceBar);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Interact = FKeySettingInfo(EKeySettingType::Up, EKeys::E);
+	FKeySettingInfo Interact = FKeySettingInfo(EKeySettingType::Interact, EKeys::E);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Hide = FKeySettingInfo(EKeySettingType::Up, EKeys::RightMouseButton);
+	FKeySettingInfo Hide = FKeySettingInfo(EKeySettingType::Hide, EKeys::RightMouseButton);
 
 	UPROPERTY(SaveGame)
-	FKeySettingInfo Flash = FKeySettingInfo(EKeySettingType::Up, EKeys::Q);
+	FKeySettingInfo Lighter = FKeySettingInfo(EKeySettingType::Lighter, EKeys::Q);
+};
+
+#pragma endregion
+
+#pragma region Progression
+
+UENUM(BlueprintType)
+enum class EGameProgression : uint8
+{
+	CheckIn		UMETA(DisplayName = "CheckIn"),
+	Tutorial	UMETA(DisplayName = "Tutorial"),
+	Loop		UMETA(DisplayName = "Loop")
 };
 
 USTRUCT()
-struct FSaveData_Tutorial
+struct FSaveData_Progression
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(SaveGame)
-	bool bIsFirstPlay = true;
+	bool bGameClear = false;
+
+	UPROPERTY(SaveGame)
+	EGameProgression Progression = EGameProgression::Tutorial;
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;
 
 	UPROPERTY(SaveGame)
+	bool bHasKey = false;
+
+	UPROPERTY(SaveGame)
 	bool bReadManual = false;
+
+	UPROPERTY(SaveGame)
+	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::NoAnomaly, EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 };
 
-USTRUCT()
-struct FSaveData_Manual
-{
-	GENERATED_BODY()
-	
-public:
-	UPROPERTY(SaveGame)
-	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch,EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
-};
+#pragma endregion

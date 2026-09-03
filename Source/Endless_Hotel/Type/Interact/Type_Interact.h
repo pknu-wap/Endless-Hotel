@@ -29,7 +29,6 @@ public:
 	UPROPERTY(EditAnyWhere, Category = "Interact")
 	EInteractType InteractType = EInteractType::None;
 
-	UPROPERTY()
 	bool bIsInteracted = false;
 
 	UPROPERTY(EditAnyWhere, Category = "Interact")

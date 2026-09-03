@@ -96,7 +96,7 @@ protected:
 #pragma region Interact
 
 public:
-	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interacter) override;
 
 protected:
 	void InteractRotate();

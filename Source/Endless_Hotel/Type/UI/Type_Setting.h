@@ -19,18 +19,15 @@ enum class ESettingCategory : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FSettingCategory
+struct FCategoryButtonInfo
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnyWhere, Category = "Setting")
-	ESettingCategory Enum = ESettingCategory::None;
+	UPROPERTY(EditAnywhere, Category = "Setting")
+	ESettingCategory Category = ESettingCategory::None;
 
-	UPROPERTY(EditAnyWhere, Category = "Setting")
-	FText Name;
-
-	UPROPERTY(EditAnyWhere, Category = "Setting")
+	UPROPERTY(EditAnywhere, Category = "Setting")
 	float Angle = 0;
 };
 
@@ -51,7 +48,7 @@ enum class EOptionValue : uint8
 	UHD					UMETA(DisplayName = "3840 X 2160 (UHD)"),
 	Windowed			UMETA(DisplayName = "Windowed"),
 	FullScreen			UMETA(DisplayName = "FullScreen"),
-	WindowedFullScreen	UMETA(DisplayName = "WindowedFullScreen"),
+	WindowedFullScreen	UMETA(DisplayName = "Windowed FullScreen"),
 	W16H9				UMETA(DisplayName = "16:9"),
 	W21H9				UMETA(DisplayName = "21:9"),
 	W4H3				UMETA(DisplayName = "4:3"),
@@ -86,13 +83,14 @@ enum class EOptionCategory : uint8
 	BGM					UMETA(DisplayName = "BGM"),
 	SFX					UMETA(DisplayName = "SFX"),
 	Voice				UMETA(DisplayName = "Voice"),
-	Interface			UMETA(DisplayName = "Interface"),
+	UI					UMETA(DisplayName = "UI"),
 
 	// Control
 	Sensitivity			UMETA(DisplayName = "Sensitivity"),
 
 	// Gameplay
 	Overlap				UMETA(DisplayName = "Overlap"),
+	CameraShake			UMETA(DisplayName = "CameraShake"),
 	Brightness			UMETA(DisplayName = "Brightness"),
 
 	// System
@@ -102,22 +100,52 @@ enum class EOptionCategory : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FOptionInfo
+struct FOptionValuePair
 {
 	GENERATED_BODY()
 
 public:
-	FOptionInfo() {}
+	UPROPERTY(EditDefaultsOnly, Category = "Value")
+	EOptionValue Value;
 
-	FOptionInfo(EOptionCategory Cat, EOptionValue Val)
-		:Category(Cat), Value(Val) {}
+	UPROPERTY(EditDefaultsOnly, Category = "Translation")
+	FText Translation;
+};
+
+USTRUCT(BlueprintType)
+struct FOptionData
+{
+	GENERATED_BODY()
+	
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting")
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSoftClassPtr<class UUI_Base> Class;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	FText Name;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
 	EOptionCategory Category = EOptionCategory::None;
 
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	EOptionValue Value = EOptionValue::None;
+	UPROPERTY(EditDefaultsOnly, Category = "Option")
+	TArray<FOptionValuePair> Values;
+};
+
+USTRUCT(BlueprintType)
+struct FOptionList
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Class")
+	TSoftClassPtr<class UUI_PopUp_Option> Class;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Category")
+	FText Name;
+
+	UPROPERTY(EditDefaultsOnly, Category = "List")
+	TArray<FOptionData> List;
 };
 
 UENUM(BlueprintType)
@@ -132,7 +160,7 @@ enum class EKeySettingType : uint8
 	Sit			UMETA(DisplayName = "Sit"),
 	Interact	UMETA(DisplayName = "Interact"),
 	Hide		UMETA(DisplayName = "Hide"),
-	Flash		UMETA(DisplayName = "Flash"),
+	Lighter		UMETA(DisplayName = "Lighter"),
 	Reset		UMETA(DisplayName = "Reset")
 };
 

@@ -18,7 +18,7 @@ void ARoomSignActor::BeginPlay()
 	Super::BeginPlay();
 
 	auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+	Sub->FloorChange_Reset.AddUObject(this, &ThisClass::Reset);
 }
 
 #pragma endregion

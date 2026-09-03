@@ -164,8 +164,10 @@ void AAnomaly_Object_Windup::WindupBurnTick()
 
 #pragma region Interact
 
-void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_Windup::Interact(AEHCharacter* Interacter)
 {
+	Super::Interact(Interacter);
+
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
 	switch (CurrentInteractStep)

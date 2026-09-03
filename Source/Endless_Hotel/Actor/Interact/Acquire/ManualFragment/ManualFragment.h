@@ -41,8 +41,7 @@ private:
 #pragma region Setting
 
 private:
-    UFUNCTION()
-    void SetManualFragment();
+	void SetManualFragment();
 
 private:
     UPROPERTY(EditAnywhere, Category = "Setting")

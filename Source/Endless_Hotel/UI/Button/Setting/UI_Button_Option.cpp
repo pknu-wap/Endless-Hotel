@@ -2,39 +2,39 @@
 
 #include "UI/Button/Setting/UI_Button_Option.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/HorizontalBox/Setting/UI_HorizontalBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include <GameFramework/GameUserSettings.h>
 #include <GameFramework/Character.h>
 #include <Camera/CameraComponent.h>
 #include <Kismet/GameplayStatics.h>
-
-#pragma region Declare
-
-UUI_Button_Option::FHighlightOption UUI_Button_Option::OnHighlight;
-
-#pragma endregion
+#include <Components/TextBlock.h>
 
 #pragma region Base
 
-TSharedRef<SWidget> UUI_Button_Option::RebuildWidget()
+void UUI_Button_Option::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
+
 	SettingHandle = UGameUserSettings::GetGameUserSettings();
 
-	OnHighlight.AddDynamic(this, &ThisClass::Highlight);
-	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
-
-	return Super::RebuildWidget();
+	Button->OnClicked.AddDynamic(this, &ThisClass::Click_Button);
 }
 
-void UUI_Button_Option::ReleaseSlateResources(bool bReleaseChildren)
-{
-	Super::ReleaseSlateResources(bReleaseChildren);
+#pragma endregion
 
-	OnHighlight.Clear();
-	OnClicked.Clear();
+#pragma region Option
+
+void UUI_Button_Option::SetOptionInfo(EOptionCategory Category, FOptionValuePair Value)
+{
+	OptionCategory = Category;
+	OptionValue = Value.Value;
+
+	TextBlock->SetText(Value.Translation);
 }
 
 #pragma endregion
@@ -44,66 +44,71 @@ void UUI_Button_Option::ReleaseSlateResources(bool bReleaseChildren)
 void UUI_Button_Option::Click_Button()
 {
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 
-	switch (OptionInfo.Category)
+	switch (OptionCategory)
 	{
 	// Screen Category
 	case EOptionCategory::Window:
 		SetOption_Window();
-		Data.Window = OptionInfo.Value;
+		Data.Window = OptionValue;
 		break;
 
 	case EOptionCategory::Aspect:
 		SetOption_Aspect();
-		Data.Aspect = OptionInfo.Value;
+		Data.Aspect = OptionValue;
 		break;
 
 	case EOptionCategory::Frame:
 		SetOption_Frame();
-		Data.Frame = OptionInfo.Value;
+		Data.Frame = OptionValue;
 		break;
 
 	case EOptionCategory::VSync:
 		SetOption_VSync();
-		Data.VSync = OptionInfo.Value;
+		Data.VSync = OptionValue;
 		break;
 
 	case EOptionCategory::HDR:
 		SetOption_HDR();
-		Data.HDR = OptionInfo.Value;
+		Data.HDR = OptionValue;
 		break;
 
 	// Grapic Category
 	case EOptionCategory::AntiAliasing:
 		SetOption_AntiAliasing();
-		Data.AntiAliasing = OptionInfo.Value;
+		Data.AntiAliasing = OptionValue;
 		break;
 
 	case EOptionCategory::Shadow:
 		SetOption_Shadow();
-		Data.Shadow = OptionInfo.Value;
+		Data.Shadow = OptionValue;
 		break;
 
 	case EOptionCategory::Texture:
 		SetOption_Texture();
-		Data.Texture = OptionInfo.Value;
+		Data.Texture = OptionValue;
 		break;
 
 	case EOptionCategory::PostProcessing:
 		SetOption_PostProcessing();
-		Data.PostProcessing = OptionInfo.Value;
+		Data.PostProcessing = OptionValue;
 		break;
 
 	case EOptionCategory::Shading:
 		SetOption_Shading();
-		Data.Shading = OptionInfo.Value;
+		Data.Shading = OptionValue;
 		break;
 
 	// Gameplay Category
 	case EOptionCategory::Overlap:
 		SetOption_AnomalyOverlap();
-		Data.Overlap = OptionInfo.Value;
+		Data.Overlap = OptionValue;
+		break;
+
+	case EOptionCategory::CameraShake:
+		SetOption_CameraShake();
+		Data.CameraShake = OptionValue;
 		break;
 
 	// System Category
@@ -116,29 +121,8 @@ void UUI_Button_Option::Click_Button()
 		break;
 	}
 
-	OnHighlight.Broadcast(OptionInfo);
-}
-
-#pragma endregion
-
-#pragma region Highlight
-
-void UUI_Button_Option::Highlight(FOptionInfo TargetInfo)
-{
-	if (OptionInfo.Category != TargetInfo.Category)
-	{
-		return;
-	}
-
-	FButtonStyle ButtonStyle = GetStyle();
-	ButtonStyle.Normal.TintColor = Color_Default;
-
-	if (OptionInfo.Value == TargetInfo.Value)
-	{
-		ButtonStyle.Normal.TintColor = Color_Highlight;
-	}
-
-	SetStyle(ButtonStyle);
+	auto* HB = GetTypedOuter<UUI_HorizontalBox_Setting>();
+	HB->Highlight(OptionValue);
 }
 
 #pragma endregion
@@ -147,7 +131,7 @@ void UUI_Button_Option::Highlight(FOptionInfo TargetInfo)
 
 void UUI_Button_Option::SetOption_Window()
 {
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::Windowed:
 		SettingHandle->SetFullscreenMode(EWindowMode::Windowed);
@@ -168,7 +152,7 @@ void UUI_Button_Option::SetOption_Aspect()
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	auto* CC = Player->GetCamera();
 
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::W16H9:
 		CC->SetAspectRatio(16.0f / 9.0f);
@@ -190,7 +174,7 @@ void UUI_Button_Option::SetOption_Aspect()
 
 void UUI_Button_Option::SetOption_Frame()
 {
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::Low:
 		GEngine->SetMaxFPS(60);
@@ -212,7 +196,7 @@ void UUI_Button_Option::SetOption_Frame()
 
 void UUI_Button_Option::SetOption_VSync()
 {
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::On:
 		SettingHandle->SetVSyncEnabled(true);
@@ -226,7 +210,7 @@ void UUI_Button_Option::SetOption_VSync()
 
 void UUI_Button_Option::SetOption_HDR()
 {
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::On:
 		SettingHandle->EnableHDRDisplayOutput(true);
@@ -244,27 +228,27 @@ void UUI_Button_Option::SetOption_HDR()
 
 void UUI_Button_Option::SetOption_AntiAliasing()
 {
-	SettingHandle->SetAntiAliasingQuality(static_cast<int32>(OptionInfo.Value));
+	SettingHandle->SetAntiAliasingQuality(static_cast<int32>(OptionValue));
 }
 
 void UUI_Button_Option::SetOption_Shadow()
 {
-	SettingHandle->SetShadowQuality(static_cast<int32>(OptionInfo.Value));
+	SettingHandle->SetShadowQuality(static_cast<int32>(OptionValue));
 }
 
 void UUI_Button_Option::SetOption_Texture()
 {
-	SettingHandle->SetTextureQuality(static_cast<int32>(OptionInfo.Value));
+	SettingHandle->SetTextureQuality(static_cast<int32>(OptionValue));
 }
 
 void UUI_Button_Option::SetOption_PostProcessing()
 {
-	SettingHandle->SetPostProcessingQuality(static_cast<int32>(OptionInfo.Value));
+	SettingHandle->SetPostProcessingQuality(static_cast<int32>(OptionValue));
 }
 
 void UUI_Button_Option::SetOption_Shading()
 {
-	SettingHandle->SetShadingQuality(static_cast<int32>(OptionInfo.Value));
+	SettingHandle->SetShadingQuality(static_cast<int32>(OptionValue));
 }
 
 #pragma endregion
@@ -275,7 +259,7 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 {
 	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 
-	switch (OptionInfo.Value)
+	switch (OptionValue)
 	{
 	case EOptionValue::On:
 		AnomalySub->bExceptClearedAnomaly = true;
@@ -287,6 +271,22 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 	}
 }
 
+void UUI_Button_Option::SetOption_CameraShake()
+{
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+	switch (OptionValue)
+	{
+	case EOptionValue::On:
+		CameraManager->ActiveCameraShake(true);
+		break;
+
+	case EOptionValue::Off:
+		CameraManager->ActiveCameraShake(false);
+		break;
+	}
+}
+
 #pragma endregion
 
 #pragma region System
@@ -294,7 +294,7 @@ void UUI_Button_Option::SetOption_AnomalyOverlap()
 void UUI_Button_Option::PopUpOption_ResetNote()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_ResetNote);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetProgression);
 }
 
 void UUI_Button_Option::PopUpOption_ResetSetting()

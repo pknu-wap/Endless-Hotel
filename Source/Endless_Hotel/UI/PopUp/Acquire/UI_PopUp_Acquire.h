@@ -34,7 +34,7 @@ private:
 protected:
 	virtual void Input_ESC() override;
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_ESC;
 
@@ -45,7 +45,7 @@ protected:
 public:
 	void SetInfoText(FText Info);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Info;
 

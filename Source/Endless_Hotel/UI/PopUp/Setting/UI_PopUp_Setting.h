@@ -5,9 +5,7 @@
 #include "UI/PopUp/UI_PopUp_Base.h"
 #include "Type/UI/Type_Setting.h"
 #include "Type/Save/Type_Save.h"
-#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <UI_PopUp_Setting.generated.h>
 
 UCLASS()
@@ -31,79 +29,27 @@ public:
 
 #pragma endregion
 
-#pragma region Delegate
-
-public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSettingHighlight);
-	static FSettingHighlight Highlight;
-
-#pragma endregion
-
-#pragma region Highlight
+#pragma region Data
 
 private:
-	UFUNCTION()
-	void HighlightButtons();
-
-#pragma endregion
-
-#pragma region Category
-
-public:
-	void SetCurrentCategoryText(FText Value);
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UTextBlock> Text_CurrentCategory;
+	UPROPERTY(EditDefaultsOnly, Category = "Data")
+	TObjectPtr<class UPDA_Setting> PDA_Setting;
 
 #pragma endregion
 
 #pragma region Option
 
 public:
-	void ShowCategoryOption(ESettingCategory Target);
-	void SetHideBoxVisibility(ESlateVisibility Option);
+	FSaveData_Setting& GetSettingData() { return Data_Setting; }
 
 private:
-	UFUNCTION()
-	void Click_Normal();
+	void CreateOptionWidgets();
 
-	UFUNCTION()
-	void Click_Input();
+private:
+	FSaveData_Setting Data_Setting;
 
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Screen;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Grapic;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Sound;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control_Normal;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Control_Input;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_Gameplay;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UUI_PopUp_Option> UI_System;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBorder> Border_HideBox;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBorder> Border_HideBox2;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Normal;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UButton> Button_Input;
+	UPROPERTY()
+	TMap<ESettingCategory, TObjectPtr<class UUI_PopUp_Option>> OptionWidgets;
 
 #pragma endregion
 
@@ -118,22 +64,21 @@ private:
 	const int32 GetShortestAdditionAngle(int32 Cur, int32 Tar);
 	void TurnOnGearLight(bool bOn);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UCanvasPanel> UI_Gear;
 
-	UPROPERTY(EditAnywhere, Category = "Sound")
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	TObjectPtr<class USoundWave> SW_Gear;
 
-private:
 	UPROPERTY()
-	TWeakObjectPtr<class AStaticMeshActor> SM_Gear;
+	TObjectPtr<class AStaticMeshActor> SM_Gear;
 
 	UPROPERTY()
-	TWeakObjectPtr<class USpotLightComponent> Comp_SpotLight;
+	TObjectPtr<class USpotLightComponent> Comp_SpotLight;
 
 	UPROPERTY()
-	TWeakObjectPtr<class UExponentialHeightFogComponent> Comp_Fog;
+	TObjectPtr<class UExponentialHeightFogComponent> Comp_Fog;
 
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_Gear;
@@ -144,47 +89,49 @@ private:
 	float FinalAngle = 0.f;
 	const float RotateSpeed = 45.f;
 
-private:
 	// Actor
 	FRotator OriginRot;
 	FQuat CurrentQuat;
 	FQuat FinalQuat;
 
-private:
 	FTimerHandle LightHandle;
 
-private:
 	bool bRotateGear = false;
-
-#pragma endregion
-
-#pragma region Save
-
-public:
-	FSaveData_Setting Data_Setting;
 
 #pragma endregion
 
 #pragma region Control
 
 private:
+	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
 	UFUNCTION()
 	void Click_Apply();
 
-	virtual FReply NativeOnMouseWheel(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
-
-	void AdjustCategoryIndex(bool bUp);
-
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Apply;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Cancel;
 
+#pragma endregion
+
+#pragma region Category
+
+public:
+	void ShowCurrentCategoryWidget();
+
+private:
+	void FindCategoryButton();
+	void AdjustCategoryIndex(bool bUp);
+
+public:
+	ESettingCategory CurrentCategory = ESettingCategory::Screen;
+
 private:
 	UPROPERTY()
-	TArray<TObjectPtr<class UUI_Button_Setting>> CategoryButtons;
+	TArray<TObjectPtr<class UUI_Button_Category>> CategoryButtons;
 
 	int8 CategoryIndex = 0;
 

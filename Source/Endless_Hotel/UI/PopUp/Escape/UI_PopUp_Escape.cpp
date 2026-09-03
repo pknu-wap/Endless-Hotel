@@ -2,7 +2,6 @@
 
 #include "UI/PopUp/Escape/UI_PopUp_Escape.h"
 #include "UI/Controller/UI_Controller.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Components/Button.h>
 
 #pragma region Base
@@ -23,19 +22,19 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 
 void UUI_PopUp_Escape::Click_Setting()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 
 void UUI_PopUp_Escape::Click_MainMenu()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_MainMenuCheck);
 }
 
 void UUI_PopUp_Escape::Click_Quit()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 

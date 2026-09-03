@@ -1,9 +1,7 @@
-// Copyright by 2025-2 WAP Game 2 team
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Player/AnimInstance/EHPlayerAnimInstance.h"
-#include "GameFramework/Pawn.h"
-#include "GameFramework/Controller.h"
-#include "GameFramework/Character.h"
+#include "Player/Character/EHPlayer.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/Controller/EHPlayerController.h"
 
@@ -49,7 +47,7 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
             bIsButtonPressingState = EHPC->GetIsButtonPressingCovering();
             bIsDoorOpeningState = EHPC->GetIsPlayerDoorOpening();
             bIsDoorPushingState = EHPC->GetIsPlayerPushingDoor();
-            bIsPlayerDead = EHPC->GetIsPlayerDead();
+            bIsPlayerDead = Cast<AEHPlayer>(CachedPawnOwner)->bIsDead;
         }
     }
     const float InterpedSpeed = FMath::FInterpTo(ActualSpeed, TargetSpeed, DeltaSeconds, InterpSpeedValue);

@@ -29,9 +29,9 @@ void AManualFragment::BeginPlay()
 	}
 	else
 	{
-		//SetManualFragment();
+		SetManualFragment();
 		auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-		VerdictSubsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::SetManualFragment);
+		VerdictSubsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::SetManualFragment);
 	}
 }
 

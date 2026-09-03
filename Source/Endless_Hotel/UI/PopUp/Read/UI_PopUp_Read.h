@@ -23,7 +23,7 @@ protected:
 protected:
 	virtual void Input_ESC() override;
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_ESC;
 

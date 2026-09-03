@@ -36,10 +36,10 @@ public:
 	uint8 Floor = STARTFLOOR;
 	bool bIsFirstStartFloor = true;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Reset);
+	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 	FOnFloorChange_Reset FloorChange_Reset;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFloorChange_Disable);
+	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 	FOnFloorChange_Disable FloorChange_Disable;
 
 #pragma endregion
@@ -47,7 +47,6 @@ public:
 #pragma region Clear
 
 public:
-	UFUNCTION()
 	void GameClear();
 
 	bool IsGameClear() const { return bIsClear; }
@@ -55,7 +54,7 @@ public:
 public:
 	bool bIsClear = false;
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameClearEvent);
+	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
@@ -66,4 +65,12 @@ public:
 	void ResetFloorProgress();
 
 #pragma endregion
+
+#pragma region Progression
+
+private:
+	void ProgressGameState();
+
+#pragma endregion
+
 };

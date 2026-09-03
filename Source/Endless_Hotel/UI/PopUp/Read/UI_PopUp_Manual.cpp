@@ -21,7 +21,8 @@ void UUI_PopUp_Manual::NativeOnInitialized()
 
 void UUI_PopUp_Manual::Click_ButtonNext()
 {
-	Cast<AManual>(TargetObject)->SwitchPaper();
+	auto* Manual = Cast<AManual>(TargetObject);
+	Manual->SwitchPaper();
 }
 
 #pragma endregion

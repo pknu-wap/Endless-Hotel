@@ -41,7 +41,10 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 {
 	if (!bIsStart)
 	{
-		AC->Stop();
+		if (IsValid(AC))
+		{
+			AC->Stop();
+		}
 		GetWorld()->GetTimerManager().ClearTimer(FadeOutHandle);
 		return;
 	}
@@ -67,7 +70,7 @@ void AAnomaly_FireExtinguisher::ShowBlurWiget(bool bIsStart)
 void AAnomaly_FireExtinguisher::PlayDownAnimMontage()
 {
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Player->PlayAnimation(AM_DownUp);
+	Player->PlayAnimMontage(AM_DownUp);
 	
 	auto* PC = Cast<AEHPlayerController>(Player->GetController());
 	PC->SetPlayerInputAble(false);

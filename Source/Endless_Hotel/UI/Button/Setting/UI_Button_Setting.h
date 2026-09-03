@@ -5,7 +5,6 @@
 #include "UI/Button/UI_Button_Base.h"
 #include "Type/UI/Type_Setting.h"
 #include <CoreMinimal.h>
-#include <Delegates/DelegateCombinations.h>
 #include <UI_Button_Setting.generated.h>
 
 UCLASS(Meta = (DisableNativeTick))
@@ -13,51 +12,26 @@ class ENDLESS_HOTEL_API UUI_Button_Setting : public UUI_Button_Base
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-	virtual TSharedRef<SWidget> RebuildWidget() override;
-	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
-
-#pragma endregion
-
-#pragma region Setting
+#pragma region Option
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	FSettingCategory SettingInfo;
+	void InitOption(FOptionData OptionData);
 
 #pragma endregion
 
-#pragma region Click
+#pragma region HorizontalBox
 
-public:
-	void ClickCategoryButton();
-
-protected:
-	UFUNCTION()
-	void Click_Button();
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UHorizontalBox> HorizontalBox;
 
 #pragma endregion
 
-#pragma region Highlight
+#pragma region TextBlock
 
-protected:
-	UFUNCTION()
-	void Highlight(FSettingCategory TargetInfo);
-
-protected:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighlightSetting, FSettingCategory, TargetInfo);
-	static FHighlightSetting OnHighlight;
-
-	UPROPERTY(EditAnywhere, Category = "Highlight")
-	bool bIsSideButton = false;
-
-	UPROPERTY(EditAnywhere, Category = "Highlight")
-	FLinearColor Color_Highlight;
-
-	UPROPERTY(EditAnywhere, Category = "Highlight")
-	FLinearColor Color_Default;
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> TextBlock;
 
 #pragma endregion
 

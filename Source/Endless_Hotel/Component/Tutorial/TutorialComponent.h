@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Component/EHComponent.h"
+#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <TutorialComponent.generated.h>
 
@@ -21,13 +22,18 @@ protected:
 #pragma region Widget
 
 public:
-	UFUNCTION()
+	void ShowTutorialWidget();
 	void HideTutorialWidget();
 
-private:
-	void ShowTutorialWidget();
+	void ShowTutorialWidgetForce();
 
-protected:
+private:
+	void HideTutorialWidgetForce();
+
+public:
+	bool bIsCheckTutorial = false;
+
+private:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	FText TargetKey;
 
@@ -37,15 +43,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	float WidgetDuration = 10.f;
 
-private:
-	UPROPERTY()
-	TWeakObjectPtr<class UWidgetComponent> Comp_Widget;
+	UPROPERTY(EditAnywhere, Category = "Widget")
+	EGameProgression TargetProgression = EGameProgression::Tutorial;
 
 	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> Comp_Interact;
 
 	UPROPERTY()
 	TWeakObjectPtr<class UUI_Tutorial> UI_Tutorial;
+
+	bool bForceShow = false;
 
 #pragma endregion
 
@@ -55,7 +62,7 @@ private:
 	UFUNCTION()
 	void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OverlappedComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-protected:
+private:
 	UPROPERTY()
 	TObjectPtr<class UBoxComponent> TriggerBox;
 

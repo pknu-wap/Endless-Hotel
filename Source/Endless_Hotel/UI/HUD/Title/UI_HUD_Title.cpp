@@ -1,24 +1,22 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/HUD/Title/UI_HUD_Title.h"
-#include "UI/Controller/UI_Controller.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/AudioComponent.h>
 #include <Components/Image.h>
-#include <Components/Button.h>
 #include <Kismet/GameplayStatics.h>
 
-#pragma region Base
+#pragma region Active
 
-void UUI_HUD_Title::NativeOnInitialized()
+void UUI_HUD_Title::ActiveWidget()
 {
-	Super::NativeOnInitialized();
+	Super::ActiveWidget();
 
-	Button_Start->OnClicked.AddDynamic(this, &ThisClass::Click_Start);
-	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::Click_Setting);
-	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::Click_Quit);
+	PlayBGM();
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Title);
 }
 
 #pragma endregion
@@ -31,72 +29,9 @@ void UUI_HUD_Title::ShowWidget()
 
 	SetLogoImage();
 
-	PlayBGM();
-}
-
-#pragma endregion
-
-#pragma region Click
-
-void UUI_HUD_Title::Click_Start()
-{
-	auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	Subsystem->ResetGameSystem();
-
-	UEHGameInstance* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayerWithLoading(EMapDataLayer::Hotel);
-}
-
-void UUI_HUD_Title::Click_Setting()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_Setting);
-}
-
-void UUI_HUD_Title::Click_Quit()
-{
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
-}
-
-#pragma endregion
-
-#pragma region Hover
-
-void UUI_HUD_Title::PlayButtonAnim_Hover(ETitleButtonType ButtonType)
-{
-	switch (ButtonType)
-	{
-	case ETitleButtonType::Start:
-		PlayAnimation(Anim_Hover_Start);
-		break;
-
-	case ETitleButtonType::Setting:
-		PlayAnimation(Anim_Hover_Setting);
-		break;
-
-	case ETitleButtonType::Quit:
-		PlayAnimation(Anim_Hover_Quit);
-		break;
-	}
-}
-
-void UUI_HUD_Title::PlayButtonAnim_Unhover(ETitleButtonType ButtonType)
-{
-	switch (ButtonType)
-	{
-	case ETitleButtonType::Start:
-		PlayAnimation(Anim_Unhover_Start);
-		break;
-
-	case ETitleButtonType::Setting:
-		PlayAnimation(Anim_Unhover_Setting);
-		break;
-
-	case ETitleButtonType::Quit:
-		PlayAnimation(Anim_Unhover_Quit);
-		break;
-	}
+	constexpr float Duration = 1.f;
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCamera(ECameraType::Title, Duration);
 }
 
 #pragma endregion
@@ -105,8 +40,9 @@ void UUI_HUD_Title::PlayButtonAnim_Unhover(ETitleButtonType ButtonType)
 
 void UUI_HUD_Title::SetLogoImage()
 {
-	if (!USaveManager::LoadData_GameClear())
+	if (!USaveManager::LoadData_Progression().bGameClear)
 	{
+		Image_Logo->SetBrushFromTexture(Texture_NoClear);
 		return;
 	}
 

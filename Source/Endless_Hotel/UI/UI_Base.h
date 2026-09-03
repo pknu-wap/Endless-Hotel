@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Type/UI/Type_UI.h"
 #include <CoreMinimal.h>
 #include <Blueprint/UserWidget.h>
+#include <Delegates/DelegateCombinations.h>
 #include <UI_Base.generated.h>
 
 UCLASS(Abstract, Meta = (DisableNativeTick))
@@ -12,11 +12,10 @@ class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 {
 	GENERATED_BODY()
 
-#pragma region Base
+#pragma region Active
 
-protected:
-	virtual void NativeOnInitialized() override;
-	virtual void NativeConstruct() override;
+public:
+	virtual void ActiveWidget();
 
 #pragma endregion
 
@@ -26,18 +25,12 @@ public:
 	virtual void ShowWidget();
 	virtual void HideWidget();
 
-	bool IsActivatedWidget() { return GetVisibility() == ESlateVisibility::SelfHitTestInvisible; }
-
 #pragma endregion
 
-#pragma region Type
+#pragma region Sync
 
-public:
-	UPROPERTY(EditAnywhere, Category = "Type")
-	EWidgetLayer WidgetLayer = EWidgetLayer::None;
-
-	UPROPERTY(EditAnywhere, Category = "Type")
-	EWidgetInputMode WidgetInputMode = EWidgetInputMode::None;
+private:
+	void SyncChildWidget(void (UUI_Base::* Func)());
 
 #pragma endregion
 

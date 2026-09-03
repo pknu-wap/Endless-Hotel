@@ -12,35 +12,37 @@ class ENDLESS_HOTEL_API UUI_PopUp_Option : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 
-#pragma region Base
-
-protected:
-	virtual void NativeOnInitialized() override;
-
-#pragma endregion
-
 #pragma region Input
 
 protected:
 	virtual void Input_ESC() override {}
 
 #pragma endregion
+	 
+#pragma region Option
 
-#pragma region ComboBox
+public:
+	void InitOption(FOptionList List);
 
-protected:
-	UPROPERTY()
-	TObjectPtr<class UUI_ComboBox_Setting> ComboBox_Default;
-
-	UPROPERTY(EditAnywhere, Category = "Setting|ComboBox")
-	TArray<EOptionValue> ComboBoxOptions;
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class UUI_Button_Setting> ButtonClass;
 
 #pragma endregion
 
-#pragma region Highlight
+#pragma region TextBlock
 
-public:
-	void HighlightOptions();
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> TextBlock;
+
+#pragma endregion
+
+#pragma region VerticalBox
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UVerticalBox> VerticalBox;
 
 #pragma endregion
 
