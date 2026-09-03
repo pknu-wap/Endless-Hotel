@@ -16,9 +16,6 @@ void UDataLayerStreamingSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 {
 	Super::Initialize(Collection);
 
-	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
-	Collection.InitializeDependency<UFloorProgressSubsystem>();
-
 	if (UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance()))
 	{
 		GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnChangedDataLayer);
@@ -31,17 +28,6 @@ void UDataLayerStreamingSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 
 void UDataLayerStreamingSubsystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr;
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
-
-	if (FloorSys && FloorSys->bIsFirstStartFloor)
-	{
-		if (VerdictSys)
-		{
-			VerdictSys->bIsStartInBed = true;
-		}
-	}
-
 	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
 	if (!World)
 	{
@@ -86,6 +72,7 @@ void UDataLayerStreamingSubsystem::WaitForDataLayerReady(const EMapDataLayer& Da
 			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 			VisitedDataLayers.Add(DataLayer);
 			CurrentDataLayer = DataLayer;
+			OnDataLayerReady.Broadcast();
 		}), 0.1f, true);
 }
 

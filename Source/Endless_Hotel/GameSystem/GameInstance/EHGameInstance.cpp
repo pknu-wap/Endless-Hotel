@@ -45,11 +45,11 @@ void UEHGameInstance::QuitGame()
 
 #pragma region Data Layer
 
-void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
+bool UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
 {
 	if (CurrentDataLayer == TargetDataLayer)
 	{
-		return;
+		return false;
 	}
 
 	UDataLayerAsset* DLA_Active = GetDataLayerAsset(TargetDataLayer);
@@ -69,6 +69,7 @@ void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool
 	{
 		OnDataLayerChanged.Broadcast(CurrentDataLayer);
 	}
+	return true;
 }
 
 void UEHGameInstance::ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive)

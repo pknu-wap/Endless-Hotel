@@ -60,7 +60,6 @@ void UGameSystem::ResetGameSystem()
 	if (UFloorProgressSubsystem* FloorSys = GameInstance->GetSubsystem<UFloorProgressSubsystem>())
 	{
 		FloorSys->ResetFloorProgress();
-		FloorSys->FloorChange_Reset.Broadcast();
 	}
 }
 

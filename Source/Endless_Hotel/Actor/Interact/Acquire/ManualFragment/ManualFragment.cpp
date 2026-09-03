@@ -35,6 +35,14 @@ void AManualFragment::BeginPlay()
 	}
 }
 
+void AManualFragment::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSubsystem->OnAnomalySpawned.RemoveAll(this);
+
+	Super::EndPlay(EndPlayReason);
+}
+
 #pragma endregion
 
 #pragma region Acquire

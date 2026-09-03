@@ -97,6 +97,9 @@ private:
 public:
     void ResetPool();
 
+private:
+    TMap<TWeakObjectPtr<class AAnomaly_Object_Base>, FDelegateHandle> ResetHandles;
+
 #pragma endregion
 
 };

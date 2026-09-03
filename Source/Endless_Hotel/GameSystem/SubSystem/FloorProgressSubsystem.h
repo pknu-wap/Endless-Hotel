@@ -26,7 +26,7 @@ public:
 #pragma region Floor
 
 public:
-	void ResetFloor();
+	void ResetFloor() { Floor = STARTFLOOR; }
 	void SubFloor();
 	void AddFloor();
 
