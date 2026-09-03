@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Actor/Interact/Read/InteractRead.h"
+#include "Type/Anomaly/Type_AnomalyRule.h"
 #include <CoreMinimal.h>
 #include <Manual.generated.h>
 
@@ -52,6 +53,17 @@ private:
 
 	bool bIsSwitching = false;
 	bool bFirstPaper = true;
+
+#pragma endregion
+
+#pragma region Remind
+
+private:
+	void SetNeedRemind(EAnomalyRule Rule) { bNeedRemind = true; }
+	void RemindManual(TArray<EAnomalyRule> Rules);
+
+private:
+	bool bNeedRemind = false;
 
 #pragma endregion
 

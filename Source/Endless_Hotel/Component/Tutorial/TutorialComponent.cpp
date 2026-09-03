@@ -32,7 +32,7 @@ void UTutorialComponent::BeginPlay()
 	TriggerBox->RegisterComponent();
 
 	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidget);
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidgetForce);
 }
 
 #pragma endregion
@@ -69,6 +69,34 @@ void UTutorialComponent::HideTutorialWidget()
 	{
 		UI_Tutorial->HideWidget();
 	}
+
+	if (Comp_Interact.IsValid())
+	{
+		Comp_Interact->ShowHighlight(false);
+	}
+}
+
+void UTutorialComponent::ShowTutorialWidgetForce()
+{
+	bForceShow = true;
+
+	UI_Tutorial->RemindManual();
+
+	if (Comp_Interact.IsValid())
+	{
+		Comp_Interact->ShowHighlight(true);
+	}
+}
+
+void UTutorialComponent::HideTutorialWidgetForce()
+{
+	if (bForceShow)
+	{
+		bForceShow = false;
+		return;
+	}
+
+	UI_Tutorial->HideWidget();
 
 	if (Comp_Interact.IsValid())
 	{

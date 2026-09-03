@@ -25,6 +25,11 @@ public:
 	void ShowTutorialWidget();
 	void HideTutorialWidget();
 
+	void ShowTutorialWidgetForce();
+
+private:
+	void HideTutorialWidgetForce();
+
 public:
 	bool bIsCheckTutorial = false;
 
@@ -46,6 +51,8 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<class UUI_Tutorial> UI_Tutorial;
+
+	bool bForceShow = false;
 
 #pragma endregion
 

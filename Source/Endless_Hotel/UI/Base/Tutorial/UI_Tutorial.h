@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API UUI_Tutorial : public UUI_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Hide
+
+public:
+	virtual void HideWidget() override;
+
+#pragma endregion
+
 #pragma region Text
 
 public:
@@ -37,6 +44,19 @@ private:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> Anim_Hide;
+
+#pragma endregion
+
+#pragma region Remind
+
+public:
+	void RemindManual();
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Remind")
+	FText RemindText;
+
+	bool bNeedRemind = false;
 
 #pragma endregion
 

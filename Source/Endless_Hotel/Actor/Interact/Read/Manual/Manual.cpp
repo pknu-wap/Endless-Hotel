@@ -2,6 +2,9 @@
 
 #include "Actor/Interact/Read/Manual/Manual.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "Component/Tutorial/TutorialComponent.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -24,6 +27,12 @@ void AManual::BeginPlay()
 
 	UpTrans = Object->GetRelativeTransform();
 	DownTrans = SM_Paper->GetRelativeTransform();
+
+	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	PoolSub->OnAddAnomalyRule.AddUObject(this, &ThisClass::SetNeedRemind);
+
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSub->OnOccurIncorrectRule.AddUObject(this, &ThisClass::RemindManual);
 }
 
 #pragma endregion
@@ -83,6 +92,23 @@ void AManual::SwitchPaper()
 			bIsSwitching = false;
 			bFirstPaper = !bFirstPaper;
 		}), MoveDuration * 2, false);
+}
+
+#pragma endregion
+
+#pragma region Remind
+
+void AManual::RemindManual(TArray<EAnomalyRule> Rules)
+{
+	if (!bNeedRemind)
+	{
+		return;
+	}
+
+	bNeedRemind = false;
+
+	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
+	Comp_Tutorial->ShowTutorialWidgetForce();
 }
 
 #pragma endregion
