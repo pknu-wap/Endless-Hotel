@@ -82,6 +82,14 @@ public:
 	void PossessCamera(AActor* CameraOwner, const float& BlendTime = 0.f);
 	void PossessCameraToPlayer(const float& BlendTime = 0.f);
 
+private:
+	UPROPERTY()
+	TWeakObjectPtr<AActor> WaitPossessTarget;
+
+	bool bIsPossessing = false;
+
+	FTimerHandle WaitHandle;
+
 #pragma endregion
 
 #pragma region Register

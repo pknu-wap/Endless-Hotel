@@ -118,14 +118,34 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
 {
+	if (!IsValid(CameraOwner))
+	{
+		return;
+	}
+
 	TimeLine_EyeOpen->Stop();
 	TimeLine_EyeClose->Stop();
 	TimeLine_Loading->Stop();
 
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 
+	if (bIsPossessing)
+	{
+		WaitPossessTarget = CameraOwner;
+		return;
+	}
+
+	WaitPossessTarget = nullptr;
+
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
+
+	bIsPossessing = true;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, BlendTime]()
+		{
+			bIsPossessing = false;
+			PossessCamera(WaitPossessTarget.Get(), BlendTime);
+		}), BlendTime + 0.01f, false);
 }
 
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
