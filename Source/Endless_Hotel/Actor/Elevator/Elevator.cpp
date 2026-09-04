@@ -279,6 +279,10 @@ void AElevator::StartElevator()
         {
             LinkedEntrance->SetTriggerActive();
         }
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
         LeftDoor->SetLightingChannels(false, true, false);
         RightDoor->SetLightingChannels(false, true, false);
         SetLightOn(true);

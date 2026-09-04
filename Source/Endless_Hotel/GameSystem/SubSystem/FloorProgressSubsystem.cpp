@@ -27,16 +27,6 @@ void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Floor
 
-void UFloorProgressSubsystem::ResetFloor()
-{
-	Floor = STARTFLOOR;
-
-	if (UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr)
-	{
-		VerdictSys->NextAnomalyMap = EMapDataLayer::Hotel;
-	}
-}
-
 void UFloorProgressSubsystem::SubFloor()
 {
 	if (Floor > 1)

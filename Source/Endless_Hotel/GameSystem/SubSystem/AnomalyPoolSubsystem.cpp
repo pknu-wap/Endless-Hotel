@@ -82,10 +82,11 @@ void UAnomalyPoolSubsystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
     UClass* ActorClass = Object->GetClass();
     AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
+    UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (FloorSys)
 	{
-		FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::Reset);
+        FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::Reset);
+        ResetHandles.Add(Object, Handle);
 	}
 
     const UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
@@ -102,6 +103,13 @@ void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object
         return;
     }
 
+    FDelegateHandle* Handle = ResetHandles.Find(Object);
+    UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    {
+        FloorSys->FloorChange_Reset.Remove(*Handle);
+    }
+    ResetHandles.Remove(Object);
+
     UClass* TargetClass = Object->GetClass();
     if (FAnomalyObjectArray* FoundStruct = AnomalyObjectPool.Find(TargetClass))
     {
@@ -111,10 +119,12 @@ void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object
             AnomalyObjectPool.Remove(TargetClass);
         }
 
-        UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr;
-        if (VerdictSys && IsValid(VerdictSys->GetCurrentAnomaly()))
+        if (UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr)
         {
-            VerdictSys->GetCurrentAnomaly()->LinkedObjects.Remove(Object);
+            if (IsValid(VerdictSys->GetCurrentAnomaly()))
+            {
+                VerdictSys->GetCurrentAnomaly()->LinkedObjects.Remove(Object);
+            }
         }
     }
 }

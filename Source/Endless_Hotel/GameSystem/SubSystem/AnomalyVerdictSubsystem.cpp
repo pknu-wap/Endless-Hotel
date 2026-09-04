@@ -26,6 +26,11 @@ void UAnomalyVerdictSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency<UDataLayerStreamingSubsystem>();
 	Collection.InitializeDependency<UElevatorManagerSubsystem>();
 	Collection.InitializeDependency<UFloorProgressSubsystem>();
+
+	if (UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr)
+	{
+		DataLayerSys->OnDataLayerReady.AddUObject(this, &ThisClass::OnDataLayerReady);
+	}
 }
 
 #pragma endregion
@@ -209,11 +214,24 @@ void UAnomalyVerdictSubsystem::LoadNextMap()
 	}
 
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	const EMapDataLayer ActualCurrentLayer = GameInstance->GetCurrentDataLayer();
-	const EMapDataLayer TargetLayer = NextAnomalyMap;
-	GameInstance->SwitchDataLayer(TargetLayer);
+	const bool bLayerChanged = GameInstance->SwitchDataLayer(NextAnomalyMap);
 
-	if (ActualCurrentLayer == TargetLayer && FloorSys)
+	if (!bLayerChanged && FloorSys)
+	{
+		FloorSys->FloorChange_Reset.Broadcast();
+	}
+}
+
+void UAnomalyVerdictSubsystem::OnDataLayerReady()
+{
+	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
+
+	if (FloorSys && FloorSys->bIsFirstStartFloor)
+	{
+		bIsStartInBed = true;
+	}
+
+	if (FloorSys)
 	{
 		FloorSys->FloorChange_Reset.Broadcast();
 	}

@@ -51,6 +51,9 @@ public:
 public:
     void Reset();
 
+private:
+    bool bCanPress_;
+
 #pragma endregion
 
 #pragma region Interact
