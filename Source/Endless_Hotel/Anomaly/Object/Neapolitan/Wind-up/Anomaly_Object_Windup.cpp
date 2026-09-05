@@ -178,6 +178,7 @@ void AAnomaly_Object_Windup::Interact_Implementation(AEHCharacter* Interacter)
 
 				CurrentInteractStep = EWindupInteractStep::NeedBurn;
 				AllowNextInteract();
+				Component_Interact->ShowInteracting(true);
 			}
 
 			else if(Info.InteractType == EInteractType::Burn)
