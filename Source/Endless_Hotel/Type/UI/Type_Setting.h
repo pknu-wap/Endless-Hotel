@@ -91,6 +91,7 @@ enum class EOptionCategory : uint8
 	// Gameplay
 	Overlap				UMETA(DisplayName = "Overlap"),
 	CameraShake			UMETA(DisplayName = "CameraShake"),
+	WrongCheck			UMETA(DisplayName = "WrongCheck"),
 	Brightness			UMETA(DisplayName = "Brightness"),
 
 	// System
@@ -116,7 +117,7 @@ USTRUCT(BlueprintType)
 struct FOptionData
 {
 	GENERATED_BODY()
-	
+
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Widget")
@@ -171,9 +172,7 @@ struct FKeySettingInfo
 
 public:
 	FKeySettingInfo() {}
-	FKeySettingInfo(const EKeySettingType& Type, const FKey& Value)
-		:Type(Type), Value(Value) {
-	}
+	FKeySettingInfo(const EKeySettingType& Type, const FKey& Value) :Type(Type), Value(Value) {}
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Setting")

@@ -111,6 +111,10 @@ void UUI_Button_Option::Click_Button()
 		Data.CameraShake = OptionValue;
 		break;
 
+	case EOptionCategory::WrongCheck:
+		Data.WrongCheck = OptionValue;
+		break;
+
 	// System Category
 	case EOptionCategory::Reset_Progression:
 		PopUpOption_ResetNote();

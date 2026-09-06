@@ -141,6 +141,7 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 
 	bIsPossessing = true;
+	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, BlendTime]()
 		{
 			bIsPossessing = false;
