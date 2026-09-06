@@ -47,7 +47,7 @@ void AElevator_Button::BeginPlay()
 
 void AElevator_Button::Reset()
 {
-    if(bCanPress_)
+    if (bCanPress_ || bIsOpeningButton)
     {
         Component_Interact->ActiveInteract(true);
     }
