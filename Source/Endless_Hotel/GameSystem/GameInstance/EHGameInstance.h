@@ -38,7 +38,7 @@ protected:
 #pragma region Data Layer
 
 public:
-	void SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
+	bool SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate = true);
 	void ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive);
 
 	const EMapDataLayer& GetCurrentDataLayer() { return CurrentDataLayer; }

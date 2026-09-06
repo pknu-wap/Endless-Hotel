@@ -21,6 +21,13 @@ void ARoomSignActor::BeginPlay()
 	Sub->FloorChange_Reset.AddUObject(this, &ThisClass::Reset);
 }
 
+void ARoomSignActor::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	Sub->FloorChange_Reset.RemoveAll(this);
+	Super::EndPlay(EndPlayReason);
+}
+
 #pragma endregion
 
 #pragma region Reset

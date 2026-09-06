@@ -37,11 +37,6 @@ void UGameSystem::ResetGameSystem()
 		return;
 	}
 
-	if (UFloorProgressSubsystem* FloorSys = GameInstance->GetSubsystem<UFloorProgressSubsystem>())
-	{
-		FloorSys->ResetFloorProgress();
-	}
-
 	if (UDataLayerStreamingSubsystem* DataLayerSys = GameInstance->GetSubsystem<UDataLayerStreamingSubsystem>())
 	{
 		DataLayerSys->ResetDataLayerState();
@@ -60,6 +55,11 @@ void UGameSystem::ResetGameSystem()
 	if (UAnomalyPoolSubsystem* PoolSys = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>())
 	{
 		PoolSys->ResetPool();
+	}
+
+	if (UFloorProgressSubsystem* FloorSys = GameInstance->GetSubsystem<UFloorProgressSubsystem>())
+	{
+		FloorSys->ResetFloorProgress();
 	}
 }
 

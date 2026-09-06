@@ -16,9 +16,6 @@ void UDataLayerStreamingSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 {
 	Super::Initialize(Collection);
 
-	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
-	Collection.InitializeDependency<UFloorProgressSubsystem>();
-
 	if (UEHGameInstance* GameInstance = Cast<UEHGameInstance>(GetGameInstance()))
 	{
 		GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnChangedDataLayer);
@@ -31,17 +28,6 @@ void UDataLayerStreamingSubsystem::Initialize(FSubsystemCollectionBase& Collecti
 
 void UDataLayerStreamingSubsystem::OnChangedDataLayer(const EMapDataLayer& DataLayer)
 {
-	UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr;
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
-
-	if (FloorSys && FloorSys->bIsFirstStartFloor)
-	{
-		if (VerdictSys)
-		{
-			VerdictSys->bIsStartInBed = true;
-		}
-	}
-
 	UWorld* World = GetGameInstance() ? GetGameInstance()->GetWorld() : nullptr;
 	if (!World)
 	{
@@ -86,12 +72,7 @@ void UDataLayerStreamingSubsystem::WaitForDataLayerReady(const EMapDataLayer& Da
 			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 			VisitedDataLayers.Add(DataLayer);
 			CurrentDataLayer = DataLayer;
-
-			if (UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr)
-			{
-				// 데이터 레이어 바뀌는 것에 층 변화 관련 델리게이트 호출이 왜 있는지 모르겟음 -> 이거 때매 자꾸 오류 남 (역할에 맞게 바인딩했는데 역할에 맞지 않게 자꾸 Broadcast 하니까 그럼)
-				//FloorSys->FloorChange_Reset.Broadcast();
-			}
+			OnDataLayerReady.Broadcast();
 		}), 0.1f, true);
 }
 

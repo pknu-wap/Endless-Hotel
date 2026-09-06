@@ -71,6 +71,7 @@ public:
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void LoadNextMap();
+	void OnDataLayerReady();
 	bool IsAnomalyReady() const { return bIsAnomalyReady; }
 
 	AAnomaly_Event* GetCurrentAnomaly() const { return CurrentAnomaly; }
