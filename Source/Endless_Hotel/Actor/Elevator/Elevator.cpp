@@ -130,13 +130,13 @@ void AElevator::MoveDoors(bool bWillOpen)
 
     if (bWillOpen)
     {
-        DoorTimeline->Play();
+        DoorTimeline->PlayFromStart();
         LeftDoor->SetLightingChannels(true, true, false);
         RightDoor->SetLightingChannels(true, true, false);
     }
     else
     {
-        DoorTimeline->Reverse();
+        DoorTimeline->ReverseFromEnd();
     }
 }
 
@@ -281,7 +281,7 @@ void AElevator::StartElevator()
         }
         if (InsideButton.IsValid())
         {
-            InsideButton->CanPressButton(true);
+            InsideButton->CanPressButton(false);
         }
         LeftDoor->SetLightingChannels(false, true, false);
         RightDoor->SetLightingChannels(false, true, false);
@@ -314,11 +314,6 @@ void AElevator::StartElevator()
         FVector NewForward = Player->GetActorForwardVector();
         CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * ElevatorSub->GetPlayerVelocity();
 
-        if(InsideButton.IsValid())
-        {
-            InsideButton->CanPressButton(false);
-        }
-
         FTimerHandle RestoreHandle;
         GetWorld()->GetTimerManager().SetTimer(RestoreHandle, FTimerDelegate::CreateWeakLambda(this, [this]
             {
@@ -338,6 +333,10 @@ void AElevator::StartElevator()
         if(LinkedEntrance.IsValid())
         {
             LinkedEntrance->ResetTrigger();
+        }
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
         }
         this->Exterior_Structure->SetRelativeLocation(StandardPos + MapPos);
         LeftDoor->SetRelativeLocation(LeftDoorClosed);
