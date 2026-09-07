@@ -51,7 +51,7 @@ void ANoteBook::TurnOverPage(bool bLeft)
 
 float ANoteBook::GetAnimationLength(bool bLeft)
 {
-	return bLeft ? AM_LeftToRight->GetPlayLength() : AM_RightToLeft->GetPlayLength();
+	return bLeft ? AM_LeftToRight->GetPlayLength() / AM_LeftToRight->RateScale : AM_RightToLeft->GetPlayLength() / AM_RightToLeft->RateScale;
 }
 
 #pragma endregion
