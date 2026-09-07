@@ -128,24 +128,25 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 	TimeLine_Loading->Stop();
 
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
-
+	
 	if (bIsPossessing)
 	{
 		WaitPossessTarget = CameraOwner;
+		WaitPossessDuration = BlendTime;
 		return;
 	}
-
-	WaitPossessTarget = nullptr;
 
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 
 	bIsPossessing = true;
-	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, BlendTime]()
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			bIsPossessing = false;
-			PossessCamera(WaitPossessTarget.Get(), BlendTime);
+
+			AActor* Target = WaitPossessTarget.Get();
+			WaitPossessTarget = nullptr;
+			PossessCamera(Target, WaitPossessDuration);
 		}), BlendTime + 0.01f, false);
 }
 

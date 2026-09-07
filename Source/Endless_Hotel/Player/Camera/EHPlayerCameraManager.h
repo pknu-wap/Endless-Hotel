@@ -83,12 +83,13 @@ public:
 	void PossessCameraToPlayer(const float& BlendTime = 0.f);
 
 private:
+	FTimerHandle WaitHandle;
+
 	UPROPERTY()
 	TWeakObjectPtr<AActor> WaitPossessTarget;
 
 	bool bIsPossessing = false;
-
-	FTimerHandle WaitHandle;
+	float WaitPossessDuration = 0.f;
 
 #pragma endregion
 

@@ -107,7 +107,7 @@ struct FOptionValuePair
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Value")
-	EOptionValue Value;
+	EOptionValue Value = EOptionValue::None;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Translation")
 	FText Translation;
