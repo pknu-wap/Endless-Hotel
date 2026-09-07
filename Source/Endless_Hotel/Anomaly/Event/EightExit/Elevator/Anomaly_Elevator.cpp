@@ -6,6 +6,7 @@
 #include "Character/AI/ElevatorGhost/ElevatorGhostController.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
@@ -52,9 +53,15 @@ void AAnomaly_Elevator::DisableAnomaly()
     switch (AnomalyID)
     {
     case EAnomalyID::ElevatorGhost:
+    {
+        auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+        CameraManager->StartHallucination(false);
+
         ElevatorGhost->Destroy();
         break;
     }
+    }
+
     Super::DisableAnomaly();
 }
 

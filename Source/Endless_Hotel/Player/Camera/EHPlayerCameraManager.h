@@ -32,9 +32,6 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<APostProcessVolume> PPV_EyeEffect;
 
-	UPROPERTY()
-	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
-
 #pragma endregion
 
 #pragma region Eye
@@ -63,6 +60,9 @@ private:
 	TObjectPtr<UCurveFloat> CV_Loading;
 
 	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
+
+	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_EyeOpen;
 
 	UPROPERTY()
@@ -72,6 +72,35 @@ private:
 	TObjectPtr<class UTimelineComponent> TimeLine_Loading;
 
 	FTimerHandle BindHandle;
+
+#pragma endregion
+
+#pragma region Hallucination
+
+public:
+	void StartHallucination(bool bIsStart);
+
+private:
+	void StopHallucination(bool bFaceCover);
+	void SetHallucination();
+
+	UFUNCTION()
+	void OnValueChangedHallucination(float Value);
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UMaterial> M_Hallucination;
+
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UCurveFloat> CV_Hallucination;
+
+	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_Hallucination;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Hallucination;
+
+	FTimerHandle DieHandle;
 
 #pragma endregion
 

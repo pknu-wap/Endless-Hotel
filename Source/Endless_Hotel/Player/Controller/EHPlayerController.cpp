@@ -265,6 +265,8 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 		bIsFaceCoverTransitioning = false;
 	}
+
+	EHPlayer->OnFaceCover.Broadcast(true);
 }
 
 void AEHPlayerController::OnFaceCoverCompleted()
@@ -286,6 +288,8 @@ void AEHPlayerController::OnFaceCoverCompleted()
 		PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
+
+	EHPlayer->OnFaceCover.Broadcast(false);
 }
 
 #pragma endregion

@@ -96,4 +96,12 @@ public:
 
 #pragma endregion
 
+#pragma region Hide
+
+public:
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnFaceCover, bool);
+	FOnFaceCover OnFaceCover;
+
+#pragma endregion
+
 };
