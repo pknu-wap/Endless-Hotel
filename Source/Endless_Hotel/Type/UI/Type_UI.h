@@ -15,6 +15,7 @@ enum class EWidgetType : uint8
 	PopUp_Setting			UMETA(DisplayName = "PopUp_Setting"),
 	PopUp_Read				UMETA(DisplayName = "PopUp_Read"),
 	PopUp_NoteBook			UMETA(DisplayName = "PopUp_NoteBook"),
+	PopUp_NoteBookZoomIn	UMETA(DisplayName = "PopUp_NoteBookZoomIn"),
 	PopUp_ResetProgression	UMETA(DisplayName = "PopUp_ResetProgression"),
 	PopUp_ResetSetting		UMETA(DisplayName = "PopUp_ResetSetting"),
 	PopUp_MainMenuCheck		UMETA(DisplayName = "PopUp_MainMenuCheck"),
