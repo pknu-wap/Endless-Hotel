@@ -20,6 +20,7 @@ enum class EWidgetType : uint8
 	PopUp_MainMenuCheck		UMETA(DisplayName = "PopUp_MainMenuCheck"),
 	PopUp_QuitCheck			UMETA(DisplayName = "PopUp_QuitCheck"),
 	PopUp_Manual			UMETA(DisplayName = "PopUp_Manual"),
+	PopUp_WrongCheck		UMETA(DisplayName = "PopUp_WrongCheck"),
 	PopUp_Acquire			UMETA(DisplayName = "PopUp_Acquire")
 };
 
