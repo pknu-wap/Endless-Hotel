@@ -148,6 +148,12 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 		const FVector RightDirection = RotationMatrix.GetUnitAxis(EAxis::Y);
 
 		EHPlayer->AddMovementInput(ForwardDirection, MovementVector.Y);
+
+		if (bIsFaceCovering)
+		{
+			return;
+		}
+
 		EHPlayer->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
@@ -242,21 +248,17 @@ void AEHPlayerController::OnCrouchCompleted()
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	if (!EHPlayer.IsValid()) return;
-	if (!bCanFaceCover) return;
-
-	FVector Velocity = EHPlayer->GetVelocity();
-	float Speed = Velocity.Size();
-
-	if (Speed > 0.0f) return; // 이동 중이면 전환 금지
-	if (bIsFaceCoverTransitioning) return;
+	if (!bCanFaceCover || bIsFaceCoverTransitioning)
+	{
+		return;
+	}
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = true;
 	bIsCameraFixed = true;
-	bCanMove = false;
 
-	if (bIsFaceCovering) {
+	if (bIsFaceCovering)
+	{
 		PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 		FRotator CurrentRotation = GetControlRotation();
@@ -271,20 +273,17 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 void AEHPlayerController::OnFaceCoverCompleted()
 {
-	if (!EHPlayer.IsValid()) return;
-
-	FVector Velocity = EHPlayer->GetVelocity();
-	float Speed = Velocity.Size();
-
-	if (!bIsFaceCovering) return;
-	if (bIsFaceCoverTransitioning) return;
+	if (!bIsFaceCovering || bIsFaceCoverTransitioning)
+	{
+		return;
+	}
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = false;
 	bIsCameraFixed = false;
-	bCanMove = true;
 
-	if (!bIsFaceCovering) {
+	if (!bIsFaceCovering)
+	{
 		PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
