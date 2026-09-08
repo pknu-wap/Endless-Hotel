@@ -71,9 +71,6 @@ public:
 	DECLARE_MULTICAST_DELEGATE(FOnRevive)
 	FOnRevive OnRevive;
 
-	// 삭제 예정 (현재 다른 코드들 때문에 임시로 남김)
-	bool bIsDead = false;
-
 private:
 	UPROPERTY(EditAnywhere, Category = "Die")
 	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;

@@ -9,8 +9,6 @@
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Player/Controller/EHPlayerController.h"
-#include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Engine/World.h>
@@ -91,7 +89,6 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 
 	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 	UAnomalyPoolSubsystem* PoolSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>() : nullptr;
-	UElevatorManagerSubsystem* ElevatorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>() : nullptr;
 
 	if (bPassed)
 	{
@@ -110,31 +107,15 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 	}
 	else
 	{
-		if(bSuperCowardMode)
+		if (bSuperCowardMode)
 		{
 			EvaluateIncorrectRules();
 		}
-		ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-		AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-		PC->SetPlayerInputAble(true);
 		if (FloorSys)
 		{
 			FloorSys->ResetFloor();
 		}
 		NextAnomalyMap = EMapDataLayer::Hotel;
-
-		if (Cast<AEHPlayer>(Player)->bIsDead)
-		{
-			bIsStartInBed = true;
-			if (ElevatorSys)
-			{
-				ElevatorSys->RemoveTargetElevator();
-			}
-		}
-		else
-		{
-			bIsStartInBed = false;
-		}
 	}
 
 	bIsAnomalySolved = false;
