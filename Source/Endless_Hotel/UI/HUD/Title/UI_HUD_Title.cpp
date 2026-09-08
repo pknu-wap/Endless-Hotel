@@ -15,8 +15,9 @@ void UUI_HUD_Title::ActiveWidget()
 
 	PlayBGM();
 
+	constexpr float PossessDuration = 0.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::Title);
+	CameraManager->PossessCamera(ECameraType::Title, PossessDuration);
 }
 
 #pragma endregion
@@ -28,10 +29,6 @@ void UUI_HUD_Title::ShowWidget()
 	Super::ShowWidget();
 
 	SetLogoImage();
-
-	constexpr float Duration = 1.f;
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::Title, Duration);
 }
 
 #pragma endregion

@@ -205,7 +205,7 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
 
-	bIsPossessing = true;
+	bIsPossessing = BlendTime <= 0.f ? false : true;
 	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			bIsPossessing = false;
@@ -213,7 +213,7 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 			AActor* Target = WaitPossessTarget.Get();
 			WaitPossessTarget = nullptr;
 			PossessCamera(Target, WaitPossessDuration);
-		}), BlendTime + 0.01f, false);
+		}), BlendTime, false);
 }
 
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)
