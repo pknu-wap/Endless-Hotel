@@ -44,6 +44,7 @@ void AEHPlayerCameraManager::BeginPlay()
 			{
 				Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartEyeEffect(false); });
 				Player->OnRevive.AddWeakLambda(this, [this]() {StartEyeEffect(true); });
+				Player->OnRevive.AddWeakLambda(this, [this]() {StartHallucination(false); StopHallucination(false); });
 				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
 			}
 		}), 0.1f, true);
@@ -124,8 +125,6 @@ void AEHPlayerCameraManager::StartHallucination(bool bIsStart)
 		return;
 	}
 
-	TimeLine_Hallucination->PlayFromStart();
-
 	Player->OnFaceCover.RemoveAll(this);
 	Player->OnFaceCover.AddUObject(this, &ThisClass::StopHallucination);
 
@@ -136,12 +135,16 @@ void AEHPlayerCameraManager::StopHallucination(bool bFaceCover)
 {
 	if (bFaceCover)
 	{
+		TimeLine_Hallucination->Stop();
+
 		DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), 0);
 		DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), 0);
 
 		GetWorld()->GetTimerManager().ClearTimer(DieHandle);
 		return;
 	}
+
+	TimeLine_Hallucination->PlayFromStart();
 
 	const float Duration = TimeLine_Hallucination->GetTimelineLength();
 	GetWorld()->GetTimerManager().SetTimer(DieHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
