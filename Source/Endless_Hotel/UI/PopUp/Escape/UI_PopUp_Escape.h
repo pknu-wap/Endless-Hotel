@@ -18,6 +18,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
+
+#pragma endregion
+
 #pragma region Button
 
 private:

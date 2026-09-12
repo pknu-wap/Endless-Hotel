@@ -67,9 +67,10 @@ void UUI_Controller::CloseWidget()
 {
 	EWidgetType WidgetType = WidgetStack.Top();
 	FWidgetInfo WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
-
 	UUI_Base* TopWidget = CachedWidgets[WidgetType];
+
 	TopWidget->HideWidget();
+
 	WidgetStack.Pop();
 
 	if (WidgetStack.IsEmpty())
@@ -79,7 +80,7 @@ void UUI_Controller::CloseWidget()
 
 	WidgetType = WidgetStack.Top();
 	WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
-	TopWidget = CachedWidgets[WidgetStack.Top()];
+	TopWidget = CachedWidgets[WidgetType];
 
 	TopWidget->ShowWidget();
 

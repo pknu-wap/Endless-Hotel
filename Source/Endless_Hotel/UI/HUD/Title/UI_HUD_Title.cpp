@@ -13,8 +13,6 @@ void UUI_HUD_Title::ActiveWidget()
 {
 	Super::ActiveWidget();
 
-	PlayBGM();
-
 	constexpr float PossessDuration = 0.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	CameraManager->PossessCamera(ECameraType::Title, PossessDuration);
@@ -29,6 +27,8 @@ void UUI_HUD_Title::ShowWidget()
 	Super::ShowWidget();
 
 	SetLogoImage();
+
+	PlayBGM();
 }
 
 #pragma endregion
@@ -59,12 +59,8 @@ void UUI_HUD_Title::StopBGM(float Duration)
 
 void UUI_HUD_Title::PlayBGM()
 {
-	if (!IsValid(AC))
-	{
-		AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
-		AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
-	}
-
+	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
 	AC->Play();
 }
 
