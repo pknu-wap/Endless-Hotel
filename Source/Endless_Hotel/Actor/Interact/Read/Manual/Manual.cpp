@@ -5,6 +5,7 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "Component/Tutorial/TutorialComponent.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -44,9 +45,19 @@ void AManual::Interact(AEHCharacter* Interacter)
 	Super::Interact(Interacter);
 
 	auto Data = USaveManager::LoadData_Progression();
-	Data.bReadManual = true;
+	if (!Data.bReadManual)
+	{
+		constexpr float Duration = 0.9f;
+		FTimerHandle WidgetHandle;
+		GetWorld()->GetTimerManager().SetTimer(WidgetHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+				UICon->OpenWidget(EWidgetType::PopUp_WrongCheck);
+			}), Duration, false);
 
-	USaveManager::SaveData_Progression(Data);
+		Data.bReadManual = true;
+		USaveManager::SaveData_Progression(Data);
+	}
 }
 
 #pragma endregion

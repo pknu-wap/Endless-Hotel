@@ -100,6 +100,9 @@ public:
 	EOptionValue CameraShake = EOptionValue::On;
 
 	UPROPERTY(SaveGame)
+	EOptionValue WrongCheck = EOptionValue::On;
+
+	UPROPERTY(SaveGame)
 	float Brightness = 1.f;
 
 public:

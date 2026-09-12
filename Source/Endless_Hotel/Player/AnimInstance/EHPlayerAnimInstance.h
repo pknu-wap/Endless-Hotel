@@ -1,4 +1,4 @@
-// Copyright by 2025-2 WAP Game 2 team
+ï»¿// Copyright by 2025-2 WAP Game 2 team
 
 #pragma once
 
@@ -19,7 +19,7 @@ public:
 
 
 protected:
-    // ½ÇÁ¦ ÇöÀç ¼Óµµ
+    // ì‹¤ì œ í˜„ì¬ ì†ë„
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float ActualSpeed = 0.f;
 
@@ -29,7 +29,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float ActualSpeed_Y = 0.f;
 
-    // ¸ñÇ¥ ¼Óµµ
+    // ëª©í‘œ ì†ë„
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float TargetSpeed = 0.f;
 
@@ -39,17 +39,17 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float TargetSpeed_Y = 0.f;
 
-    // ÃÖÁ¾ ¾Ö´Ï¸ŞÀÌ¼Ç¿ë ¼Óµµ 
+    // ìµœì¢… ì• ë‹ˆë©”ì´ì…˜ìš© ì†ë„ 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
     float Speed;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-    float HorizontalSpeed; // ÁÂ¿ì ¼ººĞ
+    float HorizontalSpeed; // ì¢Œìš° ì„±ë¶„
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
-    float VerticalSpeed;   // ÀüÈÄ ¼ººĞ
+    float VerticalSpeed;   // ì „í›„ ì„±ë¶„
 
-    // ÄÁÆ®·Ñ·¯¿¡¼­ °¡Á®¿À´Â »óÅÂ °ª
+    // ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ ê°€ì ¸ì˜¤ëŠ” ìƒíƒœ ê°’
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsRunningState = false;
 
@@ -68,17 +68,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsDoorPushingState = false;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-    bool bIsPlayerDead = false;
-    // Ä³½Ì
+    // ìºì‹±
     UPROPERTY(BlueprintReadOnly, Category = "Anim")
     APawn* CachedPawnOwner;
 
-    // ´Ş¸®±â ¾Ö´Ï¸ŞÀÌ¼Ç ¼Óµµ ¹èÀ²
+    // ë‹¬ë¦¬ê¸° ì• ë‹ˆë©”ì´ì…˜ ì†ë„ ë°°ìœ¨
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
     float RunSpeedMultiplier = 2.0f;
 
-    // ¼Óµµ º¸°£ °ª
+    // ì†ë„ ë³´ê°„ ê°’
     const float InterpSpeedValue = 20.0f;
     const float StopThreshold = 5.0f;
 };

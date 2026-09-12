@@ -18,10 +18,12 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 
 public:
 	class UUI_Base* OpenWidget(const EWidgetType& WidgetType, float Duration = 0.01f);
-	void CloseWidget(float Duration = 0.01f);
+	void CloseWidget();
 
 private:
 	void CloseAllWidgets();
+
+	void SetGamePause();
 
 #pragma endregion
 
@@ -92,6 +94,8 @@ template <typename WidgetType, typename OuterType, typename OuterSlotType>
 FORCEINLINE WidgetType* UUI_Controller::MakeChildWidget(OuterType* Outer, TSubclassOf<class UUI_Base> Class, ESlateSizeRule::Type Rule, float Size)
 {
 	WidgetType* ChildWidget = CreateWidget<WidgetType>(Outer, Class);
+	ChildWidget->ActiveWidget();
+	ChildWidget->ShowWidget();
 
 	FSlateChildSize SlateChildSize = FSlateChildSize(Rule);
 	SlateChildSize.Value = Size;

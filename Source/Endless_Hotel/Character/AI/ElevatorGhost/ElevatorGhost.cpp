@@ -65,15 +65,12 @@ void AElevatorGhost::UpdateLookAtPlayer(float DeltaTime)
 void AElevatorGhost::AttackPlayer()
 {
     AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
     
     SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), Player->GetActorLocation()));
 
-    PC->SetPlayerInputAble(false);
     if (auto* AnimInst = Cast<UElevatorGhostAnimInstance>(GetMesh()->GetAnimInstance()))
     {
         AnimInst->bIsAttacking = true;
-        Player->OnDie.Broadcast(EDeathReason::Attack);
         bShouldLookAtPlayer = false;
     }
 }

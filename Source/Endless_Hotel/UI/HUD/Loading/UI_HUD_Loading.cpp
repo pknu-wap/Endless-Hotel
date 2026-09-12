@@ -20,7 +20,7 @@ void UUI_HUD_Loading::ActiveWidget()
 
 #pragma endregion
 
-#pragma region Show & Hide
+#pragma region Show
 
 void UUI_HUD_Loading::ShowWidget()
 {
@@ -36,21 +36,8 @@ void UUI_HUD_Loading::ShowWidget()
 			if (Slider_Loading->IsLoadingCompleted())
 			{
 				StartLoadingEyeEffect();
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
 			}
 		}), 0.01f, true);
-}
-
-void UUI_HUD_Loading::HideWidget()
-{
-	SandClock->StopRotateClock();
-
-	Slider_Loading->bStartLoading = false;
-
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
-
-	Super::HideWidget();
 }
 
 #pragma endregion
@@ -70,10 +57,15 @@ void UUI_HUD_Loading::StartLoadingEyeEffect()
 	auto* UI_Title = Cast<UUI_HUD_Title>(UICon->GetCachedWidget(EWidgetType::HUD_Title));
 	UI_Title->StopBGM(Duration);
 
-	FTimerHandle ChangeHandle;
-	GetWorld()->GetTimerManager().SetTimer(ChangeHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon]()
+	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			UICon->OpenWidget(EWidgetType::HUD_InGame);
+			SandClock->StopRotateClock();
+
+			Slider_Loading->bStartLoading = false;
+
+			auto* GameInstance = GetGameInstance<UEHGameInstance>();
+			GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
 		}), Duration, false);
 }
 

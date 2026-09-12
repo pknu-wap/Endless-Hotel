@@ -4,6 +4,8 @@
 #include "Character/AI/ElevatorGhost/ElevatorGhost.h"
 #include "Character/AI/ElevatorGhost/ElevatorGhostAnimInstance.h"
 #include "Actor/Elevator/Elevator.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
+#include <Kismet/GameplayStatics.h>
 #include <Navigation/PathFollowingComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
@@ -63,6 +65,9 @@ void AElevatorGhostController::StartWalkingIntoElevator()
                 OnGhostReachedElevator();
             }
         }), 0.016f, true);
+
+    auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+    CameraManager->StartHallucination(true);
 }
 
 void AElevatorGhostController::OnGhostReachedElevator()

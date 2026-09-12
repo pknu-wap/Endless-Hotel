@@ -71,9 +71,6 @@ public:
 	DECLARE_MULTICAST_DELEGATE(FOnRevive)
 	FOnRevive OnRevive;
 
-	// 삭제 예정 (현재 다른 코드들 때문에 임시로 남김)
-	bool bIsDead = false;
-
 private:
 	UPROPERTY(EditAnywhere, Category = "Die")
 	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;
@@ -93,6 +90,14 @@ public:
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnCrouched, bool);
 	FOnCrouched OnCrouched;
+
+#pragma endregion
+
+#pragma region Hide
+
+public:
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnFaceCover, bool);
+	FOnFaceCover OnFaceCover;
 
 #pragma endregion
 

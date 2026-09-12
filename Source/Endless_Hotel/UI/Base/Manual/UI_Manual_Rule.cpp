@@ -3,6 +3,7 @@
 #include "UI/Base/Manual/UI_Manual_Rule.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/TextBlock.h>
 #include <Components/RichTextBlock.h>
 
@@ -51,6 +52,11 @@ void UUI_Manual_Rule::ChangeTextState(EAnomalyRule Rule)
 
 void UUI_Manual_Rule::DrawUnderLineText(TArray<EAnomalyRule> Rules)
 {
+	if (USaveManager::LoadData_Setting().WrongCheck == EOptionValue::Off)
+	{
+		return;
+	}
+
 	FText RemovedText = RemoveRichTextTags(Description);
 	FText UnderLineText = FText::Format(FText::FromString(TEXT("<UnderLine>{0}</>")), RemovedText);
 	FText TargetText = Rules.Contains(AnomalyRule) ? UnderLineText : Description;

@@ -71,6 +71,10 @@ void UUI_HorizontalBox_Setting::InitOption(EOptionCategory Category, TArray<FOpt
 	case EOptionCategory::CameraShake:
 		Value = Data.CameraShake;
 		break;
+
+	case EOptionCategory::WrongCheck:
+		Value = Data.WrongCheck;
+		break;
 	}
 
 	Highlight(Value);

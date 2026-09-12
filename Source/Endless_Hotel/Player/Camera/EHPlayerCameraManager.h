@@ -32,9 +32,6 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<APostProcessVolume> PPV_EyeEffect;
 
-	UPROPERTY()
-	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
-
 #pragma endregion
 
 #pragma region Eye
@@ -63,6 +60,9 @@ private:
 	TObjectPtr<UCurveFloat> CV_Loading;
 
 	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
+
+	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_EyeOpen;
 
 	UPROPERTY()
@@ -75,12 +75,50 @@ private:
 
 #pragma endregion
 
+#pragma region Hallucination
+
+public:
+	void StartHallucination(bool bIsStart);
+
+private:
+	void StopHallucination(bool bFaceCover);
+	void SetHallucination();
+
+	UFUNCTION()
+	void OnValueChangedHallucination(float Value);
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UMaterial> M_Hallucination;
+
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UCurveFloat> CV_Hallucination;
+
+	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_Hallucination;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Hallucination;
+
+	FTimerHandle DieHandle;
+
+#pragma endregion
+
 #pragma region Possess
 
 public:
 	void PossessCamera(const ECameraType& CameraType, const float& BlendTime = 0.f);
 	void PossessCamera(AActor* CameraOwner, const float& BlendTime = 0.f);
 	void PossessCameraToPlayer(const float& BlendTime = 0.f);
+
+private:
+	FTimerHandle WaitHandle;
+
+	UPROPERTY()
+	TWeakObjectPtr<AActor> WaitPossessTarget;
+
+	bool bIsPossessing = false;
+	float WaitPossessDuration = 0.f;
 
 #pragma endregion
 
