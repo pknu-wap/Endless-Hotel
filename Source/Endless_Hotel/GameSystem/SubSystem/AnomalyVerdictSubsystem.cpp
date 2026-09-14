@@ -9,8 +9,6 @@
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include <Kismet/GameplayStatics.h>
-#include <GameFramework/Character.h>
 #include <Engine/World.h>
 #include <Engine/GameInstance.h>
 

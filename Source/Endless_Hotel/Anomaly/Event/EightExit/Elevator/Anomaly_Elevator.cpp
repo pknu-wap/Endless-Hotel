@@ -9,7 +9,6 @@
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include <EngineUtils.h>
 
 #pragma region Activity
 

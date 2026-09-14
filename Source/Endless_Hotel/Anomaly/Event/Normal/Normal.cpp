@@ -4,7 +4,6 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 
 #pragma region Activities
