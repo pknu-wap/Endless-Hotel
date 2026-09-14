@@ -27,13 +27,14 @@ protected:
 
 public:
 	class UCameraComponent* GetCamera() { return Camera; }
+	void ToggleLighter();
 
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UPointLightComponent> Lighter;
+	TObjectPtr<UStaticMeshComponent> Lighter;
 
 #pragma endregion
 

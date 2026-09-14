@@ -321,12 +321,9 @@ void AEHPlayerController::TurnPlayerHandLight()
 		return;
 	}
 
-	auto Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
+	EHPlayer->ToggleLighter();
 
-	if (Lighter)
-	{
-		Lighter->ToggleVisibility();
-	}
+	bIsLighterOn = !bIsLighterOn;
 }
 
 #pragma endregion

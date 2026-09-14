@@ -18,9 +18,9 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	Camera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
 	Camera->bUsePawnControlRotation = true;
 
-	Lighter = CreateDefaultSubobject<UPointLightComponent>(TEXT("Lighter"));
-	Lighter->SetVisibility(false);
-	Lighter->SetupAttachment(GetMesh());
+	Lighter = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Lighter"));
+	Lighter->SetVisibility(false, true);
+	Lighter->SetupAttachment(GetMesh(), TEXT("LighterSocket"));
 
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -33,6 +33,15 @@ void AEHPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	RevivePlayer();
+}
+
+#pragma endregion
+
+#pragma region Component
+
+void AEHPlayer::ToggleLighter()
+{
+	Lighter->SetVisibility(!Lighter->IsVisible(), true);
 }
 
 #pragma endregion

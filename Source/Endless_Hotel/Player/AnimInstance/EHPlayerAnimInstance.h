@@ -64,6 +64,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
     bool bIsDoorPushingState = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
+    bool bIsLighterOn = false;
+
     // 캐싱
     UPROPERTY(BlueprintReadOnly, Category = "Anim")
     APawn* CachedPawnOwner;
