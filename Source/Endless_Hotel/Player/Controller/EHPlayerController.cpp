@@ -148,12 +148,6 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 		const FVector RightDirection = RotationMatrix.GetUnitAxis(EAxis::Y);
 
 		EHPlayer->AddMovementInput(ForwardDirection, MovementVector.Y);
-
-		if (bIsFaceCovering)
-		{
-			return;
-		}
-
 		EHPlayer->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
@@ -168,6 +162,12 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 	if (!bIsCameraFixed && LookVector.SizeSquared() > 0.0f)
 	{
 		AddYawInput(LookVector.X * LookSensitivity);
+
+		if (bIsFaceCovering)
+		{
+			return;
+		}
+
 		AddPitchInput(LookVector.Y * LookSensitivity);
 	}
 }
@@ -178,7 +178,7 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 
 void AEHPlayerController::OnRunStarted()
 {
-	if (!bCanRun)
+	if (!bCanRun || bIsFaceCovering)
 	{
 		return;
 	}
@@ -198,7 +198,7 @@ void AEHPlayerController::OnRunStarted()
 
 void AEHPlayerController::OnRunCompleted()
 {
-	if (!bCanRun)
+	if (!bCanRun || bIsFaceCovering)
 	{
 		return;
 	}
@@ -255,7 +255,6 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = true;
-	bIsCameraFixed = true;
 
 	if (bIsFaceCovering)
 	{
@@ -280,7 +279,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = false;
-	bIsCameraFixed = false;
 
 	if (!bIsFaceCovering)
 	{

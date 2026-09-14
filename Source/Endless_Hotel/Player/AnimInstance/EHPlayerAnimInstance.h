@@ -14,10 +14,6 @@ class ENDLESS_HOTEL_API UEHPlayerAnimInstance : public UAnimInstance
 public:
     virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-    bool bIsAnomalyGenerated = false;
-
-
 protected:
     // 실제 현재 속도
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
