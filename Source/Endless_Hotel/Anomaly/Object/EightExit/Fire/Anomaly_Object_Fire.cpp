@@ -30,6 +30,13 @@ AAnomaly_Object_Fire::AAnomaly_Object_Fire(const FObjectInitializer& ObjectIniti
 	DeathTrigger->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnDeathRange);
 }
 
+void AAnomaly_Object_Fire::BeginPlay()
+{
+	Super::BeginPlay();
+
+	StartFire();
+}
+
 #pragma endregion
 
 #pragma region Fire
@@ -41,8 +48,6 @@ void AAnomaly_Object_Fire::StartFire()
 		AudioComponent->SetSound(SW_First);
 		bIsFirst = false;
 	}
-
-	AudioComponent->Play();
 
 	DeathTrigger->SetWorldLocation(NiagaraComponent->GetComponentLocation());
 }
