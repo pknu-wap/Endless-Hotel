@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Escape/UI_PopUp_Escape.h"
 #include "UI/Controller/UI_Controller.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Components/Button.h>
 
 #pragma region Base
@@ -14,6 +15,18 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 	Button_Setting->OnClicked.AddDynamic(this, &ThisClass::Click_Setting);
 	Button_MainMenu->OnClicked.AddDynamic(this, &ThisClass::Click_MainMenu);
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::Click_Quit);
+}
+
+#pragma endregion
+
+#pragma region Show
+
+void UUI_PopUp_Escape::ShowWidget()
+{
+	Super::ShowWidget();
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, true);
 }
 
 #pragma endregion

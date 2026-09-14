@@ -52,11 +52,9 @@ void UUI_PopUp_Setting::ShowWidget()
 
 	SetVisibility(ESlateVisibility::Hidden);
 
-	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, true);
-
 	FindGearActor();
 
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	const EMapDataLayer Current = GameInstance->GetCurrentDataLayer();
 	const float PossessDuration = Current == EMapDataLayer::Lobby ? 1.f : 0.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
@@ -87,10 +85,9 @@ void UUI_PopUp_Setting::HideWidget()
 	TurnOnGearLight(false);
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, false);
-
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	GameInstance->GetCurrentDataLayer() == EMapDataLayer::Lobby ? CameraManager->PossessCamera(ECameraType::Title, 1.f) : CameraManager->PossessCameraToPlayer(0.f);
+	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, false);
 
 	Super::HideWidget();
 }

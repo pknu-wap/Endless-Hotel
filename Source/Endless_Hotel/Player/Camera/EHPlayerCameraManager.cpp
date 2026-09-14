@@ -20,6 +20,7 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 	TimeLine_EyeOpen = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeOpen"));
 	TimeLine_EyeClose = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeClose"));
 	TimeLine_Loading = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Loading"));
+	TimeLine_Hallucination = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Hallucination"));
 
 	ViewPitchMin = -70.0f;
 	ViewPitchMax = 70.0f;
@@ -33,14 +34,19 @@ void AEHPlayerCameraManager::BeginPlay()
 	SetEyeEffect();
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 
+	SetHallucination();
+	DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), 0);
+	DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), 0);
+	
 	GetWorld()->GetTimerManager().SetTimer(BindHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			if (auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 			{
 				Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartEyeEffect(false); });
 				Player->OnRevive.AddWeakLambda(this, [this]() {StartEyeEffect(true); });
+				Player->OnRevive.AddWeakLambda(this, [this]() {StartHallucination(false); StopHallucination(true); });
 				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
-			}			
+			}
 		}), 0.1f, true);
 }
 
@@ -107,6 +113,66 @@ void AEHPlayerCameraManager::OnValueChangedEyeEffect(float Value)
 
 #pragma endregion
 
+#pragma region Hallucination
+
+void AEHPlayerCameraManager::StartHallucination(bool bIsStart)
+{
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (!bIsStart)
+	{
+		Player->OnFaceCover.RemoveAll(this);
+		return;
+	}
+
+	Player->OnFaceCover.RemoveAll(this);
+	Player->OnFaceCover.AddUObject(this, &ThisClass::StopHallucination);
+
+	StopHallucination(false);
+}
+
+void AEHPlayerCameraManager::StopHallucination(bool bFaceCover)
+{
+	if (bFaceCover)
+	{
+		TimeLine_Hallucination->Stop();
+
+		DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), 0);
+		DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), 0);
+
+		GetWorld()->GetTimerManager().ClearTimer(DieHandle);
+		return;
+	}
+
+	TimeLine_Hallucination->PlayFromStart();
+
+	const float Duration = TimeLine_Hallucination->GetTimelineLength();
+	GetWorld()->GetTimerManager().SetTimer(DieHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			Player->OnDie.Broadcast(EDeathReason::Watch);
+		}), Duration, false);
+}
+
+void AEHPlayerCameraManager::SetHallucination()
+{
+	DM_Hallucination = UMaterialInstanceDynamic::Create(M_Hallucination, this);
+
+	PPV_EyeEffect->Settings.WeightedBlendables.Array.Add(FWeightedBlendable(1, DM_Hallucination.Get()));
+
+	FOnTimelineFloat Update_Hallucination;
+	Update_Hallucination.BindUFunction(this, FName("OnValueChangedHallucination"));
+	TimeLine_Hallucination->AddInterpFloat(CV_Hallucination, Update_Hallucination);
+}
+
+void AEHPlayerCameraManager::OnValueChangedHallucination(float Value)
+{
+	DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), Value);
+	DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), -Value);
+}
+
+#pragma endregion
+
 #pragma region Possess
 
 void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const float& BlendTime)
@@ -118,14 +184,36 @@ void AEHPlayerCameraManager::PossessCamera(const ECameraType& CameraType, const 
 
 void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& BlendTime)
 {
+	if (!IsValid(CameraOwner))
+	{
+		return;
+	}
+
 	TimeLine_EyeOpen->Stop();
 	TimeLine_EyeClose->Stop();
 	TimeLine_Loading->Stop();
 
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 
+	if (bIsPossessing)
+	{
+		WaitPossessTarget = CameraOwner;
+		WaitPossessDuration = BlendTime;
+		return;
+	}
+
 	auto* PC = GetOwningPlayerController();
 	PC->SetViewTargetWithBlend(CameraOwner, BlendTime, EViewTargetBlendFunction::VTBlend_EaseInOut, 2.5f);
+
+	bIsPossessing = BlendTime <= 0.f ? false : true;
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			bIsPossessing = false;
+
+			AActor* Target = WaitPossessTarget.Get();
+			WaitPossessTarget = nullptr;
+			PossessCamera(Target, WaitPossessDuration);
+		}), BlendTime, false);
 }
 
 void AEHPlayerCameraManager::PossessCameraToPlayer(const float& BlendTime)

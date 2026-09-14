@@ -77,15 +77,11 @@ void AEHPlayer::RespawnPlayer()
 
 void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 {
-	bIsDead = true;
-
 	UAnimMontage* AM_Die = DieMontage[DeathReason];
 	const float AnimLength = AM_Die->GetPlayLength();
 	PlayAnimMontage(AM_Die);
 
 	Camera->bUsePawnControlRotation = false;
-
-	GetMesh()->bNoSkeletonUpdate = true;
 
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 	VerdictSub->bIsStartInBed = true;
@@ -98,7 +94,8 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 void AEHPlayer::RevivePlayer()
 {
-	bIsDead = false;
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSub->bIsStartInBed = false;
 
 	RespawnPlayer();
 	SetWalkSpeed(WALK_SPEED);

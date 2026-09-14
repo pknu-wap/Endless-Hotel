@@ -46,6 +46,7 @@ void UTutorialComponent::ShowTutorialWidget()
 		return;
 	}
 	
+	UI_Tutorial->ShowWidget();
 	UI_Tutorial->ShowTutorialAnimation(true);
 
 	if (Comp_Interact.IsValid())

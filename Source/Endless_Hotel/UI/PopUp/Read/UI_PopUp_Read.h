@@ -32,7 +32,7 @@ private:
 #pragma region Target
 
 public:
-	void SetTarget(AActor* Target) { TargetObject = Target; }
+	virtual void SetTarget(AActor* Target) { TargetObject = Target; }
 
 protected:
 	UPROPERTY()

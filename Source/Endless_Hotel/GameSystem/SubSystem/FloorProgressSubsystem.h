@@ -71,6 +71,9 @@ public:
 private:
 	void ProgressGameState();
 
+private:
+	bool bFirstReset = true;
+
 #pragma endregion
 
 };

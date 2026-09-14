@@ -3,7 +3,6 @@
 #pragma once
 
 #include "UI/UI_Base.h"
-#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <UI_NoteBook.generated.h>
 
@@ -23,6 +22,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Description;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Description")
+	TObjectPtr<class UTexture2D> Image_Default;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Description")
+	FText Text_Default;
 	
 #pragma endregion
 

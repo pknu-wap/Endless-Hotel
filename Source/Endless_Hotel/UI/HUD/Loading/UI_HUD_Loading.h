@@ -18,11 +18,10 @@ public:
 
 #pragma endregion
 
-#pragma region Show & Hide
+#pragma region Show
 
 public:
 	virtual void ShowWidget() override;
-	virtual void HideWidget() override;
 
 #pragma endregion
 

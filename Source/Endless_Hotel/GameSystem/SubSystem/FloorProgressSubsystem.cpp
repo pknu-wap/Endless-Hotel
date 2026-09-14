@@ -79,6 +79,12 @@ void UFloorProgressSubsystem::ResetFloorProgress()
 
 void UFloorProgressSubsystem::ProgressGameState()
 {
+	if (bFirstReset)
+	{
+		bFirstReset = false;
+		return;
+	}
+
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = EGameProgression::Loop;
 	USaveManager::SaveData_Progression(Data);
