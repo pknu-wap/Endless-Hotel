@@ -26,6 +26,9 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bTickEvenWhenPaused = true;
+
+	bShouldPerformFullTickWhenPaused = true;
 }
 
 void AEHPlayerController::BeginPlay()

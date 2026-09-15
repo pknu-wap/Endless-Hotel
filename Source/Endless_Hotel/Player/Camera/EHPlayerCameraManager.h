@@ -23,6 +23,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Data Layer
+
+private:
+	void OnDataLayerChanged(const EMapDataLayer& Layer);
+
+private:
+	EMapDataLayer CurrentLayer = EMapDataLayer::Lobby;
+
+#pragma endregion
+
 #pragma region Post Processing
 
 private:
@@ -38,6 +48,7 @@ private:
 
 public:
 	void StartEyeEffect(bool bIsOpen);
+	void RemoveAllEyeEffect();
 	float LoadingEyeEffect();
 
 private:
