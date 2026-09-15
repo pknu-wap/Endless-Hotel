@@ -62,10 +62,8 @@ void UUI_HUD_InGame::ShowWidget()
 {
 	Super::ShowWidget();
 
-	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
-	const float Duration = bCheckInState ? 2.f : 0.f;
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCameraToPlayer(Duration);
+	CameraManager->PossessCameraToPlayer();
 
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
