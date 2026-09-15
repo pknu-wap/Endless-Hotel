@@ -251,7 +251,7 @@ void AEHPlayerController::OnCrouchCompleted()
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	if (!bCanFaceCover || bIsFaceCoverTransitioning)
+	if (!bCanFaceCover || bIsFaceCoverTransitioning || bIsLighterOn)
 	{
 		return;
 	}
@@ -319,7 +319,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 {
 	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
 
-	if (!bCanMove || !bHasFlash)
+	if (!bCanMove || !bHasFlash || bIsFaceCovering)
 	{
 		return;
 	}
