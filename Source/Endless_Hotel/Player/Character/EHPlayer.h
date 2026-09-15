@@ -64,6 +64,7 @@ private:
 private:
 	void DiePlayer(const EDeathReason& DeathReason);
 	void RevivePlayer();
+	void FreezeAnimation(bool bFreeze, float Duration = 0.f);
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDie, const EDeathReason&);
@@ -75,6 +76,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Die")
 	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;
+
+	bool bAlreadyDie = false;
 
 #pragma endregion
 
