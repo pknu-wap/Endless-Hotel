@@ -199,7 +199,7 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 	for (auto Rule : AnomalySub->AnomalyRules)
 	{
 		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
-		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
+		TextBlock->SetText(EnumConverter::GetTextFromEnum<EAnomalyRule>(Rule));
 
 		VB_Rule->AddChildToVerticalBox(TextBlock);
 	}
@@ -209,8 +209,8 @@ void UUI_HUD_InGame::ChangeDebugAnomaly()
 {
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
-	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
-	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->NextAnomalyID)));
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetTextFromEnum<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetTextFromEnum<EAnomalyID>(VerdictSub->NextAnomalyID)));
 }
 
 #pragma endregion
