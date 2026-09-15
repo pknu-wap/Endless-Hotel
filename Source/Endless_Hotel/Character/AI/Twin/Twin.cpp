@@ -39,5 +39,5 @@ void ATwin::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor
     {
         return;
     }
-    Player->DieDelegate.Broadcast(EDeathReason::Burn);
+    Player->OnDie.Broadcast(EDeathReason::Burn);
 }

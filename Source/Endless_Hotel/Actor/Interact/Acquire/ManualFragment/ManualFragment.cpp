@@ -29,10 +29,18 @@ void AManualFragment::BeginPlay()
 	}
 	else
 	{
-		//SetManualFragment();
+		SetManualFragment();
 		auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-		VerdictSubsystem->OnAnomalySpawned.AddDynamic(this, &ThisClass::SetManualFragment);
+		VerdictSubsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::SetManualFragment);
 	}
+}
+
+void AManualFragment::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSubsystem->OnAnomalySpawned.RemoveAll(this);
+
+	Super::EndPlay(EndPlayReason);
 }
 
 #pragma endregion

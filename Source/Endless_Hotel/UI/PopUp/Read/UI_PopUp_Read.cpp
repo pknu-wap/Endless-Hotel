@@ -19,7 +19,8 @@ void UUI_PopUp_Read::NativeOnInitialized()
 
 void UUI_PopUp_Read::Input_ESC()
 {
-	Cast<AInteractRead>(TargetObject)->PossessCamera(false);
+	auto* ReadObject = Cast<AInteractRead>(TargetObject);
+	ReadObject->PossessCamera(false);
 
 	Super::Input_ESC();
 }

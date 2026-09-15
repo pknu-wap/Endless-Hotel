@@ -39,6 +39,9 @@ public:
 	EMapDataLayer GetCurrentDataLayer() const { return CurrentDataLayer; }
 	void SetCurrentDataLayer(const EMapDataLayer& DataLayer) { CurrentDataLayer = DataLayer; }
 
+	DECLARE_MULTICAST_DELEGATE(FOnDataLayerStreamingReady);
+	FOnDataLayerStreamingReady OnDataLayerReady;
+
 private:
 	void WaitForDataLayerReady(const EMapDataLayer& DataLayer, bool bAlreadyRegistered);
 

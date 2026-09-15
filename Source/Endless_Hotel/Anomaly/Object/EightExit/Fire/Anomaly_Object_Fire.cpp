@@ -60,7 +60,7 @@ void AAnomaly_Object_Fire::OnDeathRange(UPrimitiveComponent* OverlappedComp, AAc
 		return;
 	}
 
-	Player->DieDelegate.Broadcast(EDeathReason::Burn);
+	Player->OnDie.Broadcast(EDeathReason::Burn);
 }
 
 #pragma endregion

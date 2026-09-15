@@ -2,55 +2,68 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
+#include "UI/UI_Base.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include <Components/ComboBoxKey.h>
+#include <CoreMinimal.h>
 #include <UI_ComboBox_Base.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UComboBoxKey
+UCLASS(Abstract, Meta = (DisableNativeTick))
+class ENDLESS_HOTEL_API UUI_ComboBox_Base : public UUI_Base
 {
 	GENERATED_BODY()
 	
-#pragma region Font
+#pragma region Base
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|Font")
-	FSlateFontInfo Font_ComboBox;
+	virtual void NativeOnInitialized() override;
 
 #pragma endregion
 
-#pragma region Option
+#pragma region ComboBox
 
 public:
-	template <class EnumType>
-	void AddEnumOption(EnumType Value)
-	{
-		UEnum* EnumObj = StaticEnum<EnumType>();
-		AddOption(EnumObj->GetNameByIndex(static_cast<int64>(Value)));
-	}
-
-#pragma endregion
-
-#pragma region Generate
-
-public:
-	void BindEvents();
+	UComboBoxKey* GetComboBox() { return ComboBox; }
 
 protected:
 	UFUNCTION()
-	UWidget* GenerateItem(FName InKey);
+	virtual void OnSelectionChanged(FName NameValue, ESelectInfo::Type EnumValue) PURE_VIRTUAL(ThisClass::OnSelectionChanged, );
 
-#pragma endregion
+	template <typename EnumType>
+	void GenerateItem(EnumType InKey, FText Trans);
 
-#pragma region Active
-
-public:
+private:
 	UFUNCTION()
-	virtual void ActiveComboBox() PURE_VIRTUAL(ThisClass::ActiveComboBox, );
+	UWidget* SetItemStyle(FName InKey);
 
-	UFUNCTION()
-	virtual void DeactiveComboBox(FName NameValue, ESelectInfo::Type EnumValue) PURE_VIRTUAL(ThisClass::DeactiveComboBox, );
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UComboBoxKey> ComboBox;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Font")
+	FSlateFontInfo Font_Style;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Font")
+	FSlateColor Font_Color;
+
+	UPROPERTY()
+	TMap<FName, FText> Translations;
 
 #pragma endregion
 
 };
+
+#pragma region ComboBox
+
+template <typename EnumType>
+FORCEINLINE void UUI_ComboBox_Base::GenerateItem(EnumType InKey, FText Trans)
+{
+	UEnum* EnumObj = StaticEnum<EnumType>();
+	const FName Key = EnumConverter::GetEnumAsName(InKey);
+	ComboBox->AddOption(Key);
+
+	Translations.Add(Key, Trans);
+}
+
+#pragma endregion

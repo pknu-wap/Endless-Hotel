@@ -52,13 +52,13 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 #pragma endregion
 
 #pragma region Reset
 
 public:
-	UFUNCTION()
 	void Reset();
 
 #pragma endregion

@@ -19,23 +19,35 @@ void UUI_PopUp_Escape::NativeOnInitialized()
 
 #pragma endregion
 
+#pragma region Show
+
+void UUI_PopUp_Escape::ShowWidget()
+{
+	Super::ShowWidget();
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->ActiveAdditionalDataLayer(EMapDataLayer::Lobby, true);
+}
+
+#pragma endregion
+
 #pragma region Button
 
 void UUI_PopUp_Escape::Click_Setting()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Setting);
 }
 
 void UUI_PopUp_Escape::Click_MainMenu()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_MainMenuCheck);
 }
 
 void UUI_PopUp_Escape::Click_Quit()
 {
-	UUI_Controller* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
 }
 

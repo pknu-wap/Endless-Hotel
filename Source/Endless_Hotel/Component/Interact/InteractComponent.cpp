@@ -14,8 +14,10 @@ void UInteractComponent::BeginPlay()
 	Super::BeginPlay();
 
 	auto* Comp_Widget = Owner->FindComponentByClass<UWidgetComponent>();
-	UI_Interact = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
-	UI_Interact->ShowDescription(false, false);
+	UI_Description = Cast<UUI_Interact>(Comp_Widget->GetUserWidgetObject());
+	UI_Description->ShowDescription(false, false);
+
+	Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
 }
 
 #pragma endregion
@@ -24,28 +26,52 @@ void UInteractComponent::BeginPlay()
 
 void UInteractComponent::ShowInteracting(bool bIsShow)
 {
-	ShowDescriptionWidget(bIsShow);
-	ShowInteractingHighlight(bIsShow);
-}
-
-void UInteractComponent::ShowDescriptionWidget(bool bIsShow)
-{
-	if (!List_Interact.IsValidIndex(CurrentIndex))
-	{
-		return;
-	}
-
 	if (!CanInteract())
 	{
 		return;
 	}
 
-	if (UI_Interact.IsValid())
+	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
 	{
-		UI_Interact->SetDescription(GetDescription());
-		UI_Interact->ShowDescription(bIsShow, HasManyInteracting());
+		ChangeIndex(true);
+		return;
 	}
+
+	if (List_Interact.IsValidIndex(CurrentIndex))
+	{
+		UI_Description->SetDescription(GetDescription());
+		UI_Description->ShowDescription(bIsShow, HasManyInteracting());
+	}
+
+	if (Comp_Tutorial.IsValid() && !Comp_Tutorial->bIsCheckTutorial && USaveManager::LoadData_Progression().Progression == EGameProgression::Tutorial)
+	{
+		return;
+	}
+
+	ShowHighlight(bIsShow);
 }
+
+void UInteractComponent::Interact(AEHCharacter* Interacter)
+{
+	ShowInteracting(false);
+
+	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
+	InteractInfo.bIsInteracted = true;
+	bIsInteracted = true;
+
+	if (Comp_Tutorial.IsValid() && !Comp_Tutorial->bIsCheckTutorial)
+	{
+		Comp_Tutorial->bIsCheckTutorial = true;
+		Comp_Tutorial->HideTutorialWidget();
+	}
+
+	auto* Interface = Cast<IInteractable>(Owner);
+	Interface->Interact(Interacter);
+}
+
+#pragma endregion
+
+#pragma region Index
 
 void UInteractComponent::TryChangeIndex(bool bUp)
 {
@@ -54,8 +80,8 @@ void UInteractComponent::TryChangeIndex(bool bUp)
 		return;
 	}
 
-	UI_Interact->PlayChangeAnimation(bUp);
-	
+	UI_Description->PlayChangeAnimation(bUp);
+
 	bChangingIndex = true;
 
 	constexpr float ChangeDuration = 0.3f;
@@ -68,61 +94,30 @@ void UInteractComponent::ChangeIndex(bool bUp)
 {
 	bChangingIndex = false;
 
-	if (bUp)
-	{
-		CurrentIndex++;
-		if (CurrentIndex >= List_Interact.Num())
-		{
-			CurrentIndex = 0;
-		}
-		return;
-	}
+	bUp ? ++CurrentIndex : --CurrentIndex;
 
-	CurrentIndex--;
-	if (CurrentIndex < 0)
+	if (CurrentIndex >= List_Interact.Num())
+	{
+		CurrentIndex = 0;
+	}
+	else if (CurrentIndex < 0)
 	{
 		CurrentIndex = List_Interact.Num() - 1;
 	}
-}
 
-void UInteractComponent::Interact(AEHCharacter* Interacter)
-{
-	ShowInteracting(false);
-
-	FInteractInfo& InteractInfo = List_Interact[CurrentIndex];
-	InteractInfo.bIsInteracted = true;
-	bIsInteracted = true;
-
-	auto* Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
-	if (IsValid(Comp_Tutorial))
+	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
 	{
-		Comp_Tutorial->HideTutorialWidget();
+		ChangeIndex(true);
+		return;
 	}
-
-	IInteractable::Execute_Interact(Owner.Get(), Interacter);
-}
-
-FInteractInfo UInteractComponent::GetSelectedInteractInfo()
-{
-	if (List_Interact.IsEmpty())
-	{
-		return FInteractInfo();
-	}
-
-	return List_Interact[CurrentIndex];
 }
 
 #pragma endregion
 
 #pragma region Hightight
 
-void UInteractComponent::ShowInteractingHighlight(bool bActive)
+void UInteractComponent::ShowHighlight(bool bActive)
 {
-	if (!CanInteract())
-	{
-		return;
-	}
-
 	TArray<UMeshComponent*> Comps;
 	Owner->GetComponents<UMeshComponent>(OUT Comps);
 

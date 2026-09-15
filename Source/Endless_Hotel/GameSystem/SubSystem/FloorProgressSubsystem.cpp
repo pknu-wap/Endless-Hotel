@@ -1,7 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
-
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Engine/GameInstance.h>
@@ -10,7 +9,8 @@
 
 UFloorProgressSubsystem::UFloorProgressSubsystem()
 {
-	GameClearEvent.AddDynamic(this, &ThisClass::GameClear);
+	GameClearEvent.AddUObject(this, &ThisClass::GameClear);
+	FloorChange_Reset.AddUObject(this, &ThisClass::ProgressGameState);
 }
 
 void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -20,22 +20,12 @@ void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
 
 	Floor = STARTFLOOR;
-	bIsClear = USaveManager::LoadData_GameClear();
+	bIsClear = USaveManager::LoadData_Progression().bGameClear;
 }
 
 #pragma endregion
 
 #pragma region Floor
-
-void UFloorProgressSubsystem::ResetFloor()
-{
-	Floor = STARTFLOOR;
-
-	if (UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr)
-	{
-		VerdictSys->NextAnomalyMap = EMapDataLayer::Hotel;
-	}
-}
 
 void UFloorProgressSubsystem::SubFloor()
 {
@@ -66,7 +56,9 @@ void UFloorProgressSubsystem::GameClear()
 	bIsClear = true;
 	Floor = STARTFLOOR;
 
-	USaveManager::SaveData_GameClear(true);
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	Data.bGameClear = true;
+	USaveManager::SaveData_Progression(Data);
 }
 
 #pragma endregion
@@ -78,7 +70,24 @@ void UFloorProgressSubsystem::ResetFloorProgress()
 	Floor = STARTFLOOR;
 	bIsFirstStartFloor = true;
 
-	bIsClear = USaveManager::LoadData_GameClear();
+	bIsClear = USaveManager::LoadData_Progression().bGameClear;
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void UFloorProgressSubsystem::ProgressGameState()
+{
+	if (bFirstReset)
+	{
+		bFirstReset = false;
+		return;
+	}
+
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	Data.Progression = EGameProgression::Loop;
+	USaveManager::SaveData_Progression(Data);
 }
 
 #pragma endregion

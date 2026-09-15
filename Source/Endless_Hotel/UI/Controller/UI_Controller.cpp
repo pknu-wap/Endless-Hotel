@@ -9,13 +9,8 @@
 
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
+UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Duration)
 {
-	if (WidgetStack.Contains(WidgetType))
-	{
-		return CachedWidgets[WidgetType];
-	}
-
 	if (!IsValid(PDA_Widget))
 	{
 		LoadWidgetDataAsset(WidgetType);
@@ -24,10 +19,12 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 
 	if (!WidgetStack.IsEmpty())
 	{
-		CachedWidgets[WidgetStack.Top()]->HideWidget();
+		UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
+		TopWidget->HideWidget();
 	}
 
 	UUI_Base* CreatedWidget = nullptr;
+	auto WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
 
 	if (CachedWidgets.Contains(WidgetType))
 	{
@@ -35,63 +32,86 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType)
 	}
 	else
 	{
-		auto WidgetClass = PDA_Widget->GetWidgetClass(WidgetType);
-		CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetClass.LoadSynchronous());
+		CreatedWidget = CreateWidget<UUI_Base>(GetWorld()->GetFirstPlayerController(), WidgetInfo.Class.LoadSynchronous());
 		CreatedWidget->AddToViewport();
+		CreatedWidget->ActiveWidget();
 		CachedWidgets.Add(WidgetType, CreatedWidget);
 	}
 
-	CreatedWidget->ShowWidget();
-
-	switch (CreatedWidget->WidgetLayer)
+	switch (WidgetInfo.Layer)
 	{
 	case EWidgetLayer::HUD:
 		CloseAllWidgets();
 		break;
 	}
 
-	if (!WidgetStack.Contains(WidgetType))
-	{
-		WidgetStack.Add(WidgetType);
-	}
+	WidgetStack.Add(WidgetType);
 
-	bool bNeedPause = CreatedWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
-	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
+	FTimerHandle ShowHandle;
+	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			EWidgetType WidgetType = WidgetStack.Top();
+			FWidgetInfo WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
+			UUI_Base* TopWidget = CachedWidgets[WidgetType];
+			TopWidget->ShowWidget();
+		}), Duration, false);
 
-	SetInputMode(CreatedWidget->WidgetInputMode);
+	SetInputMode(WidgetInfo.InputMode);
+
+	SetGamePause();
 
 	return CreatedWidget;
 }
 
 void UUI_Controller::CloseWidget()
 {
-	UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
+	EWidgetType WidgetType = WidgetStack.Top();
+	FWidgetInfo WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
+	UUI_Base* TopWidget = CachedWidgets[WidgetType];
 
-	if (WidgetStack.IsEmpty() || TopWidget->WidgetLayer == EWidgetLayer::HUD)
+	TopWidget->HideWidget();
+
+	WidgetStack.Pop();
+
+	if (WidgetStack.IsEmpty())
 	{
 		return;
 	}
 
-	TopWidget->HideWidget();
-	WidgetStack.Pop();
+	WidgetType = WidgetStack.Top();
+	WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
+	TopWidget = CachedWidgets[WidgetType];
 
-	TopWidget = CachedWidgets[WidgetStack.Top()];
 	TopWidget->ShowWidget();
 
-	bool bNeedPause = TopWidget->WidgetLayer == EWidgetLayer::PopUp_Pause;
-	UGameplayStatics::SetGamePaused(GetWorld(), bNeedPause);
+	SetInputMode(WidgetInfo.InputMode);
 
-	SetInputMode(TopWidget->WidgetInputMode);
+	SetGamePause();
 }
 
 void UUI_Controller::CloseAllWidgets()
 {
-	for (const EWidgetType& Target : WidgetStack)
+	for (const EWidgetType& Type : WidgetStack)
 	{
-		CachedWidgets[Target]->HideWidget();
+		UUI_Base* Target = CachedWidgets[Type];
+		Target->HideWidget();
 	}
 
 	WidgetStack.Empty();
+}
+
+void UUI_Controller::SetGamePause()
+{
+	for (const auto& Stack : WidgetStack)
+	{
+		if (PDA_Widget->GetWidgetInfo(Stack).Layer == EWidgetLayer::PopUp_Pause)
+		{
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+			return;
+		}
+	}
+
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
 }
 
 #pragma endregion

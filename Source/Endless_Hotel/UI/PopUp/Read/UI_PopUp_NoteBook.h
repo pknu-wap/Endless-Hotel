@@ -18,6 +18,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Target
+
+public:
+	virtual void SetTarget(AActor* Target) override;
+
+#pragma endregion
+
 #pragma region Click
 
 private:
@@ -31,19 +38,19 @@ private:
 
 #pragma region Button
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Left;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Right;
 
+	UPROPERTY()
+	TArray<TObjectPtr<class UUI_Button_NoteBook>> ZoomInButtons;
+
 #pragma endregion
 
 #pragma region Widget
-
-private:
-	void SettingWidget();
 
 private:
 	UPROPERTY()

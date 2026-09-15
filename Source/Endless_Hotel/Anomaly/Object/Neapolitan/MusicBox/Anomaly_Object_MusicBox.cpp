@@ -37,7 +37,7 @@ void AAnomaly_Object_MusicBox::PlayMusicBox()
 				AC->Stop();
 				bSolved = false;
 				Component_Interact->ShowInteracting(false);
-				Component_Interact->DeactiveInteract();
+				Component_Interact->ActiveInteract(false);
 			}), LimitTime, false);
 }
 
@@ -58,9 +58,9 @@ void AAnomaly_Object_MusicBox::StartRotate()
 
 #pragma region Interact
 
-void AAnomaly_Object_MusicBox::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_MusicBox::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

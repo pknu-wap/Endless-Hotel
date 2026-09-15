@@ -3,7 +3,6 @@
 #pragma once
 
 #include "UI/UI_Base.h"
-#include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <UI_NoteBook.generated.h>
 
@@ -17,12 +16,18 @@ class ENDLESS_HOTEL_API UUI_NoteBook : public UUI_Base
 public:
 	void ChangeDescription(uint8 Index);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Picture;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Description;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Description")
+	TObjectPtr<class UTexture2D> Image_Default;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Description")
+	FText Text_Default;
 	
 #pragma endregion
 

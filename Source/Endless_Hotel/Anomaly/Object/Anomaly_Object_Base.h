@@ -26,8 +26,10 @@ protected:
 #pragma region Reset
 
 public:
-	UFUNCTION()
 	virtual void Reset();
+
+private:
+	FDelegateHandle ResetHandle;
 
 #pragma endregion
 
@@ -61,7 +63,7 @@ public:
 	bool bIsOrderedInteractTypes = false;
 
 public:
-	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interacter) override;
 
 protected:
 	void AllowNextInteract();

@@ -5,10 +5,7 @@
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "Player/Character/EHPlayer.h"
-#include "Player/Controller/EHPlayerController.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
-#include <Kismet/GameplayStatics.h>
 
 #pragma region Activities
 
@@ -20,11 +17,9 @@ void ANormal::SetAnomalyState()
     auto* FloorSubsystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
     auto* ElevatorSubsystem = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
 
-    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     if (VerdictSubsystem->bIsStartInBed || FloorSubsystem->bIsFirstStartFloor)
     {
         ElevatorSubsystem->RemoveTargetElevator();
-        Player->SetActorTransform(Player->StartTransform);
     }
     if (FloorSubsystem->bIsFirstStartFloor)
     {

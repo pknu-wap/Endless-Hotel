@@ -2,6 +2,8 @@
 
 #include "UI/Base/Manual/UI_Manual_Rule.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/TextBlock.h>
 #include <Components/RichTextBlock.h>
 
@@ -16,13 +18,15 @@ void UUI_Manual_Rule::NativeOnInitialized()
 	Text_Index->SetText(Index);
 	Text_Description->SetText(Description);
 
-	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-	AnomalySub->OnAddAnomalyRule.AddDynamic(this, &ThisClass::ChangeTextState);
-
-	if (AnomalySub->AnomalyRules.Contains(AnomalyRule))
+	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	PoolSub->OnAddAnomalyRule.AddUObject(this, &ThisClass::ChangeTextState);
+	if (PoolSub->AnomalyRules.Contains(AnomalyRule))
 	{
 		SetVisibility(ESlateVisibility::Visible);
 	}
+
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSub->OnOccurIncorrectRule.AddUObject(this, &ThisClass::DrawUnderLineText);
 }
 
 #pragma endregion
@@ -44,6 +48,50 @@ void UUI_Manual_Rule::ChangeTextState(EAnomalyRule Rule)
 	}
 
 	SetVisibility(ESlateVisibility::Visible);
+}
+
+void UUI_Manual_Rule::DrawUnderLineText(TArray<EAnomalyRule> Rules)
+{
+	if (USaveManager::LoadData_Setting().WrongCheck == EOptionValue::Off)
+	{
+		return;
+	}
+
+	FText RemovedText = RemoveRichTextTags(Description);
+	FText UnderLineText = FText::Format(FText::FromString(TEXT("<UnderLine>{0}</>")), RemovedText);
+	FText TargetText = Rules.Contains(AnomalyRule) ? UnderLineText : Description;
+	Text_Description->SetText(TargetText);
+}
+
+FText UUI_Manual_Rule::RemoveRichTextTags(const FText& Source)
+{
+	const FString SourceString = Source.ToString();
+
+	FString Result;
+	Result.Reserve(SourceString.Len());
+
+	bool bInsideTag = false;
+
+	for (const TCHAR Character : SourceString)
+	{
+		if (Character == TEXT('<'))
+		{
+			bInsideTag = true;
+			continue;
+		}
+		else if (Character == TEXT('>'))
+		{
+			bInsideTag = false;
+			continue;
+		}
+
+		if (!bInsideTag)
+		{
+			Result.AppendChar(Character);
+		}
+	}
+
+	return FText::FromString(Result);
 }
 
 #pragma endregion

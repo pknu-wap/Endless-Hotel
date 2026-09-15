@@ -1,8 +1,6 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/Loading/UI_HUD_Loading.h"
 #include "Asset/DataAsset/Level/PDA_Level.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <WorldPartition/DataLayer/DataLayerSubsystem.h>
@@ -47,11 +45,11 @@ void UEHGameInstance::QuitGame()
 
 #pragma region Data Layer
 
-void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
+bool UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
 {
 	if (CurrentDataLayer == TargetDataLayer)
 	{
-		return;
+		return false;
 	}
 
 	UDataLayerAsset* DLA_Active = GetDataLayerAsset(TargetDataLayer);
@@ -71,27 +69,7 @@ void UEHGameInstance::SwitchDataLayer(const EMapDataLayer& TargetDataLayer, bool
 	{
 		OnDataLayerChanged.Broadcast(CurrentDataLayer);
 	}
-}
-
-void UEHGameInstance::SwitchDataLayerWithLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
-{
-	if (CurrentDataLayer == TargetDataLayer)
-	{
-		return;
-	}
-
-	auto* UICon = GetSubsystem<UUI_Controller>();
-	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->OpenWidget(EWidgetType::HUD_Loading));
-
-	GetWorld()->GetTimerManager().SetTimer(SwitchHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UI_Loading]()
-		{
-			if (UI_Loading->IsLoadingCompleted())
-			{
-				UI_Loading->StartLoadingEyeEffect();
-				WaitLoading(TargetDataLayer, bNotifyDelegate);
-				GetWorld()->GetTimerManager().ClearTimer(SwitchHandle);
-			}
-		}), 0.1f, true);
+	return true;
 }
 
 void UEHGameInstance::ActiveAdditionalDataLayer(const EMapDataLayer& TargetDataLayer, bool bActive)
@@ -118,21 +96,6 @@ UDataLayerInstance* UEHGameInstance::GetDataLayerInstance(const EMapDataLayer& T
 
 	UDataLayerSubsystem* Subsystem = GetWorld() ? GetWorld()->GetSubsystem<UDataLayerSubsystem>() : nullptr;
 	return Subsystem ? Subsystem->GetDataLayerInstance(Asset) : nullptr;
-}
-
-void UEHGameInstance::WaitLoading(const EMapDataLayer& TargetDataLayer, bool bNotifyDelegate)
-{
-	auto* UICon = GetSubsystem<UUI_Controller>();
-	auto* UI_Loading = Cast<UUI_HUD_Loading>(UICon->GetHUDWidget());
-
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this, TargetDataLayer, bNotifyDelegate, UI_Loading]()
-		{
-			if (UI_Loading->IsCompletedEyeEffect())
-			{
-				SwitchDataLayer(TargetDataLayer, bNotifyDelegate);
-				GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
-			}
-		}), 0.1f, true);
 }
 
 UDataLayerAsset* UEHGameInstance::GetDataLayerAsset(const EMapDataLayer& Target)

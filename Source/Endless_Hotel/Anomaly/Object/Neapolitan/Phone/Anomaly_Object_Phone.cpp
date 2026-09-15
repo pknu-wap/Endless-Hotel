@@ -60,9 +60,9 @@ void AAnomaly_Object_Phone::Reset()
 
 #pragma region Interact
 
-void AAnomaly_Object_Phone::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_Phone::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 	InteractPhone(Info.InteractType);

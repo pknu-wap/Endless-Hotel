@@ -49,15 +49,17 @@ public:
 #pragma region Reset
 
 public:
-    UFUNCTION()
     void Reset();
+
+private:
+    bool bCanPress_;
 
 #pragma endregion
 
 #pragma region Interact
 
 public:
-    virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+    virtual void Interact(class AEHCharacter* Interacter) override;
     
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
     class UArrowComponent* InteractAnchor;

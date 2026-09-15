@@ -22,7 +22,7 @@ protected:
 #pragma region Category
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "Setting|Category")
+	UPROPERTY(EditAnywhere, Category = "Category")
 	EOptionCategory OptionCategory;
 
 #pragma endregion

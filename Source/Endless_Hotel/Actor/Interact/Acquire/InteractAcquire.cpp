@@ -10,9 +10,9 @@
 
 #pragma region Interact
 
-void AInteractAcquire::Interact_Implementation(AEHCharacter* Interacter)
+void AInteractAcquire::Interact(AEHCharacter* Interacter)
 {
-	Super::Interact_Implementation(Interacter);
+	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 

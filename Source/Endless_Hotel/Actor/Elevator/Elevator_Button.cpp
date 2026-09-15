@@ -39,7 +39,7 @@ void AElevator_Button::BeginPlay()
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
     auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-    Sub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
+    Sub->FloorChange_Reset.AddUObject(this, &ThisClass::Reset);
 }
 #pragma endregion
 
@@ -47,25 +47,29 @@ void AElevator_Button::BeginPlay()
 
 void AElevator_Button::Reset()
 {
-    Component_Interact->RestoreInteract();
+    if (bCanPress_ || bIsOpeningButton)
+    {
+        Component_Interact->ActiveInteract(true);
+    }
 }
 
 #pragma endregion
 
 #pragma region Interact
 
-void AElevator_Button::Interact_Implementation(AEHCharacter* Interacter)
+void AElevator_Button::Interact(AEHCharacter* Interacter)
 {
     MoveToButtonPlayer();
 }
 
 void AElevator_Button::CanPressButton(bool bCanPress)
 {
+    this->bCanPress_ = bCanPress;
     if(!bCanPress)
     {
         Component_Interact->ShowInteracting(false);
     }
-    bCanPress ? Component_Interact->RestoreInteract() : Component_Interact->DeactiveInteract();
+    bCanPress ? Component_Interact->ActiveInteract(true) : Component_Interact->ActiveInteract(false);
 }
 
 void AElevator_Button::MoveToButtonPlayer()

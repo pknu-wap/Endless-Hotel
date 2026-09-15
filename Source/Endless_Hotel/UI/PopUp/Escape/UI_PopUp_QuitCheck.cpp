@@ -2,7 +2,9 @@
 
 #include "UI/PopUp/Escape/UI_PopUp_QuitCheck.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Button.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -30,8 +32,14 @@ void UUI_PopUp_QuitCheck::Click_Yes()
 		break;
 
 	case EQuitButtonType::MainMenu:
+	{
 		GameInstance->SwitchDataLayer(EMapDataLayer::Lobby);
+
+		constexpr float PossessDuration = 0.f;
+		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+		CameraManager->PossessCamera(ECameraType::Title, PossessDuration);
 		break;
+	}
 	}
 }
 

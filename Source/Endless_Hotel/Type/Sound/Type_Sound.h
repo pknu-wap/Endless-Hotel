@@ -7,9 +7,10 @@
 UENUM(BlueprintType)
 enum class ESoundClassType : uint8
 {
-	Master	UMETA(DisplayName = "Master"),
-	BGM		UMETA(DisplayName = "BGM"),
-	SFX		UMETA(DisplayName = "SFX"),
-	UI		UMETA(DisplayName = "UI"),
-	Voice	UMETA(DisplayName = "Voice")
+	None		UMETA(DisplayName = "None"),
+	Master		UMETA(DisplayName = "Master"),
+	BGM			UMETA(DisplayName = "BGM"),
+	SFX			UMETA(DisplayName = "SFX"),
+	UI			UMETA(DisplayName = "UI"),
+	Voice		UMETA(DisplayName = "Voice")
 };

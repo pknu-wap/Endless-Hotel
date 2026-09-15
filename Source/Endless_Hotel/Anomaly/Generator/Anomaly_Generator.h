@@ -60,7 +60,6 @@ public:
 #pragma region SpawnAnomaly
 
 public:
-	UFUNCTION()
 	void SpawnAnomaly();
 
 	FAnomalySpawnInfo DecideAnomaly(uint8 Index, bool bForceNormal);

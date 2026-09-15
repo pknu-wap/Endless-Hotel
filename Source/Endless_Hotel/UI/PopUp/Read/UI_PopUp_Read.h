@@ -23,7 +23,7 @@ protected:
 protected:
 	virtual void Input_ESC() override;
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_ESC;
 
@@ -32,7 +32,7 @@ protected:
 #pragma region Target
 
 public:
-	void SetTarget(AActor* Target) { TargetObject = Target; }
+	virtual void SetTarget(AActor* Target) { TargetObject = Target; }
 
 protected:
 	UPROPERTY()

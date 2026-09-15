@@ -7,18 +7,47 @@
 #include <Engine/DataAsset.h>
 #include <PDA_Widget.generated.h>
 
+#pragma region Declare
+
+USTRUCT()
+struct FWidgetInfo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSoftClassPtr<class UUI_Base> Class;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Type")
+	EWidgetLayer Layer = EWidgetLayer::None;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Type")
+	EWidgetInputMode InputMode = EWidgetInputMode::None;
+};
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API UPDA_Widget : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
+#pragma region Data
+
 public:
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override { return FPrimaryAssetId("Widget", GetFName()); }
 
-public:
-	TSoftClassPtr<class UUI_Base> GetWidgetClass(const EWidgetType& WidgetType) { return *Map_Widget.Find(WidgetType); }
+#pragma endregion
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Widget")
-	TMap<EWidgetType, TSoftClassPtr<class UUI_Base>> Map_Widget;
+#pragma region Widget
+
+public:
+	FWidgetInfo GetWidgetInfo(const EWidgetType& WidgetType) { return *Widgets.Find(WidgetType); }
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TMap<EWidgetType, FWidgetInfo> Widgets;
+
+#pragma endregion
+
 };

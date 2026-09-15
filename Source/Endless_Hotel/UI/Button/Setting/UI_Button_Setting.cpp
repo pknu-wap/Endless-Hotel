@@ -1,95 +1,24 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "UI/Button/Setting/UI_Button_Setting.h"
-#include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/Controller/UI_Controller.h"
+#include "Interface/UI/OptionInterface.h"
+#include <Components/TextBlock.h>
+#include <Components/HorizontalBox.h>
+#include <Components/HorizontalBoxSlot.h>
 
-#pragma region Declare
+#pragma region Option
 
-UUI_Button_Setting::FHighlightSetting UUI_Button_Setting::OnHighlight;
-
-#pragma endregion
-
-#pragma region Base
-
-TSharedRef<SWidget> UUI_Button_Setting::RebuildWidget()
+void UUI_Button_Setting::InitOption(FOptionData OptionData)
 {
-	OnHighlight.AddDynamic(this, &ThisClass::Highlight);
+	constexpr float Size = 447.f;
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UUI_Base* ChildWidget = UICon->MakeChildWidget<UUI_Base, UHorizontalBox, UHorizontalBoxSlot>(HorizontalBox, OptionData.Class.LoadSynchronous(), ESlateSizeRule::Fill, Size);
 
-	OnClicked.Clear();
-	OnClicked.AddDynamic(this, &ThisClass::Click_Button);
-
-	return Super::RebuildWidget();
-}
-
-void UUI_Button_Setting::ReleaseSlateResources(bool bReleaseChildren)
-{
-	Super::ReleaseSlateResources(bReleaseChildren);
-
-	OnHighlight.Clear();
-}
-
-#pragma endregion
-
-#pragma region Click
-
-void UUI_Button_Setting::ClickCategoryButton()
-{
-	if (!bIsSideButton)
-	{
-		SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-
-	auto* SettingWidget = Cast<UUI_PopUp_Setting>(Owner);
-	SettingWidget->ShowCategoryOption(SettingInfo.Enum);
-	SettingWidget->SetCurrentCategoryText(SettingInfo.Name);
-	SettingWidget->StartRotateGear(SettingInfo.Angle);
-
-	OnHighlight.Broadcast(SettingInfo);
-}
-
-void UUI_Button_Setting::Click_Button()
-{
-	ClickCategoryButton();
-}
-
-#pragma endregion
-
-#pragma region Highlight
-
-void UUI_Button_Setting::Highlight(FSettingCategory TargetInfo)
-{
-	if (bIsSideButton)
-	{
-		if (SettingInfo.Enum == TargetInfo.Enum)
-		{
-			SetColorAndOpacity(Color_Highlight);
-		}
-		else
-		{
-			SetColorAndOpacity(Color_Default);
-		}
-		return;
-	}
-
-	if (TargetInfo.Enum == ESettingCategory::Control_Input)
-	{
-		TargetInfo.Enum = ESettingCategory::Control_Normal;
-	}
-
-	FButtonStyle ButtonStyle = GetStyle();
-	ButtonStyle.Normal.TintColor = Color_Default;
-
-	if (SettingInfo.Enum == TargetInfo.Enum)
-	{
-		ButtonStyle.Normal.TintColor = Color_Highlight;
-	}
-	else
-	{
-		SetVisibility(ESlateVisibility::Visible);
-	}
-
-	SetStyle(ButtonStyle);
+	auto* Interface = Cast<IOptionInterface>(ChildWidget);
+	Interface->InitOption(OptionData.Category, OptionData.Values);
+	
+	TextBlock->SetText(OptionData.Name);
 }
 
 #pragma endregion

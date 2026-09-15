@@ -18,9 +18,16 @@ protected:
 
 #pragma endregion
 
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
+
+#pragma endregion
+
 #pragma region Button
 
-protected:
+private:
 	UFUNCTION()
 	void Click_Setting();
 
@@ -30,7 +37,7 @@ protected:
 	UFUNCTION()
 	void Click_Quit();
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> Button_Resume;
 

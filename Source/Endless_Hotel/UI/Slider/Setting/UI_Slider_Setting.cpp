@@ -2,24 +2,68 @@
 
 #include "UI/Slider/Setting/UI_Slider_Setting.h"
 #include "UI/Controller/UI_Controller.h"
-#include "UI/HUD/InGame/UI_HUD_InGame.h"
-#include "UI/CheckBox/Setting/UI_CheckBox_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
-#include "UI/PopUp/Setting/UI_PopUp_Option.h"
+#include "UI/CheckBox/Setting/UI_CheckBox_Setting.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include "Sound/SoundController.h"
-#include <Sound/SoundClass.h>
 #include <Kismet/GameplayStatics.h>
-#include <Components/Image.h>
 #include <Components/TextBlock.h>
+#include <Components/Image.h>
+#include <Blueprint/WidgetTree.h>
 
-#pragma region Base
+#pragma region Interface
 
-void UUI_Slider_Setting::NativeOnInitialized()
+void UUI_Slider_Setting::InitOption(EOptionCategory Category, TArray<FOptionValuePair> Values)
 {
-	Super::NativeOnInitialized();
+	OptionCategory = Category;
 
-	CheckBox_Off->OnCheckStateChanged.AddDynamic(this, &ThisClass::Click_CheckBox);
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
+	float Value = 0.f;
+
+	switch (OptionCategory)
+	{
+	case EOptionCategory::Master:
+		Value = Data.Master;
+		break;
+
+	case EOptionCategory::BGM:
+		Value = Data.BGM;
+		break;
+
+	case EOptionCategory::SFX:
+		Value = Data.SFX;
+		break;
+
+	case EOptionCategory::Voice:
+		Value = Data.Voice;
+		break;
+
+	case EOptionCategory::UI:
+		Value = Data.UI;
+		break;
+
+	case EOptionCategory::Sensitivity:
+		Value = Data.Sensitivity;
+		break;
+
+	case EOptionCategory::Brightness:
+		Value = Data.Brightness;
+		break;
+	}
+
+	Slide_Slider(Value);
+
+	TArray<UWidget*> Childs;
+	WidgetTree->GetChildWidgets(GetRootWidget(), OUT Childs);
+	for (auto* Child : Childs)
+	{
+		if (auto* CheckBox = Cast<UUI_CheckBox_Setting>(Child))
+		{
+			CheckBox->InitOption(Category, Values);
+			break;
+		}
+	}
 }
 
 #pragma endregion
@@ -30,10 +74,10 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 {
 	Super::Slide_Slider(Value);
 
-	Text_Value->SetText(FText::FromString(FString::FromInt(Value * 100)));
+	TextBlock->SetText(FText::FromString(FString::FromInt(Value * 100)));
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
+	FSaveData_Setting& Data = UI_Setting->GetSettingData();
 
 	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
 
@@ -41,164 +85,45 @@ void UUI_Slider_Setting::Slide_Slider(float Value)
 	{
 	case EOptionCategory::Master:
 		Data.Master = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableMaster);
+		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.MuteMaster);
 		break;
 
 	case EOptionCategory::BGM:
 		Data.BGM = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableBGM);
+		SoundCon->SetSoundClassValue(ESoundClassType::BGM, Value * Data.MuteBGM);
 		break;
 
 	case EOptionCategory::SFX:
 		Data.SFX = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableSFX);
+		SoundCon->SetSoundClassValue(ESoundClassType::SFX, Value * Data.MuteSFX);
 		break;
 
 	case EOptionCategory::Voice:
 		Data.Voice = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableVoice);
+		SoundCon->SetSoundClassValue(ESoundClassType::Voice, Value * Data.MuteVoice);
 		break;
 
-	case EOptionCategory::Interface:
-		Data.Interface = Value;
-		SoundCon->SetSoundClassValue(ESoundClassType::Master, Value * Data.EnableInterface);
+	case EOptionCategory::UI:
+		Data.UI = Value;
+		SoundCon->SetSoundClassValue(ESoundClassType::UI, Value * Data.MuteUI);
 		break;
 
 	case EOptionCategory::Sensitivity:
 	{
-		auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		if (!PC) break; // 메인 메뉴의 경우 PC가 없음
-		PC->SetLookSensitivity(Value);
-
 		Data.Sensitivity = Value;
+		AEHPlayerController* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		PC->SetLookSensitivity(Value);
 		break;
 	}
-
 	case EOptionCategory::Brightness:
-	{
-		auto* UI_Option = GetTypedOuter<UUI_PopUp_Option>();
-		UImage* Image_Brightness = Cast<UImage>(UI_Option->GetWidgetFromName(TEXT("Image_Brightness")));
+		UImage* Image_Brightness = Cast<UImage>(GetWidgetFromName(TEXT("Image_Brightness")));
 		FLinearColor Color = Image_Brightness->GetColorAndOpacity();
 		float AlphaValue = 0.05f + Value * 0.95f;
-
 		Color.A = AlphaValue;
 		Image_Brightness->SetColorAndOpacity(Color);
 
-		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-		if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
-		{
-			UI_InGame->SetBrightness(AlphaValue);
-		}
-
 		Data.Brightness = Value;
 		break;
-	}
-	}
-}
-
-#pragma endregion
-
-#pragma region CheckBox
-
-void UUI_Slider_Setting::Click_CheckBox(bool bIsCheck)
-{
-	ShowOffImage(bIsCheck);
-
-	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
-	FSaveData_Setting& Data = UI_Setting->Data_Setting;
-
-	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-
-	switch (OptionCategory)
-	{
-	case EOptionCategory::Master:
-	{
-		if (bIsCheck)
-		{
-			Data.EnableMaster = 1;
-			SoundCon->SetSoundClassValue(ESoundClassType::Master, Data.Master);
-		}
-		else
-		{
-			Data.EnableMaster = 0;
-			SoundCon->SetSoundClassValue(ESoundClassType::Master, 0);
-		}
-		break;
-	}
-
-	case EOptionCategory::BGM:
-	{
-		if (bIsCheck)
-		{
-			Data.EnableBGM = 1;
-			SoundCon->SetSoundClassValue(ESoundClassType::BGM, Data.BGM);
-		}
-		else
-		{
-			Data.EnableBGM = 0;
-			SoundCon->SetSoundClassValue(ESoundClassType::BGM, 0);
-		}
-		break;
-	}
-
-	case EOptionCategory::SFX:
-	{
-		if (bIsCheck)
-		{
-			Data.EnableSFX = 1;
-			SoundCon->SetSoundClassValue(ESoundClassType::SFX, Data.SFX);
-		}
-		else
-		{
-			Data.EnableSFX = 0;
-			SoundCon->SetSoundClassValue(ESoundClassType::SFX, 0);
-		}
-		break;
-	}
-
-	case EOptionCategory::Voice:
-	{
-		if (bIsCheck)
-		{
-			Data.EnableVoice = 1;
-			SoundCon->SetSoundClassValue(ESoundClassType::Voice, Data.Voice);
-		}
-		else
-		{
-			Data.EnableVoice = 0;
-			SoundCon->SetSoundClassValue(ESoundClassType::Voice, 0);
-		}
-		break;
-	}
-
-	case EOptionCategory::Interface:
-	{
-		if (bIsCheck)
-		{
-			Data.EnableInterface = 1;
-			SoundCon->SetSoundClassValue(ESoundClassType::UI, Data.Interface);
-		}
-		else
-		{
-			Data.EnableInterface = 0;
-			SoundCon->SetSoundClassValue(ESoundClassType::UI, 0);
-		}
-		break;
-	}
-	}
-}
-
-void UUI_Slider_Setting::ShowOffImage(bool bIsCheck)
-{
-	if (bIsCheck)
-	{
-		Image_Off->SetVisibility(ESlateVisibility::Collapsed);
-		CheckBox_Off->SetCheckedState(ECheckBoxState::Checked);
-	}
-	else
-	{
-		Image_Off->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		CheckBox_Off->SetCheckedState(ECheckBoxState::Unchecked);
 	}
 }
 

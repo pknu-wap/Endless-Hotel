@@ -63,7 +63,7 @@ protected:
 #pragma region Interact
 
 protected:
-	virtual void Interact_Implementation(AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interacter) override;
 	void StopMusicBox();
 
 #pragma endregion

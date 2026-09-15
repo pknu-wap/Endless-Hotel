@@ -49,7 +49,7 @@ void AAnomaly_Generator::BeginPlay()
 {
 	Super::BeginPlay();
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::SpawnAnomaly);
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::SpawnAnomaly);
 	bIsInitialFloor = true;
 }
 
@@ -71,6 +71,7 @@ void AAnomaly_Generator::SpawnAnomaly()
 		CurrentData.AnomalyID = NormalData.ID;
 		CurrentData.DataLayer = NormalData.DataLayer;
 		CurrentData.EventClass = NormalData.Event;
+		CurrentData.Rule = NormalData.Rule;
 	}
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
 	CurrentAnomaly = SpawnFromInfo(CurrentData, GetLevel());
@@ -140,6 +141,7 @@ AAnomaly_Event* AAnomaly_Generator::SpawnFromInfo(const FAnomalySpawnInfo& Info,
 	if (Spawned)
 	{
 		Spawned->AnomalyID = Info.AnomalyID;
+		Spawned->Rule = Info.Rule;
 	}
 	return Spawned;
 }

@@ -28,7 +28,7 @@ void AAnomaly_Event::BeginPlay()
 	TriggerBox->SetWorldTransform(TriggerBox_Transform);
 
 	auto* SubSystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	SubSystem->FloorChange_Disable.AddUniqueDynamic(this, &ThisClass::DisableAnomaly);
+	SubSystem->FloorChange_Disable.AddUObject(this, &ThisClass::DisableAnomaly);
 }
 
 #pragma endregion

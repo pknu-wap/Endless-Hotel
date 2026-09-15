@@ -28,16 +28,14 @@ void AAnomaly_Object_Base::BeginPlay()
 
     OriginalTransform = GetActorTransform();
     
-    auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
     auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    FloorSub->FloorChange_Reset.AddUniqueDynamic(this, &ThisClass::Reset);
     AnomalySub->RegisterAnomalyObject(this);
 }
 
 void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-    auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-    FloorSub->FloorChange_Reset.RemoveDynamic(this, &ThisClass::Reset);
+    auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+    AnomalySub->UnRegisterAnomalyObject(this);
 
     SetActorTransform(OriginalTransform);
 
@@ -57,7 +55,7 @@ void AAnomaly_Object_Base::Reset()
 
     SetActorTransform(OriginalTransform);
 
-    Component_Interact->RestoreInteract();
+    Component_Interact->ActiveInteract(true);
 
     Object->SetSimulatePhysics(false);
     Object->SetEnableGravity(false);
@@ -79,7 +77,7 @@ void AAnomaly_Object_Base::SetOwnerAnomalyEvent(AAnomaly_Event* NewEvent)
 
 #pragma region Interact
 
-void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
+void AAnomaly_Object_Base::Interact(AEHCharacter* Interacter)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
     auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
@@ -101,7 +99,7 @@ void AAnomaly_Object_Base::Interact_Implementation(AEHCharacter* Interacter)
             {
                 bSolved = !bSolved;
             }
-            Component_Interact->RestoreInteract();
+            Component_Interact->ActiveInteract(true);
         }
         else
         {
@@ -132,7 +130,7 @@ void AAnomaly_Object_Base::AllowNextInteract()
 {
     if (IsValid(Component_Interact))
     {
-        Component_Interact->RestoreInteract();
+        Component_Interact->ActiveInteract(true);
     }
 }
 

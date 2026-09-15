@@ -22,10 +22,10 @@ void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     auto& AssetManager = UEHAssetManager::Get();
     AssetManager.InitAnomalyEntries();
 
-    const FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
-    const FSaveData_Manual Data_Manual = USaveManager::LoadData_Manual();
-    bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
-    AnomalyRules = Data_Manual.ActiveRules;
+	const FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
+	const FSaveData_Progression Data_Progression = USaveManager::LoadData_Progression();
+	bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
+	AnomalyRules = Data_Progression.ActiveRules;
 
     bool bIsClear = false;
     if (const UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
@@ -82,11 +82,12 @@ void UAnomalyPoolSubsystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
     UClass* ActorClass = Object->GetClass();
     AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
 
-    UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
-    if (FloorSys)
-    {
-        FloorSys->FloorChange_Reset.AddUniqueDynamic(Object, &AAnomaly_Object_Base::Reset);
-    }
+    UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSys)
+	{
+        FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::Reset);
+        ResetHandles.Add(Object, Handle);
+	}
 
     const UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
     if (DataLayerSys && DataLayerSys->IsDataLayerVisited(DataLayerSys->GetCurrentDataLayer()))
@@ -102,6 +103,13 @@ void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object
         return;
     }
 
+    FDelegateHandle* Handle = ResetHandles.Find(Object);
+    UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    {
+        FloorSys->FloorChange_Reset.Remove(*Handle);
+    }
+    ResetHandles.Remove(Object);
+
     UClass* TargetClass = Object->GetClass();
     if (FAnomalyObjectArray* FoundStruct = AnomalyObjectPool.Find(TargetClass))
     {
@@ -111,10 +119,12 @@ void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object
             AnomalyObjectPool.Remove(TargetClass);
         }
 
-        UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr;
-        if (VerdictSys && IsValid(VerdictSys->GetCurrentAnomaly()))
+        if (UAnomalyVerdictSubsystem* VerdictSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>() : nullptr)
         {
-            VerdictSys->GetCurrentAnomaly()->LinkedObjects.Remove(Object);
+            if (IsValid(VerdictSys->GetCurrentAnomaly()))
+            {
+                VerdictSys->GetCurrentAnomaly()->LinkedObjects.Remove(Object);
+            }
         }
     }
 }
@@ -127,9 +137,9 @@ void UAnomalyPoolSubsystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
     AnomalyRules.AddUnique(AnomalyRule);
 
-    FSaveData_Manual SavedRules;
-    SavedRules.ActiveRules = AnomalyRules;
-    USaveManager::SaveData_Manual(SavedRules);
+	FSaveData_Progression SavedRules;
+	SavedRules.ActiveRules = AnomalyRules;
+	USaveManager::SaveData_Progression(SavedRules);
 
     InitializePool();
     OnAddAnomalyRule.Broadcast(AnomalyRule);
@@ -139,14 +149,13 @@ void UAnomalyPoolSubsystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
     AnomalyRules.Remove(AnomalyRule);
 
+	FSaveData_Progression SavedRules;
+	SavedRules.ActiveRules = AnomalyRules;
+	USaveManager::SaveData_Progression(SavedRules);
     FakeManualEntries.RemoveAll([AnomalyRule](const FFakeManualEntry& Entry)
         {
             return Entry.RealRuleToSolve == AnomalyRule;
         });
-
-    FSaveData_Manual SavedRules;
-    SavedRules.ActiveRules = AnomalyRules;
-    USaveManager::SaveData_Manual(SavedRules);
 
     InitializePool();
     OnAddAnomalyRule.Broadcast(AnomalyRule);

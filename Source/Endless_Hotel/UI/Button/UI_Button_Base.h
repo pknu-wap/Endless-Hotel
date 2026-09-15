@@ -2,30 +2,24 @@
 
 #pragma once
 
-#include <CoreMinimal.h>
+#include "UI/UI_Base.h"
 #include <Components/Button.h>
+#include <CoreMinimal.h>
 #include <UI_Button_Base.generated.h>
 
-UCLASS(Meta = (DisableNativeTick))
-class ENDLESS_HOTEL_API UUI_Button_Base : public UButton
+UCLASS(Abstract, Meta = (DisableNativeTick))
+class ENDLESS_HOTEL_API UUI_Button_Base : public UUI_Base
 {
 	GENERATED_BODY()
 
-#pragma region Base
+#pragma region Button
+
+public:
+	UButton* GetButton() { return Button; }
 
 protected:
-	virtual TSharedRef<SWidget> RebuildWidget() override;
-
-#pragma endregion
-
-#pragma region Owner
-
-private:
-	void SetWidgetOwner();
-
-protected:
-	UPROPERTY()
-	TWeakObjectPtr<class UUI_Base> Owner;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button;
 
 #pragma endregion
 

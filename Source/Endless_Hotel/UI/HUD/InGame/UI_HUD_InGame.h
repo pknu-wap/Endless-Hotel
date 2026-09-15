@@ -20,12 +20,34 @@ protected:
 
 #pragma endregion
 
+#pragma region Active
+
+public:
+	virtual void ActiveWidget() override;
+
+#pragma endregion
+
 #pragma region Show
 
 public:
 	virtual void ShowWidget() override;
 
+#pragma endregion
+
+#pragma region Effect
+
+public:
+	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+
+private:
 	void StartInGameHUD(bool bIsStart);
+
+private:
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UBackgroundBlur> BackBlur;
+
+	FTimerHandle BlurHandle;
+	float CurrentStrength = 0.f;
 
 #pragma endregion
 
@@ -33,14 +55,9 @@ public:
 
 private:
 	void ShowCrosshair(bool bIsStart);
-
-	UFUNCTION()
 	void ChangeCrosshair(bool bCanInteract);
 
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UImage> Image_Crosshair_Center;
-
+private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_ShowCrosshair;
 
@@ -60,32 +77,9 @@ private:
 public:
 	void SetBrightness(float Value);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_Brightness;
-
-#pragma endregion
-
-#pragma region Blur
-
-public:
-	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
-	void RemoveEyeEffectBlur();
-
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<class UBackgroundBlur> BackBlur;
-
-	FTimerHandle BlurHandle;
-	float CurrentStrength = 0.f;
-
-#pragma endregion
-
-#pragma region Demo
-
-protected:
-	UFUNCTION()
-	void OpenDemoWidget();
 
 #pragma endregion
 
@@ -94,7 +88,7 @@ protected:
 public:
 	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UImage> Image_SubTitle;
 
@@ -107,15 +101,12 @@ protected:
 
 public:
 	void ShowDebugGameInfo(bool bActive);
-
-	UFUNCTION()
 	void ChangeDebugAnomaly();
 
 private:
-	UFUNCTION()
 	void AddDebugAnomalyRule(EAnomalyRule NewRule);
 
-protected:
+private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_Rule;
 

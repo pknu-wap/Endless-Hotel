@@ -150,7 +150,7 @@ static FAutoConsoleCommand RemoveSpawnAnomaly(
             const EAnomalyID AnomalyID = static_cast<EAnomalyID>(Value);
             auto& AssetManager = UEHAssetManager::Get();
             AssetManager.RemoveFromSpawnList(AnomalyID);
-
+            
             auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
             if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
             {
@@ -194,7 +194,7 @@ static FAutoConsoleCommand RemoveAllSpawnAnomaly(
                 const EAnomalyID ID = static_cast<EAnomalyID>(IDEnum->GetValueByIndex(Index));
                 AssetManager.RemoveFromSpawnList(ID);
             }
-
+            
             auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
             if (auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget()))
             {

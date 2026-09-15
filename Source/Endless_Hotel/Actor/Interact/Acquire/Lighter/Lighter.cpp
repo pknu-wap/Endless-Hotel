@@ -9,7 +9,7 @@ void ALighter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (USaveManager::LoadData_Tutorial().bHasFlash)
+	if (USaveManager::LoadData_Progression().bHasFlash)
 	{
 		Destroy();
 	}
@@ -21,9 +21,9 @@ void ALighter::BeginPlay()
 
 void ALighter::SaveAcquireData()
 {
-	FSaveData_Tutorial Data = USaveManager::LoadData_Tutorial();
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.bHasFlash = true;
-	USaveManager::SaveData_Tutorial(Data);
+	USaveManager::SaveData_Progression(Data);
 }
 
 #pragma endregion

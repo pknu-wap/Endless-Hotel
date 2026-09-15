@@ -6,50 +6,38 @@
 #include "UI/Controller/UI_Controller.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Actor/SandClock/SandClock.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include <Kismet/GameplayStatics.h>
+
+#pragma region Active
+
+void UUI_HUD_Loading::ActiveWidget()
+{
+	Super::ActiveWidget();
+
+	SpawnSandClock();
+}
+
+#pragma endregion
 
 #pragma region Show
 
 void UUI_HUD_Loading::ShowWidget()
 {
-	if (!IsValid(SandClock))
-	{
-		SandClock = GetWorld()->SpawnActor<ASandClock>(SandClockClass, ClockSpawnTrans);
-	}
+	Super::ShowWidget();
 
-	bIsCompletedEyeEffect = false;
-
-	constexpr float PossessDuration = 2.f;
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCamera(ECameraType::SandClock, PossessDuration);
-
-	GetWorld()->GetTimerManager().SetTimer(PossessHandle, this, &ThisClass::OnPossessedCamera, PossessDuration, false);
-}
-
-void UUI_HUD_Loading::HideWidget()
-{
-	SandClock->StopRotateClock();
-
-	Super::HideWidget();
-}
-
-#pragma endregion
-
-#pragma region Loading
-
-bool UUI_HUD_Loading::IsLoadingCompleted()
-{
-	return Slider_Loading->IsLoadingCompleted();
-}
-
-void UUI_HUD_Loading::OnPossessedCamera()
-{
 	SandClock->StartRotateClock();
 
 	Slider_Loading->ResetLoadingPercentage();
 	Slider_Loading->bStartLoading = true;
 
-	Super::ShowWidget();
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			if (Slider_Loading->IsLoadingCompleted())
+			{
+				StartLoadingEyeEffect();
+			}
+		}), 0.01f, true);
 }
 
 #pragma endregion
@@ -60,24 +48,37 @@ void UUI_HUD_Loading::StartLoadingEyeEffect()
 {
 	Slider_Loading->bStartLoading = false;
 
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	auto* UI_Title = Cast<UUI_HUD_Title>(UICon->GetCachedWidget(EWidgetType::HUD_Title));
-
-	constexpr float StopDuration = 2.f;
-	UI_Title->StopBGM(StopDuration);
-
 	SetVisibility(ESlateVisibility::Hidden);
 
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->LoadingEyeEffect();
+	const float Duration = CameraManager->LoadingEyeEffect();
 
-	constexpr float WaitDuration = 2.f;
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, this, &ThisClass::WaitEyeEffect, WaitDuration, false);
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UI_Title = Cast<UUI_HUD_Title>(UICon->GetCachedWidget(EWidgetType::HUD_Title));
+	UI_Title->StopBGM(Duration);
+
+	GetWorld()->GetTimerManager().ClearTimer(WaitHandle);
+	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			SandClock->StopRotateClock();
+
+			Slider_Loading->bStartLoading = false;
+
+			auto* GameInstance = GetGameInstance<UEHGameInstance>();
+			GameInstance->SwitchDataLayer(EMapDataLayer::Hotel);
+		}), Duration, false);
 }
 
-void UUI_HUD_Loading::WaitEyeEffect()
+#pragma endregion
+
+#pragma region SandClock
+
+void UUI_HUD_Loading::SpawnSandClock()
 {
-	bIsCompletedEyeEffect = true;
+	if (!IsValid(SandClock))
+	{
+		SandClock = GetWorld()->SpawnActor<ASandClock>(SandClockClass, ClockSpawnTrans);
+	}
 }
 
 #pragma endregion

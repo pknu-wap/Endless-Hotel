@@ -23,17 +23,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Data Layer
-
-private:
-	UFUNCTION()
-	void OnChangedDataLayer(const EMapDataLayer& DataLayer);
-
-private:
-	bool bIsFirstHotel = true;
-
-#pragma endregion
-
 #pragma region Post Processing
 
 private:
@@ -43,16 +32,13 @@ private:
 	UPROPERTY()
 	TWeakObjectPtr<APostProcessVolume> PPV_EyeEffect;
 
-	UPROPERTY()
-	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
-
 #pragma endregion
 
 #pragma region Eye
 
 public:
 	void StartEyeEffect(bool bIsOpen);
-	void LoadingEyeEffect();
+	float LoadingEyeEffect();
 
 private:
 	void SetEyeEffect();
@@ -60,7 +46,7 @@ private:
 	UFUNCTION()
 	void OnValueChangedEyeEffect(float Value);
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UMaterial> M_EyeEffect;
 
@@ -68,16 +54,53 @@ protected:
 	TObjectPtr<UCurveFloat> CV_EyeOpen;
 
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
+	TObjectPtr<UCurveFloat> CV_EyeClose;
+
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> CV_Loading;
 
-private:
-	FTimerHandle WaitHandle;
+	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
 
 	UPROPERTY()
-	TObjectPtr<class UTimelineComponent> TimeLine_Eye;
+	TObjectPtr<class UTimelineComponent> TimeLine_EyeOpen;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_EyeClose;
 
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Loading;
+
+	FTimerHandle BindHandle;
+
+#pragma endregion
+
+#pragma region Hallucination
+
+public:
+	void StartHallucination(bool bIsStart);
+
+private:
+	void StopHallucination(bool bFaceCover);
+	void SetHallucination();
+
+	UFUNCTION()
+	void OnValueChangedHallucination(float Value);
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UMaterial> M_Hallucination;
+
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<UCurveFloat> CV_Hallucination;
+
+	UPROPERTY()
+	TWeakObjectPtr<UMaterialInstanceDynamic> DM_Hallucination;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Hallucination;
+
+	FTimerHandle DieHandle;
 
 #pragma endregion
 
@@ -88,9 +111,18 @@ public:
 	void PossessCamera(AActor* CameraOwner, const float& BlendTime = 0.f);
 	void PossessCameraToPlayer(const float& BlendTime = 0.f);
 
+private:
+	FTimerHandle WaitHandle;
+
+	UPROPERTY()
+	TWeakObjectPtr<AActor> WaitPossessTarget;
+
+	bool bIsPossessing = false;
+	float WaitPossessDuration = 0.f;
+
 #pragma endregion
 
-#pragma region Camera
+#pragma region Register
 
 public:
 	void RegisterCamera(const ECameraType& CameraType, class AEHCameraActor* Camera) { Cameras.Add(CameraType, Camera); }
@@ -98,6 +130,13 @@ public:
 private:
 	UPROPERTY()
 	TMap<ECameraType, TObjectPtr<class AEHCameraActor>> Cameras;
+
+#pragma endregion
+
+#pragma region Option
+
+public:
+	void ActiveCameraShake(bool bActive);
 
 #pragma endregion
 

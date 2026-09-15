@@ -75,7 +75,7 @@ void AComingDoll::OnDeathTrigger(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (auto* Player = Cast<AEHPlayer>(OtherActor))
 	{
-		Player->DieDelegate.Broadcast(EDeathReason::Attack);
+		Player->OnDie.Broadcast(EDeathReason::Attack);
 		DeathTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
