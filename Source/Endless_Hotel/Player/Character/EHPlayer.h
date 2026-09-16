@@ -18,9 +18,6 @@ class ENDLESS_HOTEL_API AEHPlayer : public AEHCharacter
 public:
 	AEHPlayer(const FObjectInitializer& ObjectInitializer);
 
-protected:
-	virtual void BeginPlay() override;
-
 #pragma endregion
 
 #pragma region Component
@@ -50,7 +47,7 @@ public:
 
 #pragma region Spawn
 
-private:
+public:
 	void RespawnPlayer();
 
 private:
