@@ -27,13 +27,14 @@ protected:
 
 public:
 	class UCameraComponent* GetCamera() { return Camera; }
+	void ToggleLighter();
 
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UCameraComponent> Camera;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UPointLightComponent> Lighter;
+	TObjectPtr<UStaticMeshComponent> Lighter;
 
 #pragma endregion
 
@@ -63,6 +64,7 @@ private:
 private:
 	void DiePlayer(const EDeathReason& DeathReason);
 	void RevivePlayer();
+	void FreezeAnimation(bool bFreeze, float Duration = 0.f);
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDie, const EDeathReason&);
@@ -74,6 +76,8 @@ public:
 private:
 	UPROPERTY(EditAnywhere, Category = "Die")
 	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;
+
+	bool bAlreadyDie = false;
 
 #pragma endregion
 

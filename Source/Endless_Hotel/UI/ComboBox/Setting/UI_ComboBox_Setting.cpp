@@ -40,7 +40,7 @@ void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionVa
 		break;
 	}
 
-	ComboBox->SetSelectedOption(EnumConverter::GetEnumAsName(Value));
+	ComboBox->SetSelectedOption(EnumConverter::GetNameFromEnum(Value));
 }
 
 #pragma endregion

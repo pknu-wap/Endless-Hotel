@@ -5,6 +5,7 @@
 #include "UI/HUD/UI_HUD_Base.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
+#include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
 #include <UI_HUD_InGame.generated.h>
 
@@ -31,6 +32,16 @@ public:
 
 public:
 	virtual void ShowWidget() override;
+
+#pragma endregion
+
+#pragma region Data Layer
+
+private:
+	void OnDataLayerChanged(const EMapDataLayer& Layer);
+
+private:
+	EMapDataLayer CurrentLayer = EMapDataLayer::Lobby;
 
 #pragma endregion
 

@@ -26,6 +26,9 @@ AEHPlayerController::AEHPlayerController(const FObjectInitializer& ObjectInitial
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bTickEvenWhenPaused = true;
+
+	bShouldPerformFullTickWhenPaused = true;
 }
 
 void AEHPlayerController::BeginPlay()
@@ -148,12 +151,6 @@ void AEHPlayerController::Move(const FInputActionValue& Value)
 		const FVector RightDirection = RotationMatrix.GetUnitAxis(EAxis::Y);
 
 		EHPlayer->AddMovementInput(ForwardDirection, MovementVector.Y);
-
-		if (bIsFaceCovering)
-		{
-			return;
-		}
-
 		EHPlayer->AddMovementInput(RightDirection, MovementVector.X);
 	}
 }
@@ -168,6 +165,12 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 	if (!bIsCameraFixed && LookVector.SizeSquared() > 0.0f)
 	{
 		AddYawInput(LookVector.X * LookSensitivity);
+
+		if (bIsFaceCovering)
+		{
+			return;
+		}
+
 		AddPitchInput(LookVector.Y * LookSensitivity);
 	}
 }
@@ -178,7 +181,7 @@ void AEHPlayerController::Look(const FInputActionValue& Value)
 
 void AEHPlayerController::OnRunStarted()
 {
-	if (!bCanRun)
+	if (!bCanRun || bIsFaceCovering)
 	{
 		return;
 	}
@@ -198,7 +201,7 @@ void AEHPlayerController::OnRunStarted()
 
 void AEHPlayerController::OnRunCompleted()
 {
-	if (!bCanRun)
+	if (!bCanRun || bIsFaceCovering)
 	{
 		return;
 	}
@@ -248,14 +251,13 @@ void AEHPlayerController::OnCrouchCompleted()
 
 void AEHPlayerController::OnFaceCoverStarted()
 {
-	if (!bCanFaceCover || bIsFaceCoverTransitioning)
+	if (!bCanFaceCover || bIsFaceCoverTransitioning || bIsLighterOn)
 	{
 		return;
 	}
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = true;
-	bIsCameraFixed = true;
 
 	if (bIsFaceCovering)
 	{
@@ -280,7 +282,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 	bIsFaceCoverTransitioning = true;
 	bIsFaceCovering = false;
-	bIsCameraFixed = false;
 
 	if (!bIsFaceCovering)
 	{
@@ -318,17 +319,14 @@ void AEHPlayerController::TurnPlayerHandLight()
 {
 	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
 
-	if (!bCanMove || !bHasFlash)
+	if (!bCanMove || !bHasFlash || bIsFaceCovering)
 	{
 		return;
 	}
 
-	auto Lighter = EHPlayer->FindComponentByClass<UPointLightComponent>();
+	EHPlayer->ToggleLighter();
 
-	if (Lighter)
-	{
-		Lighter->ToggleVisibility();
-	}
+	bIsLighterOn = !bIsLighterOn;
 }
 
 #pragma endregion

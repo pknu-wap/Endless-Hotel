@@ -2,6 +2,8 @@
 
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include "Anomaly/Generator/Anomaly_Generator.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "UI/Controller/UI_Controller.h"
@@ -262,5 +264,28 @@ static FAutoConsoleCommand SetNextAnomaly(
 
                 UE_LOG(LogTemp, Log, TEXT("[Debug] Next anomaly forced to: %s"), *Args[0]);
             }
+        })
+);
+
+static FAutoConsoleCommand ChangeProgression
+(
+    TEXT("EHDebug.GameSystem.ChangeProgression"),
+    TEXT("CheckIn: Start Lobby, Tutorial: Start Bed With Tutorial, Loop: Start Bed, Clear_Bad: Game Clear (Bad Ending), Clear_True: Game Clear (True Ending)"),
+    FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
+        {
+            if (Args.Num() != 1)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Invalid Argument"));
+                return;
+            }
+
+            FString Argument = Args[0];
+            EGameProgression Current = EnumConverter::GetEnumFromString<EGameProgression>(Argument);
+
+            FSaveData_Progression Data = USaveManager::LoadData_Progression();
+            Data.Progression = Current;
+            USaveManager::SaveData_Progression(Data);
+
+            UE_LOG(LogTemp, Warning, TEXT("Game Progression: %s"), *Argument);
         })
 );

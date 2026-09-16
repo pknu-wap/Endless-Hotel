@@ -146,6 +146,7 @@ public:
 	bool bIsPlayerDoorOpening = false;
 	bool bIsPlayerPushingDoor = false;
 	bool bHasFlash = false;
+	bool bIsLighterOn = false;
 
 public:
 	bool GetIsRunning() const { return bIsRunning; }
@@ -154,6 +155,7 @@ public:
 	bool GetIsButtonPressingCovering() const { return bIsButtonPressing; }
 	bool GetIsPlayerDoorOpening() const { return bIsPlayerDoorOpening; }
 	bool GetIsPlayerPushingDoor() const { return bIsPlayerPushingDoor; }
+	bool GetIsLighterOn() const { return bIsLighterOn; }
 
 #pragma endregion
 
