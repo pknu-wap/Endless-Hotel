@@ -4,6 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
+#include "Player/Character/EHPlayer.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Button.h>
 #include <Components/TextBlock.h>
@@ -36,6 +37,9 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 	{
 		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 		Subsystem->ResetGameSystem();
+
+		auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		Player->RespawnPlayer();
 
 		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 
