@@ -16,25 +16,20 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Fire : public AAnomaly_Object_EightExit
 public:
 	AAnomaly_Object_Fire(const FObjectInitializer& ObjectInitializer);
 
-#pragma endregion
-
-#pragma region Reset
-
-public:
-	virtual void Reset() override { Destroy(); }
+protected:
+	virtual void BeginPlay() override;
 
 #pragma endregion
 
 #pragma region Fire
 
-public:
+private:
 	void StartFire();
 
-protected:
+private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UNiagaraComponent> NiagaraComponent;
 
-protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AudioComponent;
 
@@ -47,11 +42,11 @@ protected:
 
 #pragma region Death
 
-protected:
+private:
 	UFUNCTION()
 	void OnDeathRange(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-protected:
+private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UBoxComponent> DeathTrigger;
 

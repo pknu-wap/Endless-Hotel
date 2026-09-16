@@ -47,6 +47,7 @@ void UEHPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
             bIsButtonPressingState = EHPC->GetIsButtonPressingCovering();
             bIsDoorOpeningState = EHPC->GetIsPlayerDoorOpening();
             bIsDoorPushingState = EHPC->GetIsPlayerPushingDoor();
+            bIsLighterOn = EHPC->GetIsLighterOn();
         }
     }
     const float InterpedSpeed = FMath::FInterpTo(ActualSpeed, TargetSpeed, DeltaSeconds, InterpSpeedValue);

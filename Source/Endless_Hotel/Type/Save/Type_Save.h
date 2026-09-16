@@ -164,7 +164,9 @@ enum class EGameProgression : uint8
 {
 	CheckIn		UMETA(DisplayName = "CheckIn"),
 	Tutorial	UMETA(DisplayName = "Tutorial"),
-	Loop		UMETA(DisplayName = "Loop")
+	Loop		UMETA(DisplayName = "Loop"),
+	Clear_Bad	UMETA(DisplayName = "Clear_Bad"),
+	Clear_True	UMETA(DisplayName = "Clear_True")
 };
 
 USTRUCT()

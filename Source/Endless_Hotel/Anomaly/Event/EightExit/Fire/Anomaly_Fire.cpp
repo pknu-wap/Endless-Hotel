@@ -2,7 +2,6 @@
 
 #include "Anomaly/Event/EightExit/Fire/Anomaly_Fire.h"
 #include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Candle.h"
-#include "Anomaly/Object/EightExit/Fire/Anomaly_Object_Fire.h"
 #include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
 #include <NiagaraFunctionLibrary.h>
@@ -31,7 +30,7 @@ void AAnomaly_Fire::DisableAnomaly()
 
 	if (EHPlayer.IsValid())
 	{
-		EHPlayer->OnCrouched.Remove(SmokeDelegate);
+		EHPlayer->OnCrouched.RemoveAll(this);
 	}
 
 	GetWorld()->GetTimerManager().ClearTimer(FireHandle);
@@ -48,8 +47,9 @@ void AAnomaly_Fire::DisableAnomaly()
 		Target->DestroyComponent();
 	}
 
-	SpawnedFires.Empty();
 	SpawnedSmokes.Empty();
+
+	FireSpawnIndex = 0;
 }
 
 #pragma endregion
@@ -70,23 +70,26 @@ void AAnomaly_Fire::StartFire()
 void AAnomaly_Fire::SpawnFires()
 {
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	SmokeDelegate = EHPlayer->OnCrouched.AddUObject(this, &ThisClass::SmokeTimer);
+	EHPlayer->OnCrouched.AddUObject(this, &ThisClass::SmokeTimer);
 
 	constexpr float FireSpawnDuration = 1.0f;
-	GetWorld()->GetTimerManager().SetTimer(FireHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			FActorSpawnParameters Params;
-			Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			auto* SpawnedFire = GetWorld()->SpawnActor<AAnomaly_Object_Fire>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator, Params);
-			SpawnedFire->StartFire();
+	GetWorld()->GetTimerManager().SetTimer(FireHandle, this, &ThisClass::SpawnFire, FireSpawnDuration, true);
+}
 
-			SpawnedFires.Add(SpawnedFire);
+void AAnomaly_Fire::SpawnFire()
+{
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Owner = this;
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			if (!FireSpawnPositions.IsValidIndex(FireSpawnIndex))
-			{
-				GetWorld()->GetTimerManager().ClearTimer(FireHandle);
-			}
-		}), FireSpawnDuration, true);
+	UWorld* World = GetWorld();
+	auto* SpawnedFire = World->SpawnActor<AActor>(FireClass, FireSpawnPositions[FireSpawnIndex++], FRotator::ZeroRotator, SpawnInfo);
+	SpawnedFires.Add(SpawnedFire);
+
+	if (!FireSpawnPositions.IsValidIndex(FireSpawnIndex))
+	{
+		World->GetTimerManager().ClearTimer(FireHandle);
+	}
 }
 
 #pragma endregion

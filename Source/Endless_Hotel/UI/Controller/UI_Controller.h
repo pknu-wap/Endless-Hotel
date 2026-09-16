@@ -17,7 +17,7 @@ class ENDLESS_HOTEL_API UUI_Controller : public UGameInstanceSubsystem
 #pragma region Open & Close
 
 public:
-	class UUI_Base* OpenWidget(const EWidgetType& WidgetType, float Duration = 0.01f);
+	class UUI_Base* OpenWidget(const EWidgetType& WidgetType, float Duration = 0.f);
 	void CloseWidget();
 
 private:

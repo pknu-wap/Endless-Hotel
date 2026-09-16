@@ -29,6 +29,9 @@ void UUI_HUD_Title::ShowWidget()
 	SetLogoImage();
 
 	PlayBGM();
+
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->RemoveAllEyeEffect();
 }
 
 #pragma endregion

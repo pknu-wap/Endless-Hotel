@@ -32,20 +32,19 @@ public:
 private:
 	void StartFire();
 	void SpawnFires();
+	void SpawnFire();
 
-protected:
+private:
 	UPROPERTY(EditAnywhere, Category = "Fire")
-	TSubclassOf<class AAnomaly_Object_Fire> FireClass;
+	TSubclassOf<AActor> FireClass;
 
 	UPROPERTY(EditAnywhere, Category = "Fire")
 	TArray<FVector> FireSpawnPositions;
 
-private:
 	UPROPERTY()
-	TArray<TObjectPtr<class AAnomaly_Object_Fire>> SpawnedFires;
+	TArray<TObjectPtr<AActor>> SpawnedFires;
 
 	FTimerHandle FireHandle;
-	FDelegateHandle SmokeDelegate;
 
 	uint8 FireSpawnIndex = 0;
 

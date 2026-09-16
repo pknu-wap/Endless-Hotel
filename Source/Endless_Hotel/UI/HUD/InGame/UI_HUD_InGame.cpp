@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
+#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Image.h>
@@ -26,8 +27,11 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
 	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
-	auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnDataLayerChanged);
+
+	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
+	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
 	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
 	VerdictSub->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
 }
@@ -44,14 +48,8 @@ void UUI_HUD_InGame::ActiveWidget()
 	ChangeDebugAnomaly();
 
 	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
-	const float Duration = bCheckInState ? 2.f : 0.f;
-
-	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-	CameraManager->PossessCameraToPlayer(Duration);
-
 	if (!bCheckInState)
 	{
-		CameraManager->StartEyeEffect(true);
 		StartInGameHUD(true);
 	}
 }
@@ -64,8 +62,26 @@ void UUI_HUD_InGame::ShowWidget()
 {
 	Super::ShowWidget();
 
+	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	CameraManager->PossessCameraToPlayer();
+
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
+}
+
+#pragma endregion
+
+#pragma region Data Layer
+
+void UUI_HUD_InGame::OnDataLayerChanged(const EMapDataLayer& Layer)
+{
+	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	if (CurrentLayer == EMapDataLayer::Lobby && !bCheckInState)
+	{
+		StartInGameHUD(true);
+	}
+
+	CurrentLayer = Layer;
 }
 
 #pragma endregion
@@ -181,7 +197,7 @@ void UUI_HUD_InGame::AddDebugAnomalyRule(EAnomalyRule NewRule)
 	for (auto Rule : AnomalySub->AnomalyRules)
 	{
 		UTextBlock* TextBlock = NewObject<UTextBlock>(this);
-		TextBlock->SetText(EnumConverter::GetEnumAsText<EAnomalyRule>(Rule));
+		TextBlock->SetText(EnumConverter::GetTextFromEnum<EAnomalyRule>(Rule));
 
 		VB_Rule->AddChildToVerticalBox(TextBlock);
 	}
@@ -191,8 +207,8 @@ void UUI_HUD_InGame::ChangeDebugAnomaly()
 {
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
-	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
-	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetEnumAsText<EAnomalyID>(VerdictSub->NextAnomalyID)));
+	Text_Current->SetText(FText::Format(FText::FromString(TEXT("현재: {0}")), EnumConverter::GetTextFromEnum<EAnomalyID>(VerdictSub->CurrentAnomalyID)));
+	Text_Next->SetText(FText::Format(FText::FromString(TEXT("다음: {0}")), EnumConverter::GetTextFromEnum<EAnomalyID>(VerdictSub->NextAnomalyID)));
 }
 
 #pragma endregion

@@ -47,14 +47,18 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Durati
 
 	WidgetStack.Add(WidgetType);
 
-	FTimerHandle ShowHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			EWidgetType WidgetType = WidgetStack.Top();
-			FWidgetInfo WidgetInfo = PDA_Widget->GetWidgetInfo(WidgetType);
-			UUI_Base* TopWidget = CachedWidgets[WidgetType];
-			TopWidget->ShowWidget();
-		}), Duration, false);
+	if (Duration <= 0.f)
+	{
+		CreatedWidget->ShowWidget();
+	}
+	else
+	{
+		FTimerHandle ShowHandle;
+		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, CreatedWidget]()
+			{
+				CreatedWidget->ShowWidget();
+			}), Duration, false);
+	}
 
 	SetInputMode(WidgetInfo.InputMode);
 
