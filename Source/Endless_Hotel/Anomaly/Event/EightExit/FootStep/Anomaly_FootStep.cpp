@@ -42,7 +42,6 @@ void AAnomaly_FootStep::ChangeFootStep(bool bIsStart)
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	auto* SkeletalMesh = Player->GetMesh();
 	auto* AnimInstance = Cast<UEHPlayerAnimInstance>(SkeletalMesh->GetAnimInstance());
-
-	AnimInstance->bIsAnomalyGenerated = bIsStart;
 }
+
 #pragma endregion

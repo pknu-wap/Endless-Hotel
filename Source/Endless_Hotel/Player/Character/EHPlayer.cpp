@@ -18,9 +18,9 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	Camera->SetupAttachment(GetMesh(), TEXT("HeadSocket"));
 	Camera->bUsePawnControlRotation = true;
 
-	Lighter = CreateDefaultSubobject<UPointLightComponent>(TEXT("Lighter"));
-	Lighter->SetVisibility(false);
-	Lighter->SetupAttachment(GetMesh());
+	Lighter = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Lighter"));
+	Lighter->SetVisibility(false, true);
+	Lighter->SetupAttachment(GetMesh(), TEXT("LighterSocket"));
 
 	bUseControllerRotationYaw = true;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
@@ -33,6 +33,15 @@ void AEHPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	RevivePlayer();
+}
+
+#pragma endregion
+
+#pragma region Component
+
+void AEHPlayer::ToggleLighter()
+{
+	Lighter->SetVisibility(!Lighter->IsVisible(), true);
 }
 
 #pragma endregion
@@ -77,9 +86,17 @@ void AEHPlayer::RespawnPlayer()
 
 void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 {
+	if (bAlreadyDie)
+	{
+		return;
+	}
+
+	bAlreadyDie = true;
+
 	UAnimMontage* AM_Die = DieMontage[DeathReason];
 	const float AnimLength = AM_Die->GetPlayLength();
 	PlayAnimMontage(AM_Die);
+	FreezeAnimation(true, AnimLength);
 
 	Camera->bUsePawnControlRotation = false;
 
@@ -102,7 +119,21 @@ void AEHPlayer::RevivePlayer()
 	
 	Camera->bUsePawnControlRotation = true;
 
+	FreezeAnimation(false);
+
+	bAlreadyDie = false;
+
 	OnRevive.Broadcast();
+}
+
+void AEHPlayer::FreezeAnimation(bool bFreeze, float Duration)
+{
+	const float FreezeDuration = bFreeze ? Duration - 0.3f : 0.1f;
+	FTimerHandle FreezeHandle;
+	GetWorld()->GetTimerManager().SetTimer(FreezeHandle, FTimerDelegate::CreateWeakLambda(this, [this, bFreeze]()
+		{
+			GetMesh()->bNoSkeletonUpdate = bFreeze;
+		}), FreezeDuration, false);
 }
 
 #pragma endregion

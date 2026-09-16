@@ -16,6 +16,7 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 	:Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bTickEvenWhenPaused = true;
 
 	TimeLine_EyeOpen = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeOpen"));
 	TimeLine_EyeClose = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeClose"));
@@ -37,7 +38,10 @@ void AEHPlayerCameraManager::BeginPlay()
 	SetHallucination();
 	DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), 0);
 	DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), 0);
-	
+
+	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnDataLayerChanged);
+
 	GetWorld()->GetTimerManager().SetTimer(BindHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			if (auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
@@ -48,6 +52,20 @@ void AEHPlayerCameraManager::BeginPlay()
 				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
 			}
 		}), 0.1f, true);
+}
+
+#pragma endregion
+
+#pragma region Data Layer
+
+void AEHPlayerCameraManager::OnDataLayerChanged(const EMapDataLayer& Layer)
+{
+	if (CurrentLayer == EMapDataLayer::Lobby)
+	{
+		StartEyeEffect(true);
+	}
+
+	CurrentLayer = Layer;
 }
 
 #pragma endregion
@@ -75,8 +93,20 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 {
 	bIsOpen ? TimeLine_EyeOpen->PlayFromStart() : TimeLine_EyeClose->PlayFromStart();
 
+	const float ParamValue = bIsOpen ? 0.f : 5.f;
+	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), ParamValue);
+
 	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
 	SoundCon->FadeSFXSound(bIsOpen);
+}
+
+void AEHPlayerCameraManager::RemoveAllEyeEffect()
+{
+	TimeLine_EyeOpen->Stop();
+	TimeLine_EyeClose->Stop();
+	TimeLine_Loading->Stop();
+
+	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 }
 
 float AEHPlayerCameraManager::LoadingEyeEffect()
@@ -188,12 +218,6 @@ void AEHPlayerCameraManager::PossessCamera(AActor* CameraOwner, const float& Ble
 	{
 		return;
 	}
-
-	TimeLine_EyeOpen->Stop();
-	TimeLine_EyeClose->Stop();
-	TimeLine_Loading->Stop();
-
-	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 5);
 
 	if (bIsPossessing)
 	{

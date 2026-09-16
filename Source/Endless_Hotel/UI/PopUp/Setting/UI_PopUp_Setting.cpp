@@ -60,14 +60,23 @@ void UUI_PopUp_Setting::ShowWidget()
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	CameraManager->PossessCamera(ECameraType::Gear, PossessDuration);
 
-	const float ShowDuration = Current == EMapDataLayer::Lobby ? 1.f : 0.01f;
-	FTimerHandle ShowHandle;
-	GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, PossessDuration]()
-		{
-			ShowCurrentCategoryWidget();
-			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-			TurnOnGearLight(true);
-		}), ShowDuration, false);
+	if (Current == EMapDataLayer::Lobby)
+	{
+		const float ShowDuration = 1.f;
+		FTimerHandle ShowHandle;
+		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				ShowCurrentCategoryWidget();
+				SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+				TurnOnGearLight(true);
+			}), ShowDuration, false);
+	}
+	else
+	{
+		ShowCurrentCategoryWidget();
+		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		TurnOnGearLight(true);
+	}
 
 	if (!IsValid(AC_Gear))
 	{

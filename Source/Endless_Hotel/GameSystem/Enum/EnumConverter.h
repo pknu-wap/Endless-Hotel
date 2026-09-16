@@ -8,7 +8,7 @@ class ENDLESS_HOTEL_API EnumConverter
 {
 public:
 	template <class EnumClass>
-	static FName GetEnumAsName(EnumClass EnumValue)
+	static FName GetNameFromEnum(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 
@@ -16,7 +16,7 @@ public:
 	}
 
 	template <class EnumClass>
-	static FString GetEnumAsString(EnumClass EnumValue)
+	static FString GetStringFromEnum(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 
@@ -24,10 +24,37 @@ public:
 	}
 
 	template <class EnumClass>
-	static FText GetEnumAsText(EnumClass EnumValue)
+	static FText GetTextFromEnum(EnumClass EnumValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
 
 		return EnumPtr->GetDisplayNameTextByValue(static_cast<int64>(EnumValue));
+	}
+
+	template <class EnumClass>
+	static EnumClass GetEnumFromName(const FName NameValue)
+	{
+		const UEnum* EnumPtr = StaticEnum<EnumClass>();
+		int64 IntValue = EnumPtr->GetValueByNameString(NameValue);
+
+		return static_cast<EnumClass>(IntValue);
+	}
+
+	template <class EnumClass>
+	static EnumClass GetEnumFromString(const FString StringValue)
+	{
+		const UEnum* EnumPtr = StaticEnum<EnumClass>();
+		int64 IntValue = EnumPtr->GetValueByNameString(StringValue);
+
+		return static_cast<EnumClass>(IntValue);
+	}
+
+	template <class EnumClass>
+	static EnumClass GetEnumFromText(const FText TextValue)
+	{
+		const UEnum* EnumPtr = StaticEnum<EnumClass>();
+		int64 IntValue = EnumPtr->GetValueByNameString(TextValue);
+
+		return static_cast<EnumClass>(IntValue);
 	}
 };

@@ -37,16 +37,19 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 		auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 		Subsystem->ResetGameSystem();
 
+		auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
 		constexpr float Duration = 2.f;
 		if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
 		{
 			UICon->OpenWidget(EWidgetType::HUD_InGame, Duration);
+
+			CameraManager->PossessCameraToPlayer(Duration);
 		}
 		else
 		{
 			UICon->OpenWidget(EWidgetType::HUD_Loading, Duration);
 
-			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 			CameraManager->PossessCamera(ECameraType::SandClock, Duration);
 		}
 		break;

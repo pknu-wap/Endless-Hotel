@@ -60,7 +60,7 @@ template <typename EnumType>
 FORCEINLINE void UUI_ComboBox_Base::GenerateItem(EnumType InKey, FText Trans)
 {
 	UEnum* EnumObj = StaticEnum<EnumType>();
-	const FName Key = EnumConverter::GetEnumAsName(InKey);
+	const FName Key = EnumConverter::GetNameFromEnum(InKey);
 	ComboBox->AddOption(Key);
 
 	Translations.Add(Key, Trans);
