@@ -35,7 +35,7 @@ protected:
 	TObjectPtr<class UAudioComponent> AC;
 
 	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class USoundWave> Sound_Radio;
+	TArray<TObjectPtr<class USoundWave>> Sound_Radio;
 
 #pragma endregion
 

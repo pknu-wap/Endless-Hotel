@@ -4,6 +4,7 @@
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
+#include <Sound/SoundWave.h>
 
 #pragma region Base
 
@@ -38,7 +39,8 @@ void AAnomaly_Object_Radio::BeginPlay()
 
 void AAnomaly_Object_Radio::PointerMoving()
 {
-	AC->Sound = Sound_Radio;
+	int32 RandomIndex = FMath::RandRange(0, Sound_Radio.Num() - 1);
+	AC->SetSound(Sound_Radio[RandomIndex]);
 	AC->Play();
 
 	Timeline_PointerSpin->PlayFromStart();
