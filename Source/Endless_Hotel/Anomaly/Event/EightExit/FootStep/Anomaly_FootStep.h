@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_FootStep : public AAnomaly_Event_EightExit
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 #pragma endregion
 
@@ -26,6 +27,10 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "FootStep")
 	TSubclassOf<class AAnomaly_Object_FootStep> FootStepClass;
+
+	FTimerHandle SpawnHandle;
+
+	bool bIsLeft = true;
 
 #pragma endregion
 
