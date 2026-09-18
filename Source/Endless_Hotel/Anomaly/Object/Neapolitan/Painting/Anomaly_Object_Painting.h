@@ -138,16 +138,29 @@ protected:
 #pragma region Die
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Die|Watching")
+	UPROPERTY(EditAnywhere, Category = "Watching")
 	float MaxWatchTime = 5;
 	
 	bool bIsAnomaly = false;
 
+	UPROPERTY(EditAnywhere, Category = "Monster")
+	TObjectPtr<class USkeletalMeshComponent> Mesh_Monster;
+
+	UPROPERTY(EditAnywhere, Category = "Watching")
+	float DeathDelayAfterMontage = 0.3f;
+
 private:
+	TWeakObjectPtr<class AEHPlayer> WatchingPlayer;
 	float CurrentWatchTime = 0.0f;
+	FTimerHandle WatchingTimerHandle;
+	FTimerHandle DeathTimerHandle;
 
 public:
 	void DieWatchingPainting();
+
+private:
+	void PlayMonsterAppear();
+	void KillWatchingPlayer();
 
 #pragma endregion
 

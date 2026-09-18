@@ -2,7 +2,6 @@
 
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Component/Float/FloatComponent.h"

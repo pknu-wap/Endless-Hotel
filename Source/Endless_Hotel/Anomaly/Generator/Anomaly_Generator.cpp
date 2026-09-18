@@ -2,14 +2,12 @@
 
 #include "Anomaly_Generator.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include <EngineUtils.h>
 
 #pragma region AnomalyObject
 

@@ -7,10 +7,7 @@
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
-#include "Player/Controller/EHPlayerController.h"
 #include "UI/Controller/UI_Controller.h"
-#include <Kismet/GameplayStatics.h>
-#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region CrawlChild
 

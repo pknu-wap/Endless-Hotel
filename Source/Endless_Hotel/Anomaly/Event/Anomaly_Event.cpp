@@ -3,13 +3,10 @@
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
-#include <Kismet/GameplayStatics.h>
 #include <Components/BoxComponent.h>
-#include <EngineUtils.h>
 
 #pragma region Base
 

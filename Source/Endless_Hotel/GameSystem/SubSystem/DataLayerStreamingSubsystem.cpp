@@ -2,8 +2,6 @@
 
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <WorldPartition/WorldPartitionSubsystem.h>
 #include <WorldPartition/DataLayer/DataLayerInstance.h>
 #include <Engine/World.h>
