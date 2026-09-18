@@ -28,13 +28,6 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 	OnDie.AddUObject(this, &ThisClass::DiePlayer);
 }
 
-void AEHPlayer::BeginPlay()
-{
-	Super::BeginPlay();
-
-	RevivePlayer();
-}
-
 #pragma endregion
 
 #pragma region Component
