@@ -17,13 +17,13 @@ public:
 	AAnomaly_Object_HandPrint(const FObjectInitializer& ObjectInitializer);
 
 #pragma endregion
-
+	 
 #pragma region HandPrint
 
 public:
 	void ShowHandPrint(uint8 Index);
 
-protected:
+private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UDecalComponent> Decal_HandPrint;
 
