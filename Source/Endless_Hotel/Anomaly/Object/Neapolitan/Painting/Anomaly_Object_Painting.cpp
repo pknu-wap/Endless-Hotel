@@ -3,6 +3,7 @@
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
+#include "Character/AI/ShadowMonster/ShadowMonsterAnimInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
@@ -37,6 +38,10 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
+
+	Mesh_Monster = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh_Monster"));
+	Mesh_Monster->SetupAttachment(Object);
+	Mesh_Monster->SetVisibility(false);
 }
 
 void AAnomaly_Object_Painting::Reset()
@@ -54,6 +59,21 @@ void AAnomaly_Object_Painting::Reset()
 	Niagara_Blood_Left->SetVisibility(false);
 	Niagara_Blood_Right->Activate(false);
 	Niagara_Blood_Right->SetVisibility(false);
+
+	if (Mesh_Monster)
+	{
+		Mesh_Monster->Stop();
+		Mesh_Monster->SetVisibility(false);
+
+		if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
+		{
+			MonsterAnim->bMonsterAppear = true;
+		}
+	}
+
+	bIsAnomaly = false;
+	CurrentWatchTime = 0.0f;
+	WatchingPlayer = nullptr;
 }
 
 #pragma endregion
@@ -206,8 +226,7 @@ void AAnomaly_Object_Painting::ChangePicture()
 void AAnomaly_Object_Painting::DieWatchingPainting()
 {
 	this->bIsAnomaly = true;
-	FTimerHandle WatchingTimeline;
-	GetWorld()->GetTimerManager().SetTimer(WatchingTimeline, FTimerDelegate::CreateWeakLambda(this, [&WatchingTimeline, this]()
+	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 			if (!Player) 
@@ -225,8 +244,9 @@ void AAnomaly_Object_Painting::DieWatchingPainting()
 			{
 				if (CurrentWatchTime >= MaxWatchTime)
 				{
-					GetWorld()->GetTimerManager().ClearTimer(WatchingTimeline);
-					Player->OnDie.Broadcast(EDeathReason::Watch);
+					GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
+					WatchingPlayer = Player;
+					PlayMonsterAppear();
 					return;
 				}
 				CurrentWatchTime += 0.01;
@@ -236,6 +256,28 @@ void AAnomaly_Object_Painting::DieWatchingPainting()
 				CurrentWatchTime = 0;
 			}
 		}), 0.01f, true);
+}
+
+void AAnomaly_Object_Painting::PlayMonsterAppear()
+{
+	Mesh_Monster->SetVisibility(true);
+	if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
+	{
+		MonsterAnim->bMonsterAppear = true;
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			KillWatchingPlayer();
+		}), DeathDelayAfterMontage, false);
+}
+
+void AAnomaly_Object_Painting::KillWatchingPlayer()
+{
+	if (WatchingPlayer.IsValid())
+	{
+		WatchingPlayer->OnDie.Broadcast(EDeathReason::Watch);
+	}
 }
 
 #pragma endregion

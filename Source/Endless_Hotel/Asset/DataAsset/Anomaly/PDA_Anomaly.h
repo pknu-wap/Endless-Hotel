@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Type/Anomaly/Type_AnomalyID.h"
-#include "Type/Level/Type_Level.h"
 #include "Type/Anomaly/Type_AnomalyEntry.h"
 #include <CoreMinimal.h>
 #include <Engine/DataAsset.h>

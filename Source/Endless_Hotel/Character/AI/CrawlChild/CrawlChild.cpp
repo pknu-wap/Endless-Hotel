@@ -4,7 +4,6 @@
 #include "CrawlChildAnimInstance.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Anomaly/Object/EightExit/CrawlChild/Anomaly_Object_CrawlChild.h"
-#include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/BoxComponent.h>

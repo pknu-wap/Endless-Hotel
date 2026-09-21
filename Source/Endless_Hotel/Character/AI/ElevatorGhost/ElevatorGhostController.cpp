@@ -6,7 +6,6 @@
 #include "Actor/Elevator/Elevator.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Kismet/GameplayStatics.h>
-#include <Navigation/PathFollowingComponent.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
