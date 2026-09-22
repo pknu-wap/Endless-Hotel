@@ -29,6 +29,7 @@ void UTutorialComponent::BeginPlay()
 	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	TriggerBox->SetWorldTransform(TriggerTrans);
 	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->SetCollisionProfileName(TEXT("OverlapAll"));
 	TriggerBox->RegisterComponent();
 
 	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
