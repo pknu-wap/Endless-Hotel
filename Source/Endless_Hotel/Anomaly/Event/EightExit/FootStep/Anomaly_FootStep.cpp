@@ -39,11 +39,12 @@ void AAnomaly_FootStep::SpawnFootStep()
 			FTransform SpawnTrans;
 
 			FVector SpawnLoc = Player->GetActorLocation();
-			constexpr float BackOffset = 50.0f;
+			constexpr float BackOffset = 70.0f;
+			const float SideOffset = bIsLeft ? 10.f : -10.f;
 			SpawnLoc -= Player->GetActorForwardVector() * BackOffset;
+			SpawnLoc += Player->GetActorRightVector() * SideOffset;
 			SpawnLoc.Z = 600.f;
 			SpawnTrans.SetLocation(SpawnLoc);
-
 			SpawnTrans.SetRotation(Player->GetActorRotation().Quaternion());
 
 			float LeftValue = bIsLeft ? 1.f : -1.f;
@@ -53,8 +54,11 @@ void AAnomaly_FootStep::SpawnFootStep()
 			{
 				GetWorld()->SpawnActor<AAnomaly_Object_FootStep>(FootStepClass, SpawnTrans);
 				bIsLeft = !bIsLeft;
+				SpawnDuration = FMath::Clamp(SpawnDuration - 0.02f, 0.3f, 1.f);
 			}
-		}), 0.3f, true);
+
+			SpawnFootStep();
+		}), SpawnDuration, false);
 }
 
 #pragma endregion
