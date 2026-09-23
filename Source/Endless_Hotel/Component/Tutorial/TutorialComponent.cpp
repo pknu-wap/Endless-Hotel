@@ -26,10 +26,13 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
 	TriggerBox = NewObject<UBoxComponent>(Owner.Get());
-	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	TriggerBox->SetWorldTransform(TriggerTrans);
 	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBeginOverlap);
 	TriggerBox->SetCollisionProfileName(TEXT("OverlapAll"));
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	TriggerBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	TriggerBox->SetWorldTransform(TriggerTrans);
 	TriggerBox->RegisterComponent();
 
 	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
@@ -98,7 +101,10 @@ void UTutorialComponent::HideTutorialWidgetForce()
 		return;
 	}
 
-	UI_Tutorial->HideWidget();
+	if (UI_Tutorial.IsValid())
+	{
+		UI_Tutorial->HideWidget();
+	}
 
 	if (Comp_Interact.IsValid())
 	{

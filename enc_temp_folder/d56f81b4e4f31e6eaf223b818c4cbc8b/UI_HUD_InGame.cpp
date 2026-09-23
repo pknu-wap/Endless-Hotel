@@ -28,6 +28,8 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnDataLayerChanged);
+
 	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
 	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
@@ -71,6 +73,21 @@ void UUI_HUD_InGame::ShowWidget()
 	{
 		ShowCrosshair(true);
 	}
+}
+
+#pragma endregion
+
+#pragma region Data Layer
+
+void UUI_HUD_InGame::OnDataLayerChanged(const EMapDataLayer& Layer)
+{
+	/*bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	if (CurrentLayer == EMapDataLayer::Lobby && !bCheckInState)
+	{
+		StartInGameHUD(true);
+	}
+
+	CurrentLayer = Layer;*/
 }
 
 #pragma endregion
