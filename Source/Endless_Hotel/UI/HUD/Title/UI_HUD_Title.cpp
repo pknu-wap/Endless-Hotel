@@ -62,6 +62,11 @@ void UUI_HUD_Title::StopBGM(float Duration)
 
 void UUI_HUD_Title::PlayBGM()
 {
+	if (IsValid(AC))
+	{
+		AC->DestroyComponent();
+	}
+
 	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
 	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
 	AC->Play();

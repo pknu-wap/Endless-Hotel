@@ -15,6 +15,11 @@ struct FSaveData_Setting
 	GENERATED_BODY()
 
 public:
+	// Tutorial
+	UPROPERTY(SaveGame)
+	bool bDontShowAgain = false;
+
+public:
 	// Screen
 	UPROPERTY(SaveGame)
 	EOptionValue Resolution = EOptionValue::FHD;

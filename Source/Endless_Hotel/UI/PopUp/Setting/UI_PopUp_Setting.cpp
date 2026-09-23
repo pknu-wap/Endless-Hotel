@@ -3,6 +3,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Setting.h"
 #include "UI/PopUp/Setting/UI_PopUp_Option.h"
 #include "UI/Button/Setting/UI_Button_Category.h"
+#include "UI/Controller/UI_Controller.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
@@ -60,15 +61,22 @@ void UUI_PopUp_Setting::ShowWidget()
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	CameraManager->PossessCamera(ECameraType::Gear, PossessDuration);
 
+	auto* UICon = GameInstance->GetSubsystem<UUI_Controller>();
+	FSaveData_Setting Data = USaveManager::LoadData_Setting();
 	if (Current == EMapDataLayer::Lobby)
 	{
 		const float ShowDuration = 1.f;
 		FTimerHandle ShowHandle;
-		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		GetWorld()->GetTimerManager().SetTimer(ShowHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon, Data]()
 			{
 				ShowCurrentCategoryWidget();
 				SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 				TurnOnGearLight(true);
+				if (!Data.bDontShowAgain && !bShowTutorial)
+				{
+					bShowTutorial = true;
+					UICon->OpenWidget(EWidgetType::PopUp_SettingTutorial, false);
+				}
 			}), ShowDuration, false);
 	}
 	else
@@ -76,6 +84,11 @@ void UUI_PopUp_Setting::ShowWidget()
 		ShowCurrentCategoryWidget();
 		SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		TurnOnGearLight(true);
+		if (!Data.bDontShowAgain && !bShowTutorial)
+		{
+			bShowTutorial = true;
+			UICon->OpenWidget(EWidgetType::PopUp_SettingTutorial, false);
+		}
 	}
 
 	if (!IsValid(AC_Gear))
@@ -88,6 +101,7 @@ void UUI_PopUp_Setting::ShowWidget()
 void UUI_PopUp_Setting::HideWidget()
 {
 	bRotateGear = false;
+	bShowTutorial = false;
 
 	AC_Gear->Stop();
 
