@@ -35,6 +35,13 @@ public:
 
 #pragma endregion
 
+#pragma region Data Layer
+
+private:
+	EMapDataLayer CurrentLayer = EMapDataLayer::Lobby;
+
+#pragma endregion
+
 #pragma region Effect
 
 public:

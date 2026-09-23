@@ -28,6 +28,8 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
+	GameInstance->OnDataLayerChanged.AddWeakLambda(this, [this](const EMapDataLayer& Layer) {CurrentLayer = Layer; });
+
 	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
 	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
