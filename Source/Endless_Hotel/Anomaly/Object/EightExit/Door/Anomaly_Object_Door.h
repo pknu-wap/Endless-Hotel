@@ -174,7 +174,7 @@ public:
 
 #pragma region FirstDoorOpen
 
-protected:
+private:
 	void MoveToHandlePlayer();
 
 	UFUNCTION()
@@ -186,11 +186,13 @@ protected:
 	UFUNCTION()
 	void OnPushMoveCompleted();
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	void ResetDoorState();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "StartTransform")
 	FTransform TargetPlayerTransform;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	UPROPERTY(EditAnywhere, Category = "StartTransform")
 	FTransform PushPlayerTransform;
 
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
@@ -200,9 +202,6 @@ protected:
 	float RotationSpeed = 2.0f;
 
 	FRotator TargetDoorRotation;
-
-protected:
-	bool bIsDoorOpened = false;
 
 #pragma endregion
 
@@ -236,17 +235,9 @@ protected:
 //
 //#pragma endregion
 
-#pragma region Normal
+#pragma region Light Channel
 
-public:
-	void ReadyDoor();
-	void ReadyDoorOpened();
-
-#pragma endregion
-
-#pragma region Light
-
-public:
+private:
 	void SetLight(bool bIsStartFloor);
 
 #pragma endregion

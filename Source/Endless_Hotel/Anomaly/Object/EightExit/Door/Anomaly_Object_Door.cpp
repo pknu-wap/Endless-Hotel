@@ -7,17 +7,11 @@
 #include "Component/Tutorial/TutorialComponent.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include <Animation/SkeletalMeshActor.h>
-#include <Engine/SkeletalMesh.h>
-#include <Animation/AnimationAsset.h>
-#include <Components/SkeletalMeshComponent.h>
-#include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
-#include <GameFramework/Character.h>
 
 #pragma region Base
 
@@ -35,32 +29,19 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 
 	AC_Shake = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Shake"));
 	AC_Shake->SetupAttachment(RootComponent);
-	AC_Shake->bAutoActivate = false;
+	AC_Shake->SetAutoActivate(false);
 
 	AC_Voice = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Voice"));
 	AC_Voice->SetupAttachment(RootComponent);
-	AC_Voice->bAutoActivate = false;
+	AC_Voice->SetAutoActivate(false);
 
 	AC_DoorMove = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_DoorMove"));
 	AC_DoorMove->SetupAttachment(RootComponent);
-	AC_DoorMove->bAutoActivate = false;
+	AC_DoorMove->SetAutoActivate(false);
 }
 
 void AAnomaly_Object_Door::Reset()
 {
-	Super::Reset();
-
-	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	if (FloorSub->Floor == STARTFLOOR)
-	{
-		SetLight(true);
-	}
-	else
-	{
-		SetLight(false);
-		Component_Interact->ActiveInteract(false);
-	}
-
 	TL_Door->Stop();
 	CurrentDoorShake = 0;
 
@@ -102,6 +83,14 @@ void AAnomaly_Object_Door::BeginPlay()
 	FOnTimelineEvent CloseFinished;
 	CloseFinished.BindUFunction(this, FName("FinishRotateClose"));
 	Timeline_Close->SetTimelineFinishedFunc(CloseFinished);
+
+	if (DoorIndex == 8)
+	{
+		auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+		FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetDoorState);
+
+		Component_Interact->ActiveInteract(true);
+	}
 }
 
 #pragma endregion
@@ -393,7 +382,28 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 		}), 1.0f, false);
 }
 
+void AAnomaly_Object_Door::ResetDoorState()
+{
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSub->bIsFirstStartFloor)
+	{
+		GetRootComponent()->SetWorldTransform(OriginalTransform);
+		SetLight(true);
+	}
+	else if (FloorSub->Floor == STARTFLOOR)
+	{
+		GetRootComponent()->SetWorldTransform(DoorOpenTransform);
+		SetLight(true);
+	}
+	else
+	{
+		GetRootComponent()->SetWorldTransform(OriginalTransform);
+		SetLight(false);
+	}
+}
+
 #pragma endregion
+
 //#pragma region GhostHand
 //
 //void AAnomaly_Object_Door::SpawnGhostHand()
@@ -454,21 +464,7 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 //
 //#pragma endregion
 
-#pragma region Normal
-
-void AAnomaly_Object_Door::ReadyDoor()
-{
-	bIsDoorOpened = false;
-	Component_Interact->ActiveInteract(true);
-	GetRootComponent()->SetWorldTransform(OriginalTransform);
-
-	Timeline_Open->Stop();
-}
-
-void AAnomaly_Object_Door::ReadyDoorOpened()
-{
-	GetRootComponent()->SetWorldTransform(DoorOpenTransform);
-}
+#pragma region Light Channel
 
 void AAnomaly_Object_Door::SetLight(bool bIsStartFloor)
 {

@@ -19,7 +19,7 @@ ACryGhost::ACryGhost(const FObjectInitializer& ObjectInitializer)
 	AudioComponent->SetAutoActivate(false);
 	AudioComponent->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->MaxWalkSpeed = 450.f;
 
 	DeathTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DeathTrigger"));
 	DeathTrigger->SetupAttachment(GetMesh());

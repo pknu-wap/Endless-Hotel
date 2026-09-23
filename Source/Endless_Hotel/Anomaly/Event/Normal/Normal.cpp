@@ -4,7 +4,6 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-#include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 
 #pragma region Activities
 
@@ -19,16 +18,6 @@ void ANormal::SetAnomalyState()
     if (VerdictSubsystem->bIsStartInBed || FloorSubsystem->bIsFirstStartFloor)
     {
         ElevatorSubsystem->RemoveTargetElevator();
-    }
-    if (FloorSubsystem->bIsFirstStartFloor)
-    {
-        SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoor);
-		SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::SetLight, FAnomalyActionInfo(), true);
-    }
-    else if (FloorSubsystem->Floor == STARTFLOOR)
-    {
-        SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::ReadyDoorOpened);
-        SetupAnomalyAction<AAnomaly_Object_Door>(&AAnomaly_Object_Door::SetLight, FAnomalyActionInfo(), true);
     }
     ScheduleAnomaly();
 }
