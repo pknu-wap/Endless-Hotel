@@ -25,7 +25,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void Reset() override { StopMusicBox(); }
+	virtual void Reset() override { Super::Reset(); StopMusicBox(); }
 
 #pragma endregion
 
