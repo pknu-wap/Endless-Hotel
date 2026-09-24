@@ -4,23 +4,23 @@
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
-#include "Anomaly/Generator/Anomaly_Generator.h"
+#include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <CoreMinimal.h>
 #include <HAL/IConsoleManager.h>
-#include <EngineUtils.h>
 
+class UAnomalyGeneratorSubsystem;
 static FAutoConsoleCommand SetExceptClearedAnomaly(TEXT("EHDebug.GameSystem.SetExceptClearedAnomaly"), TEXT("Usage: EHDebug.GameSystem.ExceptClearedAnomaly <true|false>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
-	{
-		if (Args.Num() != 1)
-		{
-			return;
-		}
-		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-		Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
-	}));
+{
+    if (Args.Num() != 1)
+    {
+        return;
+    }
+    auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+    Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
+}));
 
 static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEXT("Usage: EHDebug.GameSystem.IsClear <true|false>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
 	{
@@ -247,12 +247,12 @@ static FAutoConsoleCommand SetNextAnomaly(
                 return;
             }
 
-            UWorld* World = GEngine->GetCurrentPlayWorld();
-            AAnomaly_Generator* Generator = nullptr;
-            for (TActorIterator<AAnomaly_Generator> It(World); It; ++It)
+            const UGameInstance* GameInstance = GEngine->GetCurrentPlayWorld()->GetGameInstance();
+            UAnomalyGeneratorSubsystem* Generator = GameInstance ? GameInstance->GetSubsystem<UAnomalyGeneratorSubsystem>() : nullptr;
+            if (!Generator)
             {
-                Generator = *It;
-                break;
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] AnomalyGeneratorSubsystem not found."));
+                return;
             }
             if (Generator->SetNextAnomalyForced(AnomalyID))
             {

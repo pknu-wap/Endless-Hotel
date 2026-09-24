@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "Actor/EHActor.h"
 #include "Type/Anomaly/Type_AnomalyID.h"
 #include "Type/Anomaly/Type_AnomalyRule.h"
 #include "Type/Level/Type_Level.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Generator.generated.h>
+#include <Subsystems/GameInstanceSubsystem.h>
+#include <AnomalyGeneratorSubsystem.generated.h>
 
 #pragma region Declare
 
@@ -28,22 +28,21 @@ struct FAnomalySpawnInfo
 #pragma endregion
 
 UCLASS()
-class ENDLESS_HOTEL_API AAnomaly_Generator : public AEHActor
+class ENDLESS_HOTEL_API UAnomalyGeneratorSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 #pragma region Object
 
 private:
-	void SpawnAnomalyObject(uint8 AnomalyID, FTransform SpawnTransform, FActorSpawnParameters Params, const TSubclassOf<AAnomaly_Object_Base> TargetClass);
-	void AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses);
+	void AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses) const;
 
 #pragma endregion
 
 #pragma region Base
 
-protected:
-	virtual void BeginPlay();
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 #pragma endregion
 
@@ -62,9 +61,9 @@ public:
 public:
 	void SpawnAnomaly();
 
-	FAnomalySpawnInfo DecideAnomaly(uint8 Index, bool bForceNormal);
-	FAnomalySpawnInfo DecideNext();
-	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info, ULevel* SpawnLevel);
+	FAnomalySpawnInfo DecideAnomaly(uint8 Index, bool bForceNormal) const;
+	FAnomalySpawnInfo DecideNext() const;
+	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info) const;
 
 private:
 	bool bIsInitialFloor = true;
@@ -75,6 +74,13 @@ private:
 
 public:
 	bool SetNextAnomalyForced(EAnomalyID ID);
+
+#pragma endregion
+
+#pragma region Reset
+
+public:
+	void ResetGenerator();
 
 #pragma endregion
 

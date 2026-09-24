@@ -7,7 +7,7 @@
 
 #pragma region Reset
 
-void AAnomaly_Object_SignDrop::InitializeOnSpawned()
+void AAnomaly_Object_SignDrop::InitializeOnAnomalySpawned()
 {
 	OriginalTransform.SetLocation(FVector::ZeroVector);
 
