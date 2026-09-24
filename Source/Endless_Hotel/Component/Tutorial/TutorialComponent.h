@@ -26,8 +26,6 @@ public:
 	void HideTutorialWidget();
 
 	void ShowTutorialWidgetForce();
-
-private:
 	void HideTutorialWidgetForce();
 
 public:

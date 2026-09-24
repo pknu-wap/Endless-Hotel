@@ -110,6 +110,12 @@ void AAnomaly_Object_Light::OnGeometryCollectionBreak(const FChaosBreakEvent& Br
 
 #pragma region Color
 
+void AAnomaly_Object_Light::StartChangeColor()
+{
+	FTimerHandle ChangeHandle;
+	GetWorld()->GetTimerManager().SetTimer(ChangeHandle, this, &ThisClass::ChangeLightColor, LightIndex * 0.5f, false);
+}
+
 void AAnomaly_Object_Light::ChangeLightColor()
 {
 	PointLight->SetLightColor(FLinearColor(0, 0.9f, 1));
