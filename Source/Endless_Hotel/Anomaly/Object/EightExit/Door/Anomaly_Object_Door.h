@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Mesh_Handle2;
+
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
 
@@ -94,6 +97,7 @@ private:
 #pragma region Open
 
 public:
+	UFUNCTION()
 	void OpenDoor();
 
 protected:
@@ -187,6 +191,12 @@ private:
 	void OnPushMoveCompleted();
 
 	void ResetDoorState();
+	void ResetDoorHighlight();
+
+	void MoveToHandleKey();
+
+	UFUNCTION()
+	void RotateKey();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "StartTransform")
@@ -200,6 +210,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
 	float RotationSpeed = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Key")
+	TSubclassOf<class AStaticMeshActor> KeyClass;
+
+	UPROPERTY()
+	TObjectPtr<class AStaticMeshActor> KeyActor;
 
 	FRotator TargetDoorRotation;
 

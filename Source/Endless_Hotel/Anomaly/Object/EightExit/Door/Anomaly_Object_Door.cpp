@@ -12,6 +12,7 @@
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Engine/StaticMeshActor.h>
 
 #pragma region Base
 
@@ -20,6 +21,9 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 {
 	Mesh_Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle"));
 	Mesh_Handle->SetupAttachment(RootComponent);
+
+	Mesh_Handle2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh_Handle2"));
+	Mesh_Handle2->SetupAttachment(RootComponent);
 
 	TL_Door = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Door"));
 	TL_Handle = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Handle"));
@@ -88,8 +92,7 @@ void AAnomaly_Object_Door::BeginPlay()
 	{
 		auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 		FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetDoorState);
-
-		Component_Interact->ActiveInteract(true);
+		ResetDoorHighlight();
 	}
 }
 
@@ -263,9 +266,21 @@ void AAnomaly_Object_Door::PlayHandleTwistSound()
 
 void AAnomaly_Object_Door::Interact(AEHCharacter* Interacter)
 {
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+
+	if (Data.Progression == EGameProgression::CheckIn)
+	{
+		KeyActor = GetWorld()->SpawnActor<AStaticMeshActor>(KeyClass, FVector::ZeroVector, FRotator::ZeroRotator);
+		KeyActor->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		KeyActor->SetActorRelativeLocation(FVector(-14.f, -95, -76));
+		KeyActor->SetActorRelativeRotation(FRotator(0, 90, -90));
+		MoveToHandleKey();
+		return;
+	}
+
 	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
 
-	if (!USaveManager::LoadData_Progression().bReadManual)
+	if (!Data.bReadManual)
 	{
 		Component_Interact->ActiveInteract(true);
 
@@ -384,11 +399,18 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::ResetDoorState()
 {
+	if (IsValid(this))
+	{
+		return;
+	}
+
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (FloorSub->bIsFirstStartFloor)
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(true);
+		ResetDoorHighlight();
+		Component_Interact->ActiveInteract(true);
 	}
 	else if (FloorSub->Floor == STARTFLOOR)
 	{
@@ -400,6 +422,49 @@ void AAnomaly_Object_Door::ResetDoorState()
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(false);
 	}
+}
+
+void AAnomaly_Object_Door::ResetDoorHighlight()
+{
+	if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
+	{
+		Mesh_Handle->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Empty();
+		Mesh_Handle->ComponentTags.Add(TEXT("Highlight"));
+	}
+	else
+	{
+		Mesh_Handle->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Add(TEXT("Highlight"));
+	}
+}
+
+void AAnomaly_Object_Door::MoveToHandleKey()
+{
+	PlayHandleTwistSound();
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("RotateKey");
+	LatentInfo.UUID = __LINE__;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(KeyActor->GetRootComponent(), FVector(-4.f, -95, -76), FRotator(0, 90, -90), true, true, 0.8f, false, EMoveComponentAction::Move, LatentInfo);
+}
+
+void AAnomaly_Object_Door::RotateKey()
+{
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("OpenDoor");
+	LatentInfo.UUID = __LINE__;
+	LatentInfo.Linkage = 0;
+
+	UKismetSystemLibrary::MoveComponentTo(KeyActor->GetRootComponent(), FVector(-4.f, -95, -76), FRotator(-90, 90, -90), true, true, 0.8f, false, EMoveComponentAction::Move, LatentInfo);
+	
+	FTimerHandle DestroyHandle;
+	GetWorld()->GetTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {KeyActor->Destroy(); }), 0.5f, false);
 }
 
 #pragma endregion
