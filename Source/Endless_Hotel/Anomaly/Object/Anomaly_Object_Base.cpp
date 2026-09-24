@@ -45,7 +45,7 @@ void AAnomaly_Object_Base::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 #pragma region Reset
 
-void AAnomaly_Object_Base::Reset()
+void AAnomaly_Object_Base::InitializeOnAnomalySpawned()
 {
     if (!OwnerAnomalyEvent.IsValid())
     {

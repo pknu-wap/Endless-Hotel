@@ -24,7 +24,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void Reset() override { StopRadio(); }
+	virtual void InitializeOnAnomalySpawned() override { StopRadio(); }
 
 #pragma endregion
 

@@ -23,9 +23,9 @@ AAnomaly_Object_FireExtinguisher::AAnomaly_Object_FireExtinguisher(const FObject
 
 #pragma region Reset
 
-void AAnomaly_Object_FireExtinguisher::Reset()
+void AAnomaly_Object_FireExtinguisher::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	Object->SetVisibility(true);
 	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);

@@ -4,9 +4,9 @@
 
 #pragma region Base
 
-void AAnomaly_Object_Rug::Reset()
+void AAnomaly_Object_Rug::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 	Object->SetMaterial(0, OriginalMaterial);
 }
 

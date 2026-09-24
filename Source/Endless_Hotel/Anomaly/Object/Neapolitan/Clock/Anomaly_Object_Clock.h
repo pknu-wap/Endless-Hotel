@@ -24,7 +24,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void Reset() override { StopRinging(); }
+	virtual void InitializeOnAnomalySpawned() override { StopRinging(); }
 
 #pragma endregion
 
