@@ -52,46 +52,36 @@ void UUI_Manual_Rule::ChangeTextState(EAnomalyRule Rule)
 
 void UUI_Manual_Rule::DrawUnderLineText(TArray<EAnomalyRule> Rules)
 {
-	if (USaveManager::LoadData_Setting().WrongCheck == EOptionValue::Off)
+	if (USaveManager::LoadData_Setting().WrongCheck == EOptionValue::Off || !Rules.Contains(AnomalyRule))
 	{
+		Text_Underline->SetText(FText::GetEmpty());
 		return;
 	}
 
-	FText RemovedText = RemoveRichTextTags(Description);
-	FText UnderLineText = FText::Format(FText::FromString(TEXT("<UnderLine>{0}</>")), RemovedText);
-	FText TargetText = Rules.Contains(AnomalyRule) ? UnderLineText : Description;
-	Text_Description->SetText(TargetText);
-}
+	const int32 TotalLength = Description.ToString().Len();
+	const float MultiEight = USaveManager::LoadData_Setting().Language == EOptionValue::Korean ? 1.4f : 0.9f;
+	const float MultiETC = USaveManager::LoadData_Setting().Language == EOptionValue::Korean ? 2.2f : 1.3f;
+	const int32 TargetLength = AnomalyRule == EAnomalyRule::EightExit ? TotalLength * MultiEight : TotalLength * MultiETC;
 
-FText UUI_Manual_Rule::RemoveRichTextTags(const FText& Source)
-{
-	const FString SourceString = Source.ToString();
+	FString UnderLineString;
+	UnderLineString.Reserve(TargetLength + TargetLength / 75 * 20);
+	UnderLineString += TEXT("<UnderLine>");
 
-	FString Result;
-	Result.Reserve(SourceString.Len());
-
-	bool bInsideTag = false;
-
-	for (const TCHAR Character : SourceString)
+	for (int32 i = 0; i < TargetLength; ++i)
 	{
-		if (Character == TEXT('<'))
+		if (i > 0 && i % 75 == 0)
 		{
-			bInsideTag = true;
-			continue;
+			UnderLineString += TEXT("</>");
+			UnderLineString += LINE_TERMINATOR;
+			UnderLineString += TEXT("<UnderLine>");
 		}
-		else if (Character == TEXT('>'))
-		{
-			bInsideTag = false;
-			continue;
-		}
-
-		if (!bInsideTag)
-		{
-			Result.AppendChar(Character);
-		}
+		
+		UnderLineString.AppendChar(TEXT(' '));
 	}
 
-	return FText::FromString(Result);
+	UnderLineString += TEXT("</>");
+
+	Text_Underline->SetText(FText::FromString(UnderLineString));
 }
 
 #pragma endregion

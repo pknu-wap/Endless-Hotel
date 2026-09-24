@@ -41,7 +41,6 @@ public:
 private:
 	void ChangeTextState(EAnomalyRule Rule);
 	void DrawUnderLineText(TArray<EAnomalyRule> Rules);
-	FText RemoveRichTextTags(const FText& Source);
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -49,6 +48,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class URichTextBlock> Text_Description;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class URichTextBlock> Text_Underline;
 
 #pragma endregion
 
