@@ -3,9 +3,12 @@
 #include "Actor/Interact/Bed/Bed.h"
 #include "Component/Interact/InteractComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
+#include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
 
@@ -21,6 +24,9 @@ void ABed::BeginPlay()
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 }
 
 #pragma endregion
@@ -39,6 +45,16 @@ void ABed::Interact(AEHCharacter* Interacter)
 		MoveToBedStart();
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void ABed::OnChangedProgression(EGameProgression Target)
+{
+	bool bActive = Target == EGameProgression::CheckIn;
+	Component_Interact->ActiveInteract(bActive);
 }
 
 #pragma endregion
@@ -81,6 +97,10 @@ void ABed::MoveToBedEnd()
 {
 	CameraManager->StartEyeEffect(false);
 
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	UI_InGame->StartInGameHUD(false);
+
 	constexpr float Duration = 6.f;
 	FTimerHandle WakeUpHandle;
 	GetWorld()->GetTimerManager().SetTimer(WakeUpHandle, this, &ThisClass::WakeUp, Duration, false);
@@ -89,6 +109,13 @@ void ABed::MoveToBedEnd()
 void ABed::WakeUp()
 {
 	CameraManager->StartEyeEffect(true);
+
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	UI_InGame->StartInGameHUD(true);
+
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->ChangeProgression(EGameProgression::Tutorial);
 
 	FTimerHandle DelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
@@ -108,10 +135,6 @@ void ABed::WakeUp()
 void ABed::OnCompletedWakeUp()
 {
 	PC->SetPlayerInputAble(true);
-
-	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	Data.Progression = EGameProgression::Tutorial;
-	USaveManager::SaveData_Progression(Data);
 }
 
 void ABed::StartControllerRotation(const FRotator& TargetRotation, float Duration)

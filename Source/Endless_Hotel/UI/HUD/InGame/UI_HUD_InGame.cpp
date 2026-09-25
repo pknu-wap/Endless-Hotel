@@ -126,12 +126,8 @@ void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 
 void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
 {
-	if (!bIsStart)
-	{
-		return;
-	}
-
-	PlayAnimation(WidgetAnim_ShowCrosshair);
+	UWidgetAnimation* TargetAnim = bIsStart ? WidgetAnim_ShowCrosshair : WidgetAnim_HideCrosshair;
+	PlayAnimation(TargetAnim);
 }
 
 #pragma endregion

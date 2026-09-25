@@ -2,8 +2,10 @@
 
 #pragma once
 
+#include "Type/Save/Type_Save.h"
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
+#include <Delegates/DelegateCombinations.h>
 #include <GameSystem.generated.h>
 
 UCLASS()
@@ -29,6 +31,17 @@ public:
 
 public:
 	void ResetGameSystem();
+
+#pragma endregion
+
+#pragma region Progression
+
+public:
+	void ChangeProgression(EGameProgression Target);
+
+public:
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnProgressionChanged, EGameProgression);
+	FOnProgressionChanged OnProgressionChanged;
 
 #pragma endregion
 

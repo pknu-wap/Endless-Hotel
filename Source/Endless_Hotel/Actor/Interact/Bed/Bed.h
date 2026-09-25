@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Save/Type_Save.h"
 #include "Actor/Interact/InteractBase.h"
 #include <CoreMinimal.h>
 #include <Bed.generated.h>
@@ -36,6 +37,13 @@ private:
 
 	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayerCameraManager> CameraManager;
+
+#pragma endregion
+
+#pragma region Progression
+
+private:
+	void OnChangedProgression(EGameProgression Target);
 
 #pragma endregion
 

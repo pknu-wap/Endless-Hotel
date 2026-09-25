@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Save/Type_Save.h"
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Door.generated.h>
@@ -33,6 +34,13 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
+
+#pragma endregion
+
+#pragma region Progression
+
+private:
+	void OnChangedProgression(EGameProgression Target);
 
 #pragma endregion
 
@@ -191,7 +199,6 @@ private:
 	void OnPushMoveCompleted();
 
 	void ResetDoorState();
-	void ResetDoorHighlight();
 
 	void MoveToHandleKey();
 

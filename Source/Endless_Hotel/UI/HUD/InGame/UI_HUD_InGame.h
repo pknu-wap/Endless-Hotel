@@ -45,10 +45,8 @@ private:
 #pragma region Effect
 
 public:
-	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
-
-private:
 	void StartInGameHUD(bool bIsStart);
+	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -68,6 +66,9 @@ private:
 private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_ShowCrosshair;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> WidgetAnim_HideCrosshair;
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> WidgetAnim_Interact;

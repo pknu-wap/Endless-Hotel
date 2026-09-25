@@ -5,6 +5,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Component/Tutorial/TutorialComponent.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/TimelineComponent.h>
@@ -90,9 +91,38 @@ void AAnomaly_Object_Door::BeginPlay()
 
 	if (DoorIndex == 8)
 	{
-		auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+		auto* GameInstance = GetGameInstance();
+		auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
 		FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetDoorState);
-		ResetDoorHighlight();
+		
+		auto* GameSystem = GameInstance->GetSubsystem<UGameSystem>();
+		GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
+
+		OnChangedProgression(USaveManager::LoadData_Progression().Progression);
+	}
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void AAnomaly_Object_Door::OnChangedProgression(EGameProgression Target)
+{
+	if (Target == EGameProgression::CheckIn)
+	{
+		Mesh_Handle->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Empty();
+		Mesh_Handle->ComponentTags.Add(TEXT("Highlight"));
+	}
+	else
+	{
+		Mesh_Handle->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Empty();
+		Mesh_Handle2->ComponentTags.Add(TEXT("Highlight"));
+
+		GetRootComponent()->SetWorldTransform(OriginalTransform);
+		SetLight(true);
+		Component_Interact->ActiveInteract(true);
 	}
 }
 
@@ -409,7 +439,6 @@ void AAnomaly_Object_Door::ResetDoorState()
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(true);
-		ResetDoorHighlight();
 		Component_Interact->ActiveInteract(true);
 	}
 	else if (FloorSub->Floor == STARTFLOOR)
@@ -421,22 +450,6 @@ void AAnomaly_Object_Door::ResetDoorState()
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(false);
-	}
-}
-
-void AAnomaly_Object_Door::ResetDoorHighlight()
-{
-	if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
-	{
-		Mesh_Handle->ComponentTags.Empty();
-		Mesh_Handle2->ComponentTags.Empty();
-		Mesh_Handle->ComponentTags.Add(TEXT("Highlight"));
-	}
-	else
-	{
-		Mesh_Handle->ComponentTags.Empty();
-		Mesh_Handle2->ComponentTags.Empty();
-		Mesh_Handle2->ComponentTags.Add(TEXT("Highlight"));
 	}
 }
 
