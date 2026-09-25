@@ -95,7 +95,7 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 			FloorSys->SubFloor();
 		}
 		bIsStartInBed = false;
-		if (CurrentAnomaly)
+		if (IsValid(CurrentAnomaly))
 		{
 			if (PoolSys && PoolSys->bExceptClearedAnomaly)
 			{
