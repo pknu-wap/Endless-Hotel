@@ -1,7 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "GameSystem.h"
-
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
