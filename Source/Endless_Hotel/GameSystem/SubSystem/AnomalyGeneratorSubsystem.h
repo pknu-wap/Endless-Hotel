@@ -61,8 +61,8 @@ public:
 public:
 	void SpawnAnomaly();
 
-	FAnomalySpawnInfo DecideAnomaly(uint8 Index, bool bForceNormal) const;
-	FAnomalySpawnInfo DecideNext() const;
+	TOptional<FAnomalySpawnInfo> DecideAnomaly(uint8 Index) const;
+	TOptional<FAnomalySpawnInfo> DecideNext() const;
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info) const;
 
 private:

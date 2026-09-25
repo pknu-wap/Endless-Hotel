@@ -63,8 +63,7 @@ public:
 public:
 	uint8 GetRemainingAnomalyCounts() const;
 	TArray<TSubclassOf<AAnomaly_Object_Base>> GetObjectByID(EAnomalyID AnomalyID);
-	const FAnomalyEntry& GetNormalAnomalyData() const { return NormalAnomalyData; }
-	const FAnomalyEntry& GetActAnomalyByIndex(uint8 Index) const { return ActAnomaly.IsValidIndex(Index) ? ActAnomaly[Index] : NormalAnomalyData; }
+	const FAnomalyEntry& GetActAnomalyByIndex(uint8 Index) const { return ActAnomaly[Index]; }
 	const TArray<FAnomalyEntry>& GetOriginAnomaly() const { return OriginAnomaly; }
 	bool IsValidActAnomalyIndex(uint8 Index) const { return ActAnomaly.IsValidIndex(Index); }
 	bool CanSpawnAnomaly(const FAnomalyEntry& AnomalyEntry, const TArray<EAnomalyRule>& ActiveRules) const;
@@ -82,9 +81,6 @@ private:
 
 	UPROPERTY(Transient)
 	TArray<FAnomalyEntry> ActAnomaly;
-
-	UPROPERTY(Transient)
-	FAnomalyEntry NormalAnomalyData;
 
 	TSet<EAnomalyID> ClearedAnomalySet;
 

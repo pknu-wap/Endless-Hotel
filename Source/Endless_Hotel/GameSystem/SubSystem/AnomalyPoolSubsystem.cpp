@@ -85,7 +85,7 @@
                      UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
                  	if (FloorSys)
                  	{
-                         FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::Reset);
+                         FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::InitializeOnAnomalySpawned);
                          ResetHandles.Add(Object, Handle);
                  	}
                  

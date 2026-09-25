@@ -54,6 +54,14 @@ void AAnomaly_Object_Door::InitializeOnAnomalySpawned()
 	if (FloorSub->Floor == STARTFLOOR)
 	{
 		SetLight(true);
+		if (FloorSub->bIsFirstStartFloor)
+		{
+			ReadyDoor();
+		}
+		else
+		{
+			ReadyDoorOpened();
+		}
 	}
 	else
 	{

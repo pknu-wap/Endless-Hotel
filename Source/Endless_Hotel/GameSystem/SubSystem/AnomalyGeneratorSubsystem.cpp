@@ -64,42 +64,63 @@ void UAnomalyGeneratorSubsystem::Initialize(FSubsystemCollectionBase& Collection
 
 void UAnomalyGeneratorSubsystem::SpawnAnomaly()
 {
-    const auto* FloorSubsystem = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-    auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-    auto& AssetManager = UEHAssetManager::Get();
+   auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+   TOptional<FAnomalySpawnInfo> CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData : DecideNext();
+   auto& AssetManager = UEHAssetManager::Get();
 
-    FAnomalySpawnInfo CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData.GetValue() : DecideNext();
-    if (FloorSubsystem->Floor == STARTFLOOR && !CurrentData.bIsNormal)
-    {
-       const FAnomalyEntry& NormalData = AssetManager.GetNormalAnomalyData();
-       CurrentData.bIsNormal = true;
-       CurrentData.AnomalyID = NormalData.ID;
-       CurrentData.DataLayer = NormalData.DataLayer;
-       CurrentData.EventClass = NormalData.Event;
-       CurrentData.Rule = NormalData.Rule;
-    }
-    CurrentAnomaly = SpawnFromInfo(CurrentData);
+   if (!CurrentData.IsSet())
+   {
+      CurrentAnomaly = nullptr;
+      VerdictSubsystem->SetNoAnomalyState();
+      NextAnomalyData = DecideNext();
+      if (!bIsInitialFloor)
+      {
+         VerdictSubsystem->OnAnomalySpawned.Broadcast();
+      }
+      else
+      {
+         bIsInitialFloor = false;
+      }
+      return;
+   }
+   const FAnomalySpawnInfo& SpawnInfo = CurrentData.GetValue();
+   CurrentAnomaly = SpawnFromInfo(CurrentData.GetValue());
+   
+   if (!CurrentAnomaly)
+   {
+      VerdictSubsystem->SetNoAnomalyState();
+      NextAnomalyData = DecideNext();
+      return;
+   }
 
-    const TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = AssetManager.GetObjectByID(CurrentAnomaly->AnomalyID);
-    AnomalyObjectLinker(TargetClasses);
-    VerdictSubsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, CurrentData.DataLayer);
-    NextAnomalyData = DecideNext();
-    VerdictSubsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
-    if (bIsInitialFloor)
-    {
-       bIsInitialFloor = false;
-    }
-    else
-    {
-       VerdictSubsystem->OnAnomalySpawned.Broadcast();
-    }
+   const TArray<TSubclassOf<AAnomaly_Object_Base>> TargetClasses = AssetManager.GetObjectByID(CurrentAnomaly->AnomalyID);
+   AnomalyObjectLinker(TargetClasses);
+   VerdictSubsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, SpawnInfo.DataLayer);
+   
+   NextAnomalyData = DecideNext();
+   if (NextAnomalyData.IsSet())
+   {
+      VerdictSubsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+   }
+   else
+   {
+      VerdictSubsystem->SetNextAnomaly(EAnomalyID::None, EMapDataLayer::Hotel);
+   }
+   if (bIsInitialFloor)
+   {
+      bIsInitialFloor = false;
+   }
+   else
+   {
+      VerdictSubsystem->OnAnomalySpawned.Broadcast();
+   }
 }
 
-FAnomalySpawnInfo UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Index, const bool bForceNormal) const
+TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Index) const
 {
-    auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    auto& AssetManager = UEHAssetManager::Get();
-    bool bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
+   auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+   auto& AssetManager = UEHAssetManager::Get();
+   bool bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
 
     if (!bHasAnomaly)
     {
@@ -107,25 +128,31 @@ FAnomalySpawnInfo UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Index, const b
        Index = AnomalySub->ActIndex;
        bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
     }
-    const FAnomalyEntry& Data = bForceNormal || !bHasAnomaly ? AssetManager.GetNormalAnomalyData() : AssetManager.GetActAnomalyByIndex(Index);
+   if (!bHasAnomaly)
+   {
+      return TOptional<FAnomalySpawnInfo>();
+   }
 
-    FAnomalySpawnInfo Info;
-    Info.bIsNormal = bForceNormal || !bHasAnomaly;
-    Info.AnomalyID = Data.ID;
-    Info.Rule = Data.Rule;
-    Info.DataLayer = Data.DataLayer;
-    Info.EventClass = Data.Event;
+   const FAnomalyEntry& Data = AssetManager.GetActAnomalyByIndex(Index);
+
+   FAnomalySpawnInfo Info;
+   Info.AnomalyID = Data.ID;
+   Info.Rule = Data.Rule;
+   Info.DataLayer = Data.DataLayer;
+   Info.EventClass = Data.Event;
 
     return Info;
 }
 
-FAnomalySpawnInfo UAnomalyGeneratorSubsystem::DecideNext() const
+TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideNext() const
 {
     const auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    constexpr int32 NormalChance = 15;
-    const bool bForceNormal = FMath::RandRange(1, 100) <= NormalChance;
-
-    return DecideAnomaly(AnomalySub->ActIndex, bForceNormal);
+    const auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    if(constexpr int32 NormalChance = 15; FMath::RandRange(1, 100) <= NormalChance || FloorSub->Floor == STARTFLOOR)
+    {
+       return TOptional<FAnomalySpawnInfo>();
+    }
+    return DecideAnomaly(AnomalySub->ActIndex);
 }
 
 AAnomaly_Event* UAnomalyGeneratorSubsystem::SpawnFromInfo(const FAnomalySpawnInfo& Info) const
