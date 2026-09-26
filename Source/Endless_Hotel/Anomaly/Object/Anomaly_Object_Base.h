@@ -26,7 +26,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void Reset();
+	virtual void InitializeOnAnomalySpawned();
 
 private:
 	FDelegateHandle ResetHandle;

@@ -15,7 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapol
 
 public:
 	AAnomaly_Object_Painting(const FObjectInitializer& ObjectInitializer);
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 protected:
 	UPROPERTY(EditAnyWhere, Category = "Eye")

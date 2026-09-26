@@ -29,9 +29,9 @@ void AAnomaly_Object_Ceiling::BeginPlay()
 	Timeline->AddInterpFloat(Curve_CeilingRotate, UpdateFunc);
 }
 
-void AAnomaly_Object_Ceiling::Reset()
+void AAnomaly_Object_Ceiling::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 	Timeline->Stop();
 	Timeline->SetNewTime(0.f);
 	Niagara_Ceiling_Blood->Deactivate();

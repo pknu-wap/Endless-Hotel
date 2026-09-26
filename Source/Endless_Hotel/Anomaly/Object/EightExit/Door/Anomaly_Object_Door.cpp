@@ -46,14 +46,22 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	AC_DoorMove->bAutoActivate = false;
 }
 
-void AAnomaly_Object_Door::Reset()
+void AAnomaly_Object_Door::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (FloorSub->Floor == STARTFLOOR)
 	{
 		SetLight(true);
+		if (FloorSub->bIsFirstStartFloor)
+		{
+			ReadyDoor();
+		}
+		else
+		{
+			ReadyDoorOpened();
+		}
 	}
 	else
 	{

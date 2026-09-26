@@ -68,6 +68,7 @@ public:
 #pragma region Anomaly
 
 public:
+	void SetNoAnomalyState();
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void LoadNextMap();

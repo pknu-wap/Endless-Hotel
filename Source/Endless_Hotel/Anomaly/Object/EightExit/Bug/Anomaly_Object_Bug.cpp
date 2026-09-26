@@ -22,9 +22,9 @@ AAnomaly_Object_Bug::AAnomaly_Object_Bug(const FObjectInitializer& ObjectInitial
 
 #pragma region Reset
 
-void AAnomaly_Object_Bug::Reset()
+void AAnomaly_Object_Bug::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	auto* Asset = NiagaraComponent->GetAsset();
 	NiagaraComponent->DeactivateImmediate();

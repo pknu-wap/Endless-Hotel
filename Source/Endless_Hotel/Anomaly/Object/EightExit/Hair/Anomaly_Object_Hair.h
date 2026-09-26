@@ -81,7 +81,7 @@ protected:
 public:
 	void StartHair();
 
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 #pragma endregion
 

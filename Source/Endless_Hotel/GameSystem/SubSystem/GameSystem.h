@@ -28,7 +28,7 @@ public:
 #pragma region Reset
 
 public:
-	void ResetGameSystem();
+	void ResetGameSystem() const;
 
 #pragma endregion
 };
