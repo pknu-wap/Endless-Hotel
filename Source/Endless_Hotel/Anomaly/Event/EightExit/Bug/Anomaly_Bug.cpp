@@ -1,7 +1,8 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/EightExit/Bug/Anomaly_Bug.h"
-#include "Anomaly/Object/EightExit/Bug/Anomaly_Object_Bug.h"
+#include <NiagaraFunctionLibrary.h>
+#include <NiagaraComponent.h>
 
 #pragma region Activity
 
@@ -13,9 +14,21 @@ void AAnomaly_Bug::SetAnomalyState()
 	{
 	case EAnomalyID::Bug:
 		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnBugs);
-		ActiveTrigger();
+		ScheduleAnomaly();
 		break;
 	}
+}
+
+void AAnomaly_Bug::DisableAnomaly()
+{
+	for (auto Target : SpawnedBugs)
+	{
+		Target->DestroyComponent();
+	}
+
+	SpawnedBugs.Empty();
+
+	Super::DisableAnomaly();
 }
 
 #pragma endregion
@@ -24,11 +37,13 @@ void AAnomaly_Bug::SetAnomalyState()
 
 void AAnomaly_Bug::SpawnBugs()
 {
-	for (const FVector& Target : BugLocations)
-	{
-		auto* SpawnedBug = GetWorld()->SpawnActor<AAnomaly_Object_Bug>(BugClass, Target, FRotator::ZeroRotator);
-		SpawnedBug->ActiveBug();
-	}
+	auto* NS_Long =	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_BugLong, FVector(-2025.0, 571.0, 728.5), FRotator::ZeroRotator);
+
+	SpawnedBugs.Add(NS_Long);
+
+	auto* NS_Short = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NS_BugShort, FVector(-3110.0, 224.0, 728.5), FRotator::ZeroRotator);
+
+	SpawnedBugs.Add(NS_Short);
 }
 
 #pragma endregion

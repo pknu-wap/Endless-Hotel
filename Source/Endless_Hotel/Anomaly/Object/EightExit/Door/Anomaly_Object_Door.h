@@ -111,6 +111,7 @@ protected:
 
 public:
 	void CloseDoor();
+	void CloseDoorFast();
 
 protected:
 	void PlayClose_Door();
@@ -206,35 +207,35 @@ protected:
 
 #pragma endregion
 
-//#pragma region GhostHand
-//
-//public:
-//	void PlayHandOpen();
-//	void PlayHandClose();
-//
-//private:
-//	void SpawnGhostHand();
-//
-//protected:
-//	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
-//	TObjectPtr<class USkeletalMesh> GhostHandMesh;
-//
-//	UPROPERTY()
-//	TObjectPtr<class ASkeletalMeshActor> SpawnedGhostHandActor;
-//
-//	UPROPERTY()
-//	TObjectPtr<USkeletalMeshComponent> SKM_GhostHand;
-//
-//	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
-//	TObjectPtr<class UAnimationAsset> Anim_HandOpen;
-//
-//	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
-//	TObjectPtr<class UAnimationAsset> Anim_HandClose;
-//
-//	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
-//	FName GhostHandSocketName = TEXT("GhostHandSocket");
-//
-//#pragma endregion
+#pragma region GhostHand
+
+public:
+	void PlayHandOpen();
+	void PlayHandClose();
+
+private:
+	void SpawnGhostHand();
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
+	TObjectPtr<class USkeletalMesh> GhostHandMesh;
+
+	UPROPERTY()
+	TObjectPtr<class ASkeletalMeshActor> SpawnedGhostHandActor;
+
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> SKM_GhostHand;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
+	TObjectPtr<class UAnimationAsset> Anim_HandOpen;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
+	TObjectPtr<class UAnimationAsset> Anim_HandClose;
+
+	UPROPERTY(EditAnywhere, Category = "Anomaly|GhostHand")
+	FName GhostHandSocketName = TEXT("GhostHandSocket");
+
+#pragma endregion
 
 #pragma region Normal
 
