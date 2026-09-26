@@ -118,9 +118,9 @@ void AAnomaly_Object_Hair::ResetHair(bool bIsStart)
 	bHairActive = false;
 }
 
-void AAnomaly_Object_Hair::Reset()
+void AAnomaly_Object_Hair::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	if (!bHairActive && !SpawnedHairActor)
 	{

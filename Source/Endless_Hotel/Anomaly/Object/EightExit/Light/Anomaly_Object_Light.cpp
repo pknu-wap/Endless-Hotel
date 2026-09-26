@@ -27,9 +27,9 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 
 #pragma region Reset
 
-void AAnomaly_Object_Light::Reset()
+void AAnomaly_Object_Light::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	Object->SetVisibility(true);
 

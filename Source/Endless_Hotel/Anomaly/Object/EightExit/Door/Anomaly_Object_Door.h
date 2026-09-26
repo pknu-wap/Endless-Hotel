@@ -16,7 +16,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 
 public:
 	AAnomaly_Object_Door(const FObjectInitializer& ObjectInitializer);
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 protected:
 	virtual void BeginPlay() override;

@@ -21,9 +21,9 @@ AAnomaly_Object_ShelfPlant::AAnomaly_Object_ShelfPlant(const FObjectInitializer&
 
 #pragma region Reset
 
-void AAnomaly_Object_ShelfPlant::Reset()
+void AAnomaly_Object_ShelfPlant::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	SM_Plant->SetVisibility(true);
 	SM_AfterPlant->SetVisibility(false);

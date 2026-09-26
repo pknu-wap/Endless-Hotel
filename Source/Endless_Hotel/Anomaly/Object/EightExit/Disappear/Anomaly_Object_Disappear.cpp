@@ -13,9 +13,9 @@ void AAnomaly_Object_Disappear::StartDisappear()
 
 #pragma region Reset
 
-void AAnomaly_Object_Disappear::Reset()
+void AAnomaly_Object_Disappear::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	SetActorHiddenInGame(false);
 }

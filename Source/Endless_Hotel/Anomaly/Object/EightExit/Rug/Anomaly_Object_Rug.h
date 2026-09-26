@@ -14,7 +14,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Rug : public AAnomaly_Object_EightExit
 #pragma region Base
 
 public:
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 #pragma endregion
 

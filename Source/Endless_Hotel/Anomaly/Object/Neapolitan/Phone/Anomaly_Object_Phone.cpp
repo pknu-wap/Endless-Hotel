@@ -43,9 +43,9 @@ void AAnomaly_Object_Phone::BeginPlay()
 
 #pragma region Reset
 
-void AAnomaly_Object_Phone::Reset()
+void AAnomaly_Object_Phone::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	SM_Receiver->SetRelativeTransform(OriginalTrans);
 

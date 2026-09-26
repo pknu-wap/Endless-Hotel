@@ -37,9 +37,9 @@ void AAnomaly_Object_ShelfBook::BeginPlay()
 
 #pragma region Reset
 
-void AAnomaly_Object_ShelfBook::Reset()
+void AAnomaly_Object_ShelfBook::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	StartRestoring();
 }

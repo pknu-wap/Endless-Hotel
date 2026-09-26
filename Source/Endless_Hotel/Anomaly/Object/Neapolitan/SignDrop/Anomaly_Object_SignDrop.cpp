@@ -7,7 +7,7 @@
 
 #pragma region Reset
 
-void AAnomaly_Object_SignDrop::Reset()
+void AAnomaly_Object_SignDrop::InitializeOnAnomalySpawned()
 {
 	OriginalTransform.SetLocation(FVector::ZeroVector);
 
@@ -16,7 +16,7 @@ void AAnomaly_Object_SignDrop::Reset()
 		TargetSign->GetRootComponent()->SetVisibility(true, true);
 	}
 
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 }
 
 #pragma endregion

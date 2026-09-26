@@ -45,7 +45,7 @@ AAnomaly_Object_Door::AAnomaly_Object_Door(const FObjectInitializer& ObjectIniti
 	AC_DoorMove->SetAutoActivate(false);
 }
 
-void AAnomaly_Object_Door::Reset()
+void AAnomaly_Object_Door::InitializeOnAnomalySpawned()
 {
 	TL_Door->Stop();
 	CurrentDoorShake = 0;
