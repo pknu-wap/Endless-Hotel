@@ -9,8 +9,6 @@ void AAnomaly_Painting::SetAnomalyState()
 {
 	Super::SetAnomalyState();
 
-	SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::DieWatchingPainting);
-
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Painting_Eye:
@@ -31,6 +29,10 @@ void AAnomaly_Painting::SetAnomalyState()
 		break;
 	case EAnomalyID::Painting_Picture:
 		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::ChangePicture, FAnomalyActionInfo({ EInteractType::Rotate }));
+		ScheduleAnomaly();
+		break;
+	case  EAnomalyID::Painting_Watch:
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::DieWatchingPainting);
 		ScheduleAnomaly();
 		break;
 	}

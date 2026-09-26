@@ -172,6 +172,7 @@ void AAnomaly_Object_Painting::Interact(AEHCharacter* Interacter)
 	{
 	case EInteractType::Rotate:
 		InteractRotate();
+		Mesh_Monster->SetVisibility(false);
 		break;
 	}
 }
