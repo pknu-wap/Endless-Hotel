@@ -25,7 +25,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void InitializeOnAnomalySpawned() override { StopMusicBox(); }
+	virtual void InitializeOnAnomalySpawned() override { Super::Reset(); StopMusicBox(); }
 
 #pragma endregion
 

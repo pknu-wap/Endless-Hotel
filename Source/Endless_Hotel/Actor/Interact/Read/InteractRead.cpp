@@ -35,7 +35,7 @@ void AInteractRead::PossessCamera(bool bIsReading)
 	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	PC->SetPlayerInputAble(!bIsReading);
 
-	AActor* Target = bIsReading ? Cast<AActor>(this) : UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	AActor* Target = bIsReading ? Cast<AActor>(this) : Cast<AActor>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 	CameraManager->PossessCamera(Target, Duration);

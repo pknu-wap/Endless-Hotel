@@ -9,7 +9,7 @@
 
 #pragma region Open & Close
 
-UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Duration)
+UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, bool bHideTopWidget, float Duration)
 {
 	if (!IsValid(PDA_Widget))
 	{
@@ -17,7 +17,7 @@ UUI_Base* UUI_Controller::OpenWidget(const EWidgetType& WidgetType, float Durati
 		return nullptr;
 	}
 
-	if (!WidgetStack.IsEmpty())
+	if (!WidgetStack.IsEmpty() && bHideTopWidget)
 	{
 		UUI_Base* TopWidget = CachedWidgets[WidgetStack.Top()];
 		TopWidget->HideWidget();

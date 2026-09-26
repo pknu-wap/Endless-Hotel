@@ -2,6 +2,7 @@
 
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
@@ -280,11 +281,10 @@ static FAutoConsoleCommand ChangeProgression
             }
 
             FString Argument = Args[0];
-            EGameProgression Current = EnumConverter::GetEnumFromString<EGameProgression>(Argument);
+            EGameProgression Target = EnumConverter::GetEnumFromString<EGameProgression>(Argument);
 
-            FSaveData_Progression Data = USaveManager::LoadData_Progression();
-            Data.Progression = Current;
-            USaveManager::SaveData_Progression(Data);
+            auto* GameSystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+            GameSystem->ChangeProgression(Target);
 
             UE_LOG(LogTemp, Warning, TEXT("Game Progression: %s"), *Argument);
         })

@@ -298,13 +298,13 @@ void UUI_Button_Option::SetOption_CameraShake()
 void UUI_Button_Option::PopUpOption_ResetNote()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_ResetProgression);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetProgression, false);
 }
 
 void UUI_Button_Option::PopUpOption_ResetSetting()
 {
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	UICon->OpenWidget(EWidgetType::PopUp_ResetSetting);
+	UICon->OpenWidget(EWidgetType::PopUp_ResetSetting, false);
 }
 
 #pragma endregion

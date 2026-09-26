@@ -17,7 +17,7 @@ void AAnomaly_Light::SetAnomalyState()
 		break;
 
 	case EAnomalyID::Light_Blue:
-		SetupAnomalyAction<AAnomaly_Object_Light>(&AAnomaly_Object_Light::ChangeLightColor);
+		SetupAnomalyAction<AAnomaly_Object_Light>(&AAnomaly_Object_Light::StartChangeColor);
 		ActiveTrigger();
 		break;
 	}

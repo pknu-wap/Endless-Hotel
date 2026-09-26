@@ -46,13 +46,13 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 		constexpr float Duration = 2.f;
 		if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
 		{
-			UICon->OpenWidget(EWidgetType::HUD_InGame, Duration);
+			UICon->OpenWidget(EWidgetType::HUD_InGame, true, Duration);
 
 			CameraManager->PossessCameraToPlayer(Duration);
 		}
 		else
 		{
-			UICon->OpenWidget(EWidgetType::HUD_Loading, Duration);
+			UICon->OpenWidget(EWidgetType::HUD_Loading, true, Duration);
 
 			CameraManager->PossessCamera(ECameraType::SandClock, Duration);
 		}
@@ -65,7 +65,7 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 	}
 	case ETitleButtonType::Quit:
 	{
-		UICon->OpenWidget(EWidgetType::PopUp_QuitCheck);
+		UICon->OpenWidget(EWidgetType::PopUp_QuitCheck, false);
 		break;
 	}
 	}

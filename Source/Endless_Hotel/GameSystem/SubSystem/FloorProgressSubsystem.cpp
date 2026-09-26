@@ -1,6 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Engine/GameInstance.h>
@@ -86,8 +87,11 @@ void UFloorProgressSubsystem::ProgressGameState()
 	}
 
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	Data.Progression = EGameProgression::Loop;
-	USaveManager::SaveData_Progression(Data);
+	if (Data.Progression == EGameProgression::Tutorial)
+	{
+		auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+		GameSystem->ChangeProgression(EGameProgression::Loop);
+	}
 }
 
 #pragma endregion

@@ -4,9 +4,11 @@
 #include "Player/Character/EHPlayer.h"
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
+#include <Components/AudioComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Camera/CameraComponent.h>
 
@@ -41,6 +43,9 @@ void AEHPlayerCameraManager::BeginPlay()
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnDataLayerChanged);
+
+	auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddWeakLambda(this, [this]() {StartHallucination(false); StopHallucination(true); });
 
 	GetWorld()->GetTimerManager().SetTimer(BindHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
@@ -152,10 +157,16 @@ void AEHPlayerCameraManager::StartHallucination(bool bIsStart)
 	if (!bIsStart)
 	{
 		Player->OnFaceCover.RemoveAll(this);
+
+		if (IsValid(AC_Hallucination))
+		{
+			AC_Hallucination->DestroyComponent();
+			AC_Hallucination = nullptr;
+		}
+
 		return;
 	}
 
-	Player->OnFaceCover.RemoveAll(this);
 	Player->OnFaceCover.AddUObject(this, &ThisClass::StopHallucination);
 
 	StopHallucination(false);
@@ -167,6 +178,11 @@ void AEHPlayerCameraManager::StopHallucination(bool bFaceCover)
 	{
 		TimeLine_Hallucination->Stop();
 
+		if (IsValid(AC_Hallucination))
+		{
+			AC_Hallucination->Stop();
+		}
+
 		DM_Hallucination->SetScalarParameterValue(FName("Red Layer"), 0);
 		DM_Hallucination->SetScalarParameterValue(FName("Green Layer"), 0);
 
@@ -175,6 +191,10 @@ void AEHPlayerCameraManager::StopHallucination(bool bFaceCover)
 	}
 
 	TimeLine_Hallucination->PlayFromStart();
+
+	AC_Hallucination = UGameplayStatics::CreateSound2D(this, SW_Hallucination);
+	AC_Hallucination->Play();
+	AC_Hallucination->AdjustVolume(5.f, 10.f);
 
 	const float Duration = TimeLine_Hallucination->GetTimelineLength();
 	GetWorld()->GetTimerManager().SetTimer(DieHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

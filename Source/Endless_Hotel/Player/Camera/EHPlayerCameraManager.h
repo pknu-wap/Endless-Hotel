@@ -111,6 +111,12 @@ private:
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Hallucination;
 
+	UPROPERTY(EditAnywhere, Category = "Hallucination")
+	TObjectPtr<class USoundWave> SW_Hallucination;
+
+	UPROPERTY()
+	TObjectPtr<class UAudioComponent> AC_Hallucination;
+
 	FTimerHandle DieHandle;
 
 #pragma endregion
