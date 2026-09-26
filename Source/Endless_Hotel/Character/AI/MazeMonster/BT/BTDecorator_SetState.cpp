@@ -3,7 +3,6 @@
 #include "Character/AI/MazeMonster/BT/BTDecorator_SetState.h"
 #include "Character/AI/MazeMonster/MazeMonsterAnimInstance.h"
 #include "AIController.h"
-#include "Character/AI/MazeMonster/MazeMonster.h"
 #include "Components/SkeletalMeshComponent.h"
 
 UBTDecorator_SetState::UBTDecorator_SetState()

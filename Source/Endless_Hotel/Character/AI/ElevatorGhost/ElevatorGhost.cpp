@@ -4,7 +4,6 @@
 #include "Character/AI/ElevatorGhost/ElevatorGhostAnimInstance.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Type/Player/Type_Death.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
 

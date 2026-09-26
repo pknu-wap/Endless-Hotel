@@ -4,7 +4,6 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
-#include "Perception/AIPerceptionSystem.h"
 
 #pragma region Key
 

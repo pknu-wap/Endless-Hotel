@@ -67,6 +67,12 @@ void UUI_HUD_InGame::ShowWidget()
 
 	auto Data = USaveManager::LoadData_Setting();
 	SetBrightness(0.05f + Data.Brightness * 0.95f);
+
+	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	if (CurrentLayer == EMapDataLayer::Lobby && bCheckInState)
+	{
+		ShowCrosshair(true);
+	}
 }
 
 #pragma endregion

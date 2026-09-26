@@ -3,8 +3,6 @@
 #include "Character/AI/MazeMonster/BT/BTTask_PickInorderPatrol.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "AIController.h"
-#include "Engine/TargetPoint.h"
-#include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/AI/MazeMonster/MazeMonsterController.h"
 #include "Character/AI/MazeMonster/MazeMonster.h"

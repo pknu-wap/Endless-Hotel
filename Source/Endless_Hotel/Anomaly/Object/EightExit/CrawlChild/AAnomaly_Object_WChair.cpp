@@ -3,7 +3,6 @@
 #include "Anomaly/Object/EightExit/CrawlChild/AAnomaly_Object_WChair.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
 #include <Components/TimelineComponent.h>
 

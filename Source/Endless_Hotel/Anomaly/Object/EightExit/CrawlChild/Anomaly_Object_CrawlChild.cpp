@@ -4,12 +4,8 @@
 #include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
 #include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
 #include "Character/AI/CrawlChild/CrawlChild.h"
-#include "Character/AI/CrawlChild/CrawlChildController.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "UI/Controller/UI_Controller.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include <Components/BoxComponent.h>
 #include <Components/TimelineComponent.h>

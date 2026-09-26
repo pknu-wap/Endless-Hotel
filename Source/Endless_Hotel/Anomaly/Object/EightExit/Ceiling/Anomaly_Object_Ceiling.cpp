@@ -1,15 +1,10 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/Ceiling/Anomaly_Object_Ceiling.h"
-#include "Anomaly/Event/EightExit/CrawlChild/Anomaly_CrawlChild.h"
-#include "Character/AI/CrawlChild/CrawlChild.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
-#include <Components/BoxComponent.h>
 #include <Niagara/Public/NiagaraComponent.h>
 #include <GeometryCollection/GeometryCollectionComponent.h>
-#include <Field/FieldSystemObjects.h>
 
 #pragma region Base
 
