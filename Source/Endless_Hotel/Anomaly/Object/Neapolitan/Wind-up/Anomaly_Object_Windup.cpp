@@ -21,6 +21,16 @@ void AAnomaly_Object_Windup::Reset()
 {
 	Super::Reset();
 
+	CurrentInteractStep = EWindupInteractStep::NeedStopSound;
+
+	auto& TimerManager = GetWorld()->GetTimerManager();
+	TimerManager.ClearTimer(DelayHandle);
+	TimerManager.ClearTimer(WindupPlayHandle);
+	TimerManager.ClearTimer(WindupBurnHandle);
+
+	CurrentWindupPlayCount = 0;
+	WindupBurnCurrentTime = 0.f;
+
 	SKM_Windup->SetHiddenInGame(true);
 	SKM_Windup->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SKM_Windup->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
