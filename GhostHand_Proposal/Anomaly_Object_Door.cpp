@@ -1,4 +1,4 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
+// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
 #include "Player/Controller/EHPlayerController.h"
@@ -71,11 +71,13 @@ void AAnomaly_Object_Door::Reset()
 	GetWorld()->GetTimerManager().ClearTimer(HandleShakeHandle);
 	GetWorld()->GetTimerManager().ClearTimer(DoorShakeHandle);
 
+	Timeline_Open->Stop();
+	Timeline_Close->Stop();
+	Object->SetRelativeRotation(FRotator(Object->GetRelativeRotation().Pitch, BaseYaw, Object->GetRelativeRotation().Roll));
 	if (IsValid(SpawnedGhostHandActor))
 	{
 		SpawnedGhostHandActor->Destroy();
 	}
-
 	SpawnedGhostHandActor = nullptr;
 	SKM_GhostHand = nullptr;
 }
@@ -89,6 +91,7 @@ void AAnomaly_Object_Door::BeginPlay()
 	FOnTimelineFloat OpenUpdate;
 	OpenUpdate.BindUFunction(this, FName("UpdateRotateOpen"));
 	Timeline_Open->AddInterpFloat(Curve_Open, OpenUpdate);
+
 
 	FOnTimelineFloat CloseUpdate;
 	CloseUpdate.BindUFunction(this, FName("UpdateRotateClose"));
@@ -200,6 +203,7 @@ void AAnomaly_Object_Door::OpenDoor()
 
 void AAnomaly_Object_Door::StartRotateOpen()
 {
+	Timeline_Close->Stop();
 	OpenYaw = Object->GetRelativeRotation().Yaw;
 	Timeline_Open->PlayFromStart();
 }
@@ -214,16 +218,10 @@ void AAnomaly_Object_Door::PlayOpen_Door()
 
 #pragma region Close
 
-void AAnomaly_Object_Door::CloseDoor()
+void AAnomaly_Object_Door::CloseDoor(float PlayRate)
 {
-	StartRotateClose();
-	PlayClose_Door();
-}
-
-void AAnomaly_Object_Door::CloseDoorFast()
-{
-	Timeline_Close->SetPlayRate(2.f);
-
+	Timeline_Open->Stop();
+	Timeline_Close->SetPlayRate(PlayRate);
 	StartRotateClose();
 	PlayClose_Door();
 }
@@ -397,11 +395,11 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 }
 
 #pragma endregion
-
 #pragma region GhostHand
 
 void AAnomaly_Object_Door::SpawnGhostHand()
 {
+	if (!GhostHandMesh || IsValid(SpawnedGhostHandActor)) return;
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -410,6 +408,7 @@ void AAnomaly_Object_Door::SpawnGhostHand()
 
 	SpawnedGhostHandActor = GetWorld()->SpawnActor<ASkeletalMeshActor>(ASkeletalMeshActor::StaticClass(), SocketTransform, SpawnParams);
 
+	if (!IsValid(SpawnedGhostHandActor)) return;
 	SKM_GhostHand = SpawnedGhostHandActor->GetSkeletalMeshComponent();
 
 	SKM_GhostHand->SetSkeletalMeshAsset(GhostHandMesh);
@@ -423,10 +422,14 @@ void AAnomaly_Object_Door::SpawnGhostHand()
 
 void AAnomaly_Object_Door::PlayHandOpen()
 {
+	if (!Anim_HandOpen) return;
 	SpawnGhostHand();
+	if (!IsValid(SKM_GhostHand)) return;
 
 	SKM_GhostHand->SetHiddenInGame(false);
+
 	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+
 	SKM_GhostHand->SetAnimation(Anim_HandOpen);
 	SKM_GhostHand->SetPosition(0.f, false);
 	SKM_GhostHand->Play(false);
@@ -434,12 +437,25 @@ void AAnomaly_Object_Door::PlayHandOpen()
 
 void AAnomaly_Object_Door::PlayHandClose()
 {
+	if (!IsValid(SKM_GhostHand) || !Anim_HandClose) return;
 	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+
 	SKM_GhostHand->SetAnimation(Anim_HandClose);
 	SKM_GhostHand->SetPosition(0.f, false);
 	SKM_GhostHand->Play(false);
 
-	SpawnedGhostHandActor->SetLifeSpan(Anim_HandClose->GetPlayLength());
+	const float AnimationLength = Anim_HandClose->GetPlayLength();
+
+	if (AnimationLength > 0.f)
+	{
+		SpawnedGhostHandActor->SetLifeSpan(AnimationLength);
+	}
+	else
+	{
+		SpawnedGhostHandActor->Destroy();
+		SpawnedGhostHandActor = nullptr;
+		SKM_GhostHand = nullptr;
+	}
 }
 
 #pragma endregion

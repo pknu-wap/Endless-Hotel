@@ -1,4 +1,4 @@
-﻿// Copyright by 2025-2 WAP Game 2 team
+// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/EightExit/Door/Anomaly_Door.h"
 #include "Anomaly/Object/EightExit/Door/Anomaly_Object_Door.h"
@@ -33,6 +33,7 @@ void AAnomaly_Door::SetAnomalyState()
 		CurrentDoorState = EDoorSequenceState::OpenDoor;
 		TriggerBox->SetWorldTransform(OpenDoorTriggerTrans);
 		ActiveTrigger();
+		break;
 	}
 }
 
@@ -43,18 +44,14 @@ void AAnomaly_Door::SetAnomalyState()
 void AAnomaly_Door::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AEHPlayer* Player = Cast<AEHPlayer>(OtherActor);
-	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	switch (AnomalyID)
+	if (!Player) return;
+	if (AnomalyID != EAnomalyID::Door_Close)
 	{
-	case EAnomalyID::Door_Shake:
-		StartAnomalyAction();
-		break;
-
-	case EAnomalyID::Door_Close:
-		AdvanceDoorState();
-		break;
+		Super::OnTriggerBox(OverlappedComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+		return;
 	}
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AdvanceDoorState();
 }
 
 #pragma endregion
@@ -68,7 +65,10 @@ void AAnomaly_Door::AdvanceDoorState()
 	for (const auto& Target : TargetAnomalyObjects)
 	{
 		Door = Cast<AAnomaly_Object_Door>(Target);
+		if (IsValid(Door)) break;
 	}
+
+	if (!IsValid(Door)) return;
 
 	switch (CurrentDoorState)
 	{
@@ -110,8 +110,8 @@ void AAnomaly_Door::AdvanceDoorState()
 
 	case EDoorSequenceState::CloseHandAndDoor:
 	{
-		/*Door->PlayHandClose();*/
-		Door->CloseDoorFast();
+		Door->PlayHandClose();
+		Door->CloseDoor(2.f);
 
 		CurrentDoorState = EDoorSequenceState::Finished;
 		break;
