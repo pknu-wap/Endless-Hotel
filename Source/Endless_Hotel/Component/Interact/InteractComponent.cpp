@@ -5,6 +5,7 @@
 #include "UI/Base/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Base
@@ -18,6 +19,9 @@ void UInteractComponent::BeginPlay()
 	UI_Description->ShowDescription(false, false);
 
 	Comp_Tutorial = Owner->FindComponentByClass<UTutorialComponent>();
+
+	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetInteract);
 }
 
 #pragma endregion
@@ -33,7 +37,17 @@ void UInteractComponent::ShowInteracting(bool bIsShow)
 
 	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
 	{
-		ChangeIndex(true);
+		for (const auto& Info : List_Interact)
+		{
+			if (!Info.bIsInteracted)
+			{
+				CurrentIndex = List_Interact.IndexOfByPredicate([Info](const FInteractInfo& InteractInfo)
+					{
+						return Info.InteractType == InteractInfo.InteractType;
+					});
+				return;
+			}
+		}
 		return;
 	}
 
@@ -67,6 +81,14 @@ void UInteractComponent::Interact(AEHCharacter* Interacter)
 
 	auto* Interface = Cast<IInteractable>(Owner);
 	Interface->Interact(Interacter);
+}
+
+void UInteractComponent::ResetInteract()
+{
+	for (auto& Info : List_Interact)
+	{
+		Info.bIsInteracted = false;
+	}
 }
 
 #pragma endregion

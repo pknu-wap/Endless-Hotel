@@ -429,7 +429,7 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::ResetDoorState()
 {
-	if (IsValid(this))
+	if (!IsValid(this))
 	{
 		return;
 	}
