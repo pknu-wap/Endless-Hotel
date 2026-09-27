@@ -25,6 +25,8 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency<UElevatorManagerSubsystem>();
 
 	ChooseKeyIndex = FMath::RandRange(1, 2);
+	
+	GameClearEvent.AddUObject(this, &UGameSystem::GameClear);
 }
 
 #pragma endregion
@@ -78,9 +80,21 @@ void UGameSystem::ChangeProgression(EGameProgression Target)
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = Target;
+	Data.bGameClear = bIsClear;
 	USaveManager::SaveData_Progression(Data);
 
 	OnProgressionChanged.Broadcast(Target);
+}
+
+#pragma endregion
+
+#pragma region Clear
+
+void UGameSystem::GameClear()
+{
+	const EGameProgression Ending = USaveManager::LoadClearedAnomalyID().Num() == ANOMALY_COUNT ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
+	bIsClear = true;
+	ChangeProgression(Ending);
 }
 
 #pragma endregion

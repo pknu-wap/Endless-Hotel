@@ -10,18 +10,14 @@
 
 UFloorProgressSubsystem::UFloorProgressSubsystem()
 {
-	GameClearEvent.AddUObject(this, &ThisClass::GameClear);
 	FloorChange_Reset.AddUObject(this, &ThisClass::ProgressGameState);
 }
 
 void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
 	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
-
 	Floor = STARTFLOOR;
-	bIsClear = USaveManager::LoadData_Progression().bGameClear;
 }
 
 #pragma endregion
@@ -36,7 +32,8 @@ void UFloorProgressSubsystem::SubFloor()
 	}
 	else
 	{
-		GameClearEvent.Broadcast();
+		const auto& GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+		GameSys->GameClearEvent.Broadcast();
 	}
 }
 
@@ -52,16 +49,6 @@ void UFloorProgressSubsystem::AddFloor()
 
 #pragma region Clear
 
-void UFloorProgressSubsystem::GameClear()
-{
-	bIsClear = true;
-	Floor = STARTFLOOR;
-
-	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	Data.bGameClear = true;
-	USaveManager::SaveData_Progression(Data);
-}
-
 #pragma endregion
 
 #pragma region Reset
@@ -70,8 +57,6 @@ void UFloorProgressSubsystem::ResetFloorProgress()
 {
 	Floor = STARTFLOOR;
 	bIsFirstStartFloor = true;
-
-	bIsClear = USaveManager::LoadData_Progression().bGameClear;
 }
 
 #pragma endregion

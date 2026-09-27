@@ -44,21 +44,6 @@ public:
 
 #pragma endregion
 
-#pragma region Clear
-
-public:
-	void GameClear();
-
-	bool IsGameClear() const { return bIsClear; }
-
-public:
-	bool bIsClear = false;
-
-	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
-	FGameClearEvent GameClearEvent;
-
-#pragma endregion
-
 #pragma region Reset
 
 public:

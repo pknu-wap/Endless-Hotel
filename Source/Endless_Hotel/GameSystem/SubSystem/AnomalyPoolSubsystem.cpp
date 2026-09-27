@@ -10,8 +10,10 @@
  #include "Anomaly/Event/Anomaly_Event.h"
  #include "Anomaly/Object/Anomaly_Object_Base.h"
  #include <Engine/GameInstance.h>
- 
- #pragma region Base
+
+#include "GameSystem.h"
+
+#pragma region Base
  
  void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
  {
@@ -28,9 +30,9 @@
     AnomalyRules = Data_Progression.ActiveRules;
  
      bool bIsClear = false;
-     if (const UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
+     if (const auto& GameSys = GetGameInstance()->GetSubsystem<UGameSystem>())
      {
-         bIsClear = FloorSys->IsGameClear();
+         bIsClear = GameSys->IsGameClear();
      }
  
      if (bIsClear && bExceptClearedAnomaly)
