@@ -16,12 +16,12 @@ AAnomaly_Object_Candle::AAnomaly_Object_Candle(const FObjectInitializer& ObjectI
 
 #pragma region Reset
 
-void AAnomaly_Object_Candle::Reset()
+void AAnomaly_Object_Candle::InitializeOnAnomalySpawned()
 {
 	Object->SetSimulatePhysics(false);
 	Object->SetEnableGravity(false);
 
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 }
 
 #pragma endregion

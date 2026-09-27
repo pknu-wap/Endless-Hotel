@@ -21,7 +21,7 @@ public:
 #pragma region Reset
 
 public:
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 #pragma endregion
 

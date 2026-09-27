@@ -35,12 +35,14 @@ void UAnomalyVerdictSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 bool UAnomalyVerdictSubsystem::ComputeVerdict() const
 {
+	if (!CurrentAnomaly)
+	{
+		return bIsElevatorNormal && !bWrongInteractionOccurred;
+	}
 	switch (VerdictMode)
 	{
 	case EAnomalyVerdictMode::Both_AND:
 		return bIsAnomalySolved && !bIsElevatorNormal;
-	case EAnomalyVerdictMode::Normal:
-		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
 		return false;
 	}
@@ -48,16 +50,14 @@ bool UAnomalyVerdictSubsystem::ComputeVerdict() const
 
 void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
 {
+	if (!CurrentAnomaly)
+	{
+		IncorrectRules.AddUnique(EAnomalyRule::EightExit);
+	}
 	switch (VerdictMode)
 	{
 	case EAnomalyVerdictMode::Both_AND:
 		if (bIsElevatorNormal)
-		{
-			IncorrectRules.AddUnique(EAnomalyRule::EightExit);
-		}
-		break;
-	case EAnomalyVerdictMode::Normal:
-		if (!bIsElevatorNormal)
 		{
 			IncorrectRules.AddUnique(EAnomalyRule::EightExit);
 		}
@@ -95,13 +95,15 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 			FloorSys->SubFloor();
 		}
 		bIsStartInBed = false;
-
-		if (PoolSys && PoolSys->bExceptClearedAnomaly)
+		if (IsValid(CurrentAnomaly))
 		{
-			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
-			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
+			if (PoolSys && PoolSys->bExceptClearedAnomaly)
+			{
+				AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
+				USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
+			}
+			PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
 		}
-		PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
 	}
 	else
 	{
@@ -142,14 +144,28 @@ void UAnomalyVerdictSubsystem::TryInteractSolveVerdict()
 
 #pragma region Anomaly
 
+void UAnomalyVerdictSubsystem::SetNoAnomalyState()
+{
+	CurrentAnomaly = nullptr;
+	CurrentAnomalyID = EAnomalyID::Normal;
+	if (UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr)
+	{
+		DataLayerSys->SetCurrentDataLayer(EMapDataLayer::Hotel);
+	}
+	if (UElevatorManagerSubsystem* ElevatorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>() : nullptr)
+	{
+		ElevatorSys->RemoveTargetElevator();
+		ElevatorSys->StartAllElevator();
+	}
+}
+
 void UAnomalyVerdictSubsystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
 	CurrentAnomalyID = AnomalyID;
 	CurrentAnomaly->AnomalyID = AnomalyID;
 
-	UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
-	if (DataLayerSys)
+	if (UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr)
 	{
 		DataLayerSys->SetCurrentDataLayer(AnomalyMap);
 	}

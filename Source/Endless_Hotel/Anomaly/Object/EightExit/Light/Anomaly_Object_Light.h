@@ -22,7 +22,7 @@ public:
 #pragma region Reset
 
 public:
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 #pragma endregion
 
@@ -70,6 +70,9 @@ private:
 #pragma region Color
 
 public:
+	void StartChangeColor();
+
+private:
 	void ChangeLightColor();
 
 private:

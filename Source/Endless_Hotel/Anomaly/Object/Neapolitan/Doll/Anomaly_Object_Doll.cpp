@@ -34,9 +34,9 @@ AAnomaly_Object_Doll::AAnomaly_Object_Doll(const FObjectInitializer& ObjectIniti
 
 #pragma region Reset
 
-void AAnomaly_Object_Doll::Reset()
+void AAnomaly_Object_Doll::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	Object->SetHiddenInGame(true);
 	Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);

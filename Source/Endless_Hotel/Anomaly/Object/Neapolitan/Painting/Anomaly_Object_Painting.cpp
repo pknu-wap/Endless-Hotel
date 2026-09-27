@@ -44,11 +44,11 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	Mesh_Monster->SetVisibility(false);
 }
 
-void AAnomaly_Object_Painting::Reset()
+void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FrameTiltHandle);
 
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	Object->SetMaterial(1, OriginalMaterial);
 

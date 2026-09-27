@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Type/Save/Type_Save.h"
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Door.generated.h>
@@ -15,7 +16,7 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Door : public AAnomaly_Object_EightExit
 
 public:
 	AAnomaly_Object_Door(const FObjectInitializer& ObjectInitializer);
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,8 +29,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> Mesh_Handle;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> Mesh_Handle2;
+
 	UPROPERTY()
 	TObjectPtr<class UAudioComponent> AC_DoorMove;
+
+#pragma endregion
+
+#pragma region Progression
+
+private:
+	void OnChangedProgression(EGameProgression Target);
 
 #pragma endregion
 
@@ -94,6 +105,7 @@ private:
 #pragma region Open
 
 public:
+	UFUNCTION()
 	void OpenDoor();
 
 protected:
@@ -175,7 +187,7 @@ public:
 
 #pragma region FirstDoorOpen
 
-protected:
+private:
 	void MoveToHandlePlayer();
 
 	UFUNCTION()
@@ -187,11 +199,18 @@ protected:
 	UFUNCTION()
 	void OnPushMoveCompleted();
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	void ResetDoorState();
+
+	void MoveToHandleKey();
+
+	UFUNCTION()
+	void RotateKey();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "StartTransform")
 	FTransform TargetPlayerTransform;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StartTransform")
+	UPROPERTY(EditAnywhere, Category = "StartTransform")
 	FTransform PushPlayerTransform;
 
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
@@ -200,10 +219,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Door Settings")
 	float RotationSpeed = 2.0f;
 
-	FRotator TargetDoorRotation;
+	UPROPERTY(EditAnywhere, Category = "Key")
+	TSubclassOf<class AStaticMeshActor> KeyClass;
 
-protected:
-	bool bIsDoorOpened = false;
+	UPROPERTY()
+	TObjectPtr<class AStaticMeshActor> KeyActor;
+
+	FRotator TargetDoorRotation;
 
 #pragma endregion
 
@@ -237,17 +259,9 @@ protected:
 
 #pragma endregion
 
-#pragma region Normal
+#pragma region Light Channel
 
-public:
-	void ReadyDoor();
-	void ReadyDoorOpened();
-
-#pragma endregion
-
-#pragma region Light
-
-public:
+private:
 	void SetLight(bool bIsStartFloor);
 
 #pragma endregion

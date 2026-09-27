@@ -18,7 +18,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Reset() override;
+	virtual void InitializeOnAnomalySpawned() override;
 
 #pragma endregion
 

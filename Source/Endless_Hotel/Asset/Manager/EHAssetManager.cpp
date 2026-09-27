@@ -97,17 +97,7 @@ void UEHAssetManager::InitAnomalyEntries()
 	OriginAnomaly.Empty();
 	ActAnomaly.Empty();
 
-	for (const FAnomalyEntry& Entry : Data_Anomalies)
-	{
-		if (Entry.ID == EAnomalyID::Normal)
-		{
-			NormalAnomalyData = Entry;
-			continue;
-		}
-
-		OriginAnomaly.Add(Entry);
-	}
-
+	OriginAnomaly.Append(Data_Anomalies);
 	ActAnomaly = OriginAnomaly;
 }
 
@@ -180,12 +170,6 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UEHAssetManager::GetObjectByID(EAnomal
 				}
 			}
 		};
-
-	if (AnomalyID == EAnomalyID::Normal)
-	{
-		LoadObjects(NormalAnomalyData.Objects);
-		return ResultArray;
-	}
 
 	if (const auto* Entry = OriginAnomaly.FindByPredicate([AnomalyID](const auto& E) { return E.ID == AnomalyID; }))
 	{

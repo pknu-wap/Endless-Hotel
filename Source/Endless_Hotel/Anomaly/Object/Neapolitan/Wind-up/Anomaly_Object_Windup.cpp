@@ -17,9 +17,9 @@ AAnomaly_Object_Windup::AAnomaly_Object_Windup(const FObjectInitializer& ObjectI
 
 #pragma region Reset
 
-void AAnomaly_Object_Windup::Reset()
+void AAnomaly_Object_Windup::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	CurrentInteractStep = EWindupInteractStep::NeedStopSound;
 

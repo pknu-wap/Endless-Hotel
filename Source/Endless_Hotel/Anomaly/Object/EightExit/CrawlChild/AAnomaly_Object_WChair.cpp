@@ -46,9 +46,9 @@ void AAnomaly_Object_WChair::BeginPlay()
 	Timeline_RotateMove->SetTimelineFinishedFunc(End_Rotate);
 }
 
-void AAnomaly_Object_WChair::Reset()
+void AAnomaly_Object_WChair::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 	bIsFirstMove = true;
 }
 

@@ -60,7 +60,7 @@ private:
 
 private:
 	void SetNeedRemind(EAnomalyRule Rule) { bNeedRemind = true; }
-	void RemindManual(TArray<EAnomalyRule> Rules);
+	void RemindManual();
 
 private:
 	bool bNeedRemind = false;

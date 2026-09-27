@@ -31,7 +31,7 @@ void AAnomaly_Object_Maze::SetDeactiveWall()
 	SetElevatorPos();
 }
 
-void AAnomaly_Object_Maze::Reset()
+void AAnomaly_Object_Maze::InitializeOnAnomalySpawned()
 {
 	Object->SetVisibility(true);
 	Object->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);

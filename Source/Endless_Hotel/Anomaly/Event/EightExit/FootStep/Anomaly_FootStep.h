@@ -30,6 +30,8 @@ private:
 
 	FTimerHandle SpawnHandle;
 
+	float SpawnDuration = 1.f;
+
 	bool bIsLeft = true;
 
 #pragma endregion

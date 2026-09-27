@@ -19,6 +19,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Progression
+
+private:
+	void OnChangedProgression(EGameProgression Target);
+
+#pragma endregion
+
 #pragma region Widget
 
 public:
@@ -26,8 +33,6 @@ public:
 	void HideTutorialWidget();
 
 	void ShowTutorialWidgetForce();
-
-private:
 	void HideTutorialWidgetForce();
 
 public:

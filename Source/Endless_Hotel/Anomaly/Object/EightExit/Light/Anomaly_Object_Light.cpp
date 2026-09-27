@@ -27,9 +27,9 @@ AAnomaly_Object_Light::AAnomaly_Object_Light(const FObjectInitializer& ObjectIni
 
 #pragma region Reset
 
-void AAnomaly_Object_Light::Reset()
+void AAnomaly_Object_Light::InitializeOnAnomalySpawned()
 {
-	Super::Reset();
+	Super::InitializeOnAnomalySpawned();
 
 	Object->SetVisibility(true);
 
@@ -109,6 +109,12 @@ void AAnomaly_Object_Light::OnGeometryCollectionBreak(const FChaosBreakEvent& Br
 #pragma endregion
 
 #pragma region Color
+
+void AAnomaly_Object_Light::StartChangeColor()
+{
+	FTimerHandle ChangeHandle;
+	GetWorld()->GetTimerManager().SetTimer(ChangeHandle, this, &ThisClass::ChangeLightColor, LightIndex * 0.5f, false);
+}
 
 void AAnomaly_Object_Light::ChangeLightColor()
 {
