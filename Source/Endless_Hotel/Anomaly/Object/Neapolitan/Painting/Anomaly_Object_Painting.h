@@ -151,7 +151,11 @@ public:
 
 private:
 	TWeakObjectPtr<class AEHPlayer> WatchingPlayer;
+
 	float CurrentWatchTime = 0.0f;
+
+	bool bIsHallucinating = false;
+
 	FTimerHandle WatchingTimerHandle;
 	FTimerHandle DeathTimerHandle;
 
