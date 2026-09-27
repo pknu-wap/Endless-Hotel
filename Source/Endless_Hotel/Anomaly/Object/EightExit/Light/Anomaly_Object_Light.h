@@ -70,6 +70,9 @@ private:
 #pragma region Color
 
 public:
+	void StartChangeColor();
+
+private:
 	void ChangeLightColor();
 
 private:

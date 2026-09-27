@@ -27,6 +27,9 @@ public:
 	virtual void ShowWidget() override;
 	virtual void HideWidget() override;
 
+private:
+	bool bShowTutorial = false;
+
 #pragma endregion
 
 #pragma region Data

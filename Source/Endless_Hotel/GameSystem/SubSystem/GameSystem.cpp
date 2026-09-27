@@ -1,13 +1,13 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "GameSystem.h"
-
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Engine/GameInstance.h>
 #include <Math/UnrealMathUtility.h>
 
@@ -68,6 +68,19 @@ void UGameSystem::ResetGameSystem() const
 	{
 		FloorSys->ResetFloorProgress();
 	}
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void UGameSystem::ChangeProgression(EGameProgression Target)
+{
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	Data.Progression = Target;
+	USaveManager::SaveData_Progression(Data);
+
+	OnProgressionChanged.Broadcast(Target);
 }
 
 #pragma endregion

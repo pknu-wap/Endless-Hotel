@@ -44,7 +44,7 @@ void AAnomaly_Object_FootStep::DisappearFootStep()
 			{
 				Destroy();
 			}
-		}), 0.1f, true);
+		}), 0.04f, true);
 }
 
 #pragma endregion
