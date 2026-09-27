@@ -72,7 +72,7 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
-
+	
 	bAble ? ResetIgnoreLookInput() : SetIgnoreLookInput(true);
 }
 

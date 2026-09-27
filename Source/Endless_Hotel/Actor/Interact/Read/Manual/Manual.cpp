@@ -4,6 +4,7 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Component/Tutorial/TutorialComponent.h"
 #include "UI/Controller/UI_Controller.h"
 #include <Kismet/KismetSystemLibrary.h>
@@ -32,8 +33,8 @@ void AManual::BeginPlay()
 	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	PoolSub->OnAddAnomalyRule.AddUObject(this, &ThisClass::SetNeedRemind);
 
-	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	VerdictSub->OnOccurIncorrectRule.AddUObject(this, &ThisClass::RemindManual);
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::RemindManual);
 }
 
 #pragma endregion
@@ -58,6 +59,10 @@ void AManual::Interact(AEHCharacter* Interacter)
 		Data.bReadManual = true;
 		USaveManager::SaveData_Progression(Data);
 	}
+
+	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
+	Comp_Tutorial->HideTutorialWidget();
+	Comp_Tutorial->HideTutorialWidget();
 }
 
 #pragma endregion
@@ -109,9 +114,10 @@ void AManual::SwitchPaper()
 
 #pragma region Remind
 
-void AManual::RemindManual(TArray<EAnomalyRule> Rules)
+void AManual::RemindManual()
 {
-	if (!bNeedRemind)
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (!bNeedRemind || FloorSub->Floor != STARTFLOOR)
 	{
 		return;
 	}

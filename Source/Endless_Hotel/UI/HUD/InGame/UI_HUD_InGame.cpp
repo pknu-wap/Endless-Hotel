@@ -28,7 +28,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
-	GameInstance->OnDataLayerChanged.AddUObject(this, &ThisClass::OnDataLayerChanged);
+	GameInstance->OnDataLayerChanged.AddWeakLambda(this, [this](const EMapDataLayer& Layer) {CurrentLayer = Layer; });
 
 	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
@@ -73,21 +73,6 @@ void UUI_HUD_InGame::ShowWidget()
 	{
 		ShowCrosshair(true);
 	}
-}
-
-#pragma endregion
-
-#pragma region Data Layer
-
-void UUI_HUD_InGame::OnDataLayerChanged(const EMapDataLayer& Layer)
-{
-	bool bCheckInState = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
-	if (CurrentLayer == EMapDataLayer::Lobby && !bCheckInState)
-	{
-		StartInGameHUD(true);
-	}
-
-	CurrentLayer = Layer;
 }
 
 #pragma endregion
@@ -141,12 +126,8 @@ void UUI_HUD_InGame::ChangeCrosshair(bool bCanInteract)
 
 void UUI_HUD_InGame::ShowCrosshair(bool bIsStart)
 {
-	if (!bIsStart)
-	{
-		return;
-	}
-
-	PlayAnimation(WidgetAnim_ShowCrosshair);
+	UWidgetAnimation* TargetAnim = bIsStart ? WidgetAnim_ShowCrosshair : WidgetAnim_HideCrosshair;
+	PlayAnimation(TargetAnim);
 }
 
 #pragma endregion

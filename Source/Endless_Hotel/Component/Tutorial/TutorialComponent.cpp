@@ -3,6 +3,7 @@
 #include "Component/Tutorial/TutorialComponent.h"
 #include "Component/Interact/InteractComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include "Player/Character/EHPlayer.h"
@@ -25,14 +26,37 @@ void UTutorialComponent::BeginPlay()
 	UI_Tutorial->SetTargetKey(TargetKey);
 	UI_Tutorial->SetTargetDescription(TargetDescription);
 
-	TriggerBox = NewObject<UBoxComponent>(Owner.Get());
-	TriggerBox->AttachToComponent(Owner->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	TriggerBox->SetWorldTransform(TriggerTrans);
-	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBeginOverlap);
-	TriggerBox->RegisterComponent();
+	auto* GameInstance = GetWorld()->GetGameInstance();
 
-	auto* FloorSub = GetWorld()->GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	auto* GameSystem = GameInstance->GetSubsystem<UGameSystem>();
+	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
+	OnChangedProgression(USaveManager::LoadData_Progression().Progression);
+
+	auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
 	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::HideTutorialWidgetForce);
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void UTutorialComponent::OnChangedProgression(EGameProgression Target)
+{
+	if (Target != TargetProgression)
+	{
+		return;
+	}
+
+	if (IsValid(TriggerBox))
+	{
+		TriggerBox->DestroyComponent();
+	}
+
+	TriggerBox = NewObject<UBoxComponent>(Owner.Get());
+	TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBeginOverlap);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerBox->SetWorldTransform(TriggerTrans);
+	TriggerBox->RegisterComponent();
 }
 
 #pragma endregion
@@ -97,7 +121,10 @@ void UTutorialComponent::HideTutorialWidgetForce()
 		return;
 	}
 
-	UI_Tutorial->HideWidget();
+	if (UI_Tutorial.IsValid())
+	{
+		UI_Tutorial->HideWidget();
+	}
 
 	if (Comp_Interact.IsValid())
 	{
