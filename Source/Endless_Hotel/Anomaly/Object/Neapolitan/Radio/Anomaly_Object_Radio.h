@@ -6,6 +6,30 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Radio.generated.h>
 
+USTRUCT(BlueprintType)
+struct FRadioSubtitleLine
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	FText Text;
+
+	UPROPERTY(EditAnywhere, Category = "SubTitle", meta = (ClampMin = "0.01"))
+	float StartTime = 1.5f;
+
+	UPROPERTY(EditAnywhere, Category = "SubTitle", meta = (ClampMin = "0.01"))
+	float Duration = 3.f;
+};
+
+USTRUCT(BlueprintType)
+struct FRadioSubtitle
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	TArray<FRadioSubtitleLine> Lines;
+};
+
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Radio : public AAnomaly_Object_Neapolitan
 {
@@ -39,6 +63,14 @@ protected:
 
 #pragma endregion
 
+#pragma region SubTitle
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "SubTitle")
+	TArray<FRadioSubtitle> RadioSubtitles;
+
+#pragma endregion
+
 #pragma region Radio
 
 public:
@@ -53,7 +85,9 @@ public:
 #pragma region Move
 
 protected:
+	UFUNCTION()
 	void FinishMove();
+
 	void StopRadio();
 
 #pragma endregion
@@ -79,4 +113,6 @@ protected:
 
 protected:
 	virtual void Interact(class AEHCharacter* Interacter) override;
+
+#pragma endregion
 };
