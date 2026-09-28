@@ -8,6 +8,8 @@
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include <Animation/SkeletalMeshActor.h>
+#include <Components/SkeletalMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
