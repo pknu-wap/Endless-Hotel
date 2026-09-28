@@ -31,6 +31,19 @@ void AAnomaly_Object_Windup::InitializeOnAnomalySpawned()
 	CurrentWindupPlayCount = 0;
 	WindupBurnCurrentTime = 0.f;
 
+	for (auto& Material : MID_WindupBurn)
+	{
+		if (IsValid(Material))
+		{
+			Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
+		}
+	}
+
+	if (UAnimInstance* AnimInstance = SKM_Windup->GetAnimInstance())
+	{
+		AnimInstance->Montage_Stop(0.f);
+	}
+
 	SKM_Windup->SetHiddenInGame(true);
 	SKM_Windup->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SKM_Windup->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
@@ -127,21 +140,34 @@ void AAnomaly_Object_Windup::PlayWrongMontage()
 
 void AAnomaly_Object_Windup::SetupWindupBurnTargets()
 {
-	for (int32 Index = 0; Index < SKM_Windup->GetNumMaterials(); ++Index)
+	MID_WindupBurn.SetNum(SKM_Windup->GetNumMaterials());
+
+	for (int32 Index = 0; Index < MID_WindupBurn.Num(); ++Index)
 	{
-		auto* Material = SKM_Windup->CreateDynamicMaterialInstance(Index);
+		if (!IsValid(MID_WindupBurn[Index]))
+		{
+			MID_WindupBurn[Index] =
+				SKM_Windup->CreateDynamicMaterialInstance(Index);
+		}
+
+		auto* Material = MID_WindupBurn[Index].Get();
+
+		if (!IsValid(Material))
+		{
+			continue;
+		}
+
 		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
 		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
 		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
 
-		MID_WindupBurn.Add(Material);
-
-		SKM_Windup->SetMaterial(Index, MID_WindupBurn[Index]);
+		SKM_Windup->SetMaterial(Index, Material);
 	}
 }
 
 void AAnomaly_Object_Windup::StartWindupBurning()
 {
+	WindupBurnCurrentTime = 0.f;
 	SetupWindupBurnTargets();
 	Niagara_Fire->Activate();
 	AC->Play();
