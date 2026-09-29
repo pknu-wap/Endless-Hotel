@@ -126,12 +126,6 @@ void UInteractComponent::ChangeIndex(bool bUp)
 	{
 		CurrentIndex = List_Interact.Num() - 1;
 	}
-
-	if (!List_Interact.IsEmpty() && List_Interact.IsValidIndex(CurrentIndex) && List_Interact[CurrentIndex].bIsInteracted && HasManyInteracting())
-	{
-		ChangeIndex(true);
-		return;
-	}
 }
 
 #pragma endregion

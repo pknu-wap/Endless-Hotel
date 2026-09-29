@@ -2,16 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
-#include "Anomaly_Object_Hair.generated.h"
-
-class AActor;
-class UCameraComponent;
-class UCurveFloat;
-class UMaterialParameterCollection;
-class UStaticMeshComponent;
-class UTimelineComponent;
+#include <CoreMinimal.h>
+#include <Anomaly_Object_Hair.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Hair : public AAnomaly_Object_EightExit
@@ -25,63 +18,39 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+#pragma endregion
+
+#pragma region Reference
+
+private:
+	UPROPERTY()
+	TWeakObjectPtr<class UCameraComponent> Camera;
+
+	UPROPERTY()
+	TWeakObjectPtr<class APlayerController> PC;
 
 #pragma endregion
 
 #pragma region Hair
 
-protected:
-	UPROPERTY()
-	TObjectPtr<UTimelineComponent> HairTimeline;
+private:
+	void SlowDownHair();
 
-	UPROPERTY()
-	TObjectPtr<UStaticMeshComponent> HairMesh;
+private:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USkeletalMeshComponent> SK_Hair;
 
-	UPROPERTY()
-	TObjectPtr<AActor> SpawnedHairActor;
+	FTimerHandle MoveHandle;
 
-	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
-	TSubclassOf<AActor> HairActorClass;
+	FVector OriginLoc = FVector::ZeroVector;
+	FVector TargetLoc = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
-	FVector HairRelativeLocation = FVector(30.f, 0.f, 0.f);
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UAudioComponent> AC_Hair;
 
-	UPROPERTY(EditAnywhere, Category = "Hair|Spawn")
-	FRotator HairRelativeRotation = FRotator::ZeroRotator;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UMaterialParameterCollection> HairMPC;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UCurveFloat> Curve_HairOpacity;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	TObjectPtr<UCurveFloat> Curve_HairLocation;
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	FName Param_Opacity = TEXT("MP_HairOpacity");
-
-	UPROPERTY(EditAnywhere, Category = "Hair")
-	float ScheduleAnomaly = 0.5f;
-
-	UPROPERTY()
-	FVector InitialHairLocation;
-
-	UFUNCTION()
-	void SpawnHair();
-
-	UFUNCTION()
-	void UpdateHair(float Value);
-
-	UFUNCTION()
-	void ResetHair(bool bIsStart);
-
-	bool bHairActive = false;
-
-public:
-	void StartHair();
-
-	virtual void InitializeOnAnomalySpawned() override;
+	bool bPlayAudio = false;
 
 #pragma endregion
 
