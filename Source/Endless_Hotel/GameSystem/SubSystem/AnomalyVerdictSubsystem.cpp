@@ -155,6 +155,10 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	if (UElevatorManagerSubsystem* ElevatorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>() : nullptr)
 	{
 		ElevatorSys->RemoveTargetElevator();
+		if (!bIsStartInBed)
+		{
+			ElevatorSys->SetTargetElevator("HotelElevator");
+		}
 		ElevatorSys->StartAllElevator();
 	}
 }
@@ -243,7 +247,7 @@ void UAnomalyVerdictSubsystem::ResetVerdict()
 	bIsElevatorNormal = false;
 
 	CurrentAnomaly = nullptr;
-	CurrentAnomalyID = EAnomalyID::None;
+	CurrentAnomalyID = EAnomalyID::Normal;
 	NextAnomalyID = EAnomalyID::None;
 	NextAnomalyMap = EMapDataLayer::Hotel;
 	bIsStartInBed = false;
