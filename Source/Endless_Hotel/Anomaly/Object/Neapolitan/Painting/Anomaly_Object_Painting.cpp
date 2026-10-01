@@ -232,23 +232,9 @@ void AAnomaly_Object_Painting::DieWatchingPainting()
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			if (!Player)
-			{
-				return;
-			}
-
 			AEHPlayerController* PC = Cast<AEHPlayerController>(Player->Controller);
-			if (!PC)
-			{
-				return;
-			}
-
 			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-			if (!CameraManager)
-			{
-				return;
-			}
-
+		
 			const bool bLooking = PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved;
 
 			if (bLooking)

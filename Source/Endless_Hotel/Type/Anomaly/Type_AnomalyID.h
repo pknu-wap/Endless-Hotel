@@ -31,6 +31,7 @@ enum class EAnomalyID : uint8
 	CryGhost_Light      = 24	UMETA(DisplayName = "CryGhost_Light"),
 	Twin				= 25	UMETA(DisplayName = "Twin"),
 	CrawlChild			= 26	UMETA(DisplayName = "CrawlChild"),
+	Painting_Watch		= 79	UMETA(DisplayName = "Painting_Watch"),
 	Eye					= 80	UMETA(DisplayName = "Eye"),
 	Doll_Coming			= 81	UMETA(DisplayName = "Doll_Coming"),
 	Windup				= 82	UMETA(DisplayName = "Windup"),
@@ -50,6 +51,5 @@ enum class EAnomalyID : uint8
 	Radio				= 97	UMETA(DisplayName = "Radio"),
 	Doll				= 98	UMETA(DisplayName = "Doll"),
 	Painting_Eye		= 99	UMETA(DisplayName = "Painting_Eye"),
-	Painting_Watch		= 100	UMETA(DisplayName = "Painting_Watch"),
 	Normal				= 255	UMETA(DisplayName = "Normal")
 };
