@@ -2,17 +2,8 @@
 
 #include "Anomaly/Event/EightExit/Hair/Anomaly_Hair.h"
 #include "Anomaly/Object/EightExit/Hair/Anomaly_Object_Hair.h"
-
-#pragma region Base
-
-void AAnomaly_Hair::BeginPlay()
-{
-	Super::BeginPlay();
-
-	SetActorLocation(SpawnLocation);
-}
-
-#pragma endregion
+#include <GameFrameWork/Character.h>
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Activity
 
@@ -23,10 +14,35 @@ void AAnomaly_Hair::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Hair:
-		SetupAnomalyAction<AAnomaly_Object_Hair>(&AAnomaly_Object_Hair::StartHair);
+		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnHair);
 		ActiveTrigger();
 		break;
 	}
+}
+
+void AAnomaly_Hair::DisableAnomaly()
+{
+	if (IsValid(Hair))
+	{
+		Hair->Destroy();
+		Hair = nullptr;
+	}
+
+	Super::DisableAnomaly();
+}
+
+#pragma endregion
+
+#pragma region Spawn
+
+void AAnomaly_Hair::SpawnHair()
+{
+	Hair = GetWorld()->SpawnActor<AAnomaly_Object_Hair>(HairClass);
+
+	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	auto* Mesh = Player->GetMesh();
+
+	Hair->AttachToComponent(Mesh, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Hair"));
 }
 
 #pragma endregion

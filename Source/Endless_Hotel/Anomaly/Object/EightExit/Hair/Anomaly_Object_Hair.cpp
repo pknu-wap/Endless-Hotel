@@ -1,136 +1,77 @@
-// Copyright by 2025-2 WAP Game 2 team
-
+﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Object/EightExit/Hair/Anomaly_Object_Hair.h"
 #include "Player/Character/EHPlayer.h"
-#include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/TimelineComponent.h"
-#include "Curves/CurveFloat.h"
-#include "GameFramework/Pawn.h"
-#include "Kismet/GameplayStatics.h"
-#include "Materials/MaterialParameterCollection.h"
-#include "Materials/MaterialParameterCollectionInstance.h"
-#include "TimerManager.h"
+#include <Components/AudioComponent.h>
+#include <Camera/CameraComponent.h>
+#include <Kismet/GameplayStatics.h>
+
+#pragma region Base
 
 AAnomaly_Object_Hair::AAnomaly_Object_Hair(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+	:Super(ObjectInitializer)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
-	HairTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("HairTimeline"));
+	SK_Hair = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SK_Hair"));
+	SetRootComponent(SK_Hair);
+
+	Object->SetupAttachment(RootComponent);
+
+	AC_Hair = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Hair"));
+	AC_Hair->SetupAttachment(RootComponent);
+	AC_Hair->SetAutoActivate(false);
 }
 
 void AAnomaly_Object_Hair::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FOnTimelineFloat UpdateDelegate;
-	UpdateDelegate.BindUFunction(this, FName("UpdateHair"));
-	HairTimeline->AddInterpFloat(Curve_HairOpacity, UpdateDelegate);
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Camera = Player->GetCamera();
+
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	SlowDownHair();
 }
 
-void AAnomaly_Object_Hair::StartHair()
+void AAnomaly_Object_Hair::Tick(float DeltaSeconds)
 {
-	bHairActive = true;
-	FTimerHandle HairTimer;
-	GetWorld()->GetTimerManager().SetTimer(
-		HairTimer,
-		FTimerDelegate::CreateWeakLambda(this, [this]()
+	Super::Tick(DeltaSeconds);
+
+	FVector CameraForward = PC->GetControlRotation().Vector();
+	FVector TargetDir = (Object->GetComponentLocation() - Camera->GetComponentLocation()).GetSafeNormal();
+	const float Dot = FVector::DotProduct(CameraForward, TargetDir);
+
+	if (Dot >= 0.7f && !bPlayAudio)
+	{
+		bPlayAudio = true;
+		AC_Hair->Play();
+	}
+}
+
+#pragma endregion
+
+#pragma region Hair
+
+void AAnomaly_Object_Hair::SlowDownHair()
+{
+	OriginLoc = SK_Hair->GetRelativeLocation();
+	TargetLoc = OriginLoc;
+	TargetLoc.X -= 60.f;
+
+	GetWorld()->GetTimerManager().SetTimer(MoveHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			FVector CurrentLoc = SK_Hair->GetRelativeLocation();
+			FVector MoveLoc = FMath::VInterpTo(CurrentLoc, TargetLoc, GetWorld()->GetDeltaSeconds(), 5.f);
+			SK_Hair->SetRelativeLocation(MoveLoc);
+
+			if (MoveLoc.Equals(TargetLoc))
 			{
-				SpawnHair();
-				HairTimeline->PlayFromStart();
-			}),
-		ScheduleAnomaly,
-		false
-	);
+				SK_Hair->SetRelativeLocation(TargetLoc);
+				GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+			}
+		}), 0.1f, true);
 }
 
-void AAnomaly_Object_Hair::SpawnHair()
-{
-	if (SpawnedHairActor)
-	{
-		SpawnedHairActor->Destroy();
-	}
-
-	AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-
-	UCameraComponent* CameraComp = Player->GetCamera();
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	SpawnedHairActor = GetWorld()->SpawnActor<AActor>(
-		HairActorClass,
-		CameraComp->GetComponentTransform(),
-		SpawnParams
-	);
-
-
-	SpawnedHairActor->AttachToComponent(
-		CameraComp,
-		FAttachmentTransformRules::SnapToTargetNotIncludingScale
-	);
-
-	SpawnedHairActor->SetActorRelativeLocation(HairRelativeLocation);
-	SpawnedHairActor->SetActorRelativeRotation(HairRelativeRotation);
-
-	HairMesh = SpawnedHairActor->FindComponentByClass<UStaticMeshComponent>();
-
-	HairMesh->SetSimulatePhysics(false);
-	HairMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	InitialHairLocation = HairMesh->GetRelativeLocation();
-}
-
-void AAnomaly_Object_Hair::UpdateHair(float Value)
-{
-	UMaterialParameterCollectionInstance* Inst = GetWorld()->GetParameterCollectionInstance(HairMPC);
-	Inst->SetScalarParameterValue(Param_Opacity, Value);
-
-	if (Curve_HairLocation)
-	{
-		const float Time = HairTimeline->GetPlaybackPosition();
-		const float LocX = Curve_HairLocation->GetFloatValue(Time);
-
-		FVector Loc = InitialHairLocation;
-		Loc.X = LocX;
-		HairMesh->SetRelativeLocation(Loc);
-	}
-}
-
-void AAnomaly_Object_Hair::ResetHair(bool bIsStart)
-{
-	UMaterialParameterCollectionInstance* Inst = GetWorld()->GetParameterCollectionInstance(HairMPC);
-	if (Inst)
-	{
-		Inst->SetScalarParameterValue(Param_Opacity, 0.0f);
-	}
-
-	if (SpawnedHairActor)
-	{
-		SpawnedHairActor->Destroy();
-		SpawnedHairActor = nullptr;
-	}
-
-	HairMesh = nullptr;
-	bHairActive = false;
-}
-
-void AAnomaly_Object_Hair::InitializeOnAnomalySpawned()
-{
-	Super::InitializeOnAnomalySpawned();
-
-	if (!bHairActive && !SpawnedHairActor)
-	{
-		return;
-	}
-
-	if (HairTimeline)
-	{
-		HairTimeline->Stop();
-	}
-
-	ResetHair(false);
-}
+#pragma endregion
