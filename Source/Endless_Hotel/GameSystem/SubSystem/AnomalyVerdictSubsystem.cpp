@@ -97,11 +97,8 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 		bIsStartInBed = false;
 		if (IsValid(CurrentAnomaly))
 		{
-			if (PoolSys && PoolSys->bExceptClearedAnomaly)
-			{
-				AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
-				USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
-			}
+			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
+			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
 			PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
 		}
 	}
@@ -128,7 +125,7 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 	LoadNextMap();
 }
 
-void UAnomalyVerdictSubsystem::TryInteractSolveVerdict()
+void UAnomalyVerdictSubsystem::TryInteractSolveVerdict() const
 {
 	if (bWrongInteractionOccurred)
 	{
@@ -202,10 +199,9 @@ void UAnomalyVerdictSubsystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLaye
 	NextAnomalyMap = AnomalyMap;
 }
 
-void UAnomalyVerdictSubsystem::LoadNextMap()
+void UAnomalyVerdictSubsystem::LoadNextMap() const
 {
-	UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
+	const UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 
 	if (FloorSys)
 	{
@@ -213,9 +209,8 @@ void UAnomalyVerdictSubsystem::LoadNextMap()
 	}
 
 	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-	const bool bLayerChanged = GameInstance->SwitchDataLayer(NextAnomalyMap);
 
-	if (!bLayerChanged && FloorSys)
+	if (const bool bLayerChanged = GameInstance->SwitchDataLayer(NextAnomalyMap); !bLayerChanged && FloorSys)
 	{
 		FloorSys->FloorChange_Reset.Broadcast();
 	}
@@ -223,7 +218,7 @@ void UAnomalyVerdictSubsystem::LoadNextMap()
 
 void UAnomalyVerdictSubsystem::OnDataLayerReady()
 {
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
+	const UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 
 	if (FloorSys && FloorSys->bIsFirstStartFloor)
 	{

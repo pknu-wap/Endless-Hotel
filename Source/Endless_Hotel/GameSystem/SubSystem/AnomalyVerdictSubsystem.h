@@ -52,7 +52,7 @@ public:
 	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
-	void TryInteractSolveVerdict();
+	void TryInteractSolveVerdict() const;
 
 private:
 	void EvaluateIncorrectRules();
@@ -71,7 +71,7 @@ public:
 	void SetNoAnomalyState();
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
-	void LoadNextMap();
+	void LoadNextMap() const;
 	void OnDataLayerReady();
 	bool IsAnomalyReady() const { return bIsAnomalyReady; }
 

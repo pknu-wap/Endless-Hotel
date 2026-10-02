@@ -11,6 +11,8 @@
 #include <Engine/GameInstance.h>
 #include <Math/UnrealMathUtility.h>
 
+#include "Asset/Manager/EHAssetManager.h"
+
 #pragma region Base
 
 void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -76,11 +78,10 @@ void UGameSystem::ResetGameSystem() const
 
 #pragma region Progression
 
-void UGameSystem::ChangeProgression(EGameProgression Target)
+void UGameSystem::ChangeProgression(const EGameProgression Target) const
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = Target;
-	Data.bGameClear = bIsClear;
 	USaveManager::SaveData_Progression(Data);
 
 	OnProgressionChanged.Broadcast(Target);
@@ -90,11 +91,17 @@ void UGameSystem::ChangeProgression(EGameProgression Target)
 
 #pragma region Clear
 
-void UGameSystem::GameClear()
+void UGameSystem::GameClear() const
 {
-	const EGameProgression Ending = USaveManager::LoadClearedAnomalyID().Num() == ANOMALY_COUNT ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
-	bIsClear = true;
+	const auto& AssetManager = UEHAssetManager::Get();
+	const EGameProgression Ending = AssetManager.GetRemainingAnomalyCounts() == 0 ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
 	ChangeProgression(Ending);
+}
+
+bool UGameSystem::IsGameClear() const
+{
+	const FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	return Data.Progression == EGameProgression::Clear_True || Data.Progression == EGameProgression::Clear_Bad;
 }
 
 #pragma endregion

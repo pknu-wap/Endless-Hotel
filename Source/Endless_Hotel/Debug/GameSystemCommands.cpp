@@ -19,7 +19,7 @@ static FAutoConsoleCommand SetExceptClearedAnomaly(TEXT("EHDebug.GameSystem.SetE
         return;
     }
     auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
+    Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1");
 }));
 
 static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEXT("Usage: EHDebug.GameSystem.IsClear <true|false>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
@@ -29,7 +29,14 @@ static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEX
 			return;
 		}
 		const auto& GameSys = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-		GameSys->bIsClear = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
+		if (Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1"))
+		{
+		    GameSys->GameClear();
+		}
+        else
+        {
+            GameSys->ChangeProgression(EGameProgression::Loop);
+        }
 	}));
 
 static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRule"), TEXT("Usage: EHDebug.GameSystem.AddAnomalyRule <RuleName>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)

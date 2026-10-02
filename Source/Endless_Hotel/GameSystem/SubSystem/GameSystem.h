@@ -8,8 +8,6 @@
 #include <Delegates/DelegateCombinations.h>
 #include <GameSystem.generated.h>
 
-#define ANOMALY_COUNT 30 // 이상현상 개수
-
 UCLASS()
 class ENDLESS_HOTEL_API UGameSystem : public UGameInstanceSubsystem
 {
@@ -39,7 +37,7 @@ public:
 #pragma region Progression
 
 public:
-	void ChangeProgression(EGameProgression Target);
+	void ChangeProgression(EGameProgression Target) const;
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnProgressionChanged, EGameProgression);
@@ -50,13 +48,10 @@ public:
 #pragma region Clear
 
 public:
-	void GameClear();
-
-	bool IsGameClear() const { return bIsClear; }
+	void GameClear() const;
+	bool IsGameClear() const;
 
 public:
-	bool bIsClear = false;
-
 	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
 
