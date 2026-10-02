@@ -50,7 +50,7 @@ public:
 public:
 	void ResetClearedAnomaly();
 	void RemoveClearedAnomaly();
-	void MarkAnomalyCleared(EAnomalyID ID) { ClearedAnomalySet.Add(ID); }
+	void MarkAnomalyCleared(const EAnomalyID ID) { ClearedAnomalySet.Add(ID); }
 
 	int32 GetClearedAnomalyCount() const { return ClearedAnomalySet.Num(); }
 	bool IsClearedAnomalySetEmpty() const { return ClearedAnomalySet.IsEmpty(); }

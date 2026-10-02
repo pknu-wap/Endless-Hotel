@@ -104,7 +104,7 @@ void UAnomalyGeneratorSubsystem::SpawnAnomaly()
    }
    else
    {
-      VerdictSubsystem->SetNextAnomaly(EAnomalyID::None, EMapDataLayer::Hotel);
+      VerdictSubsystem->SetNextAnomaly(EAnomalyID::Normal, EMapDataLayer::Hotel);
    }
    if (bIsInitialFloor)
    {
@@ -209,8 +209,9 @@ bool UAnomalyGeneratorSubsystem::SetNextAnomalyForced(const EAnomalyID ID)
 
 void UAnomalyGeneratorSubsystem::ResetGenerator()
 {
-    CurrentAnomaly = nullptr;
     NextAnomalyData.Reset();
+    const auto& AnomalyVerdictSys = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+    AnomalyVerdictSys->SetNoAnomalyState();
     bIsInitialFloor = true;
 }
 
