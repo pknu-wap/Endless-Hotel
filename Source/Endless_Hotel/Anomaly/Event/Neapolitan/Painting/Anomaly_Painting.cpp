@@ -2,6 +2,8 @@
 
 #include "Anomaly/Event/Neapolitan/Painting/Anomaly_Painting.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
+#include "Character/AI/ShadowMonster/ShadowMonster.h"
+#include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 
 #pragma region Activity
 
@@ -33,9 +35,22 @@ void AAnomaly_Painting::SetAnomalyState()
 		break;
 	case  EAnomalyID::Painting_Watch:
 		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::DieWatchingPainting);
+		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnShadowMonster);
 		ScheduleAnomaly();
 		break;
 	}
+}
+
+#pragma endregion
+
+#pragma region Watch
+
+void AAnomaly_Painting::SpawnShadowMonster()
+{
+	ShadowMonster = GetWorld()->SpawnActor<AShadowMonster>(ShadowMonsterClass, SpawnTransform);
+	ShadowMonster->SetActorHiddenInGame(true);
+	DispatchToObject<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler,
+		Cast<AShadowMonsterController>(ShadowMonster->GetController()));
 }
 
 #pragma endregion

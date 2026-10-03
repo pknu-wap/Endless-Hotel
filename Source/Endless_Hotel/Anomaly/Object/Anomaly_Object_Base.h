@@ -63,7 +63,7 @@ public:
 	bool bIsOrderedInteractTypes = false;
 
 public:
-	virtual void Interact(class AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interactor) override;
 
 protected:
 	void AllowNextInteract();

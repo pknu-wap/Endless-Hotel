@@ -76,7 +76,7 @@ void AAnomaly_Object_Base::SetOwnerAnomalyEvent(AAnomaly_Event* NewEvent)
 
 #pragma region Interact
 
-void AAnomaly_Object_Base::Interact(AEHCharacter* Interacter)
+void AAnomaly_Object_Base::Interact(AEHCharacter* Interactor)
 {
     FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
     auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();

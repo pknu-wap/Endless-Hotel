@@ -6,6 +6,12 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Object_Painting.generated.h>
 
+#pragma region Declare
+
+class AShadowMonsterController;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_Painting : public AAnomaly_Object_Neapolitan
 {
@@ -96,7 +102,7 @@ protected:
 #pragma region Interact
 
 public:
-	virtual void Interact(class AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interactor) override;
 
 protected:
 	void InteractRotate();
@@ -123,7 +129,6 @@ protected:
 
 #pragma endregion
 
-
 #pragma region Audio
 
 protected:
@@ -138,33 +143,33 @@ protected:
 #pragma region Die
 
 public:
+	void DieWatchingPainting();
+	void OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController);
+	
+private:
+	void SetHallucination(bool bOn);
+	void OnFaceCoverChanged(bool bCovered);
+	void CheckWatching();
+	
+public:
 	UPROPERTY(EditAnywhere, Category = "Watching")
 	float MaxWatchTime = 5;
-	
-	bool bIsAnomaly = false;
-
-	UPROPERTY(EditAnywhere, Category = "Monster")
-	TObjectPtr<class USkeletalMeshComponent> Mesh_Monster;
 
 	UPROPERTY(EditAnywhere, Category = "Watching")
 	float DeathDelayAfterMontage = 0.3f;
+	
+	DECLARE_MULTICAST_DELEGATE_OneParam(FMonsterAppear, bool bIsAppear);
+	FMonsterAppear OnMonsterAppear;
 
 private:
 	TWeakObjectPtr<class AEHPlayer> WatchingPlayer;
 
 	float CurrentWatchTime = 0.0f;
-
 	bool bIsHallucinating = false;
 
 	FTimerHandle WatchingTimerHandle;
 	FTimerHandle DeathTimerHandle;
-
-public:
-	void DieWatchingPainting();
-
-private:
-	void PlayMonsterAppear();
-	void KillWatchingPlayer();
+	bool bFaceCovered = false;
 
 #pragma endregion
 

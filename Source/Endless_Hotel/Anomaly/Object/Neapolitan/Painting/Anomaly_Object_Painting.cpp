@@ -4,18 +4,17 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include "Player/Character/EHPlayer.h"
-#include "Character/AI/ShadowMonster/ShadowMonsterAnimInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
-#include <Components/WidgetComponent.h>
-#include <Components/BoxComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/SceneComponent.h>
 #include <Kismet/KismetMathLibrary.h>
 #include <Components/AudioComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
 #include <Engine/Texture2D.h>
+
+#include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 
 #pragma region Base
 
@@ -39,10 +38,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
-
-	Mesh_Monster = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh_Monster"));
-	Mesh_Monster->SetupAttachment(Object);
-	Mesh_Monster->SetVisibility(false);
 }
 
 void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
@@ -60,19 +55,7 @@ void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
 	Niagara_Blood_Left->SetVisibility(false);
 	Niagara_Blood_Right->Activate(false);
 	Niagara_Blood_Right->SetVisibility(false);
-
-	if (Mesh_Monster)
-	{
-		Mesh_Monster->Stop();
-		Mesh_Monster->SetVisibility(false);
-
-		if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
-		{
-			MonsterAnim->bMonsterAppear = true;
-		}
-	}
-
-	bIsAnomaly = false;
+	
 	CurrentWatchTime = 0.0f;
 	WatchingPlayer = nullptr;
 }
@@ -163,18 +146,23 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 #pragma region Interact
 
-void AAnomaly_Object_Painting::Interact(AEHCharacter* Interacter)
+void AAnomaly_Object_Painting::Interact(AEHCharacter* Interactor)
 {
-	Super::Interact(Interacter);
+	Super::Interact(Interactor);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
 	switch (Info.InteractType)
 	{
 	case EInteractType::Rotate:
+	{
 		InteractRotate();
-		Mesh_Monster->SetVisibility(false);
+		SetHallucination(false);
+		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
+		auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
+		Player->OnFaceCover.RemoveAll(this);
 		break;
+	}
 	}
 }
 
@@ -227,42 +215,60 @@ void AAnomaly_Object_Painting::ChangePicture()
 
 void AAnomaly_Object_Painting::DieWatchingPainting()
 {
-	this->bIsAnomaly = true;
-
-	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			AEHPlayerController* PC = Cast<AEHPlayerController>(Player->Controller);
-			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-		
-			const bool bLooking = PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved;
-
-			if (bLooking)
-			{
-				if (!bIsHallucinating)
-				{
-					bIsHallucinating = true;
-					CameraManager->StartHallucination(true);
-					WatchingPlayer = Player;
-				}
-			}
-			else
-			{
-				if (bIsHallucinating)
-				{
-					bIsHallucinating = false;
-					CameraManager->StartHallucination(false);
-				}
-			}
-		}), 0.01f, true);
+	if (GetWorld()->GetTimerManager().IsTimerActive(WatchingTimerHandle))
+	{
+		return;
+	}
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (Player)
+	{
+		Player->OnFaceCover.RemoveAll(this);
+		Player->OnFaceCover.AddUObject(this, &ThisClass::OnFaceCoverChanged);
+	}
+	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player]()
+	{
+		CheckWatching();
+	}), 0.05f, true);
 }
 
-void AAnomaly_Object_Painting::PlayMonsterAppear()
+void AAnomaly_Object_Painting::OnFaceCoverChanged(bool bCovered)
 {
-	Mesh_Monster->SetVisibility(true);
-	if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
+	bFaceCovered = bCovered;
+	if (bCovered)
 	{
-		MonsterAnim->bMonsterAppear = true;
+		SetHallucination(false);
+	}
+}
+
+void AAnomaly_Object_Painting::CheckWatching()
+{
+	const auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	auto* PC = Cast<AEHPlayerController>(Player->Controller);
+	const bool bLooking = !bFaceCovered && !bSolved && PC->IsLookingAtActor(this);
+	SetHallucination(bLooking);
+}
+
+void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController)
+{
+	ShadowMonsterController->StartBind(this);
+}
+
+void AAnomaly_Object_Painting::SetHallucination(bool bOn)
+{
+	if (bSolved)
+	{
+		bIsHallucinating = true;
+		bOn = false;
+	}
+	if (bIsHallucinating == bOn) return;
+	bIsHallucinating = bOn;
+	auto* Cam = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
+	Cam->StartHallucination(bOn);
+
+	OnMonsterAppear.Broadcast(bOn);
+	if (!bOn)
+	{
+		WatchingPlayer = nullptr;
 	}
 }
 
