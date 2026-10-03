@@ -34,7 +34,7 @@ void AAnomaly_Painting::SetAnomalyState()
 		ScheduleAnomaly();
 		break;
 	case  EAnomalyID::Painting_Watch:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::DieWatchingPainting);
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::SpawnMonsterWatchingPainting);
 		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnShadowMonster);
 		ScheduleAnomaly();
 		break;

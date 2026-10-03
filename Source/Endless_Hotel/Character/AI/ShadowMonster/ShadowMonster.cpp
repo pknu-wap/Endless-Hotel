@@ -19,17 +19,6 @@ void AShadowMonster::StartAppear()
 	}
 }
 
-void AShadowMonster::ResetToTransform(const FTransform& InitialTransform)
-{
-	bIsAppearing = false;
-	if (auto* Anim = GetShadowAnim())
-	{
-		Anim->bMonsterAppear = false;
-	}
-	SetActorTransform(InitialTransform, false, nullptr, ETeleportType::TeleportPhysics);
-	SetActorHiddenInGame(true);
-}
-
 UShadowMonsterAnimInstance* AShadowMonster::GetShadowAnim() const
 {
 	return Cast<UShadowMonsterAnimInstance>(GetMesh()->GetAnimInstance());

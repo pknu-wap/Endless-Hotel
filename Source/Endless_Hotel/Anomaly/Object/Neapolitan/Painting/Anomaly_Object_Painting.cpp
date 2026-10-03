@@ -55,9 +55,6 @@ void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
 	Niagara_Blood_Left->SetVisibility(false);
 	Niagara_Blood_Right->Activate(false);
 	Niagara_Blood_Right->SetVisibility(false);
-	
-	CurrentWatchTime = 0.0f;
-	WatchingPlayer = nullptr;
 }
 
 #pragma endregion
@@ -155,14 +152,9 @@ void AAnomaly_Object_Painting::Interact(AEHCharacter* Interactor)
 	switch (Info.InteractType)
 	{
 	case EInteractType::Rotate:
-	{
 		InteractRotate();
-		SetHallucination(false);
 		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
-		auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
-		Player->OnFaceCover.RemoveAll(this);
 		break;
-	}
 	}
 }
 
@@ -213,39 +205,28 @@ void AAnomaly_Object_Painting::ChangePicture()
 
 #pragma region Die
 
-void AAnomaly_Object_Painting::DieWatchingPainting()
+void AAnomaly_Object_Painting::SpawnMonsterWatchingPainting()
 {
 	if (GetWorld()->GetTimerManager().IsTimerActive(WatchingTimerHandle))
 	{
 		return;
 	}
-	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
-	if (Player)
-	{
-		Player->OnFaceCover.RemoveAll(this);
-		Player->OnFaceCover.AddUObject(this, &ThisClass::OnFaceCoverChanged);
-	}
-	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player]()
+	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
 		CheckWatching();
 	}), 0.05f, true);
-}
-
-void AAnomaly_Object_Painting::OnFaceCoverChanged(bool bCovered)
-{
-	bFaceCovered = bCovered;
-	if (bCovered)
-	{
-		SetHallucination(false);
-	}
 }
 
 void AAnomaly_Object_Painting::CheckWatching()
 {
 	const auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
 	auto* PC = Cast<AEHPlayerController>(Player->Controller);
-	const bool bLooking = !bFaceCovered && !bSolved && PC->IsLookingAtActor(this);
-	SetHallucination(bLooking);
+	const bool bLooking = !bSolved && PC->IsLookingAtActor(this);
+	if (bLooking)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
+	}
+	SetWatched(bLooking);
 }
 
 void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController)
@@ -253,23 +234,16 @@ void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterContr
 	ShadowMonsterController->StartBind(this);
 }
 
-void AAnomaly_Object_Painting::SetHallucination(bool bOn)
+void AAnomaly_Object_Painting::SetWatched(bool bOn)
 {
-	if (bSolved)
+	if (bSolved) bOn = false;
+	if (bIsWatched == bOn)
 	{
-		bIsHallucinating = true;
-		bOn = false;
+		return;
 	}
-	if (bIsHallucinating == bOn) return;
-	bIsHallucinating = bOn;
-	auto* Cam = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(this, 0));
-	Cam->StartHallucination(bOn);
 
+	bIsWatched = bOn;
 	OnMonsterAppear.Broadcast(bOn);
-	if (!bOn)
-	{
-		WatchingPlayer = nullptr;
-	}
 }
 
 #pragma endregion

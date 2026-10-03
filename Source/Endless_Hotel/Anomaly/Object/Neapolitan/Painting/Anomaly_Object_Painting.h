@@ -143,33 +143,20 @@ protected:
 #pragma region Die
 
 public:
-	void DieWatchingPainting();
+	void SpawnMonsterWatchingPainting();
 	void OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController);
 	
 private:
-	void SetHallucination(bool bOn);
-	void OnFaceCoverChanged(bool bCovered);
 	void CheckWatching();
+	void SetWatched(bool bOn);
 	
 public:
-	UPROPERTY(EditAnywhere, Category = "Watching")
-	float MaxWatchTime = 5;
-
-	UPROPERTY(EditAnywhere, Category = "Watching")
-	float DeathDelayAfterMontage = 0.3f;
-	
 	DECLARE_MULTICAST_DELEGATE_OneParam(FMonsterAppear, bool bIsAppear);
 	FMonsterAppear OnMonsterAppear;
 
 private:
-	TWeakObjectPtr<class AEHPlayer> WatchingPlayer;
-
-	float CurrentWatchTime = 0.0f;
-	bool bIsHallucinating = false;
-
 	FTimerHandle WatchingTimerHandle;
-	FTimerHandle DeathTimerHandle;
-	bool bFaceCovered = false;
+	bool bIsWatched = false;
 
 #pragma endregion
 

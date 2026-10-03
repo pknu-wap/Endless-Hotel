@@ -3,6 +3,8 @@
 #include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 #include "ShadowMonster.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 
 #pragma region Appear
 
@@ -17,11 +19,12 @@ void AShadowMonsterController::HandleMonsterAppear(const bool bAppear)
 	if (bAppear)
 	{
 		Monster->StartAppear();
+		const auto& PlayerCameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+		PlayerCameraManager->StartHallucination(true);
 	}
 	else
 	{
 		StopMovement();
-		Monster->ResetToTransform(InitialTransform);
 	}
 }
 

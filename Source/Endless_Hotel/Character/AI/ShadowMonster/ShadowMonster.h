@@ -21,14 +21,12 @@ class ENDLESS_HOTEL_API AShadowMonster : public ABaseAI
 	
 public:
 	void StartAppear();
-	void ResetToTransform(const FTransform& InitialTransform);
 	
 private:
 	UShadowMonsterAnimInstance* GetShadowAnim() const;
 	
 private:
 	bool bIsAppearing = false;
-	FVector StartLocation;
 	
 #pragma endregion
 	
