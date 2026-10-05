@@ -1,13 +1,14 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "Asset/Manager/EHAssetManager.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include <Engine/World.h>
 #include <Engine/GameInstance.h>
@@ -35,14 +36,12 @@ void UAnomalyVerdictSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 bool UAnomalyVerdictSubsystem::ComputeVerdict() const
 {
-	if (!CurrentAnomaly)
-	{
-		return bIsElevatorNormal && !bWrongInteractionOccurred;
-	}
 	switch (VerdictMode)
 	{
-	case EAnomalyVerdictMode::Both_AND:
+	case EAnomalyVerdictMode::Both_And:
 		return bIsAnomalySolved && !bIsElevatorNormal;
+	case EAnomalyVerdictMode::Normal:
+		return bIsAnomalySolved && bIsElevatorNormal;
 	default:
 		return false;
 	}
@@ -56,7 +55,7 @@ void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
 	}
 	switch (VerdictMode)
 	{
-	case EAnomalyVerdictMode::Both_AND:
+	case EAnomalyVerdictMode::Both_And:
 		if (bIsElevatorNormal)
 		{
 			IncorrectRules.AddUnique(EAnomalyRule::EightExit);
@@ -79,49 +78,46 @@ void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
 	OnOccurIncorrectRule.Broadcast(IncorrectRules);
 }
 
+void UAnomalyVerdictSubsystem::HandlePassed()
+{
+	bIsStartInBed = false;
+	if (!IsValid(CurrentAnomaly))
+	{
+		return;
+	}
+	auto& AssetManager = UEHAssetManager::Get();
+	AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
+	USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
+	if (auto* PoolSys = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>())
+	{
+		PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
+	}
+}
+
+void UAnomalyVerdictSubsystem::HandleFailed()
+{
+	if (bSuperCowardMode)
+	{
+		EvaluateIncorrectRules();
+	}
+	if (auto* Gen = GetGameInstance()->GetSubsystem<UAnomalyGeneratorSubsystem>())
+	{
+		Gen->ForceNormalNext();
+	}
+	NextAnomalyMap = EMapDataLayer::Hotel;
+}
+
 void UAnomalyVerdictSubsystem::ApplyVerdict()
 {
-	auto& AssetManager = UEHAssetManager::Get();
-	IncorrectRules.Empty();
 	bPassed = ComputeVerdict() && !bWrongInteractionOccurred;
+	bPassed ? HandlePassed() : HandleFailed();
 
-	UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
-	UAnomalyPoolSubsystem* PoolSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>() : nullptr;
-
-	if (bPassed)
+	if (auto* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
 	{
-		if (FloorSys)
-		{
-			FloorSys->SubFloor();
-		}
-		bIsStartInBed = false;
-		if (IsValid(CurrentAnomaly))
-		{
-			AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
-			USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
-			PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
-		}
+		FloorSys->AdvanceFloor(bPassed);
 	}
-	else
-	{
-		if (bSuperCowardMode)
-		{
-			EvaluateIncorrectRules();
-		}
-		if (FloorSys)
-		{
-			FloorSys->ResetFloor();
-		}
-		NextAnomalyMap = EMapDataLayer::Hotel;
-	}
-
 	bIsAnomalySolved = false;
 	bWrongInteractionOccurred = false;
-	if (FloorSys)
-	{
-		FloorSys->bIsFirstStartFloor = false;
-	}
-
 	LoadNextMap();
 }
 
@@ -145,11 +141,16 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 {
 	CurrentAnomaly = nullptr;
 	CurrentAnomalyID = EAnomalyID::Normal;
-	if (UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr)
+	bIsAnomalySolved = true;
+	const auto* GI = GetGameInstance();
+	auto* DataLayerSys = GI->GetSubsystem<UDataLayerStreamingSubsystem>();
+	auto* ElevatorSys = GI->GetSubsystem<UElevatorManagerSubsystem>(); 
+	SetVerdictMode(EAnomalyVerdictMode::Normal);
+	if (DataLayerSys)
 	{
 		DataLayerSys->SetCurrentDataLayer(EMapDataLayer::Hotel);
 	}
-	if (UElevatorManagerSubsystem* ElevatorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>() : nullptr)
+	if (ElevatorSys)
 	{
 		ElevatorSys->RemoveTargetElevator();
 		if (!bIsStartInBed)
@@ -160,7 +161,7 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	}
 }
 
-void UAnomalyVerdictSubsystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
+void UAnomalyVerdictSubsystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, const EAnomalyID AnomalyID, const EMapDataLayer AnomalyMap)
 {
 	CurrentAnomaly = Anomaly;
 	CurrentAnomalyID = AnomalyID;
@@ -193,7 +194,7 @@ void UAnomalyVerdictSubsystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnoma
 	}
 }
 
-void UAnomalyVerdictSubsystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap)
+void UAnomalyVerdictSubsystem::SetNextAnomaly(const EAnomalyID AnomalyID, const EMapDataLayer AnomalyMap)
 {
 	NextAnomalyID = AnomalyID;
 	NextAnomalyMap = AnomalyMap;
@@ -201,16 +202,15 @@ void UAnomalyVerdictSubsystem::SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLaye
 
 void UAnomalyVerdictSubsystem::LoadNextMap() const
 {
-	const UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
+	auto* GI = GetWorld()->GetGameInstance<UEHGameInstance>();
+	const auto* FloorSys = GI->GetSubsystem<UFloorProgressSubsystem>();
 
 	if (FloorSys)
 	{
 		FloorSys->FloorChange_Disable.Broadcast();
 	}
 
-	UEHGameInstance* GameInstance = GetWorld()->GetGameInstance<UEHGameInstance>();
-
-	if (const bool bLayerChanged = GameInstance->SwitchDataLayer(NextAnomalyMap); !bLayerChanged && FloorSys)
+	if (const bool bLayerChanged = GI->SwitchDataLayer(NextAnomalyMap); !bLayerChanged && FloorSys)
 	{
 		FloorSys->FloorChange_Reset.Broadcast();
 	}
@@ -220,7 +220,7 @@ void UAnomalyVerdictSubsystem::OnDataLayerReady()
 {
 	const UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
 
-	if (FloorSys && FloorSys->bIsFirstStartFloor)
+	if (FloorSys && FloorSys->GetIsFirstFloor())
 	{
 		bIsStartInBed = true;
 	}

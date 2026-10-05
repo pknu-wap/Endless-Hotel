@@ -6,6 +6,13 @@
 #include <CoreMinimal.h>
 #include <Elevator.generated.h>
 
+#pragma region Declare
+
+struct FElevatorPassengerSnapshot;
+class UElevatorManagerSubsystem;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AEHActor
 {
@@ -71,32 +78,48 @@ protected:
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Audio")
-    TObjectPtr<class UAudioComponent> Door_AC;
+    TObjectPtr<UAudioComponent> Door_AC;
 
     UPROPERTY(VisibleAnywhere, Category = "Audio")
-    TObjectPtr<class UAudioComponent> Move_AC;
+    TObjectPtr<UAudioComponent> Move_AC;
 
 #pragma endregion
 
 #pragma region MovementSettings
 
+private:
+    void MoveElevator(FVector Start, FVector End, bool bIsStart);
+    
+public:
+    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+    FName ElevatorID;
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+    float ElevatorMoveDuration = 3.0f;
+
+private:
+    FTimerHandle MoveHandle;
+
+    bool bIsDoorOpened = false;
+    bool bIsDoorMoving = false;
+
+#pragma endregion
+
+#pragma region Door
+    
 public:
     UFUNCTION()
     void MoveDoors(bool bWillOpen);
 
+private:
     UFUNCTION()
     void OnDoorTimelineUpdate(float Alpha);
 
     UFUNCTION()
     void OnDoorTimelineFinished();
-
-protected:
-    void MoveElevator(FVector Start, FVector End, bool bIsStart);
-
-public:
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    FName ElevatorID;
-
+    void SetDoorLighting(bool bVisibleFromOutside);
+    
 protected:
     UPROPERTY(EditAnywhere, Category = "Movement")
     TObjectPtr<class UTimelineComponent> DoorTimeline;
@@ -118,18 +141,9 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Movement|Door|Opened")
     FVector RightDoorOpenPos;
-
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    float ElevatorMoveDuration = 3.0f;
-
-private:
-    FTimerHandle MoveHandle;
-
-    bool bIsDoorOpened = false;
-    bool bIsDoorMoving = false;
-
+    
 #pragma endregion
-
+    
 #pragma region Button
 
 public:
@@ -169,13 +183,21 @@ public:
 public:
     void StartElevator();
 
-protected:
-    void NotifySubsystem();
+private:
+    void NotifySubsystem() const;
+    void ResetState();
+    void PrepareAsTarget(const UElevatorManagerSubsystem& Sub);
+    void PrepareAsNonTarget();
+    void RestorePassenger(const FElevatorPassengerSnapshot& Snap);
+    FElevatorPassengerSnapshot CapturePassenger() const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")
     bool bIsNormalElevator = true;
 
+private:
+    FTimerHandle MoveStartHandle;
+    FTimerHandle CollisionRestoreHandle;
     bool bShouldChangeMap = false;
 
 #pragma endregion
@@ -201,14 +223,14 @@ public:
 
 public:
     void DisableElevatorFloor();
-    void DisableElevator();
+    void DisableElevator() const;
 
 #pragma endregion
 
 #pragma region Trigger
 
 public:
-    void SetActiveBlockBox(bool bIsActive);
+    void SetActiveBlockBox(bool bIsActive) const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")

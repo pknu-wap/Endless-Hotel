@@ -6,7 +6,22 @@
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <ElevatorManagerSubsystem.generated.h>
 
+#pragma region Declare
+
+USTRUCT()
+struct FElevatorPassengerSnapshot
+{
+	GENERATED_BODY()
+
+	FVector LocalLocation = FVector::ZeroVector;
+	FRotator ControlRotation = FRotator::ZeroRotator;
+	FRotator SourceElevatorRotation = FRotator::ZeroRotator;
+	float HorizontalSpeed = 0.f;
+};
+
 class AElevator;
+
+#pragma endregion
 
 UCLASS()
 class ENDLESS_HOTEL_API UElevatorManagerSubsystem : public UGameInstanceSubsystem
@@ -43,24 +58,11 @@ private:
 #pragma region Player In Elevator
 
 public:
-	void SetPlayerinElevatorTransform(const FVector& PlayerLocation, const FRotator& PlayerRotation, const FRotator& Offset)
-	{
-		RelativePlayerLocation = PlayerLocation;
-		RelativePlayerRotation = PlayerRotation;
-		ElevatorOffset = Offset;
-	}
-	void SetPlayerVelocity(float InputHorizontalVelocity) { PlayerVelocity = InputHorizontalVelocity; }
-
-	float GetPlayerVelocity() const { return PlayerVelocity; }
-	FVector GetPlayerinElevatorLocation() const { return RelativePlayerLocation; }
-	FRotator GetPlayerinElevatorRotation() const { return RelativePlayerRotation; }
-	FRotator GetElevatorOffset() const { return ElevatorOffset; }
+	void StorePassenger(const FElevatorPassengerSnapshot& InSnapshot) { Passenger = InSnapshot; }
+	const FElevatorPassengerSnapshot& GetPassenger() const { return Passenger; }
 
 private:
-	FVector RelativePlayerLocation = FVector::ZeroVector;
-	FRotator RelativePlayerRotation = FRotator::ZeroRotator;
-	FRotator ElevatorOffset = FRotator::ZeroRotator;
-	float PlayerVelocity = 0.f;
+	FElevatorPassengerSnapshot Passenger;
 
 #pragma endregion
 
@@ -70,4 +72,5 @@ public:
 	void ResetElevatorState();
 
 #pragma endregion
+
 };

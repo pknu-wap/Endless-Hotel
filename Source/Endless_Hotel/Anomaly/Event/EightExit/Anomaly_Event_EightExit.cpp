@@ -14,7 +14,7 @@ AAnomaly_Event_EightExit::AAnomaly_Event_EightExit(const FObjectInitializer& Obj
 void AAnomaly_Event_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
-    SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
+    SetVerdictMode(EAnomalyVerdictMode::Both_And); // VerdictMode Setting
 }
 
 #pragma endregion

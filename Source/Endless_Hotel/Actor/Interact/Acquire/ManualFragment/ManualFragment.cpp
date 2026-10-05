@@ -31,14 +31,14 @@ void AManualFragment::BeginPlay()
 	{
 		SetManualFragment();
 		auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-		VerdictSubsystem->OnAnomalySpawned.AddUObject(this, &ThisClass::SetManualFragment);
+		VerdictSubsystem->OnAnomalyStateChanged.AddUObject(this, &ThisClass::SetManualFragment);
 	}
 }
 
 void AManualFragment::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
 	auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	VerdictSubsystem->OnAnomalySpawned.RemoveAll(this);
+	VerdictSubsystem->OnAnomalyStateChanged.RemoveAll(this);
 
 	Super::EndPlay(EndPlayReason);
 }

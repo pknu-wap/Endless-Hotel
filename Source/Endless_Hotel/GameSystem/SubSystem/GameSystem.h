@@ -37,18 +37,22 @@ public:
 #pragma region Progression
 
 public:
-	void ChangeProgression(EGameProgression Target) const;
+	void ChangeProgression(EGameProgression Target);
+	EGameProgression GetGameProgression() const { return GameProgression; }
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnProgressionChanged, EGameProgression);
 	FOnProgressionChanged OnProgressionChanged;
+	
+private:
+	EGameProgression GameProgression = EGameProgression::Tutorial;
 
 #pragma endregion
 	
 #pragma region Clear
 
 public:
-	void GameClear() const;
+	void GameClear();
 	bool IsGameClear() const;
 
 public:

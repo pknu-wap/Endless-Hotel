@@ -435,13 +435,13 @@ void AAnomaly_Object_Door::ResetDoorState()
 	}
 
 	const auto& FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	if (FloorSub->bIsFirstStartFloor)
+	if (FloorSub->GetIsFirstFloor())
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(true);
 		Component_Interact->ActiveInteract(true);
 	}
-	else if (FloorSub->Floor == STARTFLOOR)
+	else if (FloorSub->GetFloor() == STARTFLOOR)
 	{
 		GetRootComponent()->SetWorldTransform(DoorOpenTransform);
 		SetLight(true);

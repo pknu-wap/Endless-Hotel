@@ -78,12 +78,12 @@ void UGameSystem::ResetGameSystem() const
 
 #pragma region Progression
 
-void UGameSystem::ChangeProgression(const EGameProgression Target) const
+void UGameSystem::ChangeProgression(const EGameProgression Target)
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = Target;
 	USaveManager::SaveData_Progression(Data);
-
+	GameProgression = Target;
 	OnProgressionChanged.Broadcast(Target);
 }
 
@@ -91,7 +91,7 @@ void UGameSystem::ChangeProgression(const EGameProgression Target) const
 
 #pragma region Clear
 
-void UGameSystem::GameClear() const
+void UGameSystem::GameClear()
 {
 	const auto& AssetManager = UEHAssetManager::Get();
 	const EGameProgression Ending = AssetManager.GetRemainingAnomalyCounts() == 0 ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;

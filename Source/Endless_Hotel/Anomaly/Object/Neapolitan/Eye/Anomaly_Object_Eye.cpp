@@ -9,6 +9,7 @@
 #pragma region Base
 
 AAnomaly_Object_Eye::AAnomaly_Object_Eye(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
 {
 	FloatTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("FloatTimeline"));
 }
