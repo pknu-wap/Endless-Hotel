@@ -54,7 +54,7 @@ void UDataLayerStreamingSubsystem::WaitForDataLayerReady(const EMapDataLayer& Da
 	TWeakObjectPtr<UWorld> WeakWorld = World;
 
 	World->GetTimerManager().SetTimer(DataLayerStreamingCheckHandle, FTimerDelegate::CreateWeakLambda(this,
-		[this, WeakWorld, DataLayer, TargetInstance]()
+		[this, WeakWorld, DataLayer]()
 		{
 			UWorld* SafeWorld = WeakWorld.Get();
 			if (!SafeWorld)

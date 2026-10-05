@@ -36,6 +36,7 @@ public:
 
 private:
 	bool HasManyInteracting() { return List_Interact.Num() > 1; }
+	void ResetInteract();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Interact")

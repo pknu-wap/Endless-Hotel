@@ -434,12 +434,12 @@ void AAnomaly_Object_Door::OnPushMoveCompleted()
 
 void AAnomaly_Object_Door::ResetDoorState()
 {
-	if (IsValid(this))
+	if (!IsValid(this))
 	{
 		return;
 	}
 
-	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	const auto& FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (FloorSub->bIsFirstStartFloor)
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);

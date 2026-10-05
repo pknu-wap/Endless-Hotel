@@ -1,100 +1,101 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
  
- #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
  
- #include "Asset/Manager/EHAssetManager.h"
- #include "GameSystem/SaveGame/SaveManager.h"
- #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
- #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
- #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
- #include "Anomaly/Event/Anomaly_Event.h"
- #include "Anomaly/Object/Anomaly_Object_Base.h"
- #include <Engine/GameInstance.h>
+#include "Asset/Manager/EHAssetManager.h"
+#include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
+#include "Anomaly/Event/Anomaly_Event.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
+#include <Engine/GameInstance.h>
+
+#pragma region Base
  
- #pragma region Base
+void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+    Super::Initialize(Collection);
+    
+    Collection.InitializeDependency<UFloorProgressSubsystem>();
  
- void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
- {
-     Super::Initialize(Collection);
- 
-     Collection.InitializeDependency<UFloorProgressSubsystem>();
- 
-     auto& AssetManager = UEHAssetManager::Get();
-     AssetManager.InitAnomalyEntries();
+    auto& AssetManager = UEHAssetManager::Get();
+    AssetManager.InitAnomalyEntries();
  
     const FSaveData_Setting Data_Setting = USaveManager::LoadData_Setting();
     const FSaveData_Progression Data_Progression = USaveManager::LoadData_Progression();
     bExceptClearedAnomaly = Data_Setting.Overlap == EOptionValue::On;
     AnomalyRules = Data_Progression.ActiveRules;
  
-     bool bIsClear = false;
-     if (const UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
-     {
-         bIsClear = FloorSys->IsGameClear();
-     }
+    bool bIsClear = false;
+    if (const auto& GameSys = GetGameInstance()->GetSubsystem<UGameSystem>())
+    {
+        bIsClear = GameSys->IsGameClear();
+    }
  
-     if (bIsClear && bExceptClearedAnomaly)
-     {
-         const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+    if (bIsClear && bExceptClearedAnomaly)
+    {
+        const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
  
-         AssetManager.ResetClearedAnomaly();
-         for (const auto& ID : LoadedHistory)
-         {
-             AssetManager.MarkAnomalyCleared(ID);
-         }
-     }
+        AssetManager.ResetClearedAnomaly();
+        for (const auto& ID : LoadedHistory)
+        {
+            AssetManager.MarkAnomalyCleared(ID);
+        }
+    }
  
-     InitializePool();
- }
+    InitializePool();
+}
  
  #pragma endregion
  
  #pragma region Pool
  
- void UAnomalyPoolSubsystem::InitializePool()
- {
-     auto& AssetManager = UEHAssetManager::Get();
-     AnomalyCount = AssetManager.GetOriginAnomaly().Num();
-     AssetManager.RebuildActAnomalyFromOrigin();
+void UAnomalyPoolSubsystem::InitializePool()
+{
+    auto& AssetManager = UEHAssetManager::Get();
+    AnomalyCount = AssetManager.GetOriginAnomaly().Num();
+    AssetManager.RebuildActAnomalyFromOrigin();
  
-     ActIndex = 0;
+    ActIndex = 0;
  
-     AssetManager.RemoveNoRuleAnomaly(AnomalyRules);
+    AssetManager.RemoveNoRuleAnomaly(AnomalyRules);
  
-     if (bExceptClearedAnomaly && !AssetManager.IsClearedAnomalySetEmpty() && AssetManager.GetClearedAnomalyCount() < AnomalyCount)
-     {
-         AssetManager.RemoveClearedAnomaly();
-     }
- 
-     AssetManager.ShuffleActAnomaly();
- 
-     // Reset Index
-     ActIndex = 0;
- }
- 
- void UAnomalyPoolSubsystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
- {
-     if (!IsValid(Object))
-     {
-         return;
-     }
- 
-     UClass* ActorClass = Object->GetClass();
-     AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
- 
-     UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-    if (FloorSys)
+    if (bExceptClearedAnomaly && !AssetManager.IsClearedAnomalySetEmpty() && AssetManager.GetClearedAnomalyCount() < AnomalyCount)
     {
-         FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::InitializeOnAnomalySpawned);
-         ResetHandles.Add(Object, Handle);
+        AssetManager.RemoveClearedAnomaly();
     }
  
-     const UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
-     if (DataLayerSys && DataLayerSys->IsDataLayerVisited(DataLayerSys->GetCurrentDataLayer()))
-     {
-         Object->Reset();
-     }
- }
+    AssetManager.ShuffleActAnomaly();
+ 
+    // Reset Index
+    ActIndex = 0;
+}
+ 
+void UAnomalyPoolSubsystem::RegisterAnomalyObject(AAnomaly_Object_Base* Object)
+{
+    if (!IsValid(Object))
+    {
+        return;
+    }
+ 
+    UClass* ActorClass = Object->GetClass();
+    AnomalyObjectPool.FindOrAdd(ActorClass).Objects.AddUnique(Object);
+ 
+    UFloorProgressSubsystem* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    if (FloorSys)
+    {
+        FDelegateHandle Handle = FloorSys->FloorChange_Reset.AddUObject(Object, &AAnomaly_Object_Base::InitializeOnAnomalySpawned);
+        ResetHandles.Add(Object, Handle);
+    }
+ 
+    const UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr;
+    if (DataLayerSys && DataLayerSys->IsDataLayerVisited(DataLayerSys->GetCurrentDataLayer()))
+    {
+        Object->Reset();
+    }
+}
  
  void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object)
  {

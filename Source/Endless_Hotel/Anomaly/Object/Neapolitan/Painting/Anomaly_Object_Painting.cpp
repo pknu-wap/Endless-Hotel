@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "Player/Character/EHPlayer.h"
 #include "Character/AI/ShadowMonster/ShadowMonsterAnimInstance.h"
 #include <Kismet/GameplayStatics.h>
@@ -172,6 +173,7 @@ void AAnomaly_Object_Painting::Interact(AEHCharacter* Interacter)
 	{
 	case EInteractType::Rotate:
 		InteractRotate();
+		Mesh_Monster->SetVisibility(false);
 		break;
 	}
 }
@@ -226,34 +228,31 @@ void AAnomaly_Object_Painting::ChangePicture()
 void AAnomaly_Object_Painting::DieWatchingPainting()
 {
 	this->bIsAnomaly = true;
+
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			if (!Player) 
-			{
-				return;
-			}
-
 			AEHPlayerController* PC = Cast<AEHPlayerController>(Player->Controller);
-			if (!PC) 
-			{
-				return;
-			}
+			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+		
+			const bool bLooking = PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved;
 
-			if (PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved)
+			if (bLooking)
 			{
-				if (CurrentWatchTime >= MaxWatchTime)
+				if (!bIsHallucinating)
 				{
-					GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
+					bIsHallucinating = true;
+					CameraManager->StartHallucination(true);
 					WatchingPlayer = Player;
-					PlayMonsterAppear();
-					return;
 				}
-				CurrentWatchTime += 0.01;
 			}
 			else
 			{
-				CurrentWatchTime = 0;
+				if (bIsHallucinating)
+				{
+					bIsHallucinating = false;
+					CameraManager->StartHallucination(false);
+				}
 			}
 		}), 0.01f, true);
 }
@@ -264,19 +263,6 @@ void AAnomaly_Object_Painting::PlayMonsterAppear()
 	if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
 	{
 		MonsterAnim->bMonsterAppear = true;
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			KillWatchingPlayer();
-		}), DeathDelayAfterMontage, false);
-}
-
-void AAnomaly_Object_Painting::KillWatchingPlayer()
-{
-	if (WatchingPlayer.IsValid())
-	{
-		WatchingPlayer->OnDie.Broadcast(EDeathReason::Watch);
 	}
 }
 

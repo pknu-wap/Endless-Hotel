@@ -11,19 +11,25 @@ class ENDLESS_HOTEL_API AAnomaly_Hair : public AAnomaly_Event_EightExit
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void BeginPlay() override;
-
-#pragma endregion
-
 #pragma region Activity
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Hair")
-	FVector SpawnLocation;
+#pragma endregion
+
+#pragma region Spawn
+
+private:
+	void SpawnHair();
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Hair")
+	TSubclassOf<class AAnomaly_Object_Hair> HairClass;
+
+	UPROPERTY()
+	TObjectPtr<class AAnomaly_Object_Hair> Hair;
 
 #pragma endregion
 
