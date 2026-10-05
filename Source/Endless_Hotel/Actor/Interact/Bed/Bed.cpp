@@ -31,7 +31,7 @@ void ABed::BeginPlay()
 	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	if (FloorSub->bIsFirstStartFloor)
+	if (USaveManager::LoadData_Progression().Progression != EGameProgression::CheckIn && FloorSub->bIsFirstStartFloor)
 	{
 		WakeUp();
 	}
