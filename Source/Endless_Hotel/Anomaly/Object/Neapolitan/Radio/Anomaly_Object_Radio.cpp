@@ -1,9 +1,11 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Radio/Anomaly_Object_Radio.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
+#include <Sound/SoundWave.h>
 
 #pragma region Base
 
@@ -29,18 +31,39 @@ void AAnomaly_Object_Radio::BeginPlay()
 	Update_PointerSpin.BindUFunction(this, "UpdatePointerSpin");
 	Timeline_PointerSpin->AddInterpFloat(CV_PointerSpin, Update_PointerSpin);
 
-	FOnTimelineEvent Finish_PointerSpin;
-	Finish_PointerSpin.BindUFunction(this, "FinishMove");
-	Timeline_PointerSpin->SetTimelineFinishedFunc(Finish_PointerSpin);
+	Timeline_PointerSpin->SetTimelineLengthMode(ETimelineLengthMode::TL_LastKeyFrame);
+	Timeline_PointerSpin->SetLooping(true);
+
+	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::FinishMove);
 }
 
 #pragma region Radio
 
 void AAnomaly_Object_Radio::PointerMoving()
 {
-	AC->Sound = Sound_Radio;
+	int32 RandomIndex = FMath::RandRange(0, Sound_Radio.Num() - 1);
+	AC->SetSound(Sound_Radio[RandomIndex]);
 	AC->Play();
 
+	if (RadioSubtitles.IsValidIndex(RandomIndex))
+	{
+		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+
+		if (IsValid(UICon))
+		{
+			for (const FRadioSubtitleLine& Line : RadioSubtitles[RandomIndex].Lines)
+			{
+				if (Line.Text.IsEmpty()	|| Line.StartTime <= 0.f || Line.Duration <= 0.f)
+				{
+					continue;
+				}
+
+				UICon->ShowSubTitle(Line.Text, Line.StartTime, Line.Duration);
+			}
+		}
+	}
+
+	Timeline_PointerSpin->SetPlayRate(1.f);
 	Timeline_PointerSpin->PlayFromStart();
 }
 
@@ -50,8 +73,6 @@ void AAnomaly_Object_Radio::PointerMoving()
 
 void AAnomaly_Object_Radio::FinishMove()
 {
-	AC->Stop();
-
 	Timeline_PointerSpin->Stop();
 }
 
