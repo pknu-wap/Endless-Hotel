@@ -434,7 +434,13 @@ void AAnomaly_Object_Door::ResetDoorState()
 		return;
 	}
 
-	const auto& FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	auto* GameInstance = GetGameInstance();
+	if (!IsValid(GameInstance))
+	{
+		return;
+	}
+
+	auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
 	if (FloorSub->bIsFirstStartFloor)
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
