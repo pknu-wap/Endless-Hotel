@@ -26,6 +26,7 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+    virtual void PostInitializeComponents() override;
 
 public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
@@ -57,6 +58,10 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Teleport")
     TObjectPtr<USceneComponent> TeleportAnchor;
+    
+protected:
+    UPROPERTY(EditAnywhere, Category = "Script")
+    bool bIsScriptElevator = false;
 
 #pragma endregion
 
@@ -101,9 +106,6 @@ protected:
 private:
     FTimerHandle MoveHandle;
 
-    bool bIsDoorOpened = false;
-    bool bIsDoorMoving = false;
-
 #pragma endregion
 
 #pragma region Door
@@ -111,14 +113,10 @@ private:
 public:
     UFUNCTION()
     void MoveDoors(bool bWillOpen);
-
-private:
-    UFUNCTION()
-    void OnDoorTimelineUpdate(float Alpha);
-
-    UFUNCTION()
-    void OnDoorTimelineFinished();
-    void SetDoorLighting(bool bVisibleFromOutside);
+    
+public:
+    UPROPERTY(VisibleAnywhere, Category = "Door")
+    TObjectPtr<class UElevatorDoorComponent> DoorComp;
     
 protected:
     UPROPERTY(EditAnywhere, Category = "Movement")
@@ -228,9 +226,6 @@ public:
 #pragma endregion
 
 #pragma region Trigger
-
-public:
-    void SetActiveBlockBox(bool bIsActive) const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")

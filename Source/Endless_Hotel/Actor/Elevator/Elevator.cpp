@@ -2,12 +2,11 @@
 
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
+#include "Component/Elevator/ElevatorDoorComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Components/StaticMeshComponent.h>
@@ -42,6 +41,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     RightGlass->SetupAttachment(RightDoor);
 
     DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+    DoorComp = CreateDefaultSubobject<UElevatorDoorComponent>(TEXT("DoorComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -69,17 +69,9 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 void AElevator::BeginPlay()
 {
     Super::BeginPlay();
-    bIsDoorMoving = false;
-    FOnTimelineFloat UpdateFunc;
-    FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     Sub->RegisterElevator(this);
-
-    UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
-    DoorTimeline->AddInterpFloat(DoorCurve, UpdateFunc);
-    FinishedFunc.BindUFunction(this, FName("OnDoorTimelineFinished"));
-    DoorTimeline->SetTimelineFinishedFunc(FinishedFunc);
     
     if(InsideButton.IsValid())
     {
@@ -95,6 +87,20 @@ void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
     Super::EndPlay(EndPlayReason);
+}
+
+void AElevator::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    FElevatorDoorConfig Cfg;
+    Cfg.Curve = DoorCurve;
+    Cfg.LeftClosed = LeftDoorClosed;
+    Cfg.RightClosed = RightDoorClosed;
+    Cfg.LeftOpen = LeftDoorOpenPos;
+    Cfg.RightOpen = RightDoorOpenPos;
+    Cfg.BlockBoxActiveExtent = BlockBoxActiveExtent;
+    DoorComp->Init(LeftDoor, RightDoor, Door_AC, TriggerBlockBox, DoorTimeline, Cfg);
 }
 
 #pragma endregion
@@ -120,9 +126,7 @@ void AElevator::SetLightOn(bool bIsOn)
 void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 {
     RootComponent->SetRelativeLocation(Start);
-    LeftDoor->SetLightingChannels(false, true, false);
-    RightDoor->SetLightingChannels(false, true, false);
-    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    DoorComp->SetDoorLighting(false);
     if(!Move_AC->IsPlaying() && !bIsStart)
     {
         Move_AC->Play();
@@ -176,42 +180,7 @@ void AElevator::MoveDoors(bool bWillOpen)
     {
         Move_AC->Stop();
     }
-    bIsDoorOpened = bWillOpen;
-    Door_AC->Activate(true);
-    Door_AC->Play();
-    DoorTimeline->Stop();
-
-    if (bWillOpen)
-    {
-        DoorTimeline->PlayFromStart();
-        LeftDoor->SetLightingChannels(true, true, false);
-        RightDoor->SetLightingChannels(true, true, false);
-    }
-    else
-    {
-        DoorTimeline->ReverseFromEnd();
-    }
-}
-
-void AElevator::OnDoorTimelineUpdate(float Alpha)
-{
-    bIsDoorMoving = true;
-    LeftDoor->SetRelativeLocation(FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha));
-    RightDoor->SetRelativeLocation(FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha));
-    SetActiveBlockBox(true);
-}
-
-void AElevator::OnDoorTimelineFinished()
-{
-    bIsDoorMoving = false;
-    Door_AC->Stop();
-    SetActiveBlockBox(false);
-}
-
-void AElevator::SetDoorLighting(bool bVisibleFromOutside)
-{
-    LeftDoor->SetLightingChannels(bVisibleFromOutside, true, false);
-    RightDoor->SetLightingChannels(bVisibleFromOutside, true, false);
+    DoorComp->MoveDoors(bWillOpen);
 }
 
 #pragma endregion
@@ -258,13 +227,7 @@ void AElevator::ResetState()
         ElevatorOverWall->ResetWall();
     }
 
-    DoorTimeline->Stop();
-    bIsDoorOpened = false;
-    bIsDoorMoving = false;
-    LeftDoor->SetRelativeLocation(LeftDoorClosed);
-    RightDoor->SetRelativeLocation(RightDoorClosed);
-    SetDoorLighting(true);
-
+    DoorComp->ResetDoor();
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
@@ -280,7 +243,7 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
         InsideButton->CanPressButton(false);
     }
 
-    SetDoorLighting(false);
+    DoorComp->SetDoorLighting(false);
     SetLightOn(true);
     RootComponent->SetRelativeLocation(StandardPos + StartPos);
 
@@ -380,16 +343,6 @@ void AElevator::StartElevator()
     {
         PrepareAsNonTarget();
     }
-}
-
-#pragma endregion
-
-#pragma region Trigger
-
-void AElevator::SetActiveBlockBox(const bool bIsActive) const
-{
-    TriggerBlockBox->SetCollisionEnabled(bIsActive ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(bIsActive ? BlockBoxActiveExtent : FVector(0, 0, 0));
 }
 
 #pragma endregion
