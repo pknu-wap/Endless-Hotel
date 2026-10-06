@@ -64,5 +64,13 @@ private:
 	bool bFirstReset = true;
 
 #pragma endregion
+	
+#pragma region Script
+	
+public:
+	void AdvanceScriptedFloor();
+	bool IsTopFloor() const { return Floor >= STARTFLOOR; }
+	
+#pragma endregion
 
 };

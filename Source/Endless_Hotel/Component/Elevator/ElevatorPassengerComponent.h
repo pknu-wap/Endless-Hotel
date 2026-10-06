@@ -21,9 +21,6 @@ class ENDLESS_HOTEL_API UElevatorPassengerComponent : public UEHComponent
 
 #pragma region Base
 
-public:
-	void Init(USceneComponent* InAnchor, UPrimitiveComponent* InExterior, UPrimitiveComponent* InCar);
-
 protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

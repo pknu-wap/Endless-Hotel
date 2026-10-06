@@ -7,14 +7,6 @@
 
 #pragma region Base
 
-void UElevatorMoveComponent::Init(USceneComponent* InTarget, UAudioComponent* InMoveAC, UTimelineComponent* InTimeline, const FElevatorMoveConfig& InConfig)
-{
-    MoveTarget = InTarget;
-    MoveAC = InMoveAC;
-    MoveTimeline = InTimeline;
-    Config = InConfig;
-}
-
 void UElevatorMoveComponent::BeginPlay()
 {
     Super::BeginPlay();

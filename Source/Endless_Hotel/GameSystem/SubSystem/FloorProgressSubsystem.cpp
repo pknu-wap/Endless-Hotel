@@ -94,3 +94,14 @@ void UFloorProgressSubsystem::ProgressGameState()
 }
 
 #pragma endregion
+
+#pragma region Script
+
+void UFloorProgressSubsystem::AdvanceScriptedFloor()
+{
+	AdvanceFloor(true);
+	FloorChange_Disable.Broadcast();
+	FloorChange_Reset.Broadcast();
+}
+
+#pragma endregion

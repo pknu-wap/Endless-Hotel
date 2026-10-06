@@ -8,7 +8,6 @@
 
 #pragma region Declare
 
-struct FElevatorPassengerSnapshot;
 class UElevatorManagerSubsystem;
 
 enum class EElevatorMoveKind : uint8
@@ -33,7 +32,6 @@ public:
 protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-    virtual void PostInitializeComponents() override;
 
 public:
     UPROPERTY(VisibleAnywhere, Category = "Frame")
@@ -65,10 +63,6 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Teleport")
     TObjectPtr<USceneComponent> TeleportAnchor;
-    
-protected:
-    UPROPERTY(EditAnywhere, Category = "Script")
-    bool bIsScriptElevator = false;
 
 #pragma endregion
 
@@ -134,7 +128,7 @@ public:
     TObjectPtr<class UElevatorDoorComponent> DoorComp;
     
 protected:
-    UPROPERTY(EditAnywhere, Category = "Movement")
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
     TObjectPtr<class UTimelineComponent> DoorTimeline;
 
     UPROPERTY(EditAnywhere, Category = "Movement|Door")
@@ -211,7 +205,6 @@ public:
     
 private:
     FTimerHandle MoveStartHandle;
-    bool bShouldChangeMap = false;
 
 #pragma endregion
 

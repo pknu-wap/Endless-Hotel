@@ -92,30 +92,6 @@ void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 }
 
-void AElevator::PostInitializeComponents()
-{
-    Super::PostInitializeComponents();
-
-    FElevatorDoorConfig DoorCfg;
-    DoorCfg.Curve = DoorCurve;
-    DoorCfg.LeftClosed = LeftDoorClosed;
-    DoorCfg.RightClosed = RightDoorClosed;
-    DoorCfg.LeftOpen = LeftDoorOpenPos;
-    DoorCfg.RightOpen = RightDoorOpenPos;
-    DoorCfg.BlockBoxActiveExtent = BlockBoxActiveExtent;
-    DoorComp->Init(LeftDoor, RightDoor, Door_AC, TriggerBlockBox, DoorTimeline, DoorCfg);
-
-    FElevatorMoveConfig MoveCfg;
-    MoveCfg.Curve = MoveCurve;
-    MoveCfg.StandardPos = StandardPos;
-    MoveCfg.StartPos = StartPos;
-    MoveCfg.MapPos = MapPos;
-    MoveCfg.EndPos = EndPos;
-    MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
-    MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
-    PassengerComp->Init(TeleportAnchor, Exterior_Structure, Car);
-}
-
 #pragma endregion
 
 #pragma region Light

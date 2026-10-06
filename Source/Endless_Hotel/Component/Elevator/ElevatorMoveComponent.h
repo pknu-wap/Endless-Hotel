@@ -30,9 +30,6 @@ class ENDLESS_HOTEL_API UElevatorMoveComponent : public UEHComponent
 
 #pragma region Base
 
-public:
-    void Init(USceneComponent* InTarget, UAudioComponent* InMoveAC, UTimelineComponent* InTimeline, const FElevatorMoveConfig& InConfig);
-
 protected:
     virtual void BeginPlay() override;
 
