@@ -53,11 +53,8 @@ protected:
 #pragma region Objects
 
 public:
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
+	UPROPERTY(VisibleAnywhere, Category = "Anomaly|Object")
 	TArray<AActor*> LinkedObjects;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsEightExit = false;
 
 	TArray<TObjectPtr<UObject>> TargetAnomalyObjects;
 

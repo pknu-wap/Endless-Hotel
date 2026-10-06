@@ -48,9 +48,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
 
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsEightExitObject = false;
-
 protected:
 	EAnomalyID AnomalyID;
 
