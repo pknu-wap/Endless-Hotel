@@ -142,7 +142,7 @@ void ABed::WakeUp()
 			LatentInfo.UUID = __LINE__;
 			LatentInfo.Linkage = 0;
 
-			constexpr float Duration = 1.f;
+			constexpr float Duration = 0.6f;
 			UKismetSystemLibrary::MoveComponentTo(EHPlayer->GetRootComponent(), Trans_Start.GetLocation(), Trans_Start.Rotator(), false, false, Duration, false, EMoveComponentAction::Move, LatentInfo);
 			StartControllerRotation(Trans_Start.Rotator(), Duration);
 		}), 4.f, false);
