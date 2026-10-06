@@ -196,13 +196,14 @@ public:
 public:
     void StartElevator();
 
+    UPROPERTY(VisibleAnywhere, Category = "Passenger")
+    TObjectPtr<class UElevatorPassengerComponent> PassengerComp;
+
 private:
     void NotifySubsystem() const;
     void ResetState() const;
     void PrepareAsTarget(const UElevatorManagerSubsystem& Sub);
     void PrepareAsNonTarget() const;
-    void RestorePassenger(const FElevatorPassengerSnapshot& Snap);
-    FElevatorPassengerSnapshot CapturePassenger() const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Type")
@@ -210,7 +211,6 @@ protected:
 
 private:
     FTimerHandle MoveStartHandle;
-    FTimerHandle CollisionRestoreHandle;
     bool bShouldChangeMap = false;
 
 #pragma endregion

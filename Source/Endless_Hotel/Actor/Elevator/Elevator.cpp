@@ -4,8 +4,8 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Elevator/ElevatorDoorComponent.h"
 #include "Component/Elevator/ElevatorMoveComponent.h"
+#include "Component/Elevator/ElevatorPassengerComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
@@ -15,9 +15,6 @@
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
-#include <Kismet/GameplayStatics.h>
-#include <GameFramework/Character.h>
-#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -45,6 +42,7 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
     MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
+    PassengerComp = CreateDefaultSubobject<UElevatorPassengerComponent>(TEXT("PassengerComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -113,6 +111,7 @@ void AElevator::PostInitializeComponents()
     MoveCfg.EndPos = EndPos;
     MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
     MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
+    PassengerComp->Init(TeleportAnchor, Exterior_Structure, Car);
 }
 
 #pragma endregion
@@ -121,7 +120,7 @@ void AElevator::PostInitializeComponents()
 
 void AElevator::SetLightOn(const bool bIsOn) const
 {
-    const float ElevatorLightIntensity = bIsOn ? LightOffIntensity : LightOffIntensity;
+    const float ElevatorLightIntensity = bIsOn ? LightOnIntensity : LightOffIntensity;
     ElevatorLight->SetIntensity(ElevatorLightIntensity);
 }
 
@@ -210,9 +209,9 @@ void AElevator::NotifySubsystem() const
     const auto* GI = GetGameInstance();
     auto* VerdictSub = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
     auto* ElevatorSub = GI->GetSubsystem<UElevatorManagerSubsystem>();
+    ElevatorSub->StorePassenger(PassengerComp->Capture());
     VerdictSub->SetIsElevatorNormal(bIsNormalElevator);
     VerdictSub->TryInteractSolveVerdict();
-    ElevatorSub->StorePassenger(CapturePassenger());
     VerdictSub->ApplyVerdict();
 }
 
@@ -247,7 +246,7 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     SetLightOn(true);
     MoveComp->SetToStart();
 
-    RestorePassenger(Sub.GetPassenger());
+    PassengerComp->Restore(Sub.GetPassenger());
 
     if (ElevatorOverWall.IsValid())
     {
@@ -276,62 +275,11 @@ void AElevator::PrepareAsNonTarget() const
     SetLightOn(false);
 }
 
-void AElevator::RestorePassenger(const FElevatorPassengerSnapshot& Snap)
-{
-    auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    auto* PC = Cast<AEHPlayerController>(Player->GetController());
-    auto* CMC = Player->GetCharacterMovement();
-
-    Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    Car->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-    const FRotator ControlRot = Snap.ControlRotation - (Snap.SourceElevatorRotation - GetActorRotation());
-    const FVector TargetLocation = TeleportAnchor->GetComponentTransform().TransformPosition(Snap.LocalLocation);
-
-    Player->SetActorLocation(TargetLocation, false, nullptr, ETeleportType::TeleportPhysics);
-    Player->SetActorRotation(FRotator(0.f, ControlRot.Yaw, ControlRot.Roll));
-    PC->SetControlRotation(ControlRot);
-    PC->PlayerCameraManager->SetGameCameraCutThisFrame();
-
-    Player->SetBase(nullptr);
-    Player->SetActorEnableCollision(true);
-
-    const FVector Forward = Player->GetActorForwardVector();
-    CMC->Velocity = FVector(Forward.X, Forward.Y, 0.f) * Snap.HorizontalSpeed;
-    CMC->SetMovementMode(MOVE_Falling);
-
-    GetWorld()->GetTimerManager().SetTimer(CollisionRestoreHandle,
-        FTimerDelegate::CreateWeakLambda(this, [this]()
-        {
-            Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-            Car->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        }), 0.05f, false);
-}
-
-FElevatorPassengerSnapshot AElevator::CapturePassenger() const
-{
-    FElevatorPassengerSnapshot Snap;
-    auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    const auto* PC = Player->GetController();
-    const auto* CMC = Player->GetCharacterMovement();
-    Snap.LocalLocation = TeleportAnchor->GetComponentTransform().InverseTransformPosition(Player->GetActorLocation());
-    Snap.SourceElevatorRotation = GetActorRotation();
-    if (PC)
-    {
-        Snap.ControlRotation = PC->GetControlRotation();
-    }
-    if (CMC)
-    {
-        Snap.HorizontalSpeed = FVector(CMC->Velocity.X, CMC->Velocity.Y, 0.f).Size();
-    }
-    return Snap;
-}
-
 void AElevator::StartElevator()
 {
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
-    GetWorld()->GetTimerManager().ClearTimer(CollisionRestoreHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+    PassengerComp->CancelRestore();
     MoveComp->CancelMove();
     CurrentMove = EElevatorMoveKind::None;
 

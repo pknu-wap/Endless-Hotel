@@ -13,10 +13,11 @@ struct FElevatorPassengerSnapshot
 {
 	GENERATED_BODY()
 
+	bool bIsValid = false;
 	FVector LocalLocation = FVector::ZeroVector;
-	FRotator ControlRotation = FRotator::ZeroRotator;
-	FRotator SourceElevatorRotation = FRotator::ZeroRotator;
-	float HorizontalSpeed = 0.f;
+	FQuat LocalControlRotation = FQuat::Identity;
+	FVector LocalVelocity = FVector::ZeroVector;
+	TEnumAsByte<EMovementMode> MovementMode = MOVE_Walking;
 };
 
 class AElevator;

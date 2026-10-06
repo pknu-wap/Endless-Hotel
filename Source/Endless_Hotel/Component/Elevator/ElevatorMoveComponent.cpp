@@ -93,6 +93,7 @@ void UElevatorMoveComponent::HandleTimelineUpdate(float Alpha)
 
 void UElevatorMoveComponent::HandleTimelineFinished()
 {
+    MoveTarget->SetRelativeLocation(MoveTo);
     bIsMoving = false;
     OnMoveFinished.Broadcast();
 }
