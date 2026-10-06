@@ -11,6 +11,13 @@
 struct FElevatorPassengerSnapshot;
 class UElevatorManagerSubsystem;
 
+enum class EElevatorMoveKind : uint8
+{
+    None,
+    Arrival,
+    Departure
+};
+
 #pragma endregion
 
 UCLASS()
@@ -68,7 +75,7 @@ protected:
 #pragma region LightSettings
 
 public:
-    void SetLightOn(bool bIsOn);
+    void SetLightOn(bool bIsOn) const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Setting|LightSettings")
@@ -92,18 +99,26 @@ protected:
 
 #pragma region MovementSettings
 
-private:
-    void MoveElevator(FVector Start, FVector End, bool bIsStart);
-    
 public:
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
     FName ElevatorID;
 
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
+    TObjectPtr<class UElevatorMoveComponent> MoveComp;
+
 protected:
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
+    TObjectPtr<class UTimelineComponent> MoveTimeline;
+
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    float ElevatorMoveDuration = 3.0f;
+    TObjectPtr<UCurveFloat> MoveCurve;
 
 private:
+    void PlayArrivalSequence();
+    void PlayDepartureSequence();
+    void HandleMoveFinished();
+
+    EElevatorMoveKind CurrentMove = EElevatorMoveKind::None;
     FTimerHandle MoveHandle;
 
 #pragma endregion
@@ -112,7 +127,7 @@ private:
     
 public:
     UFUNCTION()
-    void MoveDoors(bool bWillOpen);
+    void MoveDoors(bool bWillOpen) const;
     
 public:
     UPROPERTY(VisibleAnywhere, Category = "Door")
@@ -183,9 +198,9 @@ public:
 
 private:
     void NotifySubsystem() const;
-    void ResetState();
+    void ResetState() const;
     void PrepareAsTarget(const UElevatorManagerSubsystem& Sub);
-    void PrepareAsNonTarget();
+    void PrepareAsNonTarget() const;
     void RestorePassenger(const FElevatorPassengerSnapshot& Snap);
     FElevatorPassengerSnapshot CapturePassenger() const;
 

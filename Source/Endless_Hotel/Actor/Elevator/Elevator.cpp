@@ -3,6 +3,7 @@
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Component/Elevator/ElevatorDoorComponent.h"
+#include "Component/Elevator/ElevatorMoveComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
@@ -15,7 +16,6 @@
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Kismet/GameplayStatics.h>
-#include <Kismet/KismetSystemLibrary.h>
 #include <GameFramework/Character.h>
 #include <GameFramework/CharacterMovementComponent.h>
 
@@ -42,6 +42,9 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
     DoorComp = CreateDefaultSubobject<UElevatorDoorComponent>(TEXT("DoorComp"));
+
+    MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
+    MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -93,80 +96,80 @@ void AElevator::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
 
-    FElevatorDoorConfig Cfg;
-    Cfg.Curve = DoorCurve;
-    Cfg.LeftClosed = LeftDoorClosed;
-    Cfg.RightClosed = RightDoorClosed;
-    Cfg.LeftOpen = LeftDoorOpenPos;
-    Cfg.RightOpen = RightDoorOpenPos;
-    Cfg.BlockBoxActiveExtent = BlockBoxActiveExtent;
-    DoorComp->Init(LeftDoor, RightDoor, Door_AC, TriggerBlockBox, DoorTimeline, Cfg);
+    FElevatorDoorConfig DoorCfg;
+    DoorCfg.Curve = DoorCurve;
+    DoorCfg.LeftClosed = LeftDoorClosed;
+    DoorCfg.RightClosed = RightDoorClosed;
+    DoorCfg.LeftOpen = LeftDoorOpenPos;
+    DoorCfg.RightOpen = RightDoorOpenPos;
+    DoorCfg.BlockBoxActiveExtent = BlockBoxActiveExtent;
+    DoorComp->Init(LeftDoor, RightDoor, Door_AC, TriggerBlockBox, DoorTimeline, DoorCfg);
+
+    FElevatorMoveConfig MoveCfg;
+    MoveCfg.Curve = MoveCurve;
+    MoveCfg.StandardPos = StandardPos;
+    MoveCfg.StartPos = StartPos;
+    MoveCfg.MapPos = MapPos;
+    MoveCfg.EndPos = EndPos;
+    MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
+    MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
 }
 
 #pragma endregion
 
 #pragma region Light
 
-void AElevator::SetLightOn(bool bIsOn)
+void AElevator::SetLightOn(const bool bIsOn) const
 {
-    if (bIsOn)
-    {
-        ElevatorLight->SetIntensity(LightOnIntensity);
-    }
-    else
-    {
-        ElevatorLight->SetIntensity(LightOffIntensity);
-    }
+    const float ElevatorLightIntensity = bIsOn ? LightOffIntensity : LightOffIntensity;
+    ElevatorLight->SetIntensity(ElevatorLightIntensity);
 }
 
 #pragma endregion
 
 #pragma region MovementSettings
 
-void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
+void AElevator::PlayArrivalSequence()
 {
-    RootComponent->SetRelativeLocation(Start);
+    CurrentMove = EElevatorMoveKind::Arrival;
     DoorComp->SetDoorLighting(false);
-    if(!Move_AC->IsPlaying() && !bIsStart)
-    {
-        Move_AC->Play();
-    }
-    FLatentActionInfo LatentInfo;
-    LatentInfo.CallbackTarget = this;
-    LatentInfo.UUID = __LINE__;
-    LatentInfo.Linkage = 0;
-    
-    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, RootComponent->GetComponentRotation(), false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
+    MoveComp->PlayArrival();
+}
 
-    FTimerHandle ElevatorWallHandle;
-    FTimerHandle StartDelayHandle;
-    auto SetDelay = [this](FTimerHandle& Handle, TFunction<void()> Func, float Delay)
+void AElevator::PlayDepartureSequence()
+{
+    CurrentMove = EElevatorMoveKind::Departure;
+    DoorComp->SetDoorLighting(false);
+    MoveComp->PlayDeparture();
+}
+
+void AElevator::HandleMoveFinished()
+{
+    const EElevatorMoveKind Kind = CurrentMove;
+    CurrentMove = EElevatorMoveKind::None;
+
+    switch (Kind)
+    {
+    case EElevatorMoveKind::Arrival:
+        MoveDoors(true);
+        if (InsideButton.IsValid())
         {
-            GetWorld()->GetTimerManager().SetTimer(Handle,
-                FTimerDelegate::CreateWeakLambda(this, MoveTemp(Func)), Delay, false);
-        };
+            InsideButton->CanPressButton(true);
+        }
+        break;
 
-    if (bIsStart)
-    {
-        SetDelay(StartDelayHandle, [this] 
-            { 
-                MoveDoors(true);
-                if(InsideButton.IsValid())
-                {
-                    InsideButton->CanPressButton(true);
-                }
-            }, ElevatorMoveDuration + 0.1f);
-    }
-    else
-    {
-        SetDelay(ElevatorWallHandle, [this]
-            { 
-                if(ElevatorUnderWall.IsValid())
-                {
-                    ElevatorUnderWall->MoveWall(ElevatorMoveDuration);
-                }
-            }, ElevatorMoveDuration + 0.1f);
-        SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
+    case EElevatorMoveKind::Departure:
+        if (ElevatorUnderWall.IsValid())
+        {
+            ElevatorUnderWall->MoveWall(MoveComp->GetMoveDuration());
+        }
+        GetWorld()->GetTimerManager().SetTimer(MoveHandle,
+            FTimerDelegate::CreateWeakLambda(this, [this]() { NotifySubsystem(); }),
+            MoveComp->GetMoveDuration(), false);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -174,12 +177,9 @@ void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
 
 #pragma region Door
 
-void AElevator::MoveDoors(bool bWillOpen)
+void AElevator::MoveDoors(bool bWillOpen) const
 {
-    if (Move_AC->IsPlaying())
-    {
-        Move_AC->Stop();
-    }
+    MoveComp->StopMoveSound();
     DoorComp->MoveDoors(bWillOpen);
 }
 
@@ -196,7 +196,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
         FTimerHandle DoorHandle;
         GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
-                MoveElevator(StandardPos + MapPos, StandardPos + EndPos, false);
+                PlayDepartureSequence();
             }), DoorDuration, false);
     }
 }
@@ -216,7 +216,7 @@ void AElevator::NotifySubsystem() const
     VerdictSub->ApplyVerdict();
 }
 
-void AElevator::ResetState()
+void AElevator::ResetState() const
 {
     if (ElevatorUnderWall.IsValid())
     {
@@ -245,23 +245,23 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
 
     DoorComp->SetDoorLighting(false);
     SetLightOn(true);
-    RootComponent->SetRelativeLocation(StandardPos + StartPos);
+    MoveComp->SetToStart();
 
     RestorePassenger(Sub.GetPassenger());
 
     if (ElevatorOverWall.IsValid())
     {
-        ElevatorOverWall->MoveWall(ElevatorMoveDuration);
+        ElevatorOverWall->MoveWall(MoveComp->GetMoveDuration());
     }
 
     GetWorld()->GetTimerManager().SetTimer(MoveStartHandle,
         FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            MoveElevator(StandardPos + StartPos, StandardPos + MapPos, true);
-        }), ElevatorMoveDuration, false);
+            PlayArrivalSequence();
+        }), MoveComp->GetMoveDuration(), false);
 }
 
-void AElevator::PrepareAsNonTarget()
+void AElevator::PrepareAsNonTarget() const
 {
     if (LinkedEntrance.IsValid())
     {
@@ -272,7 +272,7 @@ void AElevator::PrepareAsNonTarget()
         InsideButton->CanPressButton(true);
     }
 
-    Exterior_Structure->SetRelativeLocation(StandardPos + MapPos);
+    MoveComp->SetToMap();
     SetLightOn(false);
 }
 
@@ -331,6 +331,9 @@ void AElevator::StartElevator()
 {
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(CollisionRestoreHandle);
+    GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+    MoveComp->CancelMove();
+    CurrentMove = EElevatorMoveKind::None;
 
     ResetState();
 
