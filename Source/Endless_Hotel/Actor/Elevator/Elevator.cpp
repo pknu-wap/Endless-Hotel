@@ -5,11 +5,11 @@
 #include "Component/Elevator/ElevatorDoorComponent.h"
 #include "Component/Elevator/ElevatorMoveComponent.h"
 #include "Component/Elevator/ElevatorPassengerComponent.h"
+#include "Component/Elevator/ElevatorVerdictComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -42,7 +42,9 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
     MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
+    
     PassengerComp = CreateDefaultSubobject<UElevatorPassengerComponent>(TEXT("PassengerComp"));
+    VerdictComp = CreateDefaultSubobject<UElevatorVerdictComponent>(TEXT("VerdictComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -163,11 +165,8 @@ void AElevator::HandleMoveFinished()
             ElevatorUnderWall->MoveWall(MoveComp->GetMoveDuration());
         }
         GetWorld()->GetTimerManager().SetTimer(MoveHandle,
-            FTimerDelegate::CreateWeakLambda(this, [this]() { NotifySubsystem(); }),
+            FTimerDelegate::CreateWeakLambda(this, [this]() { RequestAnomalyVerdict(); }),
             MoveComp->GetMoveDuration(), false);
-        break;
-
-    default:
         break;
     }
 }
@@ -204,15 +203,11 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 
 #pragma region Subsystem
 
-void AElevator::NotifySubsystem() const
+void AElevator::RequestAnomalyVerdict() const
 {
-    const auto* GI = GetGameInstance();
-    auto* VerdictSub = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
-    auto* ElevatorSub = GI->GetSubsystem<UElevatorManagerSubsystem>();
+    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     ElevatorSub->StorePassenger(PassengerComp->Capture());
-    VerdictSub->SetIsElevatorNormal(bIsNormalElevator);
-    VerdictSub->TryInteractSolveVerdict();
-    VerdictSub->ApplyVerdict();
+    VerdictComp->RequestVerdict();
 }
 
 void AElevator::ResetState() const
@@ -245,7 +240,6 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     DoorComp->SetDoorLighting(false);
     SetLightOn(true);
     MoveComp->SetToStart();
-
     PassengerComp->Restore(Sub.GetPassenger());
 
     if (ElevatorOverWall.IsValid())

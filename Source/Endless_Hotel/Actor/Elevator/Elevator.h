@@ -195,20 +195,20 @@ public:
 
 public:
     void StartElevator();
-
-    UPROPERTY(VisibleAnywhere, Category = "Passenger")
-    TObjectPtr<class UElevatorPassengerComponent> PassengerComp;
-
+    
 private:
-    void NotifySubsystem() const;
+    void RequestAnomalyVerdict() const;
     void ResetState() const;
     void PrepareAsTarget(const UElevatorManagerSubsystem& Sub);
     void PrepareAsNonTarget() const;
 
-protected:
-    UPROPERTY(EditAnywhere, Category = "Type")
-    bool bIsNormalElevator = true;
+public:
+    UPROPERTY(VisibleAnywhere, Category = "Passenger")
+    TObjectPtr<class UElevatorPassengerComponent> PassengerComp;
 
+    UPROPERTY(VisibleAnywhere, Category = "Verdict")
+    TObjectPtr<class UElevatorVerdictComponent> VerdictComp;
+    
 private:
     FTimerHandle MoveStartHandle;
     bool bShouldChangeMap = false;

@@ -42,16 +42,11 @@ FElevatorPassengerSnapshot UElevatorPassengerComponent::Capture() const
 
     const FTransform AnchorTM = Anchor->GetComponentTransform();
     Snap.LocalLocation = AnchorTM.InverseTransformPosition(Player->GetActorLocation());
-
-    if (const AController* PC = Player->GetController())
-    {
-        Snap.LocalControlRotation = AnchorTM.InverseTransformRotation(PC->GetControlRotation().Quaternion());
-    }
-    if (const UCharacterMovementComponent* CMC = Player->GetCharacterMovement())
-    {
-        Snap.LocalVelocity = AnchorTM.InverseTransformVectorNoScale(CMC->Velocity);
-        Snap.MovementMode = CMC->MovementMode;
-    }
+    const AController* PC = Player->GetController();
+    Snap.LocalControlRotation = AnchorTM.InverseTransformRotation(PC->GetControlRotation().Quaternion());
+    const UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
+    Snap.LocalVelocity = AnchorTM.InverseTransformVectorNoScale(CMC->Velocity);
+    Snap.MovementMode = CMC->MovementMode;
 
     Snap.bIsValid = true;
     return Snap;
@@ -96,9 +91,10 @@ void UElevatorPassengerComponent::Restore(const FElevatorPassengerSnapshot& Snap
 
     if (bDisableCollisionOnRestore)
     {
-        GetWorld()->GetTimerManager().SetTimer(CollisionRestoreHandle,
-            FTimerDelegate::CreateWeakLambda(this, [this]() { SetElevatorCollision(true); }),
-            CollisionRestoreDelay, false);
+        GetWorld()->GetTimerManager().SetTimer(CollisionRestoreHandle,FTimerDelegate::CreateWeakLambda(this, [this]()
+        {
+            SetElevatorCollision(true);
+        }), CollisionRestoreDelay, false);
     }
 }
 
