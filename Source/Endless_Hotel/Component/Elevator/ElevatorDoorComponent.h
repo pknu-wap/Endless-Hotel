@@ -30,6 +30,9 @@ class ENDLESS_HOTEL_API UElevatorDoorComponent : public UEHComponent
 	
 #pragma region Base
 
+public:
+	void Init(UStaticMeshComponent* InLeftDoor, UStaticMeshComponent* InRightDoor, UAudioComponent* InDoorAC, UBoxComponent* InBlockBox, UTimelineComponent* InTimeline, const FElevatorDoorConfig& InConfig);
+	
 protected:
 	virtual void BeginPlay() override;
 

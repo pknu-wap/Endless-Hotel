@@ -30,6 +30,7 @@ public:
     AElevator(const FObjectInitializer& ObjectInitializer);
 
 protected:
+    virtual void PostInitializeComponents() override;
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -240,4 +241,5 @@ protected:
     FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);
 
 #pragma endregion
+    
 };

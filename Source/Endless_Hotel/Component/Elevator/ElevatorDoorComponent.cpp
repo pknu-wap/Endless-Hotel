@@ -7,6 +7,23 @@
 
 #pragma region Base
 
+void UElevatorDoorComponent::Init(UStaticMeshComponent* InLeftDoor, UStaticMeshComponent* InRightDoor,
+	UAudioComponent* InDoorAC, UBoxComponent* InBlockBox, UTimelineComponent* InTimeline, const FElevatorDoorConfig& InConfig)
+{
+	LeftDoor = InLeftDoor;
+	RightDoor = InRightDoor;
+	DoorAC = InDoorAC;
+	BlockBox = InBlockBox;
+	DoorTimeline = InTimeline;
+	DoorCurve = InConfig.Curve;
+	LeftClosed = InConfig.LeftClosed;
+	RightClosed = InConfig.RightClosed;
+	LeftOpen = InConfig.LeftOpen;
+	RightOpen = InConfig.RightOpen;
+	BlockBoxActiveExtent = InConfig.BlockBoxActiveExtent;
+}
+
+
 void UElevatorDoorComponent::BeginPlay()
 {
 	Super::BeginPlay();

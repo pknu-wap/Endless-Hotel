@@ -11,6 +11,13 @@
 
 #pragma region Base
 
+void UElevatorPassengerComponent::Init(USceneComponent* InAnchor, UPrimitiveComponent* InExterior, UPrimitiveComponent* InCar)
+{
+    Anchor = InAnchor;
+    Exterior = InExterior;
+    Car = InCar;
+}
+
 void UElevatorPassengerComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     if (UWorld* World = GetWorld())

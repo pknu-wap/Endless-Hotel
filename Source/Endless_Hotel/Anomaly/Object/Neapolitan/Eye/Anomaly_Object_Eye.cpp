@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Neapolitan/Eye/Anomaly_Object_Eye.h"
 #include "Player/Character/EHPlayer.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetMathLibrary.h>
 #include <Components/TimelineComponent.h>
@@ -17,6 +18,8 @@ AAnomaly_Object_Eye::AAnomaly_Object_Eye(const FObjectInitializer& ObjectInitial
 void AAnomaly_Object_Eye::BeginPlay()
 {
 	Super::BeginPlay();
+	auto* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSys->FloorChange_Disable.AddUObject(this, &AAnomaly_Object_Eye::DisableObject);
 	if (FloatCurve)
 	{
 		FOnTimelineFloat Update;
@@ -35,6 +38,14 @@ void AAnomaly_Object_Eye::InitializeOnAnomalySpawned()
 {
 	Super::InitializeOnAnomalySpawned();
 	Object->SetVisibility(false);
+}
+
+void AAnomaly_Object_Eye::DisableObject()
+{
+	Object->SetVisibility(false);
+	GetWorldTimerManager().ClearTimer(FocusHandle);
+	GetWorldTimerManager().ClearTimer(SettleHandle);
+	GetWorldTimerManager().ClearTimer(AppearHandle);
 }
 
 #pragma endregion

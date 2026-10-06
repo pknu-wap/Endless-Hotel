@@ -21,4 +21,5 @@ protected:
 	bool bIsNormalElevator = true;
 
 #pragma endregion
+	
 };

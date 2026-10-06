@@ -19,6 +19,7 @@ public:
 	AAnomaly_Object_Eye(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
 	virtual void InitializeOnAnomalySpawned() override;
+	void DisableObject();
 	
 #pragma endregion
 	

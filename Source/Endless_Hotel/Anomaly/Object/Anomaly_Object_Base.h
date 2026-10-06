@@ -47,7 +47,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	bool bShouldInteract = true;
+	
 protected:
 	EAnomalyID AnomalyID;
 

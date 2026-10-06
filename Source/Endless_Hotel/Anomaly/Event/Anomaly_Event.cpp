@@ -80,8 +80,10 @@ void AAnomaly_Event::SetAnomalyState()
 		{
 			continue;
 		}
-
-		AnomalyObject->SetSolvedFalse();
+		if (AnomalyObject->bShouldInteract)
+		{
+			AnomalyObject->SetSolvedFalse();
+		}
 		TargetAnomalyObjects.Add(AnomalyObject);
 		AnomalyObject->SetOwnerAnomalyEvent(this);
 	}
