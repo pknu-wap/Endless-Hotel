@@ -2,9 +2,11 @@
 
 #include "UI/HorizontalBox/Title/UI_HorizontalBox_TitleButton.h"
 #include "UI/Controller/UI_Controller.h"
+#include "UI/HUD/Title/UI_HUD_Title.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
 #include <Components/Button.h>
 #include <Components/TextBlock.h>
@@ -46,9 +48,18 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 		constexpr float Duration = 2.f;
 		if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
 		{
+			auto* UI_Title = Cast<UUI_HUD_Title>(UICon->GetHUDWidget());
+			UI_Title->StopBGM(Duration);
+
 			UICon->OpenWidget(EWidgetType::HUD_InGame, true, Duration);
 
 			CameraManager->PossessCameraToPlayer(Duration);
+
+			auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			PC->SetPlayerInputAble(false);
+
+			FTimerHandle InputHandle;
+			GetWorld()->GetTimerManager().SetTimer(InputHandle, FTimerDelegate::CreateWeakLambda(this, [this, PC]() {PC->SetPlayerInputAble(true); }), Duration, false);
 		}
 		else
 		{
