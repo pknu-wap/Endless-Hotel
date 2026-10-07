@@ -147,17 +147,21 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	auto* DataLayerSys = GI->GetSubsystem<UDataLayerStreamingSubsystem>();
 	auto* ElevatorSys = GI->GetSubsystem<UElevatorManagerSubsystem>();
 	const auto* GameSys = GI->GetSubsystem<UGameSystem>();
+	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
 	SetVerdictMode(EAnomalyVerdictMode::Normal);
 	if (DataLayerSys)
 	{
 		DataLayerSys->SetCurrentDataLayer(EMapDataLayer::Hotel);
 	}
-	if (ElevatorSys && GameSys->GetGameProgression() != EGameProgression::CheckIn)
+	if (ElevatorSys)
 	{
-		ElevatorSys->RemoveTargetElevator();
-		if (!bIsStartInBed)
+		if (!bCheckIn)
 		{
-			ElevatorSys->SetTargetElevator("HotelElevator");
+			ElevatorSys->RemoveTargetElevator();
+			if (!bIsStartInBed)
+			{
+				ElevatorSys->SetTargetElevator("HotelElevator");
+			}
 		}
 		ElevatorSys->StartAllElevator();
 	}

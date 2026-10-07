@@ -67,7 +67,7 @@ void UElevatorMoveComponent::CancelMove()
     }
 }
 
-void UElevatorMoveComponent::StopMoveSound()
+void UElevatorMoveComponent::StopMoveSound() const
 {
     if (MoveAC && MoveAC->IsPlaying())
     {

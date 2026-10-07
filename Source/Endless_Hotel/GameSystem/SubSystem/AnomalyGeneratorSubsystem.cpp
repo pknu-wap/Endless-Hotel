@@ -8,6 +8,7 @@
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Engine/GameInstance.h>
 #include <Engine/World.h>
 
@@ -64,6 +65,12 @@ void UAnomalyGeneratorSubsystem::Initialize(FSubsystemCollectionBase& Collection
 
 void UAnomalyGeneratorSubsystem::SpawnAnomaly()
 {
+   const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+   if (GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn)
+   {
+      ApplyNormalFloor();
+      return;
+   }
    auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
    TOptional<FAnomalySpawnInfo> CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData : DecideNext();
    auto& AssetManager = UEHAssetManager::Get();

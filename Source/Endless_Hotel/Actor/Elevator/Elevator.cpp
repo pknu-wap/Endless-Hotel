@@ -5,12 +5,12 @@
 #include "Component/Elevator/ElevatorDoorComponent.h"
 #include "Component/Elevator/ElevatorMoveComponent.h"
 #include "Component/Elevator/ElevatorPassengerComponent.h"
-#include "Component/Elevator/ElevatorVerdictComponent.h"
-#include "Component/Elevator/ElevatorCinematicComponent.h"
+#include "Component/Elevator/ElevatorGameFlowComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "Type/Level/Type_Level.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
@@ -44,10 +44,8 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
     MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
     
-    RideTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RideTimeline"));
-    
     PassengerComp = CreateDefaultSubobject<UElevatorPassengerComponent>(TEXT("PassengerComp"));
-    VerdictComp = CreateDefaultSubobject<UElevatorVerdictComponent>(TEXT("VerdictComp"));
+    VerdictComp = CreateDefaultSubobject<UElevatorGameFlowComponent>(TEXT("VerdictComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -91,14 +89,11 @@ void AElevator::PostInitializeComponents()
     MoveCfg.StartPos = StartPos;
     MoveCfg.MapPos = MapPos;
     MoveCfg.EndPos = EndPos;
+    MoveCfg.RideStartPos = RideStartPos;
+    MoveCfg.RideEndPos = RideEndPos;
     MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
     MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
     PassengerComp->Init(TeleportAnchor, Exterior_Structure, Car);
-    CinematicComp = FindComponentByClass<UElevatorCinematicComponent>();
-    if (CinematicComp)
-    {
-        CinematicComp->Init(RootComponent, DoorComp, PassengerComp, Move_AC, RideTimeline);
-    }
 }
 
 void AElevator::BeginPlay()
@@ -154,12 +149,27 @@ void AElevator::PlayDepartureSequence()
 
 void AElevator::HandleMoveFinished()
 {
+    UE_LOG(LogTemp, Warning, TEXT("[Ride] Arrival IsTop=%d"), VerdictComp->IsTopFloor());
     const EElevatorMoveKind Kind = CurrentMove;
     CurrentMove = EElevatorMoveKind::None;
+    const bool bRide = MoveComp->bIsCinematic;
 
     switch (Kind)
     {
     case EElevatorMoveKind::Arrival:
+        if (bRide)
+        {
+            VerdictComp->ScriptFloor();
+            if (VerdictComp->IsTopFloor())
+            {
+                bIsRiding = false;
+                MoveComp->bIsCinematic = false;
+                MoveDoors(true);
+                break;
+            }
+            PlayDepartureSequence();
+            break;
+        }
         MoveDoors(true);
         if (InsideButton.IsValid())
         {
@@ -168,17 +178,29 @@ void AElevator::HandleMoveFinished()
         break;
 
     case EElevatorMoveKind::Departure:
-        if (CinematicComp && CinematicComp->HandleDepartureFinished())
+        if (bIsLobbyElevator)
         {
+            MoveComp->StopMoveSound();
+            PassengerComp->Store();
+            VerdictComp->SetTargetElevator("HotelElevator");
+            VerdictComp->RequestSwapDataLayer(EMapDataLayer::Hotel);
+            break;
+        }
+        if (bRide)
+        {
+            const FElevatorPassengerSnapshot Snap = PassengerComp->Capture();
+            PlayArrivalSequence();
+            PassengerComp->Restore(Snap);
             break;
         }
         if (ElevatorUnderWall.IsValid())
         {
             ElevatorUnderWall->MoveWall(MoveComp->GetMoveDuration());
         }
-        GetWorld()->GetTimerManager().SetTimer(MoveHandle,
-            FTimerDelegate::CreateWeakLambda(this, [this]() { RequestAnomalyVerdict(); }),
-            MoveComp->GetMoveDuration(), false);
+        GetWorld()->GetTimerManager().SetTimer(MoveHandle,FTimerDelegate::CreateWeakLambda(this, [this]()
+        {
+            RequestAnomalyVerdict();
+        }), MoveComp->GetMoveDuration(), false);
         break;
     }
 }
@@ -217,8 +239,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 
 void AElevator::RequestAnomalyVerdict() const
 {
-    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
-    ElevatorSub->StorePassenger(PassengerComp->Capture());
+    PassengerComp->Store();
     VerdictComp->RequestVerdict();
 }
 
@@ -251,16 +272,17 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     
     DoorComp->SetDoorLighting(false);
     SetLightOn(true);
-    
-    const bool bRide = CinematicComp && CinematicComp->PrepareRide();
-    if (!bRide)
-    {
-        MoveComp->SetToStart();
-    }
+    MoveComp->SetToStart();
     PassengerComp->Restore(Sub.GetPassenger());
-    if (bRide)
+
+    if (MoveComp->bIsCinematic)
     {
-        CinematicComp->BeginRide();
+        bIsRiding = true;
+        if (!Move_AC->IsPlaying())
+        {
+            Move_AC->Play();
+        }
+        PlayArrivalSequence();
         return;
     }
 
@@ -293,10 +315,11 @@ void AElevator::PrepareAsNonTarget() const
 
 void AElevator::StartElevator()
 {
-    if (CinematicComp)
+    if (bIsRiding)
     {
-        CinematicComp->CancelRide();
+        return;
     }
+    MoveComp->bIsCinematic = bIsLobbyElevator || VerdictComp->IsCheckIn();
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
     PassengerComp->CancelRestore();

@@ -52,6 +52,12 @@ FElevatorPassengerSnapshot UElevatorPassengerComponent::Capture() const
     return Snap;
 }
 
+void UElevatorPassengerComponent::Store() const
+{
+    auto* ElevatorSub = GetWorld()->GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+    ElevatorSub->StorePassenger(Capture());
+}
+
 void UElevatorPassengerComponent::Restore(const FElevatorPassengerSnapshot& Snap)
 {
     if (!Snap.bIsValid || !Anchor)

@@ -69,7 +69,9 @@ void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
 
 void UFloorProgressSubsystem::ResetFloorProgress()
 {
-	Floor = STARTFLOOR;
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
+	Floor = bCheckIn ? 0 : STARTFLOOR;
 	bIsFirstStartFloor = true;
 }
 

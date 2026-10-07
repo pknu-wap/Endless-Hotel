@@ -11,6 +11,7 @@
 class UElevatorManagerSubsystem;
 class UElevatorCinematicComponent;
 
+enum class EMapDataLayer : uint8;
 enum class EElevatorMoveKind : uint8
 {
     None,
@@ -203,7 +204,7 @@ public:
     TObjectPtr<class UElevatorPassengerComponent> PassengerComp;
 
     UPROPERTY(VisibleAnywhere, Category = "Verdict")
-    TObjectPtr<class UElevatorVerdictComponent> VerdictComp;
+    TObjectPtr<class UElevatorGameFlowComponent> VerdictComp;
     
 private:
     FTimerHandle MoveStartHandle;
@@ -221,6 +222,12 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector EndPos;
+    
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
+    FVector RideStartPos;
+
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
+    FVector RideEndPos;
 
     UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector StandardPos;
@@ -246,12 +253,11 @@ protected:
 #pragma region Cinematic
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "Cinematic")
-    TObjectPtr<class UTimelineComponent> RideTimeline;
-
+    UPROPERTY(EditAnywhere, Category = "Cinematic")
+    bool bIsLobbyElevator = false;
+    
 private:
-    UPROPERTY(Transient)
-    TObjectPtr<UElevatorCinematicComponent> CinematicComp;
+    bool bIsRiding = false;
 
 #pragma endregion
     

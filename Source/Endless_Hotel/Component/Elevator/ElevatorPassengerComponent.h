@@ -33,6 +33,7 @@ protected:
 
 public:
 	FElevatorPassengerSnapshot Capture() const;
+	void Store() const;
 	void Restore(const FElevatorPassengerSnapshot& Snap);
 	void CancelRestore();
 
