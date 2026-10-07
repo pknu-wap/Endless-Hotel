@@ -65,20 +65,20 @@ private:
 #pragma region Ride
 
 public:
-    bool PrepareRide();
+    bool PrepareRide() const;
     void BeginRide();
     void CancelRide();
 
 private:
     bool IsHallwayRideActive() const;
-    void StartSegment();
-    void FinishRide();
+    void StartSegment() const;
+    void FinishRide() const;
 
     FVector GetRideStart() const { return BaseLocation + RideStartOffset; }
-    FVector GetRideEnd() const { return BaseLocation + RideEndOffset; }
+    FVector GetRideEnd() const;
 
     UFUNCTION()
-    void HandleTimelineUpdate(float Alpha);
+    void HandleTimelineUpdate(float Alpha) const;
 
     UFUNCTION()
     void HandleTimelineFinished();
@@ -98,6 +98,9 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Cinematic|Hallway")
     float SegmentDuration = 3.f;
+    
+    UPROPERTY(EditAnywhere, Category = "Cinematic|Hallway")
+    FVector LastSegmentOffset;
 
 private:
     FVector BaseLocation = FVector::ZeroVector;
@@ -111,7 +114,7 @@ public:
     bool HandleDepartureFinished();
 
 private:
-    void OnLayerReady();
+    void OnLayerReady() const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Cinematic|Lobby")

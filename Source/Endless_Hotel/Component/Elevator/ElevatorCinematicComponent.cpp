@@ -53,7 +53,7 @@ void UElevatorCinematicComponent::BeginPlay()
 
 #pragma region Ride
 
-bool UElevatorCinematicComponent::PrepareRide()
+bool UElevatorCinematicComponent::PrepareRide() const
 {
     if (!IsHallwayRideActive())
     {
@@ -93,14 +93,15 @@ bool UElevatorCinematicComponent::IsHallwayRideActive() const
     return GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
 }
 
-void UElevatorCinematicComponent::StartSegment()
+void UElevatorCinematicComponent::StartSegment() const
 {
     Target->SetRelativeLocation(GetRideStart());
-    RideTimeline->SetPlayRate(1.f / SegmentDuration);
+    const float MoveDuration = LoopsLeft == 1 ? SegmentDuration / 2 : SegmentDuration; 
+    RideTimeline->SetPlayRate(1.f / MoveDuration);
     RideTimeline->PlayFromStart();
 }
 
-void UElevatorCinematicComponent::FinishRide()
+void UElevatorCinematicComponent::FinishRide() const
 {
     if (MoveAC)
     {
@@ -109,7 +110,12 @@ void UElevatorCinematicComponent::FinishRide()
     Door->MoveDoors(true);
 }
 
-void UElevatorCinematicComponent::HandleTimelineUpdate(float Alpha)
+FVector UElevatorCinematicComponent::GetRideEnd() const
+{
+    return LoopsLeft == 1 ? BaseLocation + LastSegmentOffset : BaseLocation + RideEndOffset;
+}
+
+void UElevatorCinematicComponent::HandleTimelineUpdate(float Alpha) const
 {
     Target->SetRelativeLocation(FMath::Lerp(GetRideStart(), GetRideEnd(), Alpha));
 }
@@ -122,7 +128,7 @@ void UElevatorCinematicComponent::HandleTimelineFinished()
     {
         FloorSys->AdvanceScriptedFloor();
     }
-    if (--LoopsLeft <= 0)
+    if (--LoopsLeft == 0)
     {
         FinishRide();
         return;
@@ -159,7 +165,7 @@ bool UElevatorCinematicComponent::HandleDepartureFinished()
     return true;
 }
 
-void UElevatorCinematicComponent::OnLayerReady()
+void UElevatorCinematicComponent::OnLayerReady() const
 {
     auto* GI = GetWorld()->GetGameInstance();
     GI->GetSubsystem<UDataLayerStreamingSubsystem>()->OnDataLayerReady.RemoveAll(this);

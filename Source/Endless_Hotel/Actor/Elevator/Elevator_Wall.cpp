@@ -2,6 +2,7 @@
 
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -15,8 +16,15 @@ AElevator_Wall::AElevator_Wall(const FObjectInitializer& ObjectInitializer)
 
 void AElevator_Wall::ResetWall()
 {
-    auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-    FVector StartLocation = Subsystem->bIsStartInBed && bIsOver ? StandardLocation + End : StandardLocation + Start;
+    const auto* GI = GetGameInstance();
+    auto* VerdictSys = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
+    auto* GameSys = GI->GetSubsystem<UGameSystem>();
+    if (GameSys->GetGameProgression() == EGameProgression::CheckIn && bIsCinematic)
+    {
+        SetActorLocation(StandardLocation + CinematicLocation);
+        return;
+    }
+    FVector StartLocation = VerdictSys->bIsStartInBed && bIsOver ? StandardLocation + End : StandardLocation + Start;
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = 1000;
