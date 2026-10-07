@@ -6,6 +6,7 @@
 #include "Component/Elevator/ElevatorMoveComponent.h"
 #include "Component/Elevator/ElevatorPassengerComponent.h"
 #include "Component/Elevator/ElevatorVerdictComponent.h"
+#include "Component/Elevator/ElevatorCinematicComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
@@ -42,6 +43,8 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
     MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
+    
+    RideTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RideTimeline"));
     
     PassengerComp = CreateDefaultSubobject<UElevatorPassengerComponent>(TEXT("PassengerComp"));
     VerdictComp = CreateDefaultSubobject<UElevatorVerdictComponent>(TEXT("VerdictComp"));
@@ -91,6 +94,11 @@ void AElevator::PostInitializeComponents()
     MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
     MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
     PassengerComp->Init(TeleportAnchor, Exterior_Structure, Car);
+    CinematicComp = FindComponentByClass<UElevatorCinematicComponent>();
+    if (CinematicComp)
+    {
+        CinematicComp->Init(RootComponent, DoorComp, PassengerComp, Move_AC, RideTimeline);
+    }
 }
 
 void AElevator::BeginPlay()
@@ -160,6 +168,10 @@ void AElevator::HandleMoveFinished()
         break;
 
     case EElevatorMoveKind::Departure:
+        if (CinematicComp && CinematicComp->HandleDepartureFinished())
+        {
+            break;
+        }
         if (ElevatorUnderWall.IsValid())
         {
             ElevatorUnderWall->MoveWall(MoveComp->GetMoveDuration());
@@ -236,11 +248,21 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     {
         InsideButton->CanPressButton(false);
     }
-
+    
     DoorComp->SetDoorLighting(false);
     SetLightOn(true);
-    MoveComp->SetToStart();
+    
+    const bool bRide = CinematicComp && CinematicComp->PrepareRide();
+    if (!bRide)
+    {
+        MoveComp->SetToStart();
+    }
     PassengerComp->Restore(Sub.GetPassenger());
+    if (bRide)
+    {
+        CinematicComp->BeginRide();
+        return;
+    }
 
     if (ElevatorOverWall.IsValid())
     {
@@ -271,14 +293,16 @@ void AElevator::PrepareAsNonTarget() const
 
 void AElevator::StartElevator()
 {
+    if (CinematicComp)
+    {
+        CinematicComp->CancelRide();
+    }
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
     PassengerComp->CancelRestore();
     MoveComp->CancelMove();
     CurrentMove = EElevatorMoveKind::None;
-
     ResetState();
-
     auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     if (Sub && Sub->IsTargetElevator(this))
     {

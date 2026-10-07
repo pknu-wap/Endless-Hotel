@@ -46,6 +46,8 @@ bool UElevatorManagerSubsystem::IsTargetElevator(const AElevator* Elevator) cons
 
 void UElevatorManagerSubsystem::StartAllElevator()
 {
+	UE_LOG(LogTemp, Warning, TEXT("[Elevator] StartAllElevator called"));
+	FDebug::DumpStackTraceToLog(ELogVerbosity::Warning);
 	for (const auto& Elevator : Elevators)
 	{
 		if (Elevator.Value.IsValid())

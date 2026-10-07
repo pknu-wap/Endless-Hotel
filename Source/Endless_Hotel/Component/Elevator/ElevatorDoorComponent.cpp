@@ -23,7 +23,6 @@ void UElevatorDoorComponent::Init(UStaticMeshComponent* InLeftDoor, UStaticMeshC
 	BlockBoxActiveExtent = InConfig.BlockBoxActiveExtent;
 }
 
-
 void UElevatorDoorComponent::BeginPlay()
 {
 	Super::BeginPlay();

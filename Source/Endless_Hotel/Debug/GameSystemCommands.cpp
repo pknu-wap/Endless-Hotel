@@ -295,3 +295,26 @@ static FAutoConsoleCommand ChangeProgression
             UE_LOG(LogTemp, Warning, TEXT("Game Progression: %s"), *Argument);
         })
 );
+
+static FAutoConsoleCommand PrintProgression
+(
+    TEXT("EHDebug.GameSystem.PrintProgression"),
+    TEXT("Print the current game progression"),
+    FConsoleCommandDelegate::CreateLambda([]()
+        {
+            const UWorld* World = GEngine ? GEngine->GetCurrentPlayWorld() : nullptr;
+            const UGameInstance* GI = World ? World->GetGameInstance() : nullptr;
+            const auto* GameSystem = GI ? GI->GetSubsystem<UGameSystem>() : nullptr;
+            if (!GameSystem)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] GameSystem not found. Run during PIE."));
+                return;
+            }
+
+            const EGameProgression Current = GameSystem->GetGameProgression();
+            const UEnum* ProgressionEnum = StaticEnum<EGameProgression>();
+            UE_LOG(LogTemp, Warning, TEXT("[Debug] Current Progression: %s (%d)"),
+                *ProgressionEnum->GetNameStringByValue(static_cast<int64>(Current)),
+                static_cast<int32>(Current));
+        })
+);

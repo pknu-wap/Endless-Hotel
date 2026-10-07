@@ -9,6 +9,7 @@
 #pragma region Declare
 
 class UElevatorManagerSubsystem;
+class UElevatorCinematicComponent;
 
 enum class EElevatorMoveKind : uint8
 {
@@ -239,6 +240,18 @@ public:
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
     FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);
+
+#pragma endregion
+    
+#pragma region Cinematic
+
+protected:
+    UPROPERTY(VisibleAnywhere, Category = "Cinematic")
+    TObjectPtr<class UTimelineComponent> RideTimeline;
+
+private:
+    UPROPERTY(Transient)
+    TObjectPtr<UElevatorCinematicComponent> CinematicComp;
 
 #pragma endregion
     

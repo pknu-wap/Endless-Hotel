@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Event/Anomaly_Event.h"
@@ -144,13 +145,14 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	bIsAnomalySolved = true;
 	const auto* GI = GetGameInstance();
 	auto* DataLayerSys = GI->GetSubsystem<UDataLayerStreamingSubsystem>();
-	auto* ElevatorSys = GI->GetSubsystem<UElevatorManagerSubsystem>(); 
+	auto* ElevatorSys = GI->GetSubsystem<UElevatorManagerSubsystem>();
+	const auto* GameSys = GI->GetSubsystem<UGameSystem>();
 	SetVerdictMode(EAnomalyVerdictMode::Normal);
 	if (DataLayerSys)
 	{
 		DataLayerSys->SetCurrentDataLayer(EMapDataLayer::Hotel);
 	}
-	if (ElevatorSys)
+	if (ElevatorSys && GameSys->GetGameProgression() != EGameProgression::CheckIn)
 	{
 		ElevatorSys->RemoveTargetElevator();
 		if (!bIsStartInBed)
