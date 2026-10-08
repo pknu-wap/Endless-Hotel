@@ -50,7 +50,7 @@ void UGameSystem::ResetGameSystem() const
 
 	if (UAnomalyVerdictSubsystem* VerdictSys = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>())
 	{
-		VerdictSys->ResetVerdict();
+		VerdictSys->ResetVerdict(USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn);
 	}
 
 	if (UElevatorManagerSubsystem* ElevatorSys = GameInstance->GetSubsystem<UElevatorManagerSubsystem>())

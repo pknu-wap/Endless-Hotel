@@ -109,7 +109,7 @@ private:
 #pragma region Reset
 
 public:
-	void ResetVerdict();
+	void ResetVerdict(bool bShouldScript);
 
 #pragma endregion
 

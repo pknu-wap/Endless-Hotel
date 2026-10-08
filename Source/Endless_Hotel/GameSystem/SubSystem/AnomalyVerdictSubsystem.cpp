@@ -115,6 +115,10 @@ void UAnomalyVerdictSubsystem::ApplyVerdict()
 
 	if (auto* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
 	{
+		if (FloorSys->GetIsFirstFloor())
+		{
+			bIsStartInBed = false;
+		}
 		FloorSys->AdvanceFloor(bPassed);
 	}
 	bIsAnomalySolved = false;
@@ -155,13 +159,10 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	}
 	if (ElevatorSys)
 	{
-		if (!bCheckIn)
+		ElevatorSys->RemoveTargetElevator();
+		if (!bIsStartInBed)
 		{
-			ElevatorSys->RemoveTargetElevator();
-			if (!bIsStartInBed)
-			{
-				ElevatorSys->SetTargetElevator("HotelElevator");
-			}
+			ElevatorSys->SetTargetElevator("HotelElevator");
 		}
 		ElevatorSys->StartAllElevator();
 	}
@@ -224,12 +225,9 @@ void UAnomalyVerdictSubsystem::LoadNextMap() const
 
 void UAnomalyVerdictSubsystem::OnDataLayerReady()
 {
-	const UFloorProgressSubsystem* FloorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>() : nullptr;
-
-	if (FloorSys && FloorSys->GetIsFirstFloor())
-	{
-		bIsStartInBed = true;
-	}
+	const auto* GI = GetGameInstance();
+	const auto* FloorSys = GI->GetSubsystem<UFloorProgressSubsystem>();
+	bIsStartInBed = FloorSys->GetIsFirstFloor();
 
 	if (FloorSys)
 	{
@@ -241,7 +239,7 @@ void UAnomalyVerdictSubsystem::OnDataLayerReady()
 
 #pragma region Reset
 
-void UAnomalyVerdictSubsystem::ResetVerdict()
+void UAnomalyVerdictSubsystem::ResetVerdict(const bool bShouldScript)
 {
 	bPassed = false;
 	bIsAnomalySolved = false;
@@ -251,7 +249,7 @@ void UAnomalyVerdictSubsystem::ResetVerdict()
 	CurrentAnomalyID = EAnomalyID::Normal;
 	NextAnomalyID = EAnomalyID::None;
 	NextAnomalyMap = EMapDataLayer::Hotel;
-	bIsStartInBed = false;
+	bIsStartInBed = bShouldScript;
 	IncorrectRule = EAnomalyRule::None;
 	IncorrectRules.Empty();
 }
