@@ -47,10 +47,11 @@ void AAnomaly_Painting::SetAnomalyState()
 
 void AAnomaly_Painting::SpawnShadowMonster()
 {
-	ShadowMonster = GetWorld()->SpawnActor<AShadowMonster>(ShadowMonsterClass, SpawnTransform);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ShadowMonster = GetWorld()->SpawnActor<AShadowMonster>(ShadowMonsterClass, SpawnTransform, Params);
 	ShadowMonster->SetActorHiddenInGame(true);
-	DispatchToObject<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler,
-		Cast<AShadowMonsterController>(ShadowMonster->GetController()));
+	DispatchToObject<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler, Cast<AShadowMonsterController>(ShadowMonster->GetController()));
 }
 
 #pragma endregion

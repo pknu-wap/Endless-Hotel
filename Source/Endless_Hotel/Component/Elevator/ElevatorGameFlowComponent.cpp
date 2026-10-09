@@ -6,9 +6,6 @@
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/GameSystem.h"
-#include "Type/Level/Type_Level.h"
-#include <Engine/GameInstance.h>
-#include <Engine/World.h>
 
 #pragma region Verdict
 

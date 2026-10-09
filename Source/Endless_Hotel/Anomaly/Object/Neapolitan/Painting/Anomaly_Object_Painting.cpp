@@ -2,7 +2,7 @@
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Player/Camera/EHPlayerCameraManager.h"
+#include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 #include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
@@ -13,8 +13,6 @@
 #include <Components/AudioComponent.h>
 #include <Materials/MaterialInstanceDynamic.h>
 #include <Engine/Texture2D.h>
-
-#include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 
 #pragma region Base
 

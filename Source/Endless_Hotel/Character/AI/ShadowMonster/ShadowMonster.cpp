@@ -12,6 +12,7 @@ void AShadowMonster::StartAppear()
 		return;
 	}
 	bIsAppearing = true;
+	SetAnimRootMotionTranslationScale(AppearRootMotionScale);
 	SetActorHiddenInGame(false);
 	if (auto* Anim = GetShadowAnim())
 	{

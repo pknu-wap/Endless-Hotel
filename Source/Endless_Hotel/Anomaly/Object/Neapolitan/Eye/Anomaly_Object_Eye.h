@@ -17,6 +17,8 @@ class ENDLESS_HOTEL_API AAnomaly_Object_Eye : public AAnomaly_Object_Neapolitan
 	
 public:
 	AAnomaly_Object_Eye(const FObjectInitializer& ObjectInitializer);
+	
+protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeOnAnomalySpawned() override;
 	void DisableObject();
