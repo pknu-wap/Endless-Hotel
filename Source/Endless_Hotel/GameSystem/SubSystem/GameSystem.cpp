@@ -8,6 +8,7 @@
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "Asset/Manager/EHAssetManager.h"
 #include <Engine/GameInstance.h>
 #include <Math/UnrealMathUtility.h>
 
@@ -48,7 +49,7 @@ void UGameSystem::ResetGameSystem() const
 
 	if (UAnomalyVerdictSubsystem* VerdictSys = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>())
 	{
-		VerdictSys->ResetVerdict();
+		VerdictSys->ResetVerdict(USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn);
 	}
 
 	if (UElevatorManagerSubsystem* ElevatorSys = GameInstance->GetSubsystem<UElevatorManagerSubsystem>())
@@ -76,13 +77,12 @@ void UGameSystem::ResetGameSystem() const
 
 #pragma region Progression
 
-void UGameSystem::ChangeProgression(EGameProgression Target)
+void UGameSystem::ChangeProgression(const EGameProgression Target)
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = Target;
-	Data.bGameClear = bIsClear;
 	USaveManager::SaveData_Progression(Data);
-
+	GameProgression = Target;
 	OnProgressionChanged.Broadcast(Target);
 }
 
@@ -92,9 +92,15 @@ void UGameSystem::ChangeProgression(EGameProgression Target)
 
 void UGameSystem::GameClear()
 {
-	const EGameProgression Ending = USaveManager::LoadClearedAnomalyID().Num() == ANOMALY_COUNT ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
-	bIsClear = true;
+	const auto& AssetManager = UEHAssetManager::Get();
+	const EGameProgression Ending = AssetManager.GetRemainingAnomalyCounts() == 0 ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
 	ChangeProgression(Ending);
+}
+
+bool UGameSystem::IsGameClear() const
+{
+	const FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	return Data.Progression == EGameProgression::Clear_True || Data.Progression == EGameProgression::Clear_Bad;
 }
 
 #pragma endregion

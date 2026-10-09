@@ -62,10 +62,7 @@ void UElevatorManagerSubsystem::StartAllElevator()
 void UElevatorManagerSubsystem::ResetElevatorState()
 {
 	TargetElevator = nullptr;
-	RelativePlayerLocation = FVector::ZeroVector;
-	RelativePlayerRotation = FRotator::ZeroRotator;
-	ElevatorOffset = FRotator::ZeroRotator;
-	PlayerVelocity = 0.f;
+	Passenger = FElevatorPassengerSnapshot();
 }
 
 #pragma endregion

@@ -14,4 +14,5 @@ class ENDLESS_HOTEL_API UShadowMonsterAnimInstance : public UBaseAIAnimInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bMonsterAppear = false;
+	
 };
