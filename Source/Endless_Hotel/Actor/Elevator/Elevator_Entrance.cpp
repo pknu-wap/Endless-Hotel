@@ -15,6 +15,9 @@ AElevator_Entrance::AElevator_Entrance(const FObjectInitializer& ObjectInitializ
 
 	TakeOff_Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TakeOff_Trigger"));
 	TakeOff_Trigger->SetupAttachment(RootComponent);
+	
+	Pattern = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pattern"));
+	Pattern->SetupAttachment(RootComponent);
 }
 
 void AElevator_Entrance::BeginPlay()

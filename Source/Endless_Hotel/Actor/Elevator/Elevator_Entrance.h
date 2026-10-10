@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Entrance")
 	TObjectPtr<UStaticMeshComponent> Entrance;
 	
+	UPROPERTY(EditAnywhere, Category = "Pattern")
+	TObjectPtr<UStaticMeshComponent> Pattern;
+	
 #pragma endregion
 
 #pragma region Trigger
