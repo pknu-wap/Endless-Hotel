@@ -19,7 +19,7 @@ static FAutoConsoleCommand SetExceptClearedAnomaly(TEXT("EHDebug.GameSystem.SetE
         return;
     }
     auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
-    Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
+    Subsystem->bExceptClearedAnomaly = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1");
 }));
 
 static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEXT("Usage: EHDebug.GameSystem.IsClear <true|false>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
@@ -29,7 +29,14 @@ static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEX
 			return;
 		}
 		const auto& GameSys = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
-		GameSys->bIsClear = Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1") ? true : false;
+		if (Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1"))
+		{
+		    GameSys->GameClear();
+		}
+        else
+        {
+            GameSys->ChangeProgression(EGameProgression::Loop);
+        }
 	}));
 
 static FAutoConsoleCommand AddAnomalyRule(TEXT("EHDebug.GameSystem.AddAnomalyRule"), TEXT("Usage: EHDebug.GameSystem.AddAnomalyRule <RuleName>"), FConsoleCommandWithArgsDelegate::CreateLambda([](const TArray<FString>& Args)
@@ -286,5 +293,28 @@ static FAutoConsoleCommand ChangeProgression
             GameSystem->ChangeProgression(Target);
 
             UE_LOG(LogTemp, Warning, TEXT("Game Progression: %s"), *Argument);
+        })
+);
+
+static FAutoConsoleCommand PrintProgression
+(
+    TEXT("EHDebug.GameSystem.PrintProgression"),
+    TEXT("Print the current game progression"),
+    FConsoleCommandDelegate::CreateLambda([]()
+        {
+            const UWorld* World = GEngine ? GEngine->GetCurrentPlayWorld() : nullptr;
+            const UGameInstance* GI = World ? World->GetGameInstance() : nullptr;
+            const auto* GameSystem = GI ? GI->GetSubsystem<UGameSystem>() : nullptr;
+            if (!GameSystem)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[Debug] GameSystem not found. Run during PIE."));
+                return;
+            }
+
+            const EGameProgression Current = GameSystem->GetGameProgression();
+            const UEnum* ProgressionEnum = StaticEnum<EGameProgression>();
+            UE_LOG(LogTemp, Warning, TEXT("[Debug] Current Progression: %s (%d)"),
+                *ProgressionEnum->GetNameStringByValue(static_cast<int64>(Current)),
+                static_cast<int32>(Current));
         })
 );

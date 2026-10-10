@@ -26,22 +26,26 @@ public:
 #pragma region Floor
 
 public:
-	void ResetFloor() { Floor = STARTFLOOR; }
+	void AdvanceFloor(const bool bPassed);
+	uint8 GetFloor() const { return Floor; }
+	bool GetIsFirstFloor() const { return bIsFirstStartFloor; }
+	
+private:
 	void SubFloor();
 	void AddFloor();
-
-	uint8 GetFloor() const { return Floor; }
+	void ResetFloor() { Floor = STARTFLOOR; }
 
 public:
-	uint8 Floor = STARTFLOOR;
-	bool bIsFirstStartFloor = true;
-
 	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Reset);
 	FOnFloorChange_Reset FloorChange_Reset;
 
 	DECLARE_MULTICAST_DELEGATE(FOnFloorChange_Disable);
 	FOnFloorChange_Disable FloorChange_Disable;
 
+private:
+	uint8 Floor = STARTFLOOR;
+	bool bIsFirstStartFloor = true;
+	
 #pragma endregion
 
 #pragma region Reset
@@ -59,6 +63,14 @@ private:
 private:
 	bool bFirstReset = true;
 
+#pragma endregion
+	
+#pragma region Script
+	
+public:
+	void AdvanceScriptedFloor();
+	bool IsTopFloor() const { return Floor >= STARTFLOOR; }
+	
 #pragma endregion
 
 };

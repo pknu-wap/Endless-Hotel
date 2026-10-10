@@ -16,7 +16,7 @@ AAnomaly_Event_Neapolitan::AAnomaly_Event_Neapolitan(const FObjectInitializer& O
 void AAnomaly_Event_Neapolitan::BeginPlay()
 {
 	Super::BeginPlay();
-	SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
+	SetVerdictMode(EAnomalyVerdictMode::Both_And); // VerdictMode Setting
 }
 
 #pragma endregion

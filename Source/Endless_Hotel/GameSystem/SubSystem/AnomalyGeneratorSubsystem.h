@@ -11,7 +11,6 @@
 
 #pragma region Declare
 
-// Forward Declaration
 class AAnomaly_Event;
 class AAnomaly_Object_Base;
 
@@ -60,7 +59,13 @@ public:
 
 public:
 	void SpawnAnomaly();
+	void ForceNormalNext();
 
+private:
+	void ApplyNormalFloor();
+	void NotifySpawned();
+	
+public:
 	TOptional<FAnomalySpawnInfo> DecideAnomaly(uint8 Index) const;
 	TOptional<FAnomalySpawnInfo> DecideNext() const;
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info) const;

@@ -117,7 +117,7 @@ void AManual::SwitchPaper()
 void AManual::RemindManual()
 {
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	if (!bNeedRemind || FloorSub->Floor != STARTFLOOR)
+	if (!bNeedRemind || FloorSub->GetFloor() != STARTFLOOR)
 	{
 		return;
 	}

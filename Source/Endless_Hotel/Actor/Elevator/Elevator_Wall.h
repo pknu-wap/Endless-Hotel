@@ -46,4 +46,14 @@ protected:
 
 #pragma endregion
 
+#pragma region Cinematic
+	
+protected:
+	UPROPERTY(EditAnywhere, Category = "Cinematic")
+	bool bIsCinematic = false;
+	
+	UPROPERTY(EditAnywhere, Category = "Cinematic")
+	FVector CinematicLocation;
+	
+#pragma endregion
 };

@@ -439,20 +439,14 @@ void AAnomaly_Object_Door::ResetDoorState()
 		return;
 	}
 
-	auto* GameInstance = GetGameInstance();
-	if (!IsValid(GameInstance))
-	{
-		return;
-	}
-
-	auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
-	if (FloorSub->bIsFirstStartFloor)
+	const auto& FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSub->GetIsFirstFloor())
 	{
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(true);
 		Component_Interact->ActiveInteract(true);
 	}
-	else if (FloorSub->Floor == STARTFLOOR)
+	else if (FloorSub->GetFloor() == STARTFLOOR)
 	{
 		GetRootComponent()->SetWorldTransform(DoorOpenTransform);
 		SetLight(true);

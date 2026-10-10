@@ -32,7 +32,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
 	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
-	VerdictSub->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
+	VerdictSub->OnAnomalyStateChanged.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
 }
 
 #pragma endregion
