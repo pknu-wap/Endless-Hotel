@@ -23,6 +23,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EAIAnimState State;
 
-	UFUNCTION(BlueprintCallable)
-	void OnStateAnimationEnds();
 };
