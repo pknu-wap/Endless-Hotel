@@ -2,7 +2,6 @@
 
 #include "Actor/Interact/Bed/Bed.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/GameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Player/Character/EHPlayer.h"
@@ -19,7 +18,10 @@ void ABed::BeginPlay()
 {
 	Super::BeginPlay();
 
-	bool bActive = USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn;
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
+
+	bool bActive = GameSystem->GetGameProgression() == EGameProgression::CheckIn;
 	Component_Interact->ActiveInteract(bActive);
 
 	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -27,11 +29,8 @@ void ABed::BeginPlay()
 	PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
-
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
-	if (USaveManager::LoadData_Progression().Progression != EGameProgression::CheckIn && FloorSub->bIsFirstStartFloor)
+	if (GameSystem->GetGameProgression() != EGameProgression::CheckIn && FloorSub->GetIsFirstFloor())
 	{
 		WakeUp();
 	}
@@ -128,7 +127,7 @@ void ABed::WakeUp()
 	UI_InGame->StartInGameHUD(true);
 
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
-	if (USaveManager::LoadData_Progression().Progression == EGameProgression::CheckIn)
+	if (GameSystem->GetGameProgression() == EGameProgression::CheckIn)
 	{
 		GameSystem->ChangeProgression(EGameProgression::Tutorial);
 	}
