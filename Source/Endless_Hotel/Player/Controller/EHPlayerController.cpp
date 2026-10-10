@@ -340,14 +340,12 @@ void AEHPlayerController::DiePlayer(const EDeathReason& DeathReason)
 
 void AEHPlayerController::RevivePlayer()
 {
-	SetPlayerInputAble(true);
+	bCanMove = true;
 
 	bIsButtonPressing = false;
 	bIsPlayerDoorOpening = false;
 	bIsPlayerPushingDoor = false;
 
-	bIsCrouching ? EHPlayer->UnCrouch() : EHPlayer->Crouch();
-	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
 	bIsCrouching = false;
 
 	bIsFaceCovering = false;

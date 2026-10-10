@@ -52,7 +52,6 @@ void AEHPlayerCameraManager::BeginPlay()
 			if (auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 			{
 				Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartEyeEffect(false); });
-				Player->OnRevive.AddWeakLambda(this, [this]() {StartEyeEffect(true); });
 				Player->OnRevive.AddWeakLambda(this, [this]() {StartHallucination(false); StopHallucination(true); });
 				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
 			}

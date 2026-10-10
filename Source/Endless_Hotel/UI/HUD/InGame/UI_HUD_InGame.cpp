@@ -25,7 +25,6 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Player->CanInteract.AddUObject(this, &ThisClass::ChangeCrosshair);
 	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
-	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->OnDataLayerChanged.AddWeakLambda(this, [this](const EMapDataLayer& Layer) {CurrentLayer = Layer; });

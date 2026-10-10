@@ -28,6 +28,8 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 	ChooseKeyIndex = FMath::RandRange(1, 2);
 	
 	GameClearEvent.AddUObject(this, &UGameSystem::GameClear);
+
+	GameProgression = USaveManager::LoadData_Progression().Progression;
 }
 
 #pragma endregion
