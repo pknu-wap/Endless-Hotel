@@ -159,7 +159,10 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	}
 	if (ElevatorSys)
 	{
-		ElevatorSys->RemoveTargetElevator();
+		if (!bCheckIn)
+		{
+			ElevatorSys->RemoveTargetElevator();
+		}
 		if (!bIsStartInBed)
 		{
 			ElevatorSys->SetTargetElevator("HotelElevator");

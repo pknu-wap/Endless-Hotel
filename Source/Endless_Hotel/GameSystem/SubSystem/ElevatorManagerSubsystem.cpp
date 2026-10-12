@@ -31,6 +31,7 @@ AElevator* UElevatorManagerSubsystem::GetElevatorByID(FName TargetID)
 
 void UElevatorManagerSubsystem::SetTargetElevator(FName TargetElevatorID)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[Subsystem] SetTargetElevator %s"), *TargetElevatorID.ToString());
 	TargetElevator = Elevators.FindRef(TargetElevatorID);
 }
 
