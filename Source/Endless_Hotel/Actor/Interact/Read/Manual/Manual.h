@@ -33,10 +33,21 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class USceneComponent> Comp_Root;
+	TObjectPtr<USceneComponent> Comp_Root;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UStaticMeshComponent> SM_Paper;
+	TObjectPtr<UStaticMeshComponent> SM_Paper;
+
+	UPROPERTY()
+	TMap<EAnomalyRule, TObjectPtr<UStaticMeshComponent>> PaperFragments;
+
+#pragma endregion
+
+#pragma region Rule
+
+private:
+	void ShowUnlockRulePaper();
+	void OnAddedNewRule(EAnomalyRule Rule);
 
 #pragma endregion
 

@@ -9,8 +9,6 @@
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
-#include <Engine/GameInstance.h>
-#include <Math/UnrealMathUtility.h>
 
 #pragma region Base
 

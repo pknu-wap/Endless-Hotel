@@ -5,6 +5,7 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/Enum/EnumConverter.h"
 #include "Component/Tutorial/TutorialComponent.h"
 #include "UI/Controller/UI_Controller.h"
 #include <Kismet/KismetSystemLibrary.h>
@@ -30,8 +31,33 @@ void AManual::BeginPlay()
 	UpTrans = Object->GetRelativeTransform();
 	DownTrans = SM_Paper->GetRelativeTransform();
 
+	const FName FindTag = TEXT("Paper");
+	TArray<USceneComponent*> Childs;
+	Object->GetChildrenComponents(true, OUT Childs);
+	for (auto* Child : Childs)
+	{
+		if (Child->ComponentHasTag(FindTag))
+		{
+			Child->SetVisibility(false);
+			PaperFragments.Add(EnumConverter::GetEnumFromName<EAnomalyRule>(Child->ComponentTags[2]), Cast<UStaticMeshComponent>(Child));
+		}
+	}
+
+	SM_Paper->GetChildrenComponents(true, OUT Childs);
+	for (auto* Child : Childs)
+	{
+		if (Child->ComponentHasTag(FindTag))
+		{
+			Child->SetVisibility(false);
+			PaperFragments.Add(EnumConverter::GetEnumFromName<EAnomalyRule>(Child->ComponentTags[2]), Cast<UStaticMeshComponent>(Child));
+		}
+	}
+
+	ShowUnlockRulePaper();
+
 	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	PoolSub->OnAddAnomalyRule.AddUObject(this, &ThisClass::SetNeedRemind);
+	PoolSub->OnAddAnomalyRule.AddUObject(this, &ThisClass::OnAddedNewRule);
 
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::RemindManual);
@@ -63,6 +89,24 @@ void AManual::Interact(AEHCharacter* Interacter)
 	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
 	Comp_Tutorial->HideTutorialWidget();
 	Comp_Tutorial->HideTutorialWidget();
+}
+
+#pragma endregion
+
+#pragma region Rule
+
+void AManual::ShowUnlockRulePaper()
+{
+	TArray<EAnomalyRule> ActiveRules = USaveManager::LoadData_Progression().ActiveRules;
+	for (auto Rule : ActiveRules)
+	{
+		PaperFragments[Rule]->SetVisibility(true);
+	}
+}
+
+void AManual::OnAddedNewRule(EAnomalyRule Rule)
+{
+	PaperFragments[Rule]->SetVisibility(true);
 }
 
 #pragma endregion
