@@ -51,10 +51,7 @@ void UElevatorMoveComponent::PlayArrival()
 
 void UElevatorMoveComponent::PlayDeparture()
 {
-    if (MoveAC && !MoveAC->IsPlaying())
-    {
-        MoveAC->Play();
-    }
+    PlayMoveSound();
     BeginMove(GetMapLocation(), GetEndLocation());
 }
 
@@ -65,6 +62,23 @@ void UElevatorMoveComponent::CancelMove()
     {
         MoveTimeline->Stop();
     }
+}
+
+void UElevatorMoveComponent::PlayMoveSound()
+{
+    USoundBase* Desired = bIsCinematic ? ElevatorSound_Cinematic : ElevatorSound_Normal;
+    if (!MoveAC || !Desired)
+    {
+        return;
+    }
+    if (MoveAC->IsPlaying() && MoveAC->Sound == Desired)
+    {
+        return;
+    }
+
+    MoveAC->Stop();
+    MoveAC->SetSound(Desired);
+    MoveAC->Play();
 }
 
 void UElevatorMoveComponent::StopMoveSound() const

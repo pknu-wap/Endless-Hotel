@@ -304,10 +304,7 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     if (MoveComp->bIsCinematic)
     {
         bIsRiding = true;
-        if (!Move_AC->IsPlaying())
-        {
-            Move_AC->Play();
-        }
+        MoveComp->PlayMoveSound();
         PlayArrivalSequence();
         return;
     }

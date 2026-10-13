@@ -48,6 +48,7 @@ public:
     void PlayArrival();
     void PlayDeparture();
     void CancelMove();
+    void PlayMoveSound();
     void StopMoveSound() const;
 
     FVector GetStartLocation() const { return bIsCinematic ? Config.StandardPos + Config.RideStartPos : Config.StandardPos + Config.StartPos; }
@@ -65,6 +66,12 @@ protected:
     
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator", meta = (ClampMin = "0.1"))
     float RideDuration = 3.0f;
+    
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<USoundBase> ElevatorSound_Normal;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<USoundBase> ElevatorSound_Cinematic;
 
 private:
     UFUNCTION()
