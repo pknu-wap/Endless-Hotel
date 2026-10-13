@@ -206,7 +206,6 @@ void AElevator::HandleMoveFinished()
     case EElevatorMoveKind::Departure:
         if (bIsLobbyElevator)
         {
-            MoveComp->StopMoveSound();
             PassengerComp->Store();
             VerdictComp->SetTargetElevator("HotelElevator");
             VerdictComp->RequestSwapDataLayer(EMapDataLayer::Hotel);
