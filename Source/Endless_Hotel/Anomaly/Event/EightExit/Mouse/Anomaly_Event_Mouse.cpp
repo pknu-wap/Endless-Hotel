@@ -23,9 +23,9 @@ void AAnomaly_Event_Mouse::SetAnomalyState()
 
 void AAnomaly_Event_Mouse::DisableAnomaly()
 {
-	if (IsValid(SpawnedMouse))
+	for (AMouse* Mouse : SpawnedMouse)
 	{
-		SpawnedMouse->Destroy();
+		Mouse->Destroy();
 	}
 
 	if (IsValid(SpawnedDeadBody))
@@ -68,10 +68,21 @@ void AAnomaly_Event_Mouse::SpawnMouse()
 {
 	bSpawnedMouse = true;
 
-	SpawnedMouse = GetWorld()->SpawnActor<AMouse>(MouseClass, SpawnMouseTrans);
+	for (auto Info : MouseInfos)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnedMouse.Add(GetWorld()->SpawnActor<AMouse>(MouseClass, Info.SpawnLoc, FRotator::ZeroRotator, SpawnParams));
+	}
 	
 	FTimerHandle RunHandle;
-	GetWorld()->GetTimerManager().SetTimer(RunHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {SpawnedMouse->RunByEat(); }), 1.f, false);
+	GetWorld()->GetTimerManager().SetTimer(RunHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
+		{
+			for (int32 Index = 0; Index < SpawnedMouse.Num(); ++Index)
+			{
+				SpawnedMouse[Index]->RunByEat(MouseInfos[Index].EatLoc);
+			}
+		}), 1.f, false);
 
 	TriggerBox->SetWorldTransform(JumpScareTrans);
 	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]() {TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly); }));
@@ -79,7 +90,12 @@ void AAnomaly_Event_Mouse::SpawnMouse()
 
 void AAnomaly_Event_Mouse::RunMouse()
 {
-	SpawnedMouse->RunByJumpScare();
+	for (int32 Index = 0; Index < SpawnedMouse.Num(); ++Index)
+	{
+		FMouseInfo Info = MouseInfos[Index];
+		AMouse* Mouse = SpawnedMouse[Index];
+		Mouse->RunByJumpScare(Info.SpawnLoc);
+	}
 }
 
 #pragma endregion
