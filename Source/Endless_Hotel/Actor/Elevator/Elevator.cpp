@@ -60,6 +60,10 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     Move_AC->SetupAttachment(RootComponent);
     Move_AC->bAutoActivate = false;
     Move_AC->bAllowSpatialization = false;
+    
+    Bell_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Bell_AC"));
+    Bell_AC->SetupAttachment(Car);
+    Bell_AC->bAutoActivate = false;
 
     TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
@@ -131,6 +135,32 @@ void AElevator::SetLightOn(const bool bIsOn) const
 
 #pragma endregion
 
+#pragma region Sound
+
+void AElevator::OpenDoorsWithBell()
+{
+    MoveComp->StopMoveSound();
+    auto OpenDoors = [this]()
+    {
+        MoveDoors(true);
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
+    };
+    if (BellToDoorDelay > 0.f)
+    {
+        Bell_AC->Play();
+        GetWorld()->GetTimerManager().SetTimer(BellHandle,FTimerDelegate::CreateWeakLambda(this, OpenDoors),BellToDoorDelay, false);
+    }
+    else
+    {
+        OpenDoors();
+    }
+}
+
+#pragma  endregion
+
 #pragma region MovementSettings
 
 void AElevator::PlayArrivalSequence()
@@ -164,17 +194,13 @@ void AElevator::HandleMoveFinished()
             {
                 bIsRiding = false;
                 MoveComp->bIsCinematic = false;
-                MoveDoors(true);
+                OpenDoorsWithBell();
                 break;
             }
             PlayDepartureSequence();
             break;
         }
-        MoveDoors(true);
-        if (InsideButton.IsValid())
-        {
-            InsideButton->CanPressButton(true);
-        }
+        OpenDoorsWithBell();
         break;
 
     case EElevatorMoveKind::Departure:
@@ -315,6 +341,8 @@ void AElevator::PrepareAsNonTarget() const
 
 void AElevator::StartElevator()
 {
+    GetWorld()->GetTimerManager().ClearTimer(BellHandle);
+    Bell_AC->Stop();
     if (bIsRiding)
     {
         return;

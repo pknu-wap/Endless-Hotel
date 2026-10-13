@@ -91,6 +91,16 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Audio")
     TObjectPtr<UAudioComponent> Move_AC;
+    
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
+    TObjectPtr<UAudioComponent> Bell_AC;
+    
+    UPROPERTY(EditAnywhere, Category = "Audio", meta = (ClampMin = "0.0"))
+    float BellToDoorDelay = 0.8f;
+    
+private:
+    void OpenDoorsWithBell();
+    FTimerHandle BellHandle;
 
 #pragma endregion
 
