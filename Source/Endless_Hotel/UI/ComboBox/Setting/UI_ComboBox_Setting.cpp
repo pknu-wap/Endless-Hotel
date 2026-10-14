@@ -41,6 +41,23 @@ void UUI_ComboBox_Setting::InitOption(EOptionCategory Category, TArray<FOptionVa
 	}
 
 	ComboBox->SetSelectedOption(EnumConverter::GetNameFromEnum(Value));
+
+	switch (OptionCategory)
+	{
+	case EOptionCategory::Language:
+		UEnum* EnumObj = StaticEnum<EOptionValue>();
+		FName ValueName = EnumConverter::GetNameFromEnum(Value);
+		for (int32 Index = 0; Index < EnumObj->NumEnums(); ++Index)
+		{
+			if (EnumObj->GetDisplayNameTextByIndex(Index).ToString() == ValueName.ToString())
+			{
+				EOptionValue EnumValue = static_cast<EOptionValue>(EnumObj->GetValueByIndex(Index));
+				ComboBox->SetSelectedOption(EnumConverter::GetNameFromEnum(EnumValue));
+				break;
+			}
+		}
+		break;
+	}
 }
 
 #pragma endregion
@@ -133,7 +150,19 @@ void UUI_ComboBox_Setting::SetOption_Grapic(FName OptionValue)
 void UUI_ComboBox_Setting::SetOption_Language(FName OptionValue)
 {
 	UEnum* EnumObj = StaticEnum<EOptionValue>();
-	EOptionValue Value = static_cast<EOptionValue>(EnumObj->GetValueByName(OptionValue));
+	EOptionValue Value = EOptionValue::None;
+	int64 EnumValue = INDEX_NONE;
+
+	for (int32 Index = 0; Index < EnumObj->NumEnums(); ++Index)
+	{
+		if (EnumObj->GetDisplayNameTextByIndex(Index).ToString() == OptionValue.ToString())
+		{
+			EnumValue = EnumObj->GetValueByIndex(Index);
+			break;
+		}
+	}
+
+	Value = static_cast<EOptionValue>(EnumValue);
 
 	auto* UI_Setting = GetTypedOuter<UUI_PopUp_Setting>();
 	FSaveData_Setting& Data = UI_Setting->GetSettingData();
