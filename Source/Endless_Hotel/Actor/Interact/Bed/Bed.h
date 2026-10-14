@@ -47,7 +47,7 @@ private:
 
 #pragma endregion
 
-#pragma region Sleep
+#pragma region Rest
 
 private:
 	void MoveToBedStart();
@@ -66,10 +66,10 @@ private:
 	void StartControllerRotation(const FRotator& TargetRotation, float Duration);
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = "Sleep")
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
 	FTransform Trans_Start;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sleep")
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
 	FTransform Trans_Middle;
 
 	FTimerHandle ControllerHandle;

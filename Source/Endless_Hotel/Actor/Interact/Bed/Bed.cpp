@@ -45,7 +45,6 @@ void ABed::Interact(AEHCharacter* Interacter)
 	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-
 	switch (Info.InteractType)
 	{
 	case EInteractType::Rest:
@@ -66,7 +65,7 @@ void ABed::OnChangedProgression(EGameProgression Target)
 
 #pragma endregion
 
-#pragma region Sleep
+#pragma region Rest
 
 void ABed::MoveToBedStart()
 {

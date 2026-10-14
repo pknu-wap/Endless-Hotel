@@ -18,7 +18,8 @@ enum class EInteractType : uint8
 	DoorOpen	UMETA(DisplayName = "DoorOpen"),
 	Pick		UMETA(DisplayName = "Pick"),
 	Read		UMETA(DisplayName = "Read"),
-	Rest		UMETA(DisplayName = "Rest")
+	Rest		UMETA(DisplayName = "Rest"),
+	Sleep		UMETA(DisplayName = "Sleep")
 };
 
 USTRUCT(BlueprintType)
