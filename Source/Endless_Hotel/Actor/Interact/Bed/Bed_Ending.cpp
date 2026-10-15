@@ -76,7 +76,7 @@ void ABed_Ending::StartControllerRotation(const FRotator& TargetRotation, float 
 			if (Alpha >= 1.f)
 			{
 				PC->SetControlRotation(TargetControllerRot);
-				GetWorld()->GetTimerManager().ClearTimer(ControllerHandle);
+				World->GetTimerManager().ClearTimer(ControllerHandle);
 			}
 		}), 0.016f, true);
 }
