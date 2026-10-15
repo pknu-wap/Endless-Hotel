@@ -156,7 +156,7 @@ void AEHPlayerCameraManager::StartHallucination(bool bIsStart)
 	if (!bIsStart)
 	{
 		Player->OnFaceCover.RemoveAll(this);
-
+		StopHallucination(true);
 		if (IsValid(AC_Hallucination))
 		{
 			AC_Hallucination->DestroyComponent();
