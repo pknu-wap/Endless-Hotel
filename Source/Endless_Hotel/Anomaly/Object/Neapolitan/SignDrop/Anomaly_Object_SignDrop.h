@@ -36,7 +36,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Sign")
 	TObjectPtr<USoundBase> DropSound;
 
-	UPROPERTY()
 	TWeakObjectPtr<class ARoomSignActor> TargetSign;
 
 #pragma endregion 

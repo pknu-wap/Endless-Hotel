@@ -51,10 +51,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Widget")
 	EGameProgression TargetProgression = EGameProgression::Tutorial;
 
-	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> Comp_Interact;
-
-	UPROPERTY()
 	TWeakObjectPtr<class UUI_Tutorial> UI_Tutorial;
 
 	bool bForceShow = false;

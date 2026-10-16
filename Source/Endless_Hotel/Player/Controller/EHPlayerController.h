@@ -33,7 +33,6 @@ protected:
 #pragma region Reference
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion
@@ -101,7 +100,6 @@ public:
 #pragma region Interact
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> CachedInteractComp;
 
 protected:
@@ -126,7 +124,6 @@ private:
 #pragma region Components
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class UCameraComponent> PlayerCamera;
 
 #pragma endregion

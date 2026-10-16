@@ -25,10 +25,7 @@ protected:
 #pragma region Reference
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class UCameraComponent> Camera;
-
-	UPROPERTY()
 	TWeakObjectPtr<class APlayerController> PC;
 
 #pragma endregion

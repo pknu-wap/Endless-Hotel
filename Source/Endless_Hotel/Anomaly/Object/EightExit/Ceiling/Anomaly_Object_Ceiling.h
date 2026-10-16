@@ -82,7 +82,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Ceiling|Collapse")
 	TSubclassOf<class AFieldSystemActor> FieldSystemActorClass;
 
-	UPROPERTY()
 	TWeakObjectPtr<class AFieldSystemActor> ActiveCollapseFieldWeak;
 
 	UPROPERTY(VisibleAnywhere, Category = "AI")

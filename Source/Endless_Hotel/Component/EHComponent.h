@@ -24,7 +24,6 @@ protected:
 #pragma region Owner
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<AActor> Owner;
 
 #pragma endregion

@@ -14,7 +14,6 @@ class ENDLESS_HOTEL_API AAnomaly_Fire : public AAnomaly_Event_EightExit
 #pragma region Reference
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion

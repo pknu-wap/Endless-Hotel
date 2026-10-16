@@ -44,7 +44,6 @@ private:
 
 	bool bIsInteracted = false;
 
-	UPROPERTY()
 	TWeakObjectPtr<class UTutorialComponent> Comp_Tutorial;
 
 #pragma endregion
@@ -55,7 +54,6 @@ private:
 	FText GetDescription() { return List_Interact[CurrentIndex].Description; }
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class UUI_Interact> UI_Description;
 
 #pragma endregion
