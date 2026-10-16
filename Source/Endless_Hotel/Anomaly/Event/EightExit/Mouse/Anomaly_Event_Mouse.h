@@ -6,6 +6,23 @@
 #include <CoreMinimal.h>
 #include <Anomaly_Event_Mouse.generated.h>
 
+#pragma region Declare
+
+USTRUCT(BlueprintType)
+struct FMouseInfo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Setting")
+	FVector SpawnLoc;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setting")
+	FVector EatLoc;
+};
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Event_Mouse : public AAnomaly_Event_EightExit
 {
@@ -40,13 +57,13 @@ private:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Mouse")
-	FTransform SpawnMouseTrans;
+	TArray<FMouseInfo> MouseInfos;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Mouse")
 	TSubclassOf<class AMouse> MouseClass;
 
 	UPROPERTY()
-	TObjectPtr<class AMouse> SpawnedMouse;
+	TArray<TObjectPtr<class AMouse>> SpawnedMouse;
 
 #pragma endregion
 

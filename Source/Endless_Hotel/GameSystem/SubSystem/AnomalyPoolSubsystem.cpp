@@ -114,9 +114,9 @@ void UAnomalyPoolSubsystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
     AnomalyRules.AddUnique(AnomalyRule);
  
-    FSaveData_Progression SavedRules;
-    SavedRules.ActiveRules = AnomalyRules;
-    USaveManager::SaveData_Progression(SavedRules);
+    FSaveData_Progression Data = USaveManager::LoadData_Progression();
+    Data.ActiveRules = AnomalyRules;
+    USaveManager::SaveData_Progression(Data);
  
     InitializePool();
     OnAddAnomalyRule.Broadcast(AnomalyRule);
@@ -126,9 +126,9 @@ void UAnomalyPoolSubsystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
     AnomalyRules.Remove(AnomalyRule);
  
-    FSaveData_Progression SavedRules;
-    SavedRules.ActiveRules = AnomalyRules;
-    USaveManager::SaveData_Progression(SavedRules);
+    FSaveData_Progression Data = USaveManager::LoadData_Progression();
+    Data.ActiveRules = AnomalyRules;
+    USaveManager::SaveData_Progression(Data);
     FakeManualEntries.RemoveAll([AnomalyRule](const FFakeManualEntry& Entry)
     {
         return Entry.RealRuleToSolve == AnomalyRule;

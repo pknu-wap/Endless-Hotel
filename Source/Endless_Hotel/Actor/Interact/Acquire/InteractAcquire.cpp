@@ -2,7 +2,6 @@
 
 #include "Actor/Interact/Acquire/InteractAcquire.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Character/EHCharacter.h"
 #include "UI/Controller/UI_Controller.h"
 #include "UI/PopUp/Acquire/UI_PopUp_Acquire.h"
 #include <Camera/CameraComponent.h>

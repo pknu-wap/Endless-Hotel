@@ -64,6 +64,8 @@ static FAutoConsoleCommand AddAllAnomalyRule(TEXT("EHDebug.GameSystem.AddAllAnom
 		Subsystem->AddAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->AddAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->AddAnomalyRule(EAnomalyRule::ResetObject);
+		Subsystem->AddAnomalyRule(EAnomalyRule::BurnObject);
+		Subsystem->AddAnomalyRule(EAnomalyRule::Cry);
 	}));
 
 static FAutoConsoleCommand RemoveAllAnomalyRule(TEXT("EHDebug.GameSystem.RemoveAllAnomalyRule"), TEXT(""), FConsoleCommandDelegate::CreateLambda([]()
@@ -73,6 +75,8 @@ static FAutoConsoleCommand RemoveAllAnomalyRule(TEXT("EHDebug.GameSystem.RemoveA
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::ResetObject);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::BurnObject);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::Cry);
 	}));
 
 static void LogAnomalyIDHint()

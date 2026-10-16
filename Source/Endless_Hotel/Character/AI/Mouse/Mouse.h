@@ -15,8 +15,8 @@ class ENDLESS_HOTEL_API AMouse : public ABaseAI
 #pragma region Move
 
 public:
-	void RunByEat();
-	void RunByJumpScare();
+	void RunByEat(FVector EatLocation);
+	void RunByJumpScare(FVector RunLocation);
 
 private:
 	UFUNCTION()
@@ -24,13 +24,6 @@ private:
 
 	UFUNCTION()
 	void MoveToRunCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
-
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "Move")
-	FVector EatDeadBodyLoc;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Move")
-	FVector RunLoc;
 
 #pragma endregion
 
