@@ -1,9 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
-#include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Engine/GameInstance.h>
 
 #pragma region Base
@@ -31,7 +31,10 @@ void UFloorProgressSubsystem::SubFloor()
 		Floor--;
 		return;
 	}
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const auto* GI = GetGameInstance();
+	const auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
+	auto* VerdictSys = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
+	VerdictSys->SetNextAnomaly(EAnomalyID::Lobby, EMapDataLayer::Lobby);
 	GameSys->GameClearEvent.Broadcast();
 }
 
@@ -45,7 +48,7 @@ void UFloorProgressSubsystem::AddFloor()
 
 void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
 {
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	const bool bCheckIn = GameSys->GetGameProgression() == EGameProgression::CheckIn;
 	if (!bCheckIn)
 	{
@@ -69,7 +72,7 @@ void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
 
 void UFloorProgressSubsystem::ResetFloorProgress()
 {
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
 	Floor = bCheckIn ? 0 : STARTFLOOR;
 	bIsFirstStartFloor = true;
@@ -90,7 +93,7 @@ void UFloorProgressSubsystem::ProgressGameState()
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	if (Data.Progression == EGameProgression::Tutorial)
 	{
-		auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+		auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		GameSystem->ChangeProgression(EGameProgression::Loop);
 	}
 }

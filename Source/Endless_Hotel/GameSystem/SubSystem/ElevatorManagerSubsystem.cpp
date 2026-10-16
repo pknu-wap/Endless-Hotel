@@ -1,7 +1,22 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Actor/Elevator/Elevator.h"
+
+#pragma region Base
+
+void UElevatorManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	auto* GameSystem = Collection.InitializeDependency<UEHGameSystem>();
+	if (GameSystem)
+	{
+		GameClearHandle = GameSystem->GameClearEvent.AddUObject(this, &UElevatorManagerSubsystem::OnGameClear);
+	}
+}
+
+#pragma endregion
 
 #pragma region Registry
 
@@ -64,6 +79,16 @@ void UElevatorManagerSubsystem::ResetElevatorState()
 {
 	TargetElevator = nullptr;
 	Passenger = FElevatorPassengerSnapshot();
+}
+
+#pragma endregion
+
+#pragma region GameClear
+
+void UElevatorManagerSubsystem::OnGameClear()
+{
+	ResetElevatorState();
+	SetTargetElevator("LobbyElevator1");
 }
 
 #pragma endregion

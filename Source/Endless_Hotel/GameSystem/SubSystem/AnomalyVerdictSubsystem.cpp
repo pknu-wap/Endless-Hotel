@@ -7,7 +7,7 @@
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Event/Anomaly_Event.h"
@@ -150,7 +150,7 @@ void UAnomalyVerdictSubsystem::SetNoAnomalyState()
 	const auto* GI = GetGameInstance();
 	auto* DataLayerSys = GI->GetSubsystem<UDataLayerStreamingSubsystem>();
 	auto* ElevatorSys = GI->GetSubsystem<UElevatorManagerSubsystem>();
-	const auto* GameSys = GI->GetSubsystem<UGameSystem>();
+	const auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
 	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
 	SetVerdictMode(EAnomalyVerdictMode::Normal);
 	if (DataLayerSys)

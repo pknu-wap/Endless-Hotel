@@ -8,7 +8,7 @@
 
 #pragma region Declare
 
-class UGameSystem;
+class UEHGameSystem;
 
 #pragma endregion
 

@@ -17,7 +17,7 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
-#include <GameSystem/SubSystem/GameSystem.h>
+#include <GameSystem/SubSystem/EHGameSystem.h>
 #include <GameFramework/GameModeBase.h>
 
 #pragma region Base

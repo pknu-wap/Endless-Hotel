@@ -6,7 +6,7 @@
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
 #include <Engine/GameInstance.h>

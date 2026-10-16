@@ -5,7 +5,7 @@
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
@@ -65,7 +65,7 @@ void AEHPlayerCameraManager::BeginPlay()
 
 void AEHPlayerCameraManager::OnDataLayerChanged(const EMapDataLayer& Layer)
 {
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	if (CurrentLayer == EMapDataLayer::Lobby && GameSystem->GetGameProgression() != EGameProgression::CheckIn)
 	{
 		StartEyeEffect(true);

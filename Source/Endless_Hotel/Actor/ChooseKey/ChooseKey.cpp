@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Actor/ChooseKey/ChooseKey.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 
 #pragma region Base
 
@@ -16,7 +16,7 @@ void AChooseKey::BeginPlay()
 {
     Super::BeginPlay();
 
-    UGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+    UEHGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
     const uint8 Index = GameSystem->ChooseKeyIndex;
     UStaticMesh* TargetMesh = Index == 1 ? KeyMesh1 : KeyMesh2;
 
