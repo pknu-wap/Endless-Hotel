@@ -5,14 +5,14 @@
 
 #pragma region Move
 
-void AMouse::RunByEat()
+void AMouse::RunByEat(FVector EatLocation)
 {
 	auto* AICon = Cast<AAIController>(GetController());
 	AICon->ReceiveMoveCompleted.AddDynamic(this, &ThisClass::MoveToEatCompleted);
-	AICon->MoveToLocation(EatDeadBodyLoc);
+	AICon->MoveToLocation(EatLocation);
 }
 
-void AMouse::RunByJumpScare()
+void AMouse::RunByJumpScare(FVector RunLocation)
 {
 	auto* AnimInstance = Cast<UMouseAnimInstance>(GetMesh()->GetAnimInstance());
 	AnimInstance->bIsRun = true;
@@ -20,7 +20,7 @@ void AMouse::RunByJumpScare()
 	auto* AICon = Cast<AAIController>(GetController());
 	AICon->ReceiveMoveCompleted.RemoveAll(this);
 	AICon->ReceiveMoveCompleted.AddDynamic(this, &ThisClass::MoveToRunCompleted);
-	AICon->MoveToLocation(RunLoc);
+	AICon->MoveToLocation(RunLocation);
 }
 
 void AMouse::MoveToEatCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result)

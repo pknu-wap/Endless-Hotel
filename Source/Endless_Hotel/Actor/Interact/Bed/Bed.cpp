@@ -45,7 +45,6 @@ void ABed::Interact(AEHCharacter* Interacter)
 	Super::Interact(Interacter);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
-
 	switch (Info.InteractType)
 	{
 	case EInteractType::Rest:
@@ -66,7 +65,7 @@ void ABed::OnChangedProgression(EGameProgression Target)
 
 #pragma endregion
 
-#pragma region Sleep
+#pragma region Rest
 
 void ABed::MoveToBedStart()
 {
@@ -171,7 +170,7 @@ void ABed::StartControllerRotation(const FRotator& TargetRotation, float Duratio
 			if (Alpha >= 1.f)
 			{
 				PC->SetControlRotation(TargetControllerRot);
-				GetWorld()->GetTimerManager().ClearTimer(ControllerHandle);
+				World->GetTimerManager().ClearTimer(ControllerHandle);
 			}
 		}), 0.016f, true);
 }

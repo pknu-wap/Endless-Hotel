@@ -35,7 +35,7 @@ public:
 	static EnumClass GetEnumFromName(const FName NameValue)
 	{
 		const UEnum* EnumPtr = StaticEnum<EnumClass>();
-		int64 IntValue = EnumPtr->GetValueByNameString(NameValue);
+		int64 IntValue = EnumPtr->GetValueByName(NameValue);
 
 		return static_cast<EnumClass>(IntValue);
 	}

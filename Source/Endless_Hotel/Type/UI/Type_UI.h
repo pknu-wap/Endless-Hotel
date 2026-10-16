@@ -23,7 +23,8 @@ enum class EWidgetType : uint8
 	PopUp_Manual			UMETA(DisplayName = "PopUp_Manual"),
 	PopUp_WrongCheck		UMETA(DisplayName = "PopUp_WrongCheck"),
 	PopUp_Acquire			UMETA(DisplayName = "PopUp_Acquire"),
-	PopUp_SettingTutorial	UMETA(DisplayName = "PopUp_SettingTutorial")
+	PopUp_SettingTutorial	UMETA(DisplayName = "PopUp_SettingTutorial"),
+	PopUp_Credit_Bad		UMETA(DisplayName = "PopUp_Credit_Bad")
 };
 
 UENUM(BlueprintType)

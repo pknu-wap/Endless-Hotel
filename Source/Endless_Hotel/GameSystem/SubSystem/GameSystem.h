@@ -45,7 +45,7 @@ public:
 	FOnProgressionChanged OnProgressionChanged;
 	
 private:
-	EGameProgression GameProgression = EGameProgression::Tutorial;
+	EGameProgression GameProgression = EGameProgression::CheckIn;
 
 #pragma endregion
 	
