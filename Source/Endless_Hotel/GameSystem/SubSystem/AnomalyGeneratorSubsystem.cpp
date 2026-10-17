@@ -4,6 +4,7 @@
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Anomaly/Event/Anomaly_Event.h"
 #include "Asset/Manager/EHAssetManager.h"
@@ -68,6 +69,10 @@ void UAnomalyGeneratorSubsystem::SpawnAnomaly()
       if (VerdictSubsystem->GetNextAnomalyMap() == EMapDataLayer::Lobby)
       {
          VerdictSubsystem->SetNextAnomaly(EAnomalyID::None, EMapDataLayer::Hotel);
+         if (auto* ElevatorSys = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>())
+         {
+            ElevatorSys->StartAllElevator();
+         }
          return;
       }
       VerdictSubsystem->SetLobbyPhase(false);

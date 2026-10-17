@@ -67,6 +67,14 @@ void AEHPlayer::RespawnPlayer()
 	case EGameProgression::Loop:
 		TargetTrans = SpawnTransform[EGameProgression::Loop];
 		break;
+		
+	case EGameProgression::Clear_Bad:
+		TargetTrans = SpawnTransform[EGameProgression::Clear_Bad];
+		break;
+		
+	case EGameProgression::Clear_True:
+		TargetTrans = SpawnTransform[EGameProgression::Clear_True];
+		break;
 	}
 
 	SetActorTransform(TargetTrans);

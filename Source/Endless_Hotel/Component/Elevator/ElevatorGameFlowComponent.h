@@ -47,6 +47,7 @@ public:
 
 public:
 	bool IsCheckIn() const;
+	bool IsLobbyPhase() const;
 
 #pragma endregion
 	

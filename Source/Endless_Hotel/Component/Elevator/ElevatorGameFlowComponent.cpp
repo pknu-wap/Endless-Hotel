@@ -57,6 +57,13 @@ bool UElevatorGameFlowComponent::IsCheckIn() const
 	return GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
 }
 
+bool UElevatorGameFlowComponent::IsLobbyPhase() const
+{
+	const auto* GI = GetWorld()->GetGameInstance();
+	const auto* VerdictSub = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
+	return VerdictSub && VerdictSub->IsLobbyPhase();
+}
+
 #pragma endregion
 
 #pragma region Target

@@ -87,7 +87,6 @@ void UElevatorManagerSubsystem::ResetElevatorState()
 
 void UElevatorManagerSubsystem::OnGameClear()
 {
-	ResetElevatorState();
 	SetTargetElevator("LobbyElevator1");
 }
 

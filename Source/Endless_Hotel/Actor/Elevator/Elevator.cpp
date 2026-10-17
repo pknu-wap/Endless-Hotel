@@ -343,14 +343,15 @@ void AElevator::StartElevator()
     {
         return;
     }
-    MoveComp->bIsCinematic = bIsLobbyElevator || VerdictComp->IsCheckIn();
+    const bool bLobbyReturn = VerdictComp->IsLobbyPhase();
+    MoveComp->bIsCinematic = !bLobbyReturn && (bIsLobbyElevator || VerdictComp->IsCheckIn());
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
     PassengerComp->CancelRestore();
     MoveComp->CancelMove();
     CurrentMove = EElevatorMoveKind::None;
     ResetState();
-    auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+    const auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     if (Sub && Sub->IsTargetElevator(this))
     {
         PrepareAsTarget(*Sub);
