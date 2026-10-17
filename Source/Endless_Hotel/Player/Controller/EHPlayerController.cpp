@@ -498,6 +498,10 @@ bool AEHPlayerController::IsActorOnScreen(AActor* TargetActor) const
 AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 {
 	UCameraComponent* Camera = EHPlayer->GetCamera();
+	if (!IsValid(Camera))
+	{
+		return;
+	}
 
 	FVector Start = Camera->GetComponentLocation();
 	FVector End = Start + Camera->GetForwardVector() * Distance;
