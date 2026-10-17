@@ -19,6 +19,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 #pragma endregion
 
 #pragma region Reset
@@ -33,6 +35,12 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_Bar;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> SM_HourHand;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<class UStaticMeshComponent> SM_MinuteHand;
 
 #pragma endregion
 
