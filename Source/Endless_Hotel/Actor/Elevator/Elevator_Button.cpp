@@ -74,18 +74,14 @@ void AElevator_Button::CanPressButton(bool bCanPress)
 
 void AElevator_Button::MoveToButtonPlayer()
 {
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-
-    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-
-    PC->SetPlayerInputAble(false);
-    PC->SetIgnoreLookInput(true);
-
     FVector TargetLocation = InteractAnchor->GetComponentLocation();
     FRotator TargetRotation = InteractAnchor->GetComponentRotation();
 
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     Player->SetActorLocationAndRotation(TargetLocation, TargetRotation, false, nullptr, ETeleportType::None);
 
+    AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
+    PC->SetPlayerInputAble(false);
     PC->SetControlRotation(TargetRotation);
    
     OnMoveCompleted();
@@ -119,7 +115,6 @@ void AElevator_Button::OnMoveCompleted()
             }
 
             EHPC->OnEVButtonPressCompleted();
-            EHPC->SetIgnoreLookInput(false);
             EHPC->SetPlayerInputAble(true);
 
         }), 2.5f, false);

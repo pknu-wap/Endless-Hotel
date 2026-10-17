@@ -5,16 +5,10 @@
 
 #pragma region Base
 
-AAnomaly_Event_EightExit::AAnomaly_Event_EightExit(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
-{
-    bIsEightExit = true;
-}
-
 void AAnomaly_Event_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
-    SetVerdictMode(EAnomalyVerdictMode::Both_AND); // VerdictMode Setting
+    SetVerdictMode(EAnomalyVerdictMode::Both_And); // VerdictMode Setting
 }
 
 #pragma endregion

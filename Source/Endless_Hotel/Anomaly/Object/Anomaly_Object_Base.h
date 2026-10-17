@@ -47,10 +47,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Anomaly")
 	TArray<EAnomalyID> ExecuteAnomalies;
-
-	UPROPERTY(EditAnywhere, Category = "Anomaly|Object")
-	bool bIsEightExitObject = false;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Anomaly")
+	bool bShouldInteract = true;
+	
 protected:
 	EAnomalyID AnomalyID;
 
@@ -63,7 +63,7 @@ public:
 	bool bIsOrderedInteractTypes = false;
 
 public:
-	virtual void Interact(class AEHCharacter* Interacter) override;
+	virtual void Interact(class AEHCharacter* Interactor) override;
 
 protected:
 	void AllowNextInteract();

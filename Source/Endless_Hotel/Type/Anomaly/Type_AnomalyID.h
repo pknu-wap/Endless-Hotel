@@ -25,6 +25,7 @@ enum class EAnomalyID : uint8
 	Door_Close			= 16	UMETA(DisplayName = "Door_Close"),
 	Ceil_Blood			= 17	UMETA(DisplayName = "Ceil_Blood"),
 	Disappear			= 18	UMETA(DisplayName = "Disappear"),
+	Mouse				= 19	UMETA(DisplayName = "Mouse"),
 	ElevatorNoFloor		= 20	UMETA(DisplayName = "ElevatorNoFloor"),
 	FireCorridor		= 22	UMETA(DisplayName = "FireCorridor"),
 	Rug_Color 		    = 23	UMETA(DisplayName = "Rug_Color"),

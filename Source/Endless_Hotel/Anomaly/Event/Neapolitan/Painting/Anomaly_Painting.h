@@ -18,4 +18,21 @@ public:
 
 #pragma endregion
 
+#pragma region Watch
+	
+protected:
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TSubclassOf<class AShadowMonster> ShadowMonsterClass;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TWeakObjectPtr<class AShadowMonster> ShadowMonster;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	FTransform SpawnTransform;
+	
+public:
+	void SpawnShadowMonster();
+	
+#pragma  endregion
+	
 };

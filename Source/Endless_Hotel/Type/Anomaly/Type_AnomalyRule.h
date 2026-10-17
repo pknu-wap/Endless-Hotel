@@ -15,5 +15,7 @@ enum class EAnomalyRule : uint8
 	Painting			= 5		UMETA(DisplayName = "Painting"),
 	TurnOffSound		= 6		UMETA(DisplayName = "TurnOffSound"),
 	ResetObject			= 7		UMETA(DisplayName = "ResetObject"),
-	Watch				= 8		UMETA(DisplayName = "Watch")
+	Watch				= 8		UMETA(DisplayName = "Watch"),
+	BurnObject			= 9		UMETA(DisplayName = "BurnObject"),
+	Cry					= 10	UMETA(DisplayName = "Cry")
 };

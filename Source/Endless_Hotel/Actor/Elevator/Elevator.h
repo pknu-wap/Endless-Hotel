@@ -6,6 +6,21 @@
 #include <CoreMinimal.h>
 #include <Elevator.generated.h>
 
+#pragma region Declare
+
+class UElevatorManagerSubsystem;
+class UElevatorCinematicComponent;
+
+enum class EMapDataLayer : uint8;
+enum class EElevatorMoveKind : uint8
+{
+    None,
+    Arrival,
+    Departure
+};
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AElevator : public AEHActor
 {
@@ -17,6 +32,7 @@ public:
     AElevator(const FObjectInitializer& ObjectInitializer);
 
 protected:
+    virtual void PostInitializeComponents() override;
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -56,7 +72,7 @@ public:
 #pragma region LightSettings
 
 public:
-    void SetLightOn(bool bIsOn);
+    void SetLightOn(bool bIsOn) const;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Setting|LightSettings")
@@ -71,34 +87,51 @@ protected:
 
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Audio")
-    TObjectPtr<class UAudioComponent> Door_AC;
+    TObjectPtr<UAudioComponent> Door_AC;
 
     UPROPERTY(VisibleAnywhere, Category = "Audio")
-    TObjectPtr<class UAudioComponent> Move_AC;
+    TObjectPtr<UAudioComponent> Move_AC;
 
 #pragma endregion
 
 #pragma region MovementSettings
 
 public:
-    UFUNCTION()
-    void MoveDoors(bool bWillOpen);
-
-    UFUNCTION()
-    void OnDoorTimelineUpdate(float Alpha);
-
-    UFUNCTION()
-    void OnDoorTimelineFinished();
-
-protected:
-    void MoveElevator(FVector Start, FVector End, bool bIsStart);
-
-public:
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
     FName ElevatorID;
 
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
+    TObjectPtr<class UElevatorMoveComponent> MoveComp;
+
 protected:
-    UPROPERTY(EditAnywhere, Category = "Movement")
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
+    TObjectPtr<class UTimelineComponent> MoveTimeline;
+
+    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
+    TObjectPtr<UCurveFloat> MoveCurve;
+
+private:
+    void PlayArrivalSequence();
+    void PlayDepartureSequence();
+    void HandleMoveFinished();
+
+    EElevatorMoveKind CurrentMove = EElevatorMoveKind::None;
+    FTimerHandle MoveHandle;
+
+#pragma endregion
+
+#pragma region Door
+    
+public:
+    UFUNCTION()
+    void MoveDoors(bool bWillOpen) const;
+    
+public:
+    UPROPERTY(VisibleAnywhere, Category = "Door")
+    TObjectPtr<class UElevatorDoorComponent> DoorComp;
+    
+protected:
+    UPROPERTY(VisibleAnywhere, Category = "Movement")
     TObjectPtr<class UTimelineComponent> DoorTimeline;
 
     UPROPERTY(EditAnywhere, Category = "Movement|Door")
@@ -118,18 +151,9 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Movement|Door|Opened")
     FVector RightDoorOpenPos;
-
-    UPROPERTY(EditAnywhere, Category = "Movement|Elevator")
-    float ElevatorMoveDuration = 3.0f;
-
-private:
-    FTimerHandle MoveHandle;
-
-    bool bIsDoorOpened = false;
-    bool bIsDoorMoving = false;
-
+    
 #pragma endregion
-
+    
 #pragma region Button
 
 public:
@@ -168,15 +192,22 @@ public:
 
 public:
     void StartElevator();
+    
+private:
+    void RequestAnomalyVerdict() const;
+    void ResetState() const;
+    void PrepareAsTarget(const UElevatorManagerSubsystem& Sub);
+    void PrepareAsNonTarget() const;
 
-protected:
-    void NotifySubsystem();
+public:
+    UPROPERTY(VisibleAnywhere, Category = "Passenger")
+    TObjectPtr<class UElevatorPassengerComponent> PassengerComp;
 
-protected:
-    UPROPERTY(EditAnywhere, Category = "Type")
-    bool bIsNormalElevator = true;
-
-    bool bShouldChangeMap = false;
+    UPROPERTY(VisibleAnywhere, Category = "Verdict")
+    TObjectPtr<class UElevatorGameFlowComponent> VerdictComp;
+    
+private:
+    FTimerHandle MoveStartHandle;
 
 #pragma endregion
 
@@ -191,6 +222,12 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector EndPos;
+    
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
+    FVector RideStartPos;
+
+    UPROPERTY(EditAnywhere, Category = "Move|Elevator")
+    FVector RideEndPos;
 
     UPROPERTY(EditAnywhere, Category = "Move|Elevator")
     FVector StandardPos;
@@ -201,18 +238,27 @@ public:
 
 public:
     void DisableElevatorFloor();
-    void DisableElevator();
+    void DisableElevator() const;
 
 #pragma endregion
 
 #pragma region Trigger
-
-public:
-    void SetActiveBlockBox(bool bIsActive);
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Trigger")
     FVector BlockBoxActiveExtent = FVector(100.f, 32.f, 150.f);
 
 #pragma endregion
+    
+#pragma region Cinematic
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Cinematic")
+    bool bIsLobbyElevator = false;
+    
+private:
+    bool bIsRiding = false;
+
+#pragma endregion
+    
 };

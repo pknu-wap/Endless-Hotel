@@ -16,7 +16,7 @@ class AAnomaly_Event;
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
 {
-	Both_AND,
+	Both_And,
 	Normal
 };
 
@@ -49,19 +49,21 @@ private:
 #pragma region Verdict
 
 public:
-	void SetVerdictMode(EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Normal) { VerdictMode = ENewMode; };
+	void SetVerdictMode(const EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Both_And) { VerdictMode = ENewMode; }
 	bool ComputeVerdict() const;
 	void ApplyVerdict();
-	void TryInteractSolveVerdict();
+	void TryInteractSolveVerdict() const;
 
 private:
 	void EvaluateIncorrectRules();
+	void HandlePassed();
+	void HandleFailed();
 
 public:
-	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Normal;
+	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Both_And;
 	bool bPassed = false;
 	bool bWrongInteractionOccurred = false;
-	bool bSuperCowardMode = true;	// 임시 이름
+	bool bSuperCowardMode = true;
 
 #pragma endregion
 
@@ -71,7 +73,7 @@ public:
 	void SetNoAnomalyState();
 	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
 	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
-	void LoadNextMap();
+	void LoadNextMap() const;
 	void OnDataLayerReady();
 	bool IsAnomalyReady() const { return bIsAnomalyReady; }
 
@@ -92,7 +94,7 @@ public:
 	bool bIsStartInBed = false;
 
 	DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
-	FAnomalySpawned OnAnomalySpawned;
+	FAnomalySpawned OnAnomalyStateChanged;
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOccurIncorrectRule, TArray<EAnomalyRule>);
 	FOccurIncorrectRule OnOccurIncorrectRule;
@@ -107,7 +109,7 @@ private:
 #pragma region Reset
 
 public:
-	void ResetVerdict();
+	void ResetVerdict(bool bShouldScript);
 
 #pragma endregion
 

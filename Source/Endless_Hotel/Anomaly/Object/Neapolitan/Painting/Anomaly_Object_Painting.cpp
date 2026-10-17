@@ -2,14 +2,11 @@
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Player/Controller/EHPlayerController.h"
-#include "Player/Camera/EHPlayerCameraManager.h"
+#include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 #include "Player/Character/EHPlayer.h"
-#include "Character/AI/ShadowMonster/ShadowMonsterAnimInstance.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/Character.h>
 #include <Niagara/Public/NiagaraComponent.h>
-#include <Components/WidgetComponent.h>
-#include <Components/BoxComponent.h>
 #include <Components/StaticMeshComponent.h>
 #include <Components/SceneComponent.h>
 #include <Kismet/KismetMathLibrary.h>
@@ -39,10 +36,6 @@ AAnomaly_Object_Painting::AAnomaly_Object_Painting(const FObjectInitializer& Obj
 	AC = CreateDefaultSubobject<UAudioComponent>(TEXT("AC"));
 	AC->SetupAttachment(Object);
 	AC->SetAutoActivate(false);
-
-	Mesh_Monster = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh_Monster"));
-	Mesh_Monster->SetupAttachment(Object);
-	Mesh_Monster->SetVisibility(false);
 }
 
 void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
@@ -60,21 +53,6 @@ void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
 	Niagara_Blood_Left->SetVisibility(false);
 	Niagara_Blood_Right->Activate(false);
 	Niagara_Blood_Right->SetVisibility(false);
-
-	if (Mesh_Monster)
-	{
-		Mesh_Monster->Stop();
-		Mesh_Monster->SetVisibility(false);
-
-		if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
-		{
-			MonsterAnim->bMonsterAppear = true;
-		}
-	}
-
-	bIsAnomaly = false;
-	CurrentWatchTime = 0.0f;
-	WatchingPlayer = nullptr;
 }
 
 #pragma endregion
@@ -163,9 +141,9 @@ void AAnomaly_Object_Painting::FrameTilt()
 
 #pragma region Interact
 
-void AAnomaly_Object_Painting::Interact(AEHCharacter* Interacter)
+void AAnomaly_Object_Painting::Interact(AEHCharacter* Interactor)
 {
-	Super::Interact(Interacter);
+	Super::Interact(Interactor);
 
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
@@ -173,7 +151,7 @@ void AAnomaly_Object_Painting::Interact(AEHCharacter* Interacter)
 	{
 	case EInteractType::Rotate:
 		InteractRotate();
-		Mesh_Monster->SetVisibility(false);
+		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
 		break;
 	}
 }
@@ -225,45 +203,45 @@ void AAnomaly_Object_Painting::ChangePicture()
 
 #pragma region Die
 
-void AAnomaly_Object_Painting::DieWatchingPainting()
+void AAnomaly_Object_Painting::SpawnMonsterWatchingPainting()
 {
-	this->bIsAnomaly = true;
-
+	if (GetWorld()->GetTimerManager().IsTimerActive(WatchingTimerHandle))
+	{
+		return;
+	}
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			AEHPlayer* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			AEHPlayerController* PC = Cast<AEHPlayerController>(Player->Controller);
-			auto* CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-		
-			const bool bLooking = PC->IsLookingAtActor(Cast<AActor>(this)) && !bSolved;
-
-			if (bLooking)
-			{
-				if (!bIsHallucinating)
-				{
-					bIsHallucinating = true;
-					CameraManager->StartHallucination(true);
-					WatchingPlayer = Player;
-				}
-			}
-			else
-			{
-				if (bIsHallucinating)
-				{
-					bIsHallucinating = false;
-					CameraManager->StartHallucination(false);
-				}
-			}
-		}), 0.01f, true);
+	{
+		CheckWatching();
+	}), 0.05f, true);
 }
 
-void AAnomaly_Object_Painting::PlayMonsterAppear()
+void AAnomaly_Object_Painting::CheckWatching()
 {
-	Mesh_Monster->SetVisibility(true);
-	if (UShadowMonsterAnimInstance* MonsterAnim = Cast<UShadowMonsterAnimInstance>(Mesh_Monster->GetAnimInstance()))
+	const auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	auto* PC = Cast<AEHPlayerController>(Player->Controller);
+	const bool bLooking = !bSolved && PC->IsLookingAtActor(this);
+	if (bLooking)
 	{
-		MonsterAnim->bMonsterAppear = true;
+		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
 	}
+	SetWatched(bLooking);
+}
+
+void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController)
+{
+	ShadowMonsterController->StartBind(this);
+}
+
+void AAnomaly_Object_Painting::SetWatched(bool bOn)
+{
+	if (bSolved) bOn = false;
+	if (bIsWatched == bOn)
+	{
+		return;
+	}
+
+	bIsWatched = bOn;
+	OnMonsterAppear.Broadcast(bOn);
 }
 
 #pragma endregion

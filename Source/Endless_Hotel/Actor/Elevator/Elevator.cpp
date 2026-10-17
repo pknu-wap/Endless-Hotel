@@ -2,23 +2,20 @@
 
 #include "Elevator.h"
 #include "Actor/Elevator/Elevator_Button.h"
+#include "Component/Elevator/ElevatorDoorComponent.h"
+#include "Component/Elevator/ElevatorMoveComponent.h"
+#include "Component/Elevator/ElevatorPassengerComponent.h"
+#include "Component/Elevator/ElevatorGameFlowComponent.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include "Player/Character/EHPlayer.h"
-#include "Player/Controller/EHPlayerController.h"
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "Actor/Elevator/Elevator_Entrance.h"
-#include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-#include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "Type/Level/Type_Level.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
-#include <Kismet/GameplayStatics.h>
-#include <Kismet/KismetSystemLibrary.h>
-#include <GameFramework/Character.h>
-#include <GameFramework/CharacterMovementComponent.h>
 
 #pragma region Base
 
@@ -42,6 +39,13 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     RightGlass->SetupAttachment(RightDoor);
 
     DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("DoorTimeline"));
+    DoorComp = CreateDefaultSubobject<UElevatorDoorComponent>(TEXT("DoorComp"));
+
+    MoveTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MoveTimeline"));
+    MoveComp = CreateDefaultSubobject<UElevatorMoveComponent>(TEXT("MoveComp"));
+    
+    PassengerComp = CreateDefaultSubobject<UElevatorPassengerComponent>(TEXT("PassengerComp"));
+    VerdictComp = CreateDefaultSubobject<UElevatorGameFlowComponent>(TEXT("VerdictComp"));
 
     Floor = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Floor"));
     Floor->SetupAttachment(Car);
@@ -66,20 +70,38 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
     TeleportAnchor->SetupAttachment(RootComponent);
 }
 
+void AElevator::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+
+    FElevatorDoorConfig DoorCfg;
+    DoorCfg.Curve = DoorCurve;
+    DoorCfg.LeftClosed = LeftDoorClosed;
+    DoorCfg.RightClosed = RightDoorClosed;
+    DoorCfg.LeftOpen = LeftDoorOpenPos;
+    DoorCfg.RightOpen = RightDoorOpenPos;
+    DoorCfg.BlockBoxActiveExtent = BlockBoxActiveExtent;
+    DoorComp->Init(LeftDoor, RightDoor, Door_AC, TriggerBlockBox, DoorTimeline, DoorCfg);
+
+    FElevatorMoveConfig MoveCfg;
+    MoveCfg.Curve = MoveCurve;
+    MoveCfg.StandardPos = StandardPos;
+    MoveCfg.StartPos = StartPos;
+    MoveCfg.MapPos = MapPos;
+    MoveCfg.EndPos = EndPos;
+    MoveCfg.RideStartPos = RideStartPos;
+    MoveCfg.RideEndPos = RideEndPos;
+    MoveComp->Init(RootComponent, Move_AC, MoveTimeline, MoveCfg);
+    MoveComp->OnMoveFinished.AddUObject(this, &AElevator::HandleMoveFinished);
+    PassengerComp->Init(TeleportAnchor, Exterior_Structure, Car);
+}
+
 void AElevator::BeginPlay()
 {
     Super::BeginPlay();
-    bIsDoorMoving = false;
-    FOnTimelineFloat UpdateFunc;
-    FOnTimelineEvent FinishedFunc;
 
     auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     Sub->RegisterElevator(this);
-
-    UpdateFunc.BindUFunction(this, FName("OnDoorTimelineUpdate"));
-    DoorTimeline->AddInterpFloat(DoorCurve, UpdateFunc);
-    FinishedFunc.BindUFunction(this, FName("OnDoorTimelineFinished"));
-    DoorTimeline->SetTimelineFinishedFunc(FinishedFunc);
     
     if(InsideButton.IsValid())
     {
@@ -101,107 +123,96 @@ void AElevator::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 #pragma region Light
 
-void AElevator::SetLightOn(bool bIsOn)
+void AElevator::SetLightOn(const bool bIsOn) const
 {
-    if (bIsOn)
-    {
-        ElevatorLight->SetIntensity(LightOnIntensity);
-    }
-    else
-    {
-        ElevatorLight->SetIntensity(LightOffIntensity);
-    }
+    const float ElevatorLightIntensity = bIsOn ? LightOnIntensity : LightOffIntensity;
+    ElevatorLight->SetIntensity(ElevatorLightIntensity);
 }
 
 #pragma endregion
 
 #pragma region MovementSettings
 
-void AElevator::MoveDoors(bool bWillOpen)
+void AElevator::PlayArrivalSequence()
 {
-    if (Move_AC->IsPlaying())
-    {
-        Move_AC->Stop();
-    }
-    bIsDoorOpened = bWillOpen;
-    Door_AC->Activate(true);
-    Door_AC->Play();
-    DoorTimeline->Stop();
-
-    if (bWillOpen)
-    {
-        DoorTimeline->PlayFromStart();
-        LeftDoor->SetLightingChannels(true, true, false);
-        RightDoor->SetLightingChannels(true, true, false);
-    }
-    else
-    {
-        DoorTimeline->ReverseFromEnd();
-    }
+    CurrentMove = EElevatorMoveKind::Arrival;
+    DoorComp->SetDoorLighting(false);
+    MoveComp->PlayArrival();
 }
 
-void AElevator::OnDoorTimelineUpdate(float Alpha)
+void AElevator::PlayDepartureSequence()
 {
-    bIsDoorMoving = true;
-    LeftDoor->SetRelativeLocation(FMath::Lerp(LeftDoorClosed, LeftDoorOpenPos, Alpha));
-    RightDoor->SetRelativeLocation(FMath::Lerp(RightDoorClosed, RightDoorOpenPos, Alpha));
-    SetActiveBlockBox(true);
+    CurrentMove = EElevatorMoveKind::Departure;
+    DoorComp->SetDoorLighting(false);
+    MoveComp->PlayDeparture();
 }
 
-void AElevator::OnDoorTimelineFinished()
+void AElevator::HandleMoveFinished()
 {
-    bIsDoorMoving = false;
-    Door_AC->Stop();
-    SetActiveBlockBox(false);
-}
+    UE_LOG(LogTemp, Warning, TEXT("[Ride] Arrival IsTop=%d"), VerdictComp->IsTopFloor());
+    const EElevatorMoveKind Kind = CurrentMove;
+    CurrentMove = EElevatorMoveKind::None;
+    const bool bRide = MoveComp->bIsCinematic;
 
-void AElevator::MoveElevator(FVector Start, FVector End, bool bIsStart)
-{
-    RootComponent->SetRelativeLocation(Start);
-    LeftDoor->SetLightingChannels(false, true, false);
-    RightDoor->SetLightingChannels(false, true, false);
-    auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if(!Move_AC->IsPlaying() && !bIsStart)
+    switch (Kind)
     {
-        Move_AC->Play();
-    }
-    FLatentActionInfo LatentInfo;
-    LatentInfo.CallbackTarget = this;
-    LatentInfo.UUID = __LINE__;
-    LatentInfo.Linkage = 0;
-    
-    UKismetSystemLibrary::MoveComponentTo(RootComponent, End, RootComponent->GetComponentRotation(), false, false, ElevatorMoveDuration, false, EMoveComponentAction::Move, LatentInfo);
-
-    FTimerHandle ElevatorWallHandle;
-    FTimerHandle StartDelayHandle;
-    auto SetDelay = [this](FTimerHandle& Handle, TFunction<void()> Func, float Delay)
+    case EElevatorMoveKind::Arrival:
+        if (bRide)
         {
-            GetWorld()->GetTimerManager().SetTimer(Handle,
-                FTimerDelegate::CreateWeakLambda(this, MoveTemp(Func)), Delay, false);
-        };
-
-    if (bIsStart)
-    {
-        SetDelay(StartDelayHandle, [this] 
-            { 
+            VerdictComp->ScriptFloor();
+            if (VerdictComp->IsTopFloor())
+            {
+                bIsRiding = false;
+                MoveComp->bIsCinematic = false;
                 MoveDoors(true);
-                if(InsideButton.IsValid())
-                {
-                    InsideButton->CanPressButton(true);
-                }
-            }, ElevatorMoveDuration + 0.1f);
+                break;
+            }
+            PlayDepartureSequence();
+            break;
+        }
+        MoveDoors(true);
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
+        break;
+
+    case EElevatorMoveKind::Departure:
+        if (bIsLobbyElevator)
+        {
+            MoveComp->StopMoveSound();
+            PassengerComp->Store();
+            VerdictComp->SetTargetElevator("HotelElevator");
+            VerdictComp->RequestSwapDataLayer(EMapDataLayer::Hotel);
+            break;
+        }
+        if (bRide)
+        {
+            const FElevatorPassengerSnapshot Snap = PassengerComp->Capture();
+            PlayArrivalSequence();
+            PassengerComp->Restore(Snap);
+            break;
+        }
+        if (ElevatorUnderWall.IsValid())
+        {
+            ElevatorUnderWall->MoveWall(MoveComp->GetMoveDuration());
+        }
+        GetWorld()->GetTimerManager().SetTimer(MoveHandle,FTimerDelegate::CreateWeakLambda(this, [this]()
+        {
+            RequestAnomalyVerdict();
+        }), MoveComp->GetMoveDuration(), false);
+        break;
     }
-    else
-    {
-        SetDelay(ElevatorWallHandle, [this]
-            { 
-                if(ElevatorUnderWall.IsValid())
-                {
-                    ElevatorUnderWall->MoveWall(ElevatorMoveDuration);
-                }
-            }, ElevatorMoveDuration + 0.1f);
-        SetDelay(StartDelayHandle, [this] { NotifySubsystem(); }, ElevatorMoveDuration * 2.0f);
-    }
+}
+
+#pragma endregion
+
+#pragma region Door
+
+void AElevator::MoveDoors(bool bWillOpen) const
+{
+    MoveComp->StopMoveSound();
+    DoorComp->MoveDoors(bWillOpen);
 }
 
 #pragma endregion
@@ -217,7 +228,7 @@ void AElevator::OnButtonClicked(bool bIsOpening)
         FTimerHandle DoorHandle;
         GetWorld()->GetTimerManager().SetTimer(DoorHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
             {
-                MoveElevator(StandardPos + MapPos, StandardPos + EndPos, false);
+                PlayDepartureSequence();
             }), DoorDuration, false);
     }
 }
@@ -226,32 +237,13 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 
 #pragma region Subsystem
 
-void AElevator::NotifySubsystem()
+void AElevator::RequestAnomalyVerdict() const
 {
-    auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    auto* PC = Player->GetController();
-    UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
-
-    FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
-    FVector WorldLocation = Player->GetActorLocation();
-
-    FVector LocalLocation = AnchorWorldTransform.InverseTransformPosition(WorldLocation);
-    FRotator Rotation = PC->GetControlRotation();
-
-    FVector PreVelocity = CMC->Velocity;
-    float HorizontalSpeed = FVector(PreVelocity.X, PreVelocity.Y, 0.f).Size();
-    FVector PreForward = Player->GetActorForwardVector();
-    auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
-
-    VerdictSub->SetIsElevatorNormal(this->bIsNormalElevator);
-    ElevatorSub->SetPlayerVelocity(HorizontalSpeed);
-    VerdictSub->TryInteractSolveVerdict();
-    ElevatorSub->SetPlayerinElevatorTransform(LocalLocation, Rotation, this->GetActorRotation());
-    VerdictSub->ApplyVerdict();
+    PassengerComp->Store();
+    VerdictComp->RequestVerdict();
 }
 
-void AElevator::StartElevator()
+void AElevator::ResetState() const
 {
     if (ElevatorUnderWall.IsValid())
     {
@@ -261,100 +253,88 @@ void AElevator::StartElevator()
     {
         ElevatorOverWall->ResetWall();
     }
-    DoorTimeline->Stop();
-    bIsDoorOpened = false;
-    bIsDoorMoving = false;
-    LeftDoor->SetRelativeLocation(LeftDoorClosed);
-    RightDoor->SetRelativeLocation(RightDoorClosed);
-    LeftDoor->SetLightingChannels(true, true, false);
-    RightDoor->SetLightingChannels(true, true, false);
 
+    DoorComp->ResetDoor();
     Floor->SetVisibility(true);
     Floor->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
 
-    auto* ElevatorSub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
-    if (ElevatorSub->IsTargetElevator(this))
+void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
+{
+    if (LinkedEntrance.IsValid())
     {
-        if(LinkedEntrance.IsValid())
+        LinkedEntrance->SetTriggerActive();
+    }
+    if (InsideButton.IsValid())
+    {
+        InsideButton->CanPressButton(false);
+    }
+    
+    DoorComp->SetDoorLighting(false);
+    SetLightOn(true);
+    MoveComp->SetToStart();
+    PassengerComp->Restore(Sub.GetPassenger());
+
+    if (MoveComp->bIsCinematic)
+    {
+        bIsRiding = true;
+        if (!Move_AC->IsPlaying())
         {
-            LinkedEntrance->SetTriggerActive();
+            Move_AC->Play();
         }
-        if (InsideButton.IsValid())
+        PlayArrivalSequence();
+        return;
+    }
+
+    if (ElevatorOverWall.IsValid())
+    {
+        ElevatorOverWall->MoveWall(MoveComp->GetMoveDuration());
+    }
+
+    GetWorld()->GetTimerManager().SetTimer(MoveStartHandle,
+        FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            InsideButton->CanPressButton(false);
-        }
-        LeftDoor->SetLightingChannels(false, true, false);
-        RightDoor->SetLightingChannels(false, true, false);
-        SetLightOn(true);
-        RootComponent->SetRelativeLocation(StandardPos + StartPos);
-        auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-        AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
-        UCharacterMovementComponent* CMC = Player->GetCharacterMovement();
-        
-        Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        Car->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        FVector SavedRelative = ElevatorSub->GetPlayerinElevatorLocation();
-        FRotator SavedRotation = ElevatorSub->GetPlayerinElevatorRotation();
-        SavedRotation -= ElevatorSub->GetElevatorOffset() - this->GetActorRotation();
-        FRotator ForPlayerSavedRotation = FRotator(0, SavedRotation.Yaw, SavedRotation.Roll);
-        FTransform AnchorWorldTransform = TeleportAnchor->GetComponentTransform();
-        FVector TargetWorldLocation = AnchorWorldTransform.TransformPosition(SavedRelative);
-        Player->SetActorLocation(TargetWorldLocation, false, nullptr, ETeleportType::TeleportPhysics);
-        Player->SetActorRotation(ForPlayerSavedRotation);
-        PC->SetControlRotation(SavedRotation);
-        PC->PlayerCameraManager->SetGameCameraCutThisFrame();
+            PlayArrivalSequence();
+        }), MoveComp->GetMoveDuration(), false);
+}
 
-        if (ElevatorOverWall.IsValid())
-        {
-            ElevatorOverWall->MoveWall(ElevatorMoveDuration);
-        }
+void AElevator::PrepareAsNonTarget() const
+{
+    if (LinkedEntrance.IsValid())
+    {
+        LinkedEntrance->ResetTrigger();
+    }
+    if (InsideButton.IsValid())
+    {
+        InsideButton->CanPressButton(true);
+    }
 
-        Player->SetBase(nullptr);
-        Player->SetActorEnableCollision(true);
-        FVector NewForward = Player->GetActorForwardVector();
-        CMC->Velocity = FVector(NewForward.X, NewForward.Y, 0.0f) * ElevatorSub->GetPlayerVelocity();
+    MoveComp->SetToMap();
+    SetLightOn(false);
+}
 
-        FTimerHandle RestoreHandle;
-        GetWorld()->GetTimerManager().SetTimer(RestoreHandle, FTimerDelegate::CreateWeakLambda(this, [this]
-            {
-                Exterior_Structure->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-                Car->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-            }), 0.05f, false);
-
-        CMC->SetMovementMode(MOVE_Falling);
-        FTimerHandle ReEnableHandle;
-        GetWorld()->GetTimerManager().SetTimer(ReEnableHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-            {
-                MoveElevator(StandardPos + StartPos, StandardPos + MapPos, true);
-            }), ElevatorMoveDuration, false);
+void AElevator::StartElevator()
+{
+    if (bIsRiding)
+    {
+        return;
+    }
+    MoveComp->bIsCinematic = bIsLobbyElevator || VerdictComp->IsCheckIn();
+    GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
+    GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
+    PassengerComp->CancelRestore();
+    MoveComp->CancelMove();
+    CurrentMove = EElevatorMoveKind::None;
+    ResetState();
+    auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+    if (Sub && Sub->IsTargetElevator(this))
+    {
+        PrepareAsTarget(*Sub);
     }
     else
     {
-        if(LinkedEntrance.IsValid())
-        {
-            LinkedEntrance->ResetTrigger();
-        }
-        if (InsideButton.IsValid())
-        {
-            InsideButton->CanPressButton(true);
-        }
-        this->Exterior_Structure->SetRelativeLocation(StandardPos + MapPos);
-        LeftDoor->SetRelativeLocation(LeftDoorClosed);
-        RightDoor->SetRelativeLocation(RightDoorClosed);
-        bIsDoorOpened = false;
-        bIsDoorMoving = false;
-        SetLightOn(false);
+        PrepareAsNonTarget();
     }
-}
-
-#pragma endregion
-
-#pragma region Trigger
-
-void AElevator::SetActiveBlockBox(bool bIsActive)
-{
-    TriggerBlockBox->SetCollisionEnabled(bIsActive ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
-    TriggerBlockBox->SetBoxExtent(bIsActive ? BlockBoxActiveExtent : FVector(0, 0, 0));
 }
 
 #pragma endregion
@@ -367,7 +347,7 @@ void AElevator::DisableElevatorFloor()
     Floor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AElevator::DisableElevator()
+void AElevator::DisableElevator() const
 {
     RootComponent->SetVisibility(false);
 }

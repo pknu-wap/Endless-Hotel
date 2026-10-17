@@ -5,6 +5,7 @@
 #include "Actor/Camera/EHCameraActor.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/GameSystem.h"
 #include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
@@ -52,7 +53,6 @@ void AEHPlayerCameraManager::BeginPlay()
 			if (auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 			{
 				Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartEyeEffect(false); });
-				Player->OnRevive.AddWeakLambda(this, [this]() {StartEyeEffect(true); });
 				Player->OnRevive.AddWeakLambda(this, [this]() {StartHallucination(false); StopHallucination(true); });
 				GetWorld()->GetTimerManager().ClearTimer(BindHandle);
 			}
@@ -65,7 +65,8 @@ void AEHPlayerCameraManager::BeginPlay()
 
 void AEHPlayerCameraManager::OnDataLayerChanged(const EMapDataLayer& Layer)
 {
-	if (CurrentLayer == EMapDataLayer::Lobby)
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	if (CurrentLayer == EMapDataLayer::Lobby && GameSystem->GetGameProgression() != EGameProgression::CheckIn)
 	{
 		StartEyeEffect(true);
 	}

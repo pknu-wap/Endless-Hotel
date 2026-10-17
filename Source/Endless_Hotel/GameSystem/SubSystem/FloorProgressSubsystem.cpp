@@ -29,12 +29,10 @@ void UFloorProgressSubsystem::SubFloor()
 	if (Floor > 1)
 	{
 		Floor--;
+		return;
 	}
-	else
-	{
-		const auto& GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
-		GameSys->GameClearEvent.Broadcast();
-	}
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	GameSys->GameClearEvent.Broadcast();
 }
 
 void UFloorProgressSubsystem::AddFloor()
@@ -43,6 +41,22 @@ void UFloorProgressSubsystem::AddFloor()
 	{
 		Floor++;
 	}
+}
+
+void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
+{
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const bool bCheckIn = GameSys->GetGameProgression() == EGameProgression::CheckIn;
+	if (!bCheckIn)
+	{
+		bIsFirstStartFloor = false;
+	}
+	if (!bPassed)
+	{
+		ResetFloor();
+		return;
+	}
+	bCheckIn ? AddFloor() : SubFloor();
 }
 
 #pragma endregion
@@ -55,7 +69,9 @@ void UFloorProgressSubsystem::AddFloor()
 
 void UFloorProgressSubsystem::ResetFloorProgress()
 {
-	Floor = STARTFLOOR;
+	const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
+	Floor = bCheckIn ? 0 : STARTFLOOR;
 	bIsFirstStartFloor = true;
 }
 
@@ -77,6 +93,17 @@ void UFloorProgressSubsystem::ProgressGameState()
 		auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
 		GameSystem->ChangeProgression(EGameProgression::Loop);
 	}
+}
+
+#pragma endregion
+
+#pragma region Script
+
+void UFloorProgressSubsystem::AdvanceScriptedFloor()
+{
+	AdvanceFloor(true);
+	FloorChange_Disable.Broadcast();
+	FloorChange_Reset.Broadcast();
 }
 
 #pragma endregion

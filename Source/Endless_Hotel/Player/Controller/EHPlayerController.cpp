@@ -72,8 +72,6 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
-	
-	bAble ? ResetIgnoreLookInput() : SetIgnoreLookInput(true);
 }
 
 void AEHPlayerController::SetupInputComponent()
@@ -261,8 +259,6 @@ void AEHPlayerController::OnFaceCoverStarted()
 
 	if (bIsFaceCovering)
 	{
-		PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
-
 		FRotator CurrentRotation = GetControlRotation();
 		CurrentRotation.Pitch = -25.f;
 		SetControlRotation(CurrentRotation);
@@ -285,7 +281,6 @@ void AEHPlayerController::OnFaceCoverCompleted()
 
 	if (!bIsFaceCovering)
 	{
-		PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 		bIsFaceCoverTransitioning = false;
 	}
 
@@ -340,14 +335,12 @@ void AEHPlayerController::DiePlayer(const EDeathReason& DeathReason)
 
 void AEHPlayerController::RevivePlayer()
 {
-	SetPlayerInputAble(true);
+	bCanMove = true;
 
 	bIsButtonPressing = false;
 	bIsPlayerDoorOpening = false;
 	bIsPlayerPushingDoor = false;
 
-	bIsCrouching ? EHPlayer->UnCrouch() : EHPlayer->Crouch();
-	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
 	bIsCrouching = false;
 
 	bIsFaceCovering = false;
@@ -361,7 +354,6 @@ void AEHPlayerController::RevivePlayer()
 void AEHPlayerController::OnFirstDoorOpenStarted()
 {
 	bIsPlayerDoorOpening = true;
-	PlayerCamera->AddRelativeLocation(FVector(-3.4f, -10.5f, 0.f));
 
 	FRotator CurrentRotation = GetControlRotation();
 	CurrentRotation.Pitch = -25.f;
@@ -373,7 +365,6 @@ void AEHPlayerController::OnFirstDoorOpenStarted()
 void AEHPlayerController::OnFirstDoorOpenCompleted()
 {
 	bIsPlayerDoorOpening = false;
-	PlayerCamera->AddRelativeLocation(FVector(3.4f, 10.5f, 0.f));
 
 	SetPlayerInputAble(true);
 }

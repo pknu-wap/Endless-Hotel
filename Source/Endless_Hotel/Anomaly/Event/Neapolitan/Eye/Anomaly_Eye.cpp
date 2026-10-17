@@ -14,9 +14,9 @@ void AAnomaly_Eye::SetAnomalyState()
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Eye:
-		SetupAnomalyAction<AAnomaly_Object_Eye>(&AAnomaly_Object_Eye::StartEyeFocus);
+		SetupAnomalyAction<AAnomaly_Object_Eye>(&AAnomaly_Object_Eye::StartEyeAppear);
 		SetupAnomalyAction<ThisClass>(&ThisClass::StartEyeFocus);
-		ScheduleAnomaly();
+		ActiveTrigger();
 		break;
 	}
 }

@@ -3,6 +3,7 @@
 #include "Asset/Manager/EHAssetManager.h"
 #include "Asset/DataAsset/Anomaly/PDA_Anomaly.h"
 #include "Anomaly/Object/Anomaly_Object_Base.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 
 #pragma region AnomalyData|Query
 
@@ -137,6 +138,11 @@ void UEHAssetManager::ShuffleActAnomaly()
 void UEHAssetManager::ResetClearedAnomaly()
 {
 	ClearedAnomalySet.Empty();
+	const TArray<EAnomalyID> LoadedHistory = USaveManager::LoadClearedAnomalyID();
+	for (const auto& ID : LoadedHistory)
+	{
+		MarkAnomalyCleared(ID);
+	}
 }
 
 void UEHAssetManager::RemoveClearedAnomaly()

@@ -184,7 +184,7 @@ public:
 	bool bGameClear = false;
 
 	UPROPERTY(SaveGame)
-	EGameProgression Progression = EGameProgression::Tutorial;
+	EGameProgression Progression = EGameProgression::CheckIn;
 
 	UPROPERTY(SaveGame)
 	bool bHasFlash = false;

@@ -25,7 +25,6 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	Player->CanInteract.AddUObject(this, &ThisClass::ChangeCrosshair);
 	Player->OnDie.AddWeakLambda(this, [this](const EDeathReason&) {StartInGameHUD(false); });
-	Player->OnRevive.AddWeakLambda(this, [this]() {StartInGameHUD(true); });
 
 	auto* GameInstance = GetGameInstance<UEHGameInstance>();
 	GameInstance->OnDataLayerChanged.AddWeakLambda(this, [this](const EMapDataLayer& Layer) {CurrentLayer = Layer; });
@@ -33,7 +32,7 @@ void UUI_HUD_InGame::NativeOnInitialized()
 	auto* AnomalySub = GameInstance->GetSubsystem<UAnomalyPoolSubsystem>();
 	auto* VerdictSub = GameInstance->GetSubsystem<UAnomalyVerdictSubsystem>();
 	AnomalySub->OnAddAnomalyRule.AddUObject(this, &ThisClass::AddDebugAnomalyRule);
-	VerdictSub->OnAnomalySpawned.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
+	VerdictSub->OnAnomalyStateChanged.AddUObject(this, &ThisClass::ChangeDebugAnomaly);
 }
 
 #pragma endregion
