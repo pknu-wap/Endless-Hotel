@@ -215,14 +215,17 @@ void AEHPlayerController::OnRunCompleted()
 
 void AEHPlayerController::OnCrouchStarted()
 {
-	if (bIsCrouching) return;
-
-	if (!bCanCrouch)
+	if (!bCanCrouch || bIsCrouching)
 	{
 		return;
 	}
 
 	bIsCrouching = true;
+
+	if (bIsLighterOn)
+	{
+		TurnPlayerHandLight();
+	}
 
 	EHPlayer->Crouch();
 	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
@@ -230,9 +233,7 @@ void AEHPlayerController::OnCrouchStarted()
 
 void AEHPlayerController::OnCrouchCompleted()
 {
-	if (!bIsCrouching) return;
-
-	if (!bCanCrouch)
+	if (!bCanCrouch || !bIsCrouching)
 	{
 		return;
 	}

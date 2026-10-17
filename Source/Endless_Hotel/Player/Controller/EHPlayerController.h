@@ -115,7 +115,6 @@ protected:
 #pragma region Widget
 
 private:
-	UFUNCTION()
 	void OpenHUDWidget(const EMapDataLayer& DataLayer);
 	void EscapeStarted(const struct FInputActionValue& InputValue);
 
