@@ -500,7 +500,7 @@ AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 	UCameraComponent* Camera = EHPlayer->GetCamera();
 	if (!IsValid(Camera))
 	{
-		return;
+		return nullptr;
 	}
 
 	FVector Start = Camera->GetComponentLocation();
