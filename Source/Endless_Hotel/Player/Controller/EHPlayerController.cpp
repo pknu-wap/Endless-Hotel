@@ -297,6 +297,13 @@ void AEHPlayerController::OnEVButtonPressStarted()
 	bIsButtonPressing = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
+
+	if (bKeepLighter)
+	{
+		EHPlayer->ToggleLighter();
+
+		bIsLighterOn = !bIsLighterOn;
+	}
 }
 
 void AEHPlayerController::OnEVButtonPressCompleted()
@@ -305,6 +312,13 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 	bIsCameraFixed = false;
 	bCanMove = true;
 	bIsCameraFixed = false;
+
+	if (bKeepLighter)
+	{
+		EHPlayer->ToggleLighter();
+
+		bIsLighterOn = !bIsLighterOn;
+	}
 }
 
 #pragma endregion
@@ -314,7 +328,6 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 void AEHPlayerController::TurnPlayerHandLight()
 {
 	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
-
 	if (!bCanMove || !bHasFlash || bIsFaceCovering)
 	{
 		return;
@@ -323,6 +336,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 	EHPlayer->ToggleLighter();
 
 	bIsLighterOn = !bIsLighterOn;
+	bKeepLighter = !bKeepLighter;
 }
 
 #pragma endregion

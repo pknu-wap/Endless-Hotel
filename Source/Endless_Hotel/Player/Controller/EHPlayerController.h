@@ -203,6 +203,9 @@ public:
 protected:
 	void TurnPlayerHandLight();
 
+private:
+	bool bKeepLighter = false;
+
 #pragma endregion
 
 #pragma region State_FirstDoorOpen
