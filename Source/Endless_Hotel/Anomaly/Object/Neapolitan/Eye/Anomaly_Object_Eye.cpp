@@ -43,9 +43,15 @@ void AAnomaly_Object_Eye::InitializeOnAnomalySpawned()
 void AAnomaly_Object_Eye::DisableObject()
 {
 	Object->SetVisibility(false);
-	GetWorldTimerManager().ClearTimer(FocusHandle);
-	GetWorldTimerManager().ClearTimer(SettleHandle);
-	GetWorldTimerManager().ClearTimer(AppearHandle);
+	const auto* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	FTimerManager& TimerManager = World->GetTimerManager();
+	TimerManager.ClearTimer(FocusHandle);
+	TimerManager.ClearTimer(SettleHandle);
+	TimerManager.ClearTimer(AppearHandle);
 }
 
 #pragma endregion

@@ -4,20 +4,19 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include <Engine/GameInstance.h>
 
 #pragma region Base
 
 UFloorProgressSubsystem::UFloorProgressSubsystem()
 {
-	FloorChange_Reset.AddUObject(this, &ThisClass::ProgressGameState);
+    FloorChange_Reset.AddUObject(this, &ThisClass::ProgressGameState);
 }
 
 void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	Super::Initialize(Collection);
-	Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
-	Floor = STARTFLOOR;
+    Super::Initialize(Collection);
+    Collection.InitializeDependency<UAnomalyVerdictSubsystem>();
+    Floor = STARTFLOOR;
 }
 
 #pragma endregion
@@ -26,45 +25,42 @@ void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UFloorProgressSubsystem::SubFloor()
 {
-	if (Floor > 1)
-	{
-		Floor--;
-		return;
-	}
-	const auto* GI = GetGameInstance();
-	const auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
-	auto* VerdictSys = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
-	VerdictSys->SetNextAnomaly(EAnomalyID::Lobby, EMapDataLayer::Lobby);
-	GameSys->GameClearEvent.Broadcast();
+    if (Floor > 1)
+    {
+       Floor--;
+       return;
+    }
+    const auto* GI = GetGameInstance();
+    const auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
+    auto* VerdictSys = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
+    VerdictSys->SetNextAnomaly(EAnomalyID::Lobby, EMapDataLayer::Lobby);
+    VerdictSys->SetLobbyPhase(true);
+    GameSys->GameClearEvent.Broadcast();
 }
 
 void UFloorProgressSubsystem::AddFloor()
 {
-	if (Floor < STARTFLOOR)
-	{
-		Floor++;
-	}
+    if (Floor < STARTFLOOR)
+    {
+       Floor++;
+    }
 }
 
 void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
 {
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
-	const bool bCheckIn = GameSys->GetGameProgression() == EGameProgression::CheckIn;
-	if (!bCheckIn)
-	{
-		bIsFirstStartFloor = false;
-	}
-	if (!bPassed)
-	{
-		ResetFloor();
-		return;
-	}
-	bCheckIn ? AddFloor() : SubFloor();
+    const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+    const bool bCheckIn = GameSys->GetGameProgression() == EGameProgression::CheckIn;
+    if (!bCheckIn)
+    {
+       bIsFirstStartFloor = false;
+    }
+    if (!bPassed)
+    {
+       ResetFloor();
+       return;
+    }
+    bCheckIn ? AddFloor() : SubFloor();
 }
-
-#pragma endregion
-
-#pragma region Clear
 
 #pragma endregion
 
@@ -72,10 +68,10 @@ void UFloorProgressSubsystem::AdvanceFloor(const bool bPassed)
 
 void UFloorProgressSubsystem::ResetFloorProgress()
 {
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
-	const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
-	Floor = bCheckIn ? 0 : STARTFLOOR;
-	bIsFirstStartFloor = true;
+    const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+    const bool bCheckIn = GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
+    Floor = bCheckIn ? 0 : STARTFLOOR;
+    bIsFirstStartFloor = true;
 }
 
 #pragma endregion
@@ -84,18 +80,18 @@ void UFloorProgressSubsystem::ResetFloorProgress()
 
 void UFloorProgressSubsystem::ProgressGameState()
 {
-	if (bFirstReset)
-	{
-		bFirstReset = false;
-		return;
-	}
+    if (bFirstReset)
+    {
+       bFirstReset = false;
+       return;
+    }
 
-	FSaveData_Progression Data = USaveManager::LoadData_Progression();
-	if (Data.Progression == EGameProgression::Tutorial)
-	{
-		auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
-		GameSystem->ChangeProgression(EGameProgression::Loop);
-	}
+    FSaveData_Progression Data = USaveManager::LoadData_Progression();
+    if (Data.Progression == EGameProgression::Tutorial)
+    {
+       auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+       GameSystem->ChangeProgression(EGameProgression::Loop);
+    }
 }
 
 #pragma endregion
@@ -104,9 +100,9 @@ void UFloorProgressSubsystem::ProgressGameState()
 
 void UFloorProgressSubsystem::AdvanceScriptedFloor()
 {
-	AdvanceFloor(true);
-	FloorChange_Disable.Broadcast();
-	FloorChange_Reset.Broadcast();
+    AdvanceFloor(true);
+    FloorChange_Disable.Broadcast();
+    FloorChange_Reset.Broadcast();
 }
 
 #pragma endregion

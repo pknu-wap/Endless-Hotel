@@ -11,8 +11,6 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Event/Anomaly_Event.h"
-#include <Engine/World.h>
-#include <Engine/GameInstance.h>
 
 #pragma region Base
 
@@ -108,14 +106,14 @@ void UAnomalyVerdictSubsystem::HandleFailed()
 	NextAnomalyMap = EMapDataLayer::Hotel;
 }
 
-void UAnomalyVerdictSubsystem::ApplyVerdict()
+void UAnomalyVerdictSubsystem::ApplyVerdict(bool bForceFailed)
 {
-	bPassed = ComputeVerdict() && !bWrongInteractionOccurred;
+	bPassed = !bForceFailed && ComputeVerdict() && !bWrongInteractionOccurred;
 	bPassed ? HandlePassed() : HandleFailed();
 
 	if (auto* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
 	{
-		if (FloorSys->GetIsFirstFloor())
+		if (!bForceFailed && FloorSys->GetIsFirstFloor())
 		{
 			bIsStartInBed = false;
 		}
@@ -220,22 +218,21 @@ void UAnomalyVerdictSubsystem::LoadNextMap() const
 		FloorSys->FloorChange_Disable.Broadcast();
 	}
 
-	if (const bool bLayerChanged = GI->SwitchDataLayer(NextAnomalyMap); !bLayerChanged && FloorSys)
+	const bool bLayerChanged = GI->SwitchDataLayer(NextAnomalyMap);
+
+	if (!bLayerChanged && FloorSys)
 	{
 		FloorSys->FloorChange_Reset.Broadcast();
+		OnRespawnFloorPrepared.Broadcast();
 	}
 }
 
-void UAnomalyVerdictSubsystem::OnDataLayerReady()
+void UAnomalyVerdictSubsystem::OnDataLayerReady() const
 {
 	const auto* GI = GetGameInstance();
 	const auto* FloorSys = GI->GetSubsystem<UFloorProgressSubsystem>();
-	bIsStartInBed = FloorSys->GetIsFirstFloor();
-
-	if (FloorSys)
-	{
-		FloorSys->FloorChange_Reset.Broadcast();
-	}
+	FloorSys->FloorChange_Reset.Broadcast();
+	OnRespawnFloorPrepared.Broadcast();
 }
 
 #pragma endregion
@@ -252,7 +249,7 @@ void UAnomalyVerdictSubsystem::ResetVerdict(const bool bShouldScript)
 	CurrentAnomalyID = EAnomalyID::Normal;
 	NextAnomalyID = EAnomalyID::None;
 	NextAnomalyMap = EMapDataLayer::Hotel;
-	bIsStartInBed = bShouldScript;
+	bIsStartInBed = !bShouldScript;
 	IncorrectRule = EAnomalyRule::None;
 	IncorrectRules.Empty();
 }

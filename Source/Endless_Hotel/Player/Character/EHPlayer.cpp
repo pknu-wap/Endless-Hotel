@@ -93,10 +93,6 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 	Camera->bUsePawnControlRotation = false;
 
-	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	VerdictSub->bIsStartInBed = true;
-	VerdictSub->ApplyVerdict();
-
 	constexpr float ReviveDuration = 6.f;
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ThisClass::RevivePlayer, AnimLength + ReviveDuration, false);
@@ -104,19 +100,15 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 void AEHPlayer::RevivePlayer()
 {
+	if (!bAlreadyDie || bWaitingForRespawnFloor)
+	{
+		return;
+	}
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	VerdictSub->bIsStartInBed = false;
-
-	RespawnPlayer();
-	SetWalkSpeed(WALK_SPEED);
-	
-	Camera->bUsePawnControlRotation = true;
-
-	FreezeAnimation(false);
-
-	bAlreadyDie = false;
-
-	OnRevive.Broadcast();
+	bWaitingForRespawnFloor = true;
+	VerdictSub->OnRespawnFloorPrepared.AddUObject(this, &ThisClass::FinishRevivePlayer);
+	VerdictSub->bIsStartInBed = true;
+	VerdictSub->ApplyVerdict(true);
 }
 
 void AEHPlayer::FreezeAnimation(bool bFreeze, float Duration)
@@ -127,6 +119,34 @@ void AEHPlayer::FreezeAnimation(bool bFreeze, float Duration)
 		{
 			GetMesh()->bNoSkeletonUpdate = bFreeze;
 		}), FreezeDuration, false);
+}
+
+void AEHPlayer::FinishRevivePlayer()
+{
+	bWaitingForRespawnFloor = false;
+
+	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+
+	if (VerdictSub)
+	{
+		VerdictSub->OnRespawnFloorPrepared.RemoveAll(this);
+	}
+
+	RespawnPlayer();
+	SetWalkSpeed(WALK_SPEED);
+
+	Camera->bUsePawnControlRotation = true;
+
+	FreezeAnimation(false);
+
+	if (VerdictSub)
+	{
+		VerdictSub->bIsStartInBed = false;
+	}
+
+	bAlreadyDie = false;
+
+	OnRevive.Broadcast();
 }
 
 #pragma endregion

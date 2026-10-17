@@ -68,6 +68,8 @@ private:
 public:
 	TOptional<FAnomalySpawnInfo> DecideAnomaly(uint8 Index) const;
 	TOptional<FAnomalySpawnInfo> DecideNext() const;
+	void RollNext();
+	FAnomalySpawnInfo MakeNormalInfo() const;
 	AAnomaly_Event* SpawnFromInfo(const FAnomalySpawnInfo& Info) const;
 
 private:
