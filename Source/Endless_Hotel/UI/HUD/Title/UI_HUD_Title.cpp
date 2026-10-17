@@ -68,7 +68,13 @@ void UUI_HUD_Title::PlayBGM()
 		StopBGM(0.f);
 	}
 
-	AC = UGameplayStatics::CreateSound2D(GetWorld(), SW_BGM);
+	UWorld* World = GetWorld();
+	if (!IsValid(World))
+	{
+		return;
+	}
+
+	AC = UGameplayStatics::CreateSound2D(World, SW_BGM);
 	AC->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayBGM);
 	AC->Play();
 }
