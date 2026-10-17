@@ -8,6 +8,8 @@
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
@@ -17,7 +19,6 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
-#include <GameSystem/SubSystem/GameSystem.h>
 #include <GameFramework/GameModeBase.h>
 
 #pragma region Base
@@ -107,8 +108,13 @@ void AEHPlayerController::SetupInputComponent()
 
 void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 {
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSub->GetFloor() <= CLEARFLOOR)
+	{
+		return;
+	}
 
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	switch (DataLayer)
 	{
 	case EMapDataLayer::Hotel:
