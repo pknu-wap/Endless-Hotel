@@ -6,7 +6,7 @@
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
-#include "EHGameSystem.generated.h"
+#include <EHGameSystem.generated.h>
 
 UCLASS()
 class ENDLESS_HOTEL_API UEHGameSystem : public UGameInstanceSubsystem

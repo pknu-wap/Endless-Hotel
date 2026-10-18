@@ -58,12 +58,12 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     Move_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Move_AC"));
     Move_AC->SetupAttachment(RootComponent);
-    Move_AC->bAutoActivate = false;
+    Move_AC->SetAutoActivate(false);
     Move_AC->bAllowSpatialization = false;
     
     Bell_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Bell_AC"));
     Bell_AC->SetupAttachment(Car);
-    Bell_AC->bAutoActivate = false;
+    Bell_AC->SetAutoActivate(true);
 
     TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);

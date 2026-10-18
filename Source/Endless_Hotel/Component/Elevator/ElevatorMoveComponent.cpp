@@ -1,11 +1,10 @@
 // Copyright by 2026-1 WAP Game 2 team
 
 #include "Component/Elevator/ElevatorMoveComponent.h"
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include <Components/AudioComponent.h>
 #include <Components/TimelineComponent.h>
 #include <Curves/CurveFloat.h>
-
-#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 
 #pragma region Base
 
