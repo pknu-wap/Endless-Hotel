@@ -1,7 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/EightExit/Choose/Anomaly_Choose.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 
 #pragma region Activity
@@ -25,7 +25,7 @@ void AAnomaly_Choose::SetAnomalyState()
 
 void AAnomaly_Choose::SetChooseVerdictMode()
 {
-	UGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	UEHGameSystem* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	if (GameSystem->ChooseKeyIndex == 2)
 	{
 		SetVerdictMode(EAnomalyVerdictMode::Normal);

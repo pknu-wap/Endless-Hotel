@@ -6,10 +6,10 @@
 #include <CoreMinimal.h>
 #include <Subsystems/GameInstanceSubsystem.h>
 #include <Delegates/DelegateCombinations.h>
-#include <GameSystem.generated.h>
+#include <EHGameSystem.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API UGameSystem : public UGameInstanceSubsystem
+class ENDLESS_HOTEL_API UEHGameSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -58,6 +58,14 @@ public:
 public:
 	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
+
+#pragma endregion
+	
+#pragma region Key
+
+public:
+	DECLARE_MULTICAST_DELEGATE(FOnRoomKeyAcquired);
+	FOnRoomKeyAcquired OnRoomKeyAcquired;
 
 #pragma endregion
 

@@ -48,12 +48,13 @@ public:
     void PlayArrival();
     void PlayDeparture();
     void CancelMove();
+    void PlayMoveSound();
     void StopMoveSound() const;
 
-    FVector GetStartLocation() const { return bIsCinematic ? Config.StandardPos + Config.RideStartPos : Config.StandardPos + Config.StartPos; }
+    FVector GetStartLocation() const { return bIsCinematicElevator ? Config.StandardPos + Config.RideStartPos : Config.StandardPos + Config.StartPos; }
     FVector GetMapLocation() const { return Config.StandardPos + Config.MapPos; }
-    FVector GetEndLocation() const { return bIsCinematic ? Config.StandardPos + Config.RideEndPos : Config.StandardPos + Config.EndPos; }
-    float GetMoveDuration() const { return bIsCinematic ? RideDuration : MoveDuration; }
+    FVector GetEndLocation() const { return bIsCinematicElevator ? Config.StandardPos + Config.RideEndPos : Config.StandardPos + Config.EndPos; }
+    float GetMoveDuration() const { return bIsCinematicElevator ? RideDuration : MoveDuration; }
     bool IsMoving() const { return bIsMoving; }
 
     DECLARE_MULTICAST_DELEGATE(FOnElevatorMoveFinished);
@@ -65,6 +66,12 @@ protected:
     
     UPROPERTY(EditAnywhere, Category = "Movement|Elevator", meta = (ClampMin = "0.1"))
     float RideDuration = 3.0f;
+    
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<USoundBase> ElevatorSound_Normal;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<USoundBase> ElevatorSound_Cinematic;
 
 private:
     UFUNCTION()
@@ -94,7 +101,8 @@ private:
 #pragma region Cinematic
     
 public:
-    bool bIsCinematic = false;
+    UPROPERTY(EditAnywhere, Category = "Cinematic")
+    bool bIsCinematicElevator = false;
     
 #pragma endregion
     

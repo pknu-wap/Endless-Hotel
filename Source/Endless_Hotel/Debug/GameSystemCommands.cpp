@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/Enum/EnumConverter.h"
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
@@ -28,7 +28,7 @@ static FAutoConsoleCommand SetIsClear(TEXT("EHDebug.GameSystem.SetIsClear"), TEX
 		{
 			return;
 		}
-		const auto& GameSys = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+		const auto& GameSys = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		if (Args[0].Equals(TEXT("true"), ESearchCase::IgnoreCase) || Args[0] == TEXT("1"))
 		{
 		    GameSys->GameClear();
@@ -293,7 +293,7 @@ static FAutoConsoleCommand ChangeProgression
             FString Argument = Args[0];
             EGameProgression Target = EnumConverter::GetEnumFromString<EGameProgression>(Argument);
 
-            auto* GameSystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UGameSystem>();
+            auto* GameSystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UEHGameSystem>();
             GameSystem->ChangeProgression(Target);
 
             UE_LOG(LogTemp, Warning, TEXT("Game Progression: %s"), *Argument);
@@ -308,7 +308,7 @@ static FAutoConsoleCommand PrintProgression
         {
             const UWorld* World = GEngine ? GEngine->GetCurrentPlayWorld() : nullptr;
             const UGameInstance* GI = World ? World->GetGameInstance() : nullptr;
-            const auto* GameSystem = GI ? GI->GetSubsystem<UGameSystem>() : nullptr;
+            const auto* GameSystem = GI ? GI->GetSubsystem<UEHGameSystem>() : nullptr;
             if (!GameSystem)
             {
                 UE_LOG(LogTemp, Warning, TEXT("[Debug] GameSystem not found. Run during PIE."));

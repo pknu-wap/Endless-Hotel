@@ -62,6 +62,7 @@ private:
 	void DiePlayer(const EDeathReason& DeathReason);
 	void RevivePlayer();
 	void FreezeAnimation(bool bFreeze, float Duration = 0.f);
+	void FinishRevivePlayer();
 
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnDie, const EDeathReason&);
@@ -75,6 +76,7 @@ private:
 	TMap<EDeathReason, TObjectPtr<UAnimMontage>> DieMontage;
 
 	bool bAlreadyDie = false;
+	bool bWaitingForRespawnFloor = false;
 
 #pragma endregion
 

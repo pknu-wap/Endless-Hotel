@@ -58,8 +58,12 @@ AElevator::AElevator(const FObjectInitializer& ObjectInitializer)
 
     Move_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Move_AC"));
     Move_AC->SetupAttachment(RootComponent);
-    Move_AC->bAutoActivate = false;
+    Move_AC->SetAutoActivate(false);
     Move_AC->bAllowSpatialization = false;
+    
+    Bell_AC = CreateDefaultSubobject<UAudioComponent>(TEXT("Bell_AC"));
+    Bell_AC->SetupAttachment(Car);
+    Bell_AC->SetAutoActivate(true);
 
     TriggerBlockBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBlockBox"));
     TriggerBlockBox->SetBoxExtent(BlockBoxActiveExtent);
@@ -131,6 +135,32 @@ void AElevator::SetLightOn(const bool bIsOn) const
 
 #pragma endregion
 
+#pragma region Sound
+
+void AElevator::OpenDoorsWithBell()
+{
+    MoveComp->StopMoveSound();
+    auto OpenDoors = [this]()
+    {
+        MoveDoors(true);
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
+    };
+    if (BellToDoorDelay > 0.f)
+    {
+        Bell_AC->Play();
+        GetWorld()->GetTimerManager().SetTimer(BellHandle,FTimerDelegate::CreateWeakLambda(this, OpenDoors),BellToDoorDelay, false);
+    }
+    else
+    {
+        OpenDoors();
+    }
+}
+
+#pragma  endregion
+
 #pragma region MovementSettings
 
 void AElevator::PlayArrivalSequence()
@@ -152,7 +182,7 @@ void AElevator::HandleMoveFinished()
     UE_LOG(LogTemp, Warning, TEXT("[Ride] Arrival IsTop=%d"), VerdictComp->IsTopFloor());
     const EElevatorMoveKind Kind = CurrentMove;
     CurrentMove = EElevatorMoveKind::None;
-    const bool bRide = MoveComp->bIsCinematic;
+    const bool bRide = MoveComp->bIsCinematicElevator;
 
     switch (Kind)
     {
@@ -163,25 +193,21 @@ void AElevator::HandleMoveFinished()
             if (VerdictComp->IsTopFloor())
             {
                 bIsRiding = false;
-                MoveComp->bIsCinematic = false;
-                MoveDoors(true);
+                MoveComp->bIsCinematicElevator = false;
+                OpenDoorsWithBell();
                 break;
             }
             PlayDepartureSequence();
             break;
         }
-        MoveDoors(true);
-        if (InsideButton.IsValid())
-        {
-            InsideButton->CanPressButton(true);
-        }
+        OpenDoorsWithBell();
         break;
 
     case EElevatorMoveKind::Departure:
-        if (bIsLobbyElevator)
+        if (bRide && bIsLobbyElevator)
         {
-            MoveComp->StopMoveSound();
             PassengerComp->Store();
+            bIsRiding = false;
             VerdictComp->SetTargetElevator("HotelElevator");
             VerdictComp->RequestSwapDataLayer(EMapDataLayer::Hotel);
             break;
@@ -223,6 +249,14 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 {
     SetLightOn(true);
     MoveDoors(bIsOpening);
+    if (bIsOpening)
+    {
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
+        return;
+    }
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
@@ -275,13 +309,10 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     MoveComp->SetToStart();
     PassengerComp->Restore(Sub.GetPassenger());
 
-    if (MoveComp->bIsCinematic)
+    if (MoveComp->bIsCinematicElevator)
     {
         bIsRiding = true;
-        if (!Move_AC->IsPlaying())
-        {
-            Move_AC->Play();
-        }
+        MoveComp->PlayMoveSound();
         PlayArrivalSequence();
         return;
     }
@@ -315,18 +346,23 @@ void AElevator::PrepareAsNonTarget() const
 
 void AElevator::StartElevator()
 {
+    GetWorld()->GetTimerManager().ClearTimer(BellHandle);
+    Bell_AC->Stop();
     if (bIsRiding)
     {
         return;
     }
-    MoveComp->bIsCinematic = bIsLobbyElevator || VerdictComp->IsCheckIn();
+    if (!VerdictComp->IsCheckIn())
+    {
+        MoveComp->bIsCinematicElevator = false;
+    }
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
     PassengerComp->CancelRestore();
     MoveComp->CancelMove();
     CurrentMove = EElevatorMoveKind::None;
     ResetState();
-    auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+    const auto* Sub = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     if (Sub && Sub->IsTargetElevator(this))
     {
         PrepareAsTarget(*Sub);
