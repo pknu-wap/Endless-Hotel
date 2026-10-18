@@ -5,6 +5,8 @@
 #include <Components/TimelineComponent.h>
 #include <Curves/CurveFloat.h>
 
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+
 #pragma region Base
 
 void UElevatorMoveComponent::Init(USceneComponent* InTarget, UAudioComponent* InMoveAC, UTimelineComponent* InTimeline, const FElevatorMoveConfig& InConfig)
@@ -67,18 +69,19 @@ void UElevatorMoveComponent::CancelMove()
 void UElevatorMoveComponent::PlayMoveSound()
 {
     USoundBase* Desired = bIsCinematic ? ElevatorSound_Cinematic : ElevatorSound_Normal;
+    auto* ElevatorSys = GetWorld()->GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     if (!MoveAC || !Desired)
     {
         return;
     }
-    if (MoveAC->IsPlaying() && MoveAC->Sound == Desired)
+    if ((MoveAC->IsPlaying() && MoveAC->Sound == Desired) || ElevatorSys->GetIsPlayingSound())
     {
         return;
     }
-
     MoveAC->Stop();
     MoveAC->SetSound(Desired);
     MoveAC->Play();
+    ElevatorSys->SetIsPlayingSound(true);
 }
 
 void UElevatorMoveComponent::StopMoveSound() const
@@ -86,6 +89,8 @@ void UElevatorMoveComponent::StopMoveSound() const
     if (MoveAC && MoveAC->IsPlaying())
     {
         MoveAC->Stop();
+        auto* ElevatorSys = GetWorld()->GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
+        ElevatorSys->SetIsPlayingSound(false);
     }
 }
 

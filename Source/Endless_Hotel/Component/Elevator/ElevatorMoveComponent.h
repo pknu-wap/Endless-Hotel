@@ -101,6 +101,7 @@ private:
 #pragma region Cinematic
     
 public:
+    UPROPERTY(EditAnywhere, Category = "Cinematic")
     bool bIsCinematic = false;
     
 #pragma endregion

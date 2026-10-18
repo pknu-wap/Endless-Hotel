@@ -81,6 +81,17 @@ public:
 
 #pragma endregion
 
+#pragma region Sound
+	
+public:
+	bool GetIsPlayingSound() const;
+	void SetIsPlayingSound(const bool Playing) { bIsPlayingSound = Playing; }
+	
+private:
+	bool bIsPlayingSound;
+	
+#pragma endregion
+	
 #pragma region GameClear
 	
 private:

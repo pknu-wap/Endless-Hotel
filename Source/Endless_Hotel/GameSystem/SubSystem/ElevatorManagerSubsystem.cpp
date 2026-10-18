@@ -83,6 +83,16 @@ void UElevatorManagerSubsystem::ResetElevatorState()
 
 #pragma endregion
 
+#pragma region Sound
+
+bool UElevatorManagerSubsystem::GetIsPlayingSound() const
+{
+	auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+	return GameSys->GetGameProgression() == EGameProgression::CheckIn && bIsPlayingSound;
+}
+
+#pragma endregion
+
 #pragma region GameClear
 
 void UElevatorManagerSubsystem::OnGameClear()
