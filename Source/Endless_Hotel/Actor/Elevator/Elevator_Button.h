@@ -8,6 +8,12 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnElevatorButtonPressed, bool, bIsOpeningDoor);
 
+#pragma region Declare
+
+enum class EGameProgression : uint8;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AElevator_Button : public AInteractBase
 {
@@ -53,6 +59,9 @@ public:
 
 private:
     bool bCanPress_;
+    bool IsInteractionAllowed() const;
+    void RefreshInteraction();
+    void OnProgressionChanged(EGameProgression NewProgression);
 
 #pragma endregion
 
@@ -100,6 +109,14 @@ protected:
     FVector DownButtonDefaultLocation;
     FVector DownButtonRingDefaultLocation;
 
+#pragma endregion
+    
+#pragma region Cinematic
+    
+protected:
+    UPROPERTY(EditAnywhere, Category = "Cinematic")
+    bool bIsLobbyButton = false;
+    
 #pragma endregion
 
 };

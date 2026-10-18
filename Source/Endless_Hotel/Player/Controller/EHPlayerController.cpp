@@ -8,7 +8,7 @@
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include <EnhancedInputComponent.h>

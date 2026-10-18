@@ -5,7 +5,7 @@
 #include "Player/Character/EHPlayer.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Component/Tutorial/TutorialComponent.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include <Animation/SkeletalMeshActor.h>
@@ -92,7 +92,7 @@ void AAnomaly_Object_Door::BeginPlay()
 		auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
 		FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetDoorState);
 		
-		auto* GameSystem = GameInstance->GetSubsystem<UGameSystem>();
+		auto* GameSystem = GameInstance->GetSubsystem<UEHGameSystem>();
 		GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 
 		OnChangedProgression(USaveManager::LoadData_Progression().Progression);

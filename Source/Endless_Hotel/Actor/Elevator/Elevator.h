@@ -9,7 +9,6 @@
 #pragma region Declare
 
 class UElevatorManagerSubsystem;
-class UElevatorCinematicComponent;
 
 enum class EMapDataLayer : uint8;
 enum class EElevatorMoveKind : uint8
@@ -91,6 +90,16 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Audio")
     TObjectPtr<UAudioComponent> Move_AC;
+    
+    UPROPERTY(VisibleAnywhere, Category = "Audio")
+    TObjectPtr<UAudioComponent> Bell_AC;
+    
+    UPROPERTY(EditAnywhere, Category = "Audio", meta = (ClampMin = "0.0"))
+    float BellToDoorDelay = 0.8f;
+    
+private:
+    void OpenDoorsWithBell();
+    FTimerHandle BellHandle;
 
 #pragma endregion
 
@@ -255,6 +264,9 @@ protected:
 protected:
     UPROPERTY(EditAnywhere, Category = "Cinematic")
     bool bIsLobbyElevator = false;
+    
+    UPROPERTY(EditInstanceOnly, Category = "Cinematic")
+    bool bIsHotelElevator = false;
     
 private:
     bool bIsRiding = false;

@@ -1,7 +1,22 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Actor/Elevator/Elevator.h"
+
+#pragma region Base
+
+void UElevatorManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	auto* GameSystem = Collection.InitializeDependency<UEHGameSystem>();
+	if (GameSystem)
+	{
+		GameClearHandle = GameSystem->GameClearEvent.AddUObject(this, &UElevatorManagerSubsystem::OnGameClear);
+	}
+}
+
+#pragma endregion
 
 #pragma region Registry
 
@@ -31,6 +46,7 @@ AElevator* UElevatorManagerSubsystem::GetElevatorByID(FName TargetID)
 
 void UElevatorManagerSubsystem::SetTargetElevator(FName TargetElevatorID)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[Subsystem] SetTargetElevator %s"), *TargetElevatorID.ToString());
 	TargetElevator = Elevators.FindRef(TargetElevatorID);
 }
 
@@ -63,6 +79,25 @@ void UElevatorManagerSubsystem::ResetElevatorState()
 {
 	TargetElevator = nullptr;
 	Passenger = FElevatorPassengerSnapshot();
+}
+
+#pragma endregion
+
+#pragma region Sound
+
+bool UElevatorManagerSubsystem::GetIsPlayingSound() const
+{
+	auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+	return GameSys->GetGameProgression() == EGameProgression::CheckIn && bIsPlayingSound;
+}
+
+#pragma endregion
+
+#pragma region GameClear
+
+void UElevatorManagerSubsystem::OnGameClear()
+{
+	SetTargetElevator("LobbyElevator1");
 }
 
 #pragma endregion

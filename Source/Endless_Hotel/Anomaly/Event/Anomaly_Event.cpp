@@ -80,7 +80,7 @@ void AAnomaly_Event::SetAnomalyState()
 		{
 			continue;
 		}
-		if (AnomalyObject->bShouldInteract)
+		if (AnomalyObject->bShouldInteract && bIsNeapolitan)
 		{
 			AnomalyObject->SetSolvedFalse();
 		}

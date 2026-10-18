@@ -4,7 +4,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "UI/HUD/Title/UI_HUD_Title.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Camera/EHPlayerCameraManager.h"
@@ -37,7 +37,7 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 	{
 	case ETitleButtonType::Start:
 	{
-		const auto* Subsystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+		const auto* Subsystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		Subsystem->ResetGameSystem();
 
 		auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));

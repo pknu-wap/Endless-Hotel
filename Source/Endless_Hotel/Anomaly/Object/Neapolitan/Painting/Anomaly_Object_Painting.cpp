@@ -2,6 +2,7 @@
 
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include "Player/Controller/EHPlayerController.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "Character/AI/ShadowMonster/ShadowMonsterController.h"
 #include "Player/Character/EHPlayer.h"
 #include <Kismet/GameplayStatics.h>
@@ -212,19 +213,22 @@ void AAnomaly_Object_Painting::SpawnMonsterWatchingPainting()
 	GetWorld()->GetTimerManager().SetTimer(WatchingTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 	{
 		CheckWatching();
-	}), 0.05f, true);
+	}), 0.5f, true);
 }
 
 void AAnomaly_Object_Painting::CheckWatching()
 {
 	const auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (!Player) return;
 	auto* PC = Cast<AEHPlayerController>(Player->Controller);
+	if (!PC) return;
+
 	const bool bLooking = !bSolved && PC->IsLookingAtActor(this);
-	if (bLooking)
+	SetWatched(bLooking);
+	if (bSolved)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(WatchingTimerHandle);
 	}
-	SetWatched(bLooking);
 }
 
 void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterController* ShadowMonsterController)
@@ -234,11 +238,16 @@ void AAnomaly_Object_Painting::OnShadowMonsterSpawnedHandler(AShadowMonsterContr
 
 void AAnomaly_Object_Painting::SetWatched(bool bOn)
 {
-	if (bSolved) bOn = false;
+	if (bSolved)
+	{
+		bOn = false;
+	}
 	if (bIsWatched == bOn)
 	{
 		return;
 	}
+	const auto& PlayerCameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
+	PlayerCameraManager->StartHallucination(bOn);
 
 	bIsWatched = bOn;
 	OnMonsterAppear.Broadcast(bOn);

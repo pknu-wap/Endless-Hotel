@@ -3,7 +3,7 @@
 #include "Component/Tutorial/TutorialComponent.h"
 #include "Component/Interact/InteractComponent.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "UI/Base/Tutorial/UI_Tutorial.h"
 #include "Player/Character/EHPlayer.h"
@@ -28,7 +28,7 @@ void UTutorialComponent::BeginPlay()
 
 	auto* GameInstance = GetWorld()->GetGameInstance();
 
-	auto* GameSystem = GameInstance->GetSubsystem<UGameSystem>();
+	auto* GameSystem = GameInstance->GetSubsystem<UEHGameSystem>();
 	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 	OnChangedProgression(USaveManager::LoadData_Progression().Progression);
 

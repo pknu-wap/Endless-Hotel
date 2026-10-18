@@ -55,8 +55,6 @@ private:
 	UFUNCTION()
 	void HandleTimelineFinished();
 	
-	void SetActiveBlockBox(bool bShouldBlock) const;
-	
 public:
 	DECLARE_MULTICAST_DELEGATE_OneParam(FOnElevatorDoorFinished, bool);
 	FOnElevatorDoorFinished OnDoorFinished;
@@ -84,6 +82,20 @@ private:
 	
 	bool bIsOpened = false;
 	bool bIsMoving = false;
+	
+#pragma endregion
+	
+#pragma region Block
+	
+public:
+	void SetReentryBlocked(bool bBlocked);
+	
+private:
+	void RefreshBlockBox();
+	void SetActiveBlockBox(bool bShouldBlock) const;
+
+private:
+	bool bReentryBlocked = false;
 	
 #pragma endregion
 	

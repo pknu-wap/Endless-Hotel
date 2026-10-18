@@ -2,7 +2,7 @@
 
 #include "Actor/Elevator/Elevator_Wall.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -18,7 +18,7 @@ void AElevator_Wall::ResetWall()
 {
     const auto* GI = GetGameInstance();
     auto* VerdictSys = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
-    auto* GameSys = GI->GetSubsystem<UGameSystem>();
+    auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
     if (GameSys->GetGameProgression() == EGameProgression::CheckIn && bIsCinematic)
     {
         SetActorLocation(StandardLocation + CinematicLocation);

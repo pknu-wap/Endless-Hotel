@@ -1,25 +1,23 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
-
-#include "Anomaly/Event/Anomaly_Event.h"
-#include "Asset/Manager/EHAssetManager.h"
-#include "Anomaly/Object/Anomaly_Object_Base.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
-#include <Engine/GameInstance.h>
-#include <Engine/World.h>
+#include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
+#include "Anomaly/Event/Anomaly_Event.h"
+#include "Asset/Manager/EHAssetManager.h"
+#include "Anomaly/Object/Anomaly_Object_Base.h"
 
 #pragma region AnomalyObject
 
 void UAnomalyGeneratorSubsystem::AnomalyObjectLinker(const TArray<TSubclassOf<AAnomaly_Object_Base>>& TargetClasses) const
 {
-	if (TargetClasses.IsEmpty())
-	{
+   if (TargetClasses.IsEmpty())
+   {
       return;
-	}
+   }
    
    auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
    auto ObjectPool = AnomalySub->GetAnomalyObject();
@@ -65,13 +63,27 @@ void UAnomalyGeneratorSubsystem::Initialize(FSubsystemCollectionBase& Collection
 
 void UAnomalyGeneratorSubsystem::SpawnAnomaly()
 {
-   const auto* GameSys = GetGameInstance()->GetSubsystem<UGameSystem>();
+   auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+   if (VerdictSubsystem->IsLobbyPhase())
+   {
+      if (VerdictSubsystem->GetNextAnomalyMap() == EMapDataLayer::Lobby)
+      {
+         VerdictSubsystem->SetNextAnomaly(EAnomalyID::None, EMapDataLayer::Hotel);
+         if (auto* ElevatorSys = GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>())
+         {
+            ElevatorSys->StartAllElevator();
+         }
+         return;
+      }
+      VerdictSubsystem->SetLobbyPhase(false);
+   }
+
+   const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
    if (GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn)
    {
       ApplyNormalFloor();
       return;
    }
-   auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
    TOptional<FAnomalySpawnInfo> CurrentData = NextAnomalyData.IsSet() ? NextAnomalyData : DecideNext();
    auto& AssetManager = UEHAssetManager::Get();
 
@@ -91,26 +103,13 @@ void UAnomalyGeneratorSubsystem::SpawnAnomaly()
    }
    AnomalyObjectLinker(AssetManager.GetObjectByID(CurrentAnomaly->AnomalyID));
    VerdictSubsystem->SetCurrentAnomaly(CurrentAnomaly, CurrentAnomaly->AnomalyID, SpawnInfo.DataLayer);
-   
-   NextAnomalyData = DecideNext();
-   if (NextAnomalyData.IsSet())
-   {
-      VerdictSubsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
-   }
-   else
-   {
-      VerdictSubsystem->SetNextAnomaly(EAnomalyID::Normal, EMapDataLayer::Hotel);
-   }
+   RollNext();
    NotifySpawned();
 }
 
 void UAnomalyGeneratorSubsystem::ForceNormalNext()
 {
-   FAnomalySpawnInfo Info;
-   Info.bIsNormal = true;
-   Info.AnomalyID = EAnomalyID::Normal;
-   Info.DataLayer = EMapDataLayer::Hotel;
-   NextAnomalyData = Info;
+   NextAnomalyData = MakeNormalInfo();
 }
 
 void UAnomalyGeneratorSubsystem::ApplyNormalFloor()
@@ -118,7 +117,7 @@ void UAnomalyGeneratorSubsystem::ApplyNormalFloor()
    auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
    CurrentAnomaly = nullptr;
    VerdictSubsystem->SetNoAnomalyState();
-   NextAnomalyData = DecideNext();
+   RollNext();
 }
 
 void UAnomalyGeneratorSubsystem::NotifySpawned()
@@ -161,15 +160,36 @@ TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Ind
 
 TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideNext() const
 {
-   const auto* GI = GetGameInstance();
-   const auto* AnomalySub = GI->GetSubsystem<UAnomalyPoolSubsystem>();
-   const auto* FloorSub = GI->GetSubsystem<UFloorProgressSubsystem>();
-   constexpr int32 NormalChance = 15; 
-   if(FMath::RandRange(1, 100) <= NormalChance || FloorSub->GetFloor() == STARTFLOOR)
+   const auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+   constexpr int32 NormalChance = 15;
+
+   if (FMath::RandRange(1, 100) <= NormalChance)
    {
-      return TOptional<FAnomalySpawnInfo>();
+      return MakeNormalInfo();
    }
-   return DecideAnomaly(AnomalySub->ActIndex);
+
+   TOptional<FAnomalySpawnInfo> Result = DecideAnomaly(AnomalySub->ActIndex);
+   return Result.IsSet() ? Result : MakeNormalInfo();
+}
+
+void UAnomalyGeneratorSubsystem::RollNext()
+{
+   NextAnomalyData = DecideNext();
+
+   auto* VerdictSubsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
+   if (VerdictSubsystem && NextAnomalyData.IsSet())
+   {
+      VerdictSubsystem->SetNextAnomaly(NextAnomalyData->AnomalyID, NextAnomalyData->DataLayer);
+   }
+}
+
+FAnomalySpawnInfo UAnomalyGeneratorSubsystem::MakeNormalInfo() const
+{
+   FAnomalySpawnInfo Info;
+   Info.bIsNormal = true;
+   Info.AnomalyID = EAnomalyID::Normal;
+   Info.DataLayer = EMapDataLayer::Hotel;
+   return Info;
 }
 
 AAnomaly_Event* UAnomalyGeneratorSubsystem::SpawnFromInfo(const FAnomalySpawnInfo& Info) const
@@ -226,9 +246,8 @@ bool UAnomalyGeneratorSubsystem::SetNextAnomalyForced(const EAnomalyID ID)
 
 void UAnomalyGeneratorSubsystem::ResetGenerator()
 {
-   NextAnomalyData.Reset();
-   const auto& AnomalyVerdictSys = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-   AnomalyVerdictSys->SetNoAnomalyState();
+   CurrentAnomaly = nullptr;
+   ForceNormalNext();
    bIsInitialFloor = true;
 }
 

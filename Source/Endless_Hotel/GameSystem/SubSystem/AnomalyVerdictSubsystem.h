@@ -16,8 +16,8 @@ class AAnomaly_Event;
 UENUM(BlueprintType)
 enum class EAnomalyVerdictMode : uint8
 {
-	Both_And,
-	Normal
+    Both_And,
+    Normal
 };
 
 #pragma endregion
@@ -25,91 +25,103 @@ enum class EAnomalyVerdictMode : uint8
 UCLASS()
 class ENDLESS_HOTEL_API UAnomalyVerdictSubsystem : public UGameInstanceSubsystem
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 #pragma region Base
 
 public:
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+    virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 #pragma endregion
 
 #pragma region AnomalyState
 
 public:
-	void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; }
-	void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; }
+    void SetIsAnomalySolved(bool bIsSolved) { bIsAnomalySolved = bIsSolved; }
+    void SetIsElevatorNormal(bool bIsNormal) { bIsElevatorNormal = bIsNormal; }
 
 private:
-	bool bIsAnomalySolved = false;
-	bool bIsElevatorNormal = false;
+    bool bIsAnomalySolved = false;
+    bool bIsElevatorNormal = false;
 
 #pragma endregion
 
 #pragma region Verdict
 
 public:
-	void SetVerdictMode(const EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Both_And) { VerdictMode = ENewMode; }
-	bool ComputeVerdict() const;
-	void ApplyVerdict();
-	void TryInteractSolveVerdict() const;
+    void SetVerdictMode(const EAnomalyVerdictMode ENewMode = EAnomalyVerdictMode::Both_And) { VerdictMode = ENewMode; }
+    bool ComputeVerdict() const;
+    void ApplyVerdict(bool bForceFailed = false);
+    void TryInteractSolveVerdict() const;
 
 private:
-	void EvaluateIncorrectRules();
-	void HandlePassed();
-	void HandleFailed();
+    void EvaluateIncorrectRules();
+    void HandlePassed();
+    void HandleFailed();
 
 public:
-	EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Both_And;
-	bool bPassed = false;
-	bool bWrongInteractionOccurred = false;
-	bool bSuperCowardMode = true;
+    EAnomalyVerdictMode VerdictMode = EAnomalyVerdictMode::Both_And;
+    bool bPassed = false;
+    bool bWrongInteractionOccurred = false;
+    bool bSuperCowardMode = true;
 
 #pragma endregion
 
 #pragma region Anomaly
 
 public:
-	void SetNoAnomalyState();
-	void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
-	void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
-	void LoadNextMap() const;
-	void OnDataLayerReady();
-	bool IsAnomalyReady() const { return bIsAnomalyReady; }
+    void SetNoAnomalyState();
+    void SetCurrentAnomaly(AAnomaly_Event* Anomaly, EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
+    void SetNextAnomaly(EAnomalyID AnomalyID, EMapDataLayer AnomalyMap);
+    void LoadNextMap() const;
+    void OnDataLayerReady() const;
+    bool IsAnomalyReady() const { return bIsAnomalyReady; }
 
-	AAnomaly_Event* GetCurrentAnomaly() const { return CurrentAnomaly; }
-	EAnomalyID GetCurrentAnomalyID() const { return CurrentAnomalyID; }
-	EMapDataLayer GetNextAnomalyMap() const { return NextAnomalyMap; }
+    AAnomaly_Event* GetCurrentAnomaly() const { return CurrentAnomaly; }
+    EAnomalyID GetCurrentAnomalyID() const { return CurrentAnomalyID; }
+    EMapDataLayer GetNextAnomalyMap() const { return NextAnomalyMap; }
 
-	EAnomalyRule GetIncorrectRule() const { return IncorrectRule; }
-	TArray<EAnomalyRule> GetIncorrectRules() const { return IncorrectRules; }
+    EAnomalyRule GetIncorrectRule() const { return IncorrectRule; }
+    TArray<EAnomalyRule> GetIncorrectRules() const { return IncorrectRules; }
 
 public:
-	TObjectPtr<AAnomaly_Event> CurrentAnomaly;
-	EAnomalyID CurrentAnomalyID = EAnomalyID::None;
-	EAnomalyID NextAnomalyID = EAnomalyID::None;
+    DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
+    FAnomalySpawned OnAnomalyStateChanged;
 
-	EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
+    DECLARE_MULTICAST_DELEGATE_OneParam(FOccurIncorrectRule, TArray<EAnomalyRule>);
+    FOccurIncorrectRule OnOccurIncorrectRule;
+    
+    DECLARE_MULTICAST_DELEGATE(FOnRespawnFloorPrepared);
+    FOnRespawnFloorPrepared OnRespawnFloorPrepared;
 
-	bool bIsStartInBed = false;
-
-	DECLARE_MULTICAST_DELEGATE(FAnomalySpawned);
-	FAnomalySpawned OnAnomalyStateChanged;
-
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOccurIncorrectRule, TArray<EAnomalyRule>);
-	FOccurIncorrectRule OnOccurIncorrectRule;
+    TObjectPtr<AAnomaly_Event> CurrentAnomaly;
+    EAnomalyID CurrentAnomalyID = EAnomalyID::None;
+    EAnomalyID NextAnomalyID = EAnomalyID::None;
+    EMapDataLayer NextAnomalyMap = EMapDataLayer::Hotel;
+    bool bIsStartInBed = false;
 
 private:
-	bool bIsAnomalyReady = false;
-	EAnomalyRule IncorrectRule = EAnomalyRule::None;
-	TArray<EAnomalyRule> IncorrectRules;
+    bool bIsAnomalyReady = false;
+    EAnomalyRule IncorrectRule = EAnomalyRule::None;
+    TArray<EAnomalyRule> IncorrectRules;
+
+#pragma endregion
+
+#pragma region Lobby
+
+public:
+    void SetLobbyPhase(const bool bInLobbyPhase) { bLobbyPhase = bInLobbyPhase; }
+    bool IsLobbyPhase() const { return bLobbyPhase; }
+
+private:
+    bool bLobbyPhase = false;
 
 #pragma endregion
 
 #pragma region Reset
 
 public:
-	void ResetVerdict(bool bShouldScript);
+    void ResetVerdict(bool bShouldScript);
 
 #pragma endregion
 

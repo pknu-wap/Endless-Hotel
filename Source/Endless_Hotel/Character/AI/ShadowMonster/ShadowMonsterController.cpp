@@ -19,8 +19,6 @@ void AShadowMonsterController::HandleMonsterAppear(const bool bAppear)
 	if (bAppear)
 	{
 		Monster->StartAppear();
-		const auto& PlayerCameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
-		PlayerCameraManager->StartHallucination(true);
 	}
 	else
 	{

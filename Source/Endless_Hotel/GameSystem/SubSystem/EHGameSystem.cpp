@@ -1,6 +1,6 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/DataLayerStreamingSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
@@ -12,7 +12,7 @@
 
 #pragma region Base
 
-void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
+void UEHGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	
@@ -25,7 +25,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	ChooseKeyIndex = FMath::RandRange(1, 2);
 	
-	GameClearEvent.AddUObject(this, &UGameSystem::GameClear);
+	GameClearEvent.AddUObject(this, &UEHGameSystem::GameClear);
 
 	GameProgression = USaveManager::LoadData_Progression().Progression;
 }
@@ -34,7 +34,7 @@ void UGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Reset
 
-void UGameSystem::ResetGameSystem() const
+void UEHGameSystem::ResetGameSystem() const
 {
 	const UGameInstance* GameInstance = GetGameInstance();
 	if (!GameInstance)
@@ -77,7 +77,7 @@ void UGameSystem::ResetGameSystem() const
 
 #pragma region Progression
 
-void UGameSystem::ChangeProgression(const EGameProgression Target)
+void UEHGameSystem::ChangeProgression(const EGameProgression Target)
 {
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.Progression = Target;
@@ -90,14 +90,14 @@ void UGameSystem::ChangeProgression(const EGameProgression Target)
 
 #pragma region Clear
 
-void UGameSystem::GameClear()
+void UEHGameSystem::GameClear()
 {
 	const auto& AssetManager = UEHAssetManager::Get();
 	const EGameProgression Ending = AssetManager.GetRemainingAnomalyCounts() == 0 ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
 	ChangeProgression(Ending);
 }
 
-bool UGameSystem::IsGameClear() const
+bool UEHGameSystem::IsGameClear() const
 {
 	const FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	return Data.Progression == EGameProgression::Clear_True || Data.Progression == EGameProgression::Clear_Bad;

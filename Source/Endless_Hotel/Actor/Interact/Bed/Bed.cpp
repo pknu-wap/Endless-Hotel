@@ -2,7 +2,7 @@
 
 #include "Actor/Interact/Bed/Bed.h"
 #include "Component/Interact/InteractComponent.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Player/Character/EHPlayer.h"
 #include "Player/Controller/EHPlayerController.h"
@@ -18,7 +18,7 @@ void ABed::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 
 	bool bActive = GameSystem->GetGameProgression() == EGameProgression::CheckIn;
@@ -125,7 +125,7 @@ void ABed::WakeUp()
 	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
 	UI_InGame->StartInGameHUD(true);
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	if (GameSystem->GetGameProgression() == EGameProgression::CheckIn)
 	{
 		GameSystem->ChangeProgression(EGameProgression::Tutorial);

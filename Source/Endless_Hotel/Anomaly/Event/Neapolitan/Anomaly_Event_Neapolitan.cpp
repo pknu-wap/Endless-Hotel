@@ -2,7 +2,6 @@
 
 #include "Anomaly/Event/Neapolitan/Anomaly_Event_Neapolitan.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
-#include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 
 // Anomaly_Event_Neapolitan.cpp
 
@@ -11,6 +10,7 @@
 AAnomaly_Event_Neapolitan::AAnomaly_Event_Neapolitan(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+	bIsNeapolitan = true;
 }
 
 void AAnomaly_Event_Neapolitan::BeginPlay()

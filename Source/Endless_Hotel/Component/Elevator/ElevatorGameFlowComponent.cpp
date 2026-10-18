@@ -5,7 +5,7 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 
 #pragma region Verdict
 
@@ -53,8 +53,15 @@ void UElevatorGameFlowComponent::RequestSwapDataLayer(const EMapDataLayer InLaye
 bool UElevatorGameFlowComponent::IsCheckIn() const
 {
 	const auto* GI = GetWorld()->GetGameInstance();
-	const auto* GameSys = GI->GetSubsystem<UGameSystem>();
+	const auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
 	return GameSys && GameSys->GetGameProgression() == EGameProgression::CheckIn;
+}
+
+bool UElevatorGameFlowComponent::IsLobbyPhase() const
+{
+	const auto* GI = GetWorld()->GetGameInstance();
+	const auto* VerdictSub = GI->GetSubsystem<UAnomalyVerdictSubsystem>();
+	return VerdictSub && VerdictSub->IsLobbyPhase();
 }
 
 #pragma endregion

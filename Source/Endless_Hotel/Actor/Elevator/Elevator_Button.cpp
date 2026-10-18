@@ -3,11 +3,12 @@
 #include "Actor/Elevator/Elevator_Button.h"
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SaveGame/SaveManager.h"
 #include <Components/ArrowComponent.h>
 #include <GameFramework/Character.h>
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
-#include <Components/AudioComponent.h>
 
 #pragma region Base
 
@@ -39,7 +40,11 @@ void AElevator_Button::BeginPlay()
     DownButtonDefaultLocation = Down_Button->GetRelativeLocation();
     DownButtonRingDefaultLocation = Down_ButtonRing->GetRelativeLocation();
     auto* Sub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+    auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
     Sub->FloorChange_Reset.AddUObject(this, &ThisClass::Reset);
+    GameSys->OnProgressionChanged.AddUObject(this, &ThisClass::OnProgressionChanged);
+    GameSys->OnRoomKeyAcquired.AddUObject(this, &ThisClass::RefreshInteraction);
+    RefreshInteraction();
 }
 #pragma endregion
 
@@ -47,10 +52,33 @@ void AElevator_Button::BeginPlay()
 
 void AElevator_Button::Reset()
 {
-    if (bCanPress_ || bIsOpeningButton)
+    RefreshInteraction();
+}
+
+bool AElevator_Button::IsInteractionAllowed() const
+{
+    const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+    const bool bCheckIn = GameSys->GetGameProgression() == EGameProgression::CheckIn;
+    if (bCheckIn && (!bIsLobbyButton || !USaveManager::LoadData_Progression().bHasKey))
     {
-        Component_Interact->ActiveInteract(true);
+        return false;
     }
+    return bCanPress_ || bIsOpeningButton;
+}
+
+void AElevator_Button::RefreshInteraction()
+{
+    const bool bAllowed = IsInteractionAllowed();
+    if (!bAllowed)
+    {
+        Component_Interact->ShowInteracting(false);
+    }
+    Component_Interact->ActiveInteract(bAllowed);
+}
+
+void AElevator_Button::OnProgressionChanged(EGameProgression NewProgression)
+{
+    RefreshInteraction();
 }
 
 #pragma endregion
@@ -59,17 +87,18 @@ void AElevator_Button::Reset()
 
 void AElevator_Button::Interact(AEHCharacter* Interacter)
 {
+    if (!IsInteractionAllowed())
+    {
+        RefreshInteraction();
+        return;
+    }
     MoveToButtonPlayer();
 }
 
 void AElevator_Button::CanPressButton(bool bCanPress)
 {
-    this->bCanPress_ = bCanPress;
-    if(!bCanPress)
-    {
-        Component_Interact->ShowInteracting(false);
-    }
-    bCanPress ? Component_Interact->ActiveInteract(true) : Component_Interact->ActiveInteract(false);
+    bCanPress_ = bCanPress;
+    RefreshInteraction();
 }
 
 void AElevator_Button::MoveToButtonPlayer()

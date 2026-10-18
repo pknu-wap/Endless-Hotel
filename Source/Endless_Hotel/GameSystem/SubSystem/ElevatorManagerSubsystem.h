@@ -29,6 +29,13 @@ class ENDLESS_HOTEL_API UElevatorManagerSubsystem : public UGameInstanceSubsyste
 {
 	GENERATED_BODY()
 
+#pragma region Base
+	
+public:
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	
+#pragma endregion
+	
 #pragma region Registry
 
 public:
@@ -74,4 +81,23 @@ public:
 
 #pragma endregion
 
+#pragma region Sound
+	
+public:
+	bool GetIsPlayingSound() const;
+	void SetIsPlayingSound(const bool Playing) { bIsPlayingSound = Playing; }
+	
+private:
+	bool bIsPlayingSound;
+	
+#pragma endregion
+	
+#pragma region GameClear
+	
+private:
+	void OnGameClear();
+	FDelegateHandle GameClearHandle;
+	
+#pragma endregion
+	
 };
