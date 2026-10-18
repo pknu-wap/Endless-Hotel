@@ -1,8 +1,9 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Actor/Elevator/Elevator_Entrance.h"
-#include "Player/Character/EHPlayer.h"
 #include "Actor/Elevator/Elevator.h"
+#include "Component/Elevator/ElevatorDoorComponent.h"
+#include "Player/Character/EHPlayer.h"
 #include <Components/BoxComponent.h>
 
 #pragma region Base
@@ -49,6 +50,7 @@ void AElevator_Entrance::OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActo
 		return;
 	}
 	TakeOff_Trigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Elevator->DoorComp->SetReentryBlocked(true);
 	FTimerHandle DoorDelayHandle;
 	GetWorld()->GetTimerManager().SetTimer(DoorDelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{

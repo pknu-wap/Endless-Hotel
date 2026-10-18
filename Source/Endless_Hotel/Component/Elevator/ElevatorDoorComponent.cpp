@@ -65,6 +65,7 @@ void UElevatorDoorComponent::ResetDoor()
 	LeftDoor->SetRelativeLocation(LeftClosed);
 	RightDoor->SetRelativeLocation(RightClosed);
 	SetDoorLighting(true);
+	RefreshBlockBox();
 }
 
 void UElevatorDoorComponent::SetDoorLighting(const bool bVisibleFromOutside) const
@@ -78,15 +79,34 @@ void UElevatorDoorComponent::HandleTimelineUpdate(float Alpha)
 	bIsMoving = true;
 	LeftDoor->SetRelativeLocation(FMath::Lerp(LeftClosed, LeftOpen, Alpha));
 	RightDoor->SetRelativeLocation(FMath::Lerp(RightClosed, RightOpen, Alpha));
-	SetActiveBlockBox(true);
+	RefreshBlockBox();
 }
 
 void UElevatorDoorComponent::HandleTimelineFinished()
 {
 	bIsMoving = false;
 	DoorAC->Stop();
-	SetActiveBlockBox(false);
+	if (!bIsOpened)
+	{
+		bReentryBlocked = false;
+	}
+	RefreshBlockBox();
 	OnDoorFinished.Broadcast(bIsOpened);
+}
+
+#pragma endregion
+
+#pragma region Block
+
+void UElevatorDoorComponent::SetReentryBlocked(bool bBlocked)
+{
+	bReentryBlocked = bBlocked;
+	RefreshBlockBox();
+}
+
+void UElevatorDoorComponent::RefreshBlockBox()
+{
+	SetActiveBlockBox(bIsMoving || bReentryBlocked);
 }
 
 void UElevatorDoorComponent::SetActiveBlockBox(const bool bShouldBlock) const

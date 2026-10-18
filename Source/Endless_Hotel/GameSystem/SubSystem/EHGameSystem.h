@@ -60,5 +60,13 @@ public:
 	FGameClearEvent GameClearEvent;
 
 #pragma endregion
+	
+#pragma region Key
+
+public:
+	DECLARE_MULTICAST_DELEGATE(FOnRoomKeyAcquired);
+	FOnRoomKeyAcquired OnRoomKeyAcquired;
+
+#pragma endregion
 
 };

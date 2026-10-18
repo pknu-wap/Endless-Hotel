@@ -249,6 +249,14 @@ void AElevator::OnButtonClicked(bool bIsOpening)
 {
     SetLightOn(true);
     MoveDoors(bIsOpening);
+    if (bIsOpening)
+    {
+        if (InsideButton.IsValid())
+        {
+            InsideButton->CanPressButton(true);
+        }
+        return;
+    }
     if (!bIsOpening)
     {
         FTimerHandle DoorHandle;
