@@ -2,7 +2,7 @@
 
 #include "Actor/Interact/Door/LobbyDoor.h"
 #include "GameSystem/SaveGame/SaveManager.h"
-#include "GameSystem/SubSystem/GameSystem.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
@@ -46,7 +46,7 @@ void ALobbyDoor::BeginPlay()
 	LeftCloseRot = DoorLeft->GetRelativeRotation();
 	RightCloseRot = DoorRight->GetRelativeRotation();
 
-	auto* GameSystem = GetGameInstance()->GetSubsystem<UGameSystem>();
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 
 	bool bActive = USaveManager::LoadData_Progression().Progression != EGameProgression::CheckIn;
