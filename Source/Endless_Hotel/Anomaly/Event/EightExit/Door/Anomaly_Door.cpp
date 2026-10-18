@@ -109,8 +109,7 @@ void AAnomaly_Door::AdvanceDoorState()
 	}
 
 	case EDoorSequenceState::CloseHandAndDoor:
-	{
-		/*Door->PlayHandClose();*/
+	{                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 		Door->CloseDoorFast();
 
 		CurrentDoorState = EDoorSequenceState::Finished;

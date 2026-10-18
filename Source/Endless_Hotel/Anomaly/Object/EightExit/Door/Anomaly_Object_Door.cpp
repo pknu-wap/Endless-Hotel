@@ -521,16 +521,6 @@ void AAnomaly_Object_Door::PlayHandOpen()
 	SKM_GhostHand->Play(false);
 }
 
-void AAnomaly_Object_Door::PlayHandClose()
-{
-	SKM_GhostHand->SetAnimationMode(EAnimationMode::AnimationSingleNode);
-	SKM_GhostHand->SetAnimation(Anim_HandClose);
-	SKM_GhostHand->SetPosition(0.f, false);
-	SKM_GhostHand->Play(false);
-
-	SpawnedGhostHandActor->SetLifeSpan(Anim_HandClose->GetPlayLength());
-}
-
 #pragma endregion
 
 #pragma region Light Channel
