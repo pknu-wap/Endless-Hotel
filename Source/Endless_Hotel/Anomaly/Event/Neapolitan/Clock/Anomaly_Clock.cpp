@@ -15,6 +15,10 @@ void AAnomaly_Clock::SetAnomalyState()
 		SetupAnomalyAction<AAnomaly_Object_Clock>(&AAnomaly_Object_Clock::RingingClock, FAnomalyActionInfo({ EInteractType::TurnOff }));
 		ScheduleAnomaly(20);
 		break;
+
+	case EAnomalyID::Clock_Fast:
+		ScheduleAnomaly(15);
+		break;
 	}
 }
 

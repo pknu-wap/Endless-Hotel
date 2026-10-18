@@ -9,8 +9,17 @@
 AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	SM_Bar = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_Bar"));
 	SM_Bar->SetupAttachment(Object);
+
+	SM_HourHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_HourHand"));
+	SM_HourHand->SetupAttachment(Object);
+
+	SM_MinuteHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_MinuteHand"));
+	SM_MinuteHand->SetupAttachment(Object);
+
 
 	Timeline_TikTok = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_TikTok"));
 
@@ -38,6 +47,15 @@ void AAnomaly_Object_Clock::BeginPlay()
 	Timeline_TikTok->SetTimelineFinishedFunc(Finish_TikTok);
 
 	Timeline_TikTok->PlayFromStart();
+}
+
+void AAnomaly_Object_Clock::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	SM_HourHand->AddLocalRotation(FRotator(-0.5f * DeltaSeconds, 0.f, 0.f));
+
+	SM_MinuteHand->AddLocalRotation(FRotator(-6.f * DeltaSeconds, 0.f, 0.f));
 }
 
 #pragma endregion
