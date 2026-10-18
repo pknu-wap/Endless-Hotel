@@ -68,7 +68,7 @@ void UElevatorMoveComponent::CancelMove()
 
 void UElevatorMoveComponent::PlayMoveSound()
 {
-    USoundBase* Desired = bIsCinematic ? ElevatorSound_Cinematic : ElevatorSound_Normal;
+    USoundBase* Desired = bIsCinematicElevator ? ElevatorSound_Cinematic : ElevatorSound_Normal;
     auto* ElevatorSys = GetWorld()->GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>();
     if (!MoveAC || !Desired)
     {
@@ -101,7 +101,7 @@ void UElevatorMoveComponent::BeginMove(const FVector& From, const FVector& To)
     bIsMoving = true;
     MoveTarget->SetRelativeLocation(From);
 
-    MoveTimeline->SetPlayRate(1.f / MoveDuration);
+    MoveTimeline->SetPlayRate(1.f / GetMoveDuration());
     MoveTimeline->PlayFromStart();
 }
 

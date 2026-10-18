@@ -182,7 +182,7 @@ void AElevator::HandleMoveFinished()
     UE_LOG(LogTemp, Warning, TEXT("[Ride] Arrival IsTop=%d"), VerdictComp->IsTopFloor());
     const EElevatorMoveKind Kind = CurrentMove;
     CurrentMove = EElevatorMoveKind::None;
-    const bool bRide = MoveComp->bIsCinematic;
+    const bool bRide = MoveComp->bIsCinematicElevator;
 
     switch (Kind)
     {
@@ -193,7 +193,7 @@ void AElevator::HandleMoveFinished()
             if (VerdictComp->IsTopFloor())
             {
                 bIsRiding = false;
-                MoveComp->bIsCinematic = false;
+                MoveComp->bIsCinematicElevator = false;
                 OpenDoorsWithBell();
                 break;
             }
@@ -204,9 +204,10 @@ void AElevator::HandleMoveFinished()
         break;
 
     case EElevatorMoveKind::Departure:
-        if (bIsLobbyElevator)
+        if (bRide && bIsLobbyElevator)
         {
             PassengerComp->Store();
+            bIsRiding = false;
             VerdictComp->SetTargetElevator("HotelElevator");
             VerdictComp->RequestSwapDataLayer(EMapDataLayer::Hotel);
             break;
@@ -300,7 +301,7 @@ void AElevator::PrepareAsTarget(const UElevatorManagerSubsystem& Sub)
     MoveComp->SetToStart();
     PassengerComp->Restore(Sub.GetPassenger());
 
-    if (MoveComp->bIsCinematic)
+    if (MoveComp->bIsCinematicElevator)
     {
         bIsRiding = true;
         MoveComp->PlayMoveSound();
@@ -343,8 +344,10 @@ void AElevator::StartElevator()
     {
         return;
     }
-    const bool bLobbyReturn = VerdictComp->IsLobbyPhase();
-    MoveComp->bIsCinematic = !bLobbyReturn && (bIsLobbyElevator || VerdictComp->IsCheckIn());
+    if (!VerdictComp->IsCheckIn())
+    {
+        MoveComp->bIsCinematicElevator = false;
+    }
     GetWorld()->GetTimerManager().ClearTimer(MoveStartHandle);
     GetWorld()->GetTimerManager().ClearTimer(MoveHandle);
     PassengerComp->CancelRestore();

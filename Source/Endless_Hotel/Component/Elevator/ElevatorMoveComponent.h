@@ -51,10 +51,10 @@ public:
     void PlayMoveSound();
     void StopMoveSound() const;
 
-    FVector GetStartLocation() const { return bIsCinematic ? Config.StandardPos + Config.RideStartPos : Config.StandardPos + Config.StartPos; }
+    FVector GetStartLocation() const { return bIsCinematicElevator ? Config.StandardPos + Config.RideStartPos : Config.StandardPos + Config.StartPos; }
     FVector GetMapLocation() const { return Config.StandardPos + Config.MapPos; }
-    FVector GetEndLocation() const { return bIsCinematic ? Config.StandardPos + Config.RideEndPos : Config.StandardPos + Config.EndPos; }
-    float GetMoveDuration() const { return bIsCinematic ? RideDuration : MoveDuration; }
+    FVector GetEndLocation() const { return bIsCinematicElevator ? Config.StandardPos + Config.RideEndPos : Config.StandardPos + Config.EndPos; }
+    float GetMoveDuration() const { return bIsCinematicElevator ? RideDuration : MoveDuration; }
     bool IsMoving() const { return bIsMoving; }
 
     DECLARE_MULTICAST_DELEGATE(FOnElevatorMoveFinished);
@@ -102,7 +102,7 @@ private:
     
 public:
     UPROPERTY(EditAnywhere, Category = "Cinematic")
-    bool bIsCinematic = false;
+    bool bIsCinematicElevator = false;
     
 #pragma endregion
     
