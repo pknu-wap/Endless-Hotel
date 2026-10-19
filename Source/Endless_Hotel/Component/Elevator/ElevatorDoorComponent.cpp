@@ -91,7 +91,6 @@ void UElevatorDoorComponent::HandleTimelineFinished()
 		bReentryBlocked = false;
 	}
 	RefreshBlockBox();
-	OnDoorFinished.Broadcast(bIsOpened);
 }
 
 #pragma endregion

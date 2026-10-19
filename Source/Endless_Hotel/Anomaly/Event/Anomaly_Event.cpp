@@ -1,6 +1,7 @@
 ﻿// Copyright by 2025-2 WAP Game 2 team
 
 #include "Anomaly/Event/Anomaly_Event.h"
+#include "Neapolitan/Anomaly_Event_Neapolitan.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
@@ -80,7 +81,7 @@ void AAnomaly_Event::SetAnomalyState()
 		{
 			continue;
 		}
-		if (AnomalyObject->bShouldInteract && bIsNeapolitan)
+		if (AnomalyObject->bShouldInteract && this->IsA<AAnomaly_Event_Neapolitan>())
 		{
 			AnomalyObject->SetSolvedFalse();
 		}

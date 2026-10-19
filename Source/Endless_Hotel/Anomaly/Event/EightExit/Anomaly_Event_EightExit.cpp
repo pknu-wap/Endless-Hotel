@@ -5,12 +5,6 @@
 
 #pragma region Base
 
-AAnomaly_Event_EightExit::AAnomaly_Event_EightExit(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-	bIsNeapolitan = false;
-}
-
 void AAnomaly_Event_EightExit::BeginPlay()
 {
 	Super::BeginPlay();
