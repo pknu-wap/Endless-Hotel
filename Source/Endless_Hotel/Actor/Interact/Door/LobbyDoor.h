@@ -86,6 +86,9 @@ private:
 	TObjectPtr<class USpotLightComponent> SpotLight;
 
 	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UExponentialHeightFogComponent> EndingFog;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAudioComponent> AC_SpotLight;
 
 #pragma endregion

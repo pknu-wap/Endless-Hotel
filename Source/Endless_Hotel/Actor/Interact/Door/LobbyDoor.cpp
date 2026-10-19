@@ -7,6 +7,7 @@
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Components/SpotLightComponent.h>
+#include <Components/ExponentialHeightFogComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -31,6 +32,10 @@ ALobbyDoor::ALobbyDoor(const FObjectInitializer& ObjectInitializer)
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
 	SpotLight->SetupAttachment(RootComponent);
 	SpotLight->SetVisibility(false);
+
+	EndingFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("EndingFog"));
+	EndingFog->SetupAttachment(RootComponent);
+	EndingFog->SetFogDensity(0.f);
 
 	AC_SpotLight = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_SpotLight"));
 	AC_SpotLight->SetupAttachment(SpotLight);
@@ -119,6 +124,7 @@ void ALobbyDoor::OnCloseTrigger(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	RotateDoor(LeftCloseRot, RightCloseRot, SW_DoorClose, Duration);
 
 	SpotLight->SetVisibility(true);
+	EndingFog->SetFogDensity(1.f);
 	AC_SpotLight->Play();
 }
 
