@@ -161,14 +161,16 @@ void AManual::SwitchPaper()
 void AManual::RemindManual()
 {
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
 	if (!bNeedRemind || FloorSub->GetFloor() != STARTFLOOR)
 	{
+		Comp_Tutorial->HideTutorialWidget();
+		Comp_Tutorial->HideTutorialWidget();
 		return;
 	}
 
 	bNeedRemind = false;
 
-	auto* Comp_Tutorial = FindComponentByClass<UTutorialComponent>();
 	Comp_Tutorial->ShowTutorialWidgetForce();
 }
 
