@@ -13,9 +13,6 @@ class ENDLESS_HOTEL_API AAnomaly_Event_Neapolitan : public AAnomaly_Event
     GENERATED_BODY()
 #pragma region Base
 
-public:
-    AAnomaly_Event_Neapolitan(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
 protected:
     virtual void BeginPlay() override;
 

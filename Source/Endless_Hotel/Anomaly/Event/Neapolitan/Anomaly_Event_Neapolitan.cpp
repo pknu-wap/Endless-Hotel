@@ -7,12 +7,6 @@
 
 #pragma region Base
 
-AAnomaly_Event_Neapolitan::AAnomaly_Event_Neapolitan(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
-{
-	bIsNeapolitan = true;
-}
-
 void AAnomaly_Event_Neapolitan::BeginPlay()
 {
 	Super::BeginPlay();
