@@ -18,4 +18,15 @@ void AAnomaly_Event_Phone::SetAnomalyState()
 	}
 }
 
+void AAnomaly_Event_Phone::DisableAnomaly()
+{
+	for (UObject* Target : TargetAnomalyObjects)
+	{
+		if (auto* Phone = Cast<AAnomaly_Object_Phone>(Target))
+		{
+			Phone->DisableCallReceive();
+		}
+	}
+}
+
 #pragma endregion
