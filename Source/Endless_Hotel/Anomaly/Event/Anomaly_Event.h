@@ -78,9 +78,6 @@ protected:
 
 public:
 	virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
-	
-protected:
-	bool bIsNeapolitan = false;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Verdict")

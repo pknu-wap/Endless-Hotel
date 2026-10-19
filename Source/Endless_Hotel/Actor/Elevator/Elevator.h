@@ -168,6 +168,9 @@ protected:
 public:
     UFUNCTION()
     void OnButtonClicked(bool bIsOpening);
+    
+private:
+    void HandleDoorFinished(bool bOpened);
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Elevator|Button")

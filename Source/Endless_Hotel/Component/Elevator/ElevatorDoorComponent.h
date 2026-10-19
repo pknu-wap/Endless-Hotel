@@ -55,10 +55,6 @@ private:
 	UFUNCTION()
 	void HandleTimelineFinished();
 	
-public:
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnElevatorDoorFinished, bool);
-	FOnElevatorDoorFinished OnDoorFinished;
-	
 private:
 	UPROPERTY()
 	TObjectPtr<UTimelineComponent> DoorTimeline;
