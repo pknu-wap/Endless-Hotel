@@ -30,7 +30,6 @@ public:
 	TWeakObjectPtr<class AAnomaly_Object_WChair>WheelChairObjectRef;
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<class AAnomaly_CrawlChild> OwnerAnomalyEvent;
 
 #pragma endregion

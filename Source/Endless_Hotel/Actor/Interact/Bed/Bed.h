@@ -29,13 +29,8 @@ public:
 #pragma region Reference
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
-
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayerController> PC;
-
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayerCameraManager> CameraManager;
 
 #pragma endregion

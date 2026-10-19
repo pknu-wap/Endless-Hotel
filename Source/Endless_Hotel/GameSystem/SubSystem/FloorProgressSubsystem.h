@@ -8,6 +8,7 @@
 #include <FloorProgressSubsystem.generated.h>
 
 #define STARTFLOOR 8
+#define CLEARFLOOR 0
 
 UCLASS()
 class ENDLESS_HOTEL_API UFloorProgressSubsystem : public UGameInstanceSubsystem

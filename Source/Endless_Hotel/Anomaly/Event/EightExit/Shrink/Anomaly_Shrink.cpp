@@ -68,14 +68,15 @@ void AAnomaly_Shrink::DisableAnomaly()
 void AAnomaly_Shrink::StartShrink()
 {
 	Timeline_Shrink->PlayFromStart();
+
+	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	PC->OnCrouchCompleted();
+	PC->bCanRun = false;
+	PC->bCanCrouch = false;
 }
 
 void AAnomaly_Shrink::ShrinkPlayer(float Value)
 {
-	auto* PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	PC->bCanRun = false;
-	PC->bCanCrouch = false;
-
 	PlayerSM->SetRelativeScale3D(OriginalScale * Value);
 	PlayerMC->MaxWalkSpeed = OriginalSpeed * Value;
 }

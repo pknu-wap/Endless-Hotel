@@ -35,10 +35,7 @@ protected:
     TObjectPtr<class USoundWave> SW_Drop;
 
 private:
-    UPROPERTY()
     TWeakObjectPtr<UPrimitiveComponent> TargetMesh;
-
-    UPROPERTY()
     TWeakObjectPtr<class UAudioComponent> Comp_Audio;
 
 #pragma endregion

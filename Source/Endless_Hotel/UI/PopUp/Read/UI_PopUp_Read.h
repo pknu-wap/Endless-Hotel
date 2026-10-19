@@ -35,7 +35,6 @@ public:
 	virtual void SetTarget(AActor* Target) { TargetObject = Target; }
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<AActor> TargetObject;
 
 #pragma endregion

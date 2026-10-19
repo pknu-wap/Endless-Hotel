@@ -2,10 +2,12 @@
 
 #include "Actor/Interact/Door/LobbyDoor.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Player/Character/EHPlayer.h"
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Components/SpotLightComponent.h>
+#include <Components/ExponentialHeightFogComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -31,6 +33,10 @@ ALobbyDoor::ALobbyDoor(const FObjectInitializer& ObjectInitializer)
 	SpotLight->SetupAttachment(RootComponent);
 	SpotLight->SetVisibility(false);
 
+	EndingFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(TEXT("EndingFog"));
+	EndingFog->SetupAttachment(RootComponent);
+	EndingFog->SetFogDensity(0.f);
+
 	AC_SpotLight = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_SpotLight"));
 	AC_SpotLight->SetupAttachment(SpotLight);
 	AC_SpotLight->SetAutoActivate(false);
@@ -45,7 +51,20 @@ void ALobbyDoor::BeginPlay()
 	LeftCloseRot = DoorLeft->GetRelativeRotation();
 	RightCloseRot = DoorRight->GetRelativeRotation();
 
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
+
 	bool bActive = USaveManager::LoadData_Progression().Progression != EGameProgression::CheckIn;
+	Component_Interact->ActiveInteract(bActive);
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void ALobbyDoor::OnChangedProgression(EGameProgression Target)
+{
+	bool bActive = Target != EGameProgression::CheckIn;
 	Component_Interact->ActiveInteract(bActive);
 }
 
@@ -105,6 +124,7 @@ void ALobbyDoor::OnCloseTrigger(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	RotateDoor(LeftCloseRot, RightCloseRot, SW_DoorClose, Duration);
 
 	SpotLight->SetVisibility(true);
+	EndingFog->SetFogDensity(1.f);
 	AC_SpotLight->Play();
 }
 

@@ -15,6 +15,7 @@ class ENDLESS_HOTEL_API AAnomaly_Event_Phone : public AAnomaly_Event_Neapolitan
 
 public:
 	virtual void SetAnomalyState() override;
+	virtual void DisableAnomaly() override;
 
 #pragma endregion
 

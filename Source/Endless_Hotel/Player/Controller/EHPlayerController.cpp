@@ -8,6 +8,8 @@
 #include "Type/Save/Type_Save.h"
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Painting/Anomaly_Object_Painting.h"
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
@@ -17,7 +19,6 @@
 #include <Components/CapsuleComponent.h>
 #include <Components/PointLightComponent.h>
 #include <Components/AudioComponent.h>
-#include <GameSystem/SubSystem/EHGameSystem.h>
 #include <GameFramework/GameModeBase.h>
 
 #pragma region Base
@@ -107,8 +108,13 @@ void AEHPlayerController::SetupInputComponent()
 
 void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 {
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	if (FloorSub->GetFloor() <= CLEARFLOOR)
+	{
+		return;
+	}
 
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	switch (DataLayer)
 	{
 	case EMapDataLayer::Hotel:
@@ -215,14 +221,17 @@ void AEHPlayerController::OnRunCompleted()
 
 void AEHPlayerController::OnCrouchStarted()
 {
-	if (bIsCrouching) return;
-
-	if (!bCanCrouch)
+	if (!bCanCrouch || bIsCrouching)
 	{
 		return;
 	}
 
 	bIsCrouching = true;
+
+	if (bIsLighterOn)
+	{
+		TurnPlayerHandLight();
+	}
 
 	EHPlayer->Crouch();
 	EHPlayer->OnCrouched.Broadcast(bIsCrouching);
@@ -230,9 +239,7 @@ void AEHPlayerController::OnCrouchStarted()
 
 void AEHPlayerController::OnCrouchCompleted()
 {
-	if (!bIsCrouching) return;
-
-	if (!bCanCrouch)
+	if (!bCanCrouch || !bIsCrouching)
 	{
 		return;
 	}
@@ -296,6 +303,13 @@ void AEHPlayerController::OnEVButtonPressStarted()
 	bIsButtonPressing = true;
 	bIsCameraFixed = true;
 	bCanMove = false;
+
+	if (bKeepLighter)
+	{
+		EHPlayer->ToggleLighter();
+
+		bIsLighterOn = !bIsLighterOn;
+	}
 }
 
 void AEHPlayerController::OnEVButtonPressCompleted()
@@ -304,6 +318,13 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 	bIsCameraFixed = false;
 	bCanMove = true;
 	bIsCameraFixed = false;
+
+	if (bKeepLighter)
+	{
+		EHPlayer->ToggleLighter();
+
+		bIsLighterOn = !bIsLighterOn;
+	}
 }
 
 #pragma endregion
@@ -313,7 +334,6 @@ void AEHPlayerController::OnEVButtonPressCompleted()
 void AEHPlayerController::TurnPlayerHandLight()
 {
 	bHasFlash = USaveManager::LoadData_Progression().bHasFlash;
-
 	if (!bCanMove || !bHasFlash || bIsFaceCovering)
 	{
 		return;
@@ -322,6 +342,7 @@ void AEHPlayerController::TurnPlayerHandLight()
 	EHPlayer->ToggleLighter();
 
 	bIsLighterOn = !bIsLighterOn;
+	bKeepLighter = !bKeepLighter;
 }
 
 #pragma endregion
@@ -477,6 +498,10 @@ bool AEHPlayerController::IsActorOnScreen(AActor* TargetActor) const
 AActor* AEHPlayerController::GetLookedAtActor(float Distance) const
 {
 	UCameraComponent* Camera = EHPlayer->GetCamera();
+	if (!IsValid(Camera))
+	{
+		return nullptr;
+	}
 
 	FVector Start = Camera->GetComponentLocation();
 	FVector End = Start + Camera->GetForwardVector() * Distance;

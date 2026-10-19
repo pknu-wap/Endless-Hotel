@@ -33,7 +33,6 @@ protected:
 #pragma region Reference
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayer> EHPlayer;
 
 #pragma endregion
@@ -101,7 +100,6 @@ public:
 #pragma region Interact
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<class UInteractComponent> CachedInteractComp;
 
 protected:
@@ -117,7 +115,6 @@ protected:
 #pragma region Widget
 
 private:
-	UFUNCTION()
 	void OpenHUDWidget(const EMapDataLayer& DataLayer);
 	void EscapeStarted(const struct FInputActionValue& InputValue);
 
@@ -126,7 +123,6 @@ private:
 #pragma region Components
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class UCameraComponent> PlayerCamera;
 
 #pragma endregion
@@ -206,6 +202,9 @@ public:
 
 protected:
 	void TurnPlayerHandLight();
+
+private:
+	bool bKeepLighter = false;
 
 #pragma endregion
 

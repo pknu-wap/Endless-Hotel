@@ -24,7 +24,6 @@ public:
 	void SetAcquireItem(AActor* Acquire) { Item = Acquire; }
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<AActor> Item;
 
 #pragma endregion

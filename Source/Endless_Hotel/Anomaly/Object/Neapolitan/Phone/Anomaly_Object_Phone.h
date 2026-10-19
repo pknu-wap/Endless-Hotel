@@ -25,6 +25,7 @@ protected:
 
 public:
 	virtual void InitializeOnAnomalySpawned() override;
+	void DisableCallReceive() { bCanReceiveCall = false; }
 
 #pragma endregion
 
@@ -54,12 +55,15 @@ protected:
 	UFUNCTION()
 	void UpdateShake(float Value);
 
-protected:
+private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_Receiver;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC;
+
+	UPROPERTY(EditAnywhere, Category = "Ringing")
+	TObjectPtr<class USoundWave> SW_Ringing;
 
 	UPROPERTY(EditAnywhere, Category = "Ringing")
 	TObjectPtr<class USoundWave> SW_Voice;
@@ -85,6 +89,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "SubTitle")
 	FText CallText;
+
+	bool bCanReceiveCall = false;
 
 #pragma endregion
 

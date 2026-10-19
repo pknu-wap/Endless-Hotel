@@ -42,7 +42,6 @@ private:
 #pragma region Setting
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class UGameUserSettings> SettingHandle;
 
 #pragma endregion

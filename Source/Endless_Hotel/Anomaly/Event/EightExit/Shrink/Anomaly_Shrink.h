@@ -24,10 +24,7 @@ protected:
 #pragma region Reference
 
 protected:
-	UPROPERTY()
 	TWeakObjectPtr<class USkeletalMeshComponent> PlayerSM;
-
-	UPROPERTY()
 	TWeakObjectPtr<class UCharacterMovementComponent> PlayerMC;
 
 #pragma endregion

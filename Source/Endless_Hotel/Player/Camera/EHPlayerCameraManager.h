@@ -39,7 +39,6 @@ private:
 	void FindPPV();
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<APostProcessVolume> PPV_EyeEffect;
 
 #pragma endregion
@@ -70,7 +69,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> CV_Loading;
 
-	UPROPERTY()
 	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
 
 	UPROPERTY()
@@ -105,7 +103,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Hallucination")
 	TObjectPtr<UCurveFloat> CV_Hallucination;
 
-	UPROPERTY()
 	TWeakObjectPtr<UMaterialInstanceDynamic> DM_Hallucination;
 
 	UPROPERTY()
@@ -131,7 +128,6 @@ public:
 private:
 	FTimerHandle WaitHandle;
 
-	UPROPERTY()
 	TWeakObjectPtr<AActor> WaitPossessTarget;
 
 	bool bIsPossessing = false;

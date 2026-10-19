@@ -25,13 +25,19 @@ void AAnomaly_Event_Mouse::DisableAnomaly()
 {
 	for (AMouse* Mouse : SpawnedMouse)
 	{
-		Mouse->Destroy();
+		if (IsValid(Mouse))
+		{
+			Mouse->Destroy();
+		}
 	}
 
 	if (IsValid(SpawnedDeadBody))
 	{
 		SpawnedDeadBody->Destroy();
 	}
+
+	SpawnedMouse.Empty();
+	SpawnedDeadBody = nullptr;
 
 	Super::DisableAnomaly();
 }

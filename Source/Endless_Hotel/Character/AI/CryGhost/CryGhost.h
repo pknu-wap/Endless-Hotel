@@ -91,7 +91,6 @@ private:
 private:
 	FTimerHandle TargetingHandle;
 
-	UPROPERTY()
 	TWeakObjectPtr<ACharacter> TargetPlayer;
 
 #pragma endregion

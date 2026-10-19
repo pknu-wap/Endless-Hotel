@@ -41,6 +41,8 @@ void AComingDoll::SetupBurnTargets()
 
 void AComingDoll::StartBurning()
 {
+	DeathTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	SetupBurnTargets();
 
 	AC->Play();

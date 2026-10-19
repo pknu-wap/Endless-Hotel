@@ -21,6 +21,13 @@ protected:
 
 #pragma endregion
 
+#pragma region Progression
+
+private:
+	void OnChangedProgression(EGameProgression Target);
+
+#pragma endregion
+
 #pragma region Interact
 
 public:
@@ -77,6 +84,9 @@ private:
 private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USpotLightComponent> SpotLight;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UExponentialHeightFogComponent> EndingFog;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAudioComponent> AC_SpotLight;

@@ -20,7 +20,6 @@ AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectIni
 	SM_MinuteHand = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SM_MinuteHand"));
 	SM_MinuteHand->SetupAttachment(Object);
 
-
 	Timeline_TikTok = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline_TikTok"));
 
 	AC_TikTok = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_TikTok"));
@@ -103,6 +102,8 @@ void AAnomaly_Object_Clock::PlayTikTokSound()
 
 void AAnomaly_Object_Clock::RingingClock()
 {
+	Component_Interact->ActiveInteract(true);
+
 	bSolved = false;
 	AC_Ringing->Play();
 	bInTime = true;

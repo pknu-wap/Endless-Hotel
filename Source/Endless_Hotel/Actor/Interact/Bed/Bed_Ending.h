@@ -21,7 +21,6 @@ public:
 #pragma region Reference
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<class AEHPlayerController> PC;
 
 #pragma endregion

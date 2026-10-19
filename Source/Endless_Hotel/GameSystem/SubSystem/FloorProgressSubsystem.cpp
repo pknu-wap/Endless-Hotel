@@ -25,9 +25,8 @@ void UFloorProgressSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UFloorProgressSubsystem::SubFloor()
 {
-    if (Floor > 1)
+    if (Floor-- > 1)
     {
-       Floor--;
        return;
     }
     const auto* GI = GetGameInstance();

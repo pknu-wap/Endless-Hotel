@@ -54,6 +54,9 @@ void AAnomaly_Object_Phone::InitializeOnAnomalySpawned()
 
 	Timeline_FrontMove->Stop();
 	Timeline_Ringing->Stop();
+
+	bCanReceiveCall = false;
+	bIsInteracted = false;
 }
 
 #pragma endregion
@@ -80,18 +83,13 @@ void AAnomaly_Object_Phone::InteractPhone(const EInteractType& Type)
 
 	AC->Stop();
 
-	switch (Type)
+	if (Type == EInteractType::Call && bCanReceiveCall)
 	{
-	case EInteractType::TurnOff:
-		break;
-
-	case EInteractType::Call:
 		AC->SetSound(SW_Voice);
 		AC->Play();
 
 		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 		UICon->ShowSubTitle(CallText, 0.1f, 2.f);
-		break;
 	}
 
 	bIsInteracted = true;
@@ -114,11 +112,14 @@ void AAnomaly_Object_Phone::RingingPhone()
 
 void AAnomaly_Object_Phone::MovePhone()
 {
+	bCanReceiveCall = true;
+
 	Timeline_FrontMove->PlayFromStart();
 }
 
 void AAnomaly_Object_Phone::ShakePhone()
 {
+	AC->SetSound(SW_Ringing);
 	AC->Play();
 
 	Timeline_Ringing->PlayFromStart();
