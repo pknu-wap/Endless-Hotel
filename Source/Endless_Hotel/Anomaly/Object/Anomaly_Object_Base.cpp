@@ -12,13 +12,7 @@
 AAnomaly_Object_Base::AAnomaly_Object_Base(const FObjectInitializer& ObjectInitializer)
     :Super(ObjectInitializer)
 {
-
-#if WITH_EDITORONLY_DATA
-
     SetIsSpatiallyLoaded(false);
-
-#endif
-
 }
 
 void AAnomaly_Object_Base::BeginPlay()

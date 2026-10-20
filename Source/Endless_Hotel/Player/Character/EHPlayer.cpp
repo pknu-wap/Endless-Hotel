@@ -4,6 +4,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "Sound/SoundController.h"
 #include <Components/PointLightComponent.h>
 #include <Camera/CameraComponent.h>
 #include <Kismet/GameplayStatics.h>
@@ -101,7 +102,10 @@ void AEHPlayer::DiePlayer(const EDeathReason& DeathReason)
 
 	Camera->bUsePawnControlRotation = false;
 
-	constexpr float ReviveDuration = 6.f;
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(false);
+
+	constexpr float ReviveDuration = 5.f;
 	FTimerHandle DeathHandle;
 	GetWorld()->GetTimerManager().SetTimer(DeathHandle, this, &ThisClass::RevivePlayer, AnimLength + ReviveDuration, false);
 }
@@ -153,6 +157,9 @@ void AEHPlayer::FinishRevivePlayer()
 	}
 
 	bAlreadyDie = false;
+
+	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
+	SoundCon->FadeSFXSound(true);
 
 	OnRevive.Broadcast();
 }
