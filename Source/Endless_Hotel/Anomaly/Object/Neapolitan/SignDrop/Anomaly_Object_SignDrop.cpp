@@ -23,7 +23,24 @@ void AAnomaly_Object_SignDrop::BeginPlay()
 
 void AAnomaly_Object_SignDrop::InitializeOnAnomalySpawned()
 {
-	Super::InitializeOnAnomalySpawned();
+	SetActorTransform(OriginalTransform);
+
+	if (!OwnerAnomalyEvent.IsValid())
+	{
+		bSolved = true;
+	}
+
+	Component_Interact->ActiveInteract(true);
+
+	Object->SetSimulatePhysics(false);
+	Object->SetEnableGravity(false);
+	Object->SetPhysicsLinearVelocity(FVector::ZeroVector);
+
+	for (auto* Target : GetComponentsByTag(UStaticMeshComponent::StaticClass(), TEXT("Float")))
+	{
+		auto* Mesh = Cast<UStaticMeshComponent>(Target);
+		Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	}
 
 	FLinearColor Offset = FLinearColor::Black;
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
