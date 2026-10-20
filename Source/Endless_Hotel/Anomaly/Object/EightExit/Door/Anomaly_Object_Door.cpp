@@ -105,13 +105,15 @@ void AAnomaly_Object_Door::BeginPlay()
 
 void AAnomaly_Object_Door::OnChangedProgression(EGameProgression Target)
 {
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+
 	if (Target == EGameProgression::CheckIn)
 	{
 		Mesh_Handle->ComponentTags.Empty();
 		Mesh_Handle2->ComponentTags.Empty();
 		Mesh_Handle->ComponentTags.Add(TEXT("Highlight"));
 	}
-	else
+	else if (FloorSub->GetFloor() == STARTFLOOR)
 	{
 		Mesh_Handle->ComponentTags.Empty();
 		Mesh_Handle2->ComponentTags.Empty();
