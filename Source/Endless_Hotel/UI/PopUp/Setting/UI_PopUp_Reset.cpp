@@ -2,6 +2,7 @@
 
 #include "UI/PopUp/Setting/UI_PopUp_Reset.h"
 #include "GameSystem/SaveGame/SaveManager.h"
+#include "GameSystem/SubSystem/EHGameSystem.h"
 #include <Components/Button.h>
 #include <GameFramework/GameUserSettings.h>
 
@@ -25,9 +26,13 @@ void UUI_PopUp_Reset::Click_Yes()
 	switch (OptionCategory)
 	{
 	case EOptionCategory::Reset_Progression:
+	{
 		USaveManager::DeleteData_Progression();
-		break;
 
+		auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+		GameSystem->ChangeProgression(EGameProgression::CheckIn);
+		break;
+	}
 	case EOptionCategory::Reset_Setting:
 		UGameUserSettings* SettingHandle = GEngine->GetGameUserSettings();
 		SettingHandle->SetToDefaults();

@@ -10,10 +10,12 @@ void ARoomKey::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (USaveManager::LoadData_Progression().bHasKey)
-	{
-		Destroy();
-	}
+	bool bActive = !USaveManager::LoadData_Progression().bHasKey;
+	Object->SetVisibility(bActive);
+	Component_Interact->ActiveInteract(bActive);
+
+	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+	GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 }
 
 #pragma endregion
@@ -27,6 +29,17 @@ void ARoomKey::SaveAcquireData()
 	USaveManager::SaveData_Progression(Data);
 	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	GameSys->OnRoomKeyAcquired.Broadcast();
+}
+
+#pragma endregion
+
+#pragma region Progression
+
+void ARoomKey::OnChangedProgression(EGameProgression Target)
+{
+	bool bActive = !USaveManager::LoadData_Progression().bHasKey;
+	Object->SetVisibility(bActive);
+	Component_Interact->ActiveInteract(bActive);
 }
 
 #pragma endregion
