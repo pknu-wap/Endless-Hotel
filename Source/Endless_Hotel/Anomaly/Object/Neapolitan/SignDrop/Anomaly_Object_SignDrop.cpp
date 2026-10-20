@@ -12,6 +12,8 @@ void AAnomaly_Object_SignDrop::BeginPlay()
 {
 	Super::BeginPlay();
 
+	OriginalTransform = Object->GetRelativeTransform();
+
 	DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(2);
 }
 
@@ -45,7 +47,6 @@ void AAnomaly_Object_SignDrop::Interact(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::Restore:
-		OriginalTransform = Object->GetRelativeTransform();
 		StartRestoring();
 		break;
 	}
