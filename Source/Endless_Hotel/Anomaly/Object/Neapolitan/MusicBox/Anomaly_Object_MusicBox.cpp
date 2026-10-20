@@ -18,6 +18,13 @@ AAnomaly_Object_MusicBox::AAnomaly_Object_MusicBox(const FObjectInitializer& Obj
 	AC->SetupAttachment(RootComponent);
 }
 
+void AAnomaly_Object_MusicBox::InitializeOnAnomalySpawned()
+{
+	StopMusicBox();
+	Super::InitializeOnAnomalySpawned();
+	Mesh_BoxRotator->SetRelativeRotation(FRotator::ZeroRotator);
+}
+
 #pragma endregion
 
 #pragma region PlayMusicBox
@@ -74,8 +81,13 @@ void AAnomaly_Object_MusicBox::Interact(AEHCharacter* Interacter)
 
 void AAnomaly_Object_MusicBox::StopMusicBox()
 {
-	AC->Stop();
-	GetWorld()->GetTimerManager().ClearTimer(FailTimerHandle);
+	if (IsValid(AC))
+	{
+		AC->Stop();
+	}
+	auto& TimerManager = GetWorld()->GetTimerManager();
+	TimerManager.ClearTimer(FailTimerHandle);
+	TimerManager.ClearTimer(RotateHandle);
 }
 
 #pragma endregion
