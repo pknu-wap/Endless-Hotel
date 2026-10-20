@@ -54,6 +54,8 @@ void AAnomaly_Object_Painting::InitializeOnAnomalySpawned()
 	Niagara_Blood_Left->SetVisibility(false);
 	Niagara_Blood_Right->Activate(false);
 	Niagara_Blood_Right->SetVisibility(false);
+
+	bIsRotated = false;
 }
 
 #pragma endregion
