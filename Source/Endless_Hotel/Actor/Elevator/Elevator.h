@@ -276,4 +276,8 @@ private:
 
 #pragma endregion
     
+#pragma region Block
+public:
+    void SetReentryBlocked(bool bBlocked) const;
+    
 };
