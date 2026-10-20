@@ -15,10 +15,10 @@ struct FMouseInfo
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Setting")
-	FVector SpawnLoc;
+	FVector SpawnLoc = FVector::ZeroVector;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setting")
-	FVector EatLoc;
+	FVector EatLoc = FVector::ZeroVector;
 };
 
 #pragma endregion

@@ -41,6 +41,7 @@ void AAnomaly_Elevator::SetAnomalyState()
         ElevatorGhost = GetWorld()->SpawnActor<AElevatorGhost>(ElevatorGhostClass, StartTransform);
         auto* ElevatorGhostController = Cast<AElevatorGhostController>(ElevatorGhost->GetController());
         ElevatorGhostController->TargetElevator = TargetElevator;
+        TargetElevator->SetReentryBlocked(true);
         ScheduleAnomaly();
         break;
     }
