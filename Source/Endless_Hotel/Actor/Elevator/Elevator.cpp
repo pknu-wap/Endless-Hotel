@@ -389,3 +389,12 @@ void AElevator::DisableElevator() const
 }
 
 #pragma endregion
+
+#pragma region Block
+
+void AElevator::SetReentryBlocked(const bool bBlocked) const
+{
+    DoorComp->SetReentryBlocked(bBlocked);
+}
+
+#pragma endregion
