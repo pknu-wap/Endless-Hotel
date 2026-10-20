@@ -87,6 +87,7 @@ void USoundController::FadeSFXSound(bool bIsOpen)
 	}
 	else
 	{
+		UGameplayStatics::PopSoundMixModifier(this, SCM_SFX_Fade);
 		UGameplayStatics::PushSoundMixModifier(this, SCM_SFX_Mute);
 	}
 }

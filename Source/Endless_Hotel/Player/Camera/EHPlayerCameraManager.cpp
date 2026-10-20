@@ -6,7 +6,6 @@
 #include "GameSystem/GameInstance/EHGameInstance.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
-#include "Sound/SoundController.h"
 #include <Kismet/GameplayStatics.h>
 #include <Engine/PostProcessVolume.h>
 #include <Components/AudioComponent.h>
@@ -101,9 +100,6 @@ void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 
 	const float ParamValue = bIsOpen ? 0.f : 5.f;
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), ParamValue);
-
-	auto* SoundCon = GetGameInstance()->GetSubsystem<USoundController>();
-	SoundCon->FadeSFXSound(bIsOpen);
 }
 
 void AEHPlayerCameraManager::RemoveAllEyeEffect()
