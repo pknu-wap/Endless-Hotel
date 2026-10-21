@@ -28,6 +28,7 @@ void UUI_PopUp_Reset::Click_Yes()
 	case EOptionCategory::Reset_Progression:
 	{
 		USaveManager::DeleteData_Progression();
+		USaveManager::DeleteClearedAnomalyID();
 
 		auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		GameSystem->ChangeProgression(EGameProgression::CheckIn);
