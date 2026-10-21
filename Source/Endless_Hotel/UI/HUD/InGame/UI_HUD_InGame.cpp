@@ -160,6 +160,26 @@ void UUI_HUD_InGame::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 			Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
 			Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
 		}), Delay + Duration, false);
+
+	SubTitleHandles.Add(ShowHandle);
+	SubTitleHandles.Add(HideHandle);
+}
+
+void UUI_HUD_InGame::CancelAllSubTitle()
+{
+	Image_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+	Text_SubTitle->SetVisibility(ESlateVisibility::Hidden);
+
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	for (FTimerHandle Handle : SubTitleHandles)
+	{
+		if (Handle.IsValid())
+		{
+			TimerManager.ClearTimer(Handle);
+		}
+	}
+
+	SubTitleHandles.Empty();
 }
 
 #pragma endregion
