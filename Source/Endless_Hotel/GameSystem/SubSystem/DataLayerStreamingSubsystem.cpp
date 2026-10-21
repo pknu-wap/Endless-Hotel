@@ -67,10 +67,10 @@ void UDataLayerStreamingSubsystem::WaitForDataLayerReady(const EMapDataLayer& Da
 				return;
 			}
 
-			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 			VisitedDataLayers.Add(DataLayer);
 			CurrentDataLayer = DataLayer;
 			OnDataLayerReady.Broadcast();
+			SafeWorld->GetTimerManager().ClearTimer(DataLayerStreamingCheckHandle);
 		}), 0.1f, true);
 }
 
