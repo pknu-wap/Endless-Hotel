@@ -179,23 +179,12 @@ void UAnomalyVerdictSubsystem::SetCurrentAnomaly(AAnomaly_Event* Anomaly, const 
 	{
 		DataLayerSys->SetCurrentDataLayer(AnomalyMap);
 	}
-
 	UElevatorManagerSubsystem* ElevatorSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UElevatorManagerSubsystem>() : nullptr;
 	if (ElevatorSys)
 	{
 		ElevatorSys->SetTargetElevator(CurrentAnomaly->TargetElevatorID);
 	}
-
 	CurrentAnomaly->SetAnomalyState();
-
-	if (CurrentAnomaly->AnomalyID != EAnomalyID::Normal)
-	{
-		if (UAnomalyPoolSubsystem* PoolSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>() : nullptr)
-		{
-			++PoolSys->ActIndex;
-		}
-	}
-
 	if (ElevatorSys)
 	{
 		ElevatorSys->StartAllElevator();
