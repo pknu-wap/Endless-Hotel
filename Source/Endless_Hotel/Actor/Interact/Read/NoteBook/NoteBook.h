@@ -47,10 +47,14 @@ public:
 
 private:
 	void FindDescription();
+	void SetDefaultDescription();
 
 private:
 	UPROPERTY()
 	TArray<TObjectPtr<UStaticMeshComponent>> SM_Descriptions;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UActorComponent>> Comp_Widgets;
 
 #pragma endregion
 
