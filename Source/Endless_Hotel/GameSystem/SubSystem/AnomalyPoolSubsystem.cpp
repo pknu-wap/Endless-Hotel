@@ -48,7 +48,7 @@ void UAnomalyPoolSubsystem::InitializePool()
         AssetManager.RemoveClearedAnomaly();
     }
  
-    AssetManager.ShuffleActAnomaly();
+    AssetManager.ShuffleActAnomaly(0);
  
     ActIndex = 0;
 }
@@ -117,8 +117,9 @@ void UAnomalyPoolSubsystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
     FSaveData_Progression Data = USaveManager::LoadData_Progression();
     Data.ActiveRules = AnomalyRules;
     USaveManager::SaveData_Progression(Data);
- 
-    InitializePool();
+    auto& AssetManager = UEHAssetManager::Get();
+    AssetManager.AppendAnomaliesForRule(AnomalyRule);
+    AssetManager.ShuffleActAnomaly(ActIndex);
     OnAddAnomalyRule.Broadcast(AnomalyRule);
 }
  

@@ -41,7 +41,8 @@ public:
 	void InitAnomalyEntries();
 	void RebuildActAnomalyFromOrigin();
 	void RemoveNoRuleAnomaly(const TArray<EAnomalyRule>& ActiveRules);
-	void ShuffleActAnomaly();
+	void ShuffleActAnomaly(uint8 StartIndex);
+	void AppendAnomaliesForRule(EAnomalyRule Rule);
 
 #pragma endregion
 
