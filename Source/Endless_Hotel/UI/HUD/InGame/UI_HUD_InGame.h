@@ -96,6 +96,7 @@ private:
 
 public:
 	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
+	void CancelAllSubTitle();
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -103,6 +104,8 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> Text_SubTitle;
+
+	TArray<FTimerHandle> SubTitleHandles;
 
 #pragma endregion
 

@@ -83,6 +83,7 @@ private:
 
 public:
 	void ShowSubTitle(FText SubTitle, float Delay, float Duration);
+	void CancelAllSubTitle();
 
 #pragma endregion
 

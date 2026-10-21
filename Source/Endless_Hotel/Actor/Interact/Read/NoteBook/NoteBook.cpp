@@ -2,6 +2,7 @@
 
 #include "Actor/Interact/Read/NoteBook/NoteBook.h"
 #include "UI/Base/NoteBook/UI_NoteBook.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Components/WidgetComponent.h>
 
 #pragma region Base
@@ -21,18 +22,17 @@ void ANoteBook::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TArray<UActorComponent*> Comp_Widgets = GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
+	Comp_Widgets.Empty();
+	Comp_Widgets = GetComponentsByTag(UWidgetComponent::StaticClass(), TEXT("Description"));
 	Comp_Widgets.Sort([](const UActorComponent& First, const UActorComponent& Second)
 		{
 			return First.GetName() < Second.GetName();
 		});
 
-	for (int32 Index = 0; Index < Comp_Widgets.Num(); ++Index)
-	{
-		auto* Comp_Widget = Cast<UWidgetComponent>(Comp_Widgets[Index]);
-		auto* UI_NoteBook = Cast<UUI_NoteBook>(Comp_Widget->GetUserWidgetObject());
-		UI_NoteBook->ChangeDescription(Index);
-	}
+	SetDefaultDescription();
+
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::SetDefaultDescription);
 }
 
 #pragma endregion
@@ -69,6 +69,16 @@ void ANoteBook::FindDescription()
 	for (auto* Target : Array)
 	{
 		SM_Descriptions.Add(Cast<UStaticMeshComponent>(Target));
+	}
+}
+
+void ANoteBook::SetDefaultDescription()
+{
+	for (int32 Index = 0; Index < Comp_Widgets.Num(); ++Index)
+	{
+		auto* Comp_Widget = Cast<UWidgetComponent>(Comp_Widgets[Index]);
+		auto* UI_NoteBook = Cast<UUI_NoteBook>(Comp_Widget->GetUserWidgetObject());
+		UI_NoteBook->ChangeDescription(Index);
 	}
 }
 

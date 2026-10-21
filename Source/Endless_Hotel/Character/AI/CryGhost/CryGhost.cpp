@@ -17,7 +17,6 @@ ACryGhost::ACryGhost(const FObjectInitializer& ObjectInitializer)
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(RootComponent);
 	AudioComponent->SetAutoActivate(false);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &ThisClass::PlayCrySound);
 
 	GetCharacterMovement()->MaxWalkSpeed = 450.f;
 
@@ -72,6 +71,7 @@ void ACryGhost::PlayCrySound()
 		return;
 	}
 
+	AudioComponent->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayCrySound);
 	PlaySound(SW_Cry);
 }
 
