@@ -134,17 +134,14 @@ TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Ind
 {
    auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
    auto& AssetManager = UEHAssetManager::Get();
-   bool bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
-
-   if (!bHasAnomaly)
+   if (!AssetManager.IsValidActAnomalyIndex(Index))
    {
       AnomalySub->InitializePool();
       Index = AnomalySub->ActIndex;
-      bHasAnomaly = AssetManager.IsValidIndexAnomalyData(Index);
    }
-   if (!bHasAnomaly)
+   if (!AssetManager.IsValidActAnomalyIndex(Index))
    {
-      return TOptional<FAnomalySpawnInfo>();
+      return {};
    }
 
    const FAnomalyEntry& Data = AssetManager.GetActAnomalyByIndex(Index);
@@ -160,7 +157,7 @@ TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Ind
 
 TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideNext() const
 {
-   const auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+   auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
    constexpr int32 NormalChance = 15;
 
    if (FMath::RandRange(1, 100) <= NormalChance)
@@ -169,7 +166,13 @@ TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideNext() const
    }
 
    TOptional<FAnomalySpawnInfo> Result = DecideAnomaly(AnomalySub->ActIndex);
-   return Result.IsSet() ? Result : MakeNormalInfo();
+   if (!Result.IsSet())
+   {
+      return MakeNormalInfo();
+   }
+   ++AnomalySub->ActIndex;
+
+   return Result;
 }
 
 void UAnomalyGeneratorSubsystem::RollNext()

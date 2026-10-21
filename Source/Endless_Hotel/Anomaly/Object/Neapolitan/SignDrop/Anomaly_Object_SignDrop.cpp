@@ -11,9 +11,6 @@
 void AAnomaly_Object_SignDrop::BeginPlay()
 {
 	Super::BeginPlay();
-
-	OriginalTransform = Object->GetComponentTransform();
-
 	DynamicMaterial = Object->CreateAndSetMaterialInstanceDynamic(2);
 }
 
@@ -23,8 +20,6 @@ void AAnomaly_Object_SignDrop::BeginPlay()
 
 void AAnomaly_Object_SignDrop::InitializeOnAnomalySpawned()
 {
-	SetActorTransform(OriginalTransform);
-
 	Super::InitializeOnAnomalySpawned();
 
 	FLinearColor Offset = FLinearColor::Black;

@@ -25,7 +25,7 @@ void AAnomaly_Object_Base::BeginPlay()
 {
     Super::BeginPlay();
 
-    OriginalTransform = GetActorTransform();
+    OriginalTransform = Object->GetRelativeTransform();
     
     auto* AnomalySub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
     AnomalySub->RegisterAnomalyObject(this);
@@ -52,7 +52,7 @@ void AAnomaly_Object_Base::InitializeOnAnomalySpawned()
         bSolved = true;
     }
 
-    SetActorTransform(OriginalTransform);
+    Object->SetRelativeTransform(OriginalTransform);
 
     Component_Interact->ActiveInteract(true);
 

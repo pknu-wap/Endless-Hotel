@@ -116,17 +116,36 @@ void UEHAssetManager::RemoveNoRuleAnomaly(const TArray<EAnomalyRule>& ActiveRule
 		});
 }
 
-void UEHAssetManager::ShuffleActAnomaly()
+void UEHAssetManager::ShuffleActAnomaly(uint8 StartIndex)
 {
 	if (ActAnomaly.Num() > 1)
 	{
-		for (uint8 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > 0; --CurrentIndex)
+		for (uint8 CurrentIndex = ActAnomaly.Num() - 1; CurrentIndex > StartIndex; --CurrentIndex)
 		{
-			const uint8 RandomIndex = FMath::RandRange(0, CurrentIndex);
+			const uint8 RandomIndex = FMath::RandRange(StartIndex, CurrentIndex);
 			if (CurrentIndex != RandomIndex)
 			{
 				ActAnomaly.Swap(CurrentIndex, RandomIndex);
 			}
+		}
+	}
+}
+
+void UEHAssetManager::AppendAnomaliesForRule(EAnomalyRule Rule)
+{
+	for (const FAnomalyEntry& Entry : OriginAnomaly)
+	{
+		if (Entry.Rule != Rule)
+		{
+			continue;
+		}
+		const bool bAlreadyExists = ActAnomaly.ContainsByPredicate([&Entry](const FAnomalyEntry& Existing)
+			{
+				return Existing.ID == Entry.ID;
+			});
+		if (!bAlreadyExists)
+		{
+			ActAnomaly.Add(Entry);
 		}
 	}
 }
