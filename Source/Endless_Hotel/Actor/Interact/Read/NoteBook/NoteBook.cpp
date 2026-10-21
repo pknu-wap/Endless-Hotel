@@ -78,7 +78,10 @@ void ANoteBook::SetDefaultDescription()
 	{
 		auto* Comp_Widget = Cast<UWidgetComponent>(Comp_Widgets[Index]);
 		auto* UI_NoteBook = Cast<UUI_NoteBook>(Comp_Widget->GetUserWidgetObject());
-		UI_NoteBook->ChangeDescription(Index);
+		if (IsValid(UI_NoteBook))
+		{
+			UI_NoteBook->ChangeDescription(Index);
+		}
 	}
 }
 
