@@ -91,7 +91,7 @@ void AAnomaly_Object_Door::BeginPlay()
 		auto* GameInstance = GetGameInstance();
 		auto* FloorSub = GameInstance->GetSubsystem<UFloorProgressSubsystem>();
 		FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetDoorState);
-		
+
 		auto* GameSystem = GameInstance->GetSubsystem<UEHGameSystem>();
 		GameSystem->OnProgressionChanged.AddUObject(this, &ThisClass::OnChangedProgression);
 
@@ -482,7 +482,7 @@ void AAnomaly_Object_Door::RotateKey()
 	LatentInfo.Linkage = 0;
 
 	UKismetSystemLibrary::MoveComponentTo(KeyActor->GetRootComponent(), FVector(-4.f, -95, -76), FRotator(-90, 90, -90), true, true, 0.8f, false, EMoveComponentAction::Move, LatentInfo);
-	
+
 	FTimerHandle DestroyHandle;
 	GetWorld()->GetTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateWeakLambda(this, [this]() {KeyActor->Destroy(); }), 0.5f, false);
 }
