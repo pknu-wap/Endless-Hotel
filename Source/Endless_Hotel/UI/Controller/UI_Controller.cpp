@@ -205,7 +205,19 @@ void UUI_Controller::OnLoadedWidgetDataAsset(FPrimaryAssetId DataAssetID, EWidge
 void UUI_Controller::ShowSubTitle(FText SubTitle, float Delay, float Duration)
 {
 	auto* UI_InGame = Cast<UUI_HUD_InGame>(GetHUDWidget());
-	UI_InGame->ShowSubTitle(SubTitle, Delay, Duration);
+	if (IsValid(UI_InGame))
+	{
+		UI_InGame->ShowSubTitle(SubTitle, Delay, Duration);
+	}
+}
+
+void UUI_Controller::CancelAllSubTitle()
+{
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(GetHUDWidget());
+	if (IsValid(UI_InGame))
+	{
+		UI_InGame->CancelAllSubTitle();
+	}
 }
 
 #pragma endregion

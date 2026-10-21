@@ -6,6 +6,7 @@
 #include "UI/Controller/UI_Controller.h"
 #include "Actor/Interact/Read/NoteBook/NoteBook.h"
 #include "Asset/Manager/EHAssetManager.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include <Blueprint/WidgetTree.h>
 #include <Components/Button.h>
 #include <Components/WidgetComponent.h>
@@ -18,6 +19,9 @@ void UUI_PopUp_NoteBook::NativeOnInitialized()
 
 	Button_Left->OnClicked.AddDynamic(this, &ThisClass::Click_ButtonLeft);
 	Button_Right->OnClicked.AddDynamic(this, &ThisClass::Click_ButtonRight);
+
+	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSub->FloorChange_Reset.AddUObject(this, &ThisClass::ResetPageInfo);
 }
 
 #pragma endregion
@@ -87,6 +91,21 @@ void UUI_PopUp_NoteBook::Click_ButtonRight()
 #pragma endregion
 
 #pragma region Page
+
+void UUI_PopUp_NoteBook::ResetPageInfo()
+{
+	PageStartIndex = 0;
+
+	auto* NoteBook = Cast<ANoteBook>(TargetObject);
+
+	for (int32 Index = 0; Index < UI_NoteBooks.Num(); ++Index)
+	{
+		UUI_NoteBook* UI_NoteBook = UI_NoteBooks[Index].Get();
+		UI_NoteBook->SetVisibility(ESlateVisibility::Visible);
+
+		NoteBook->ShowDescription(true, Index);
+	}
+}
 
 void UUI_PopUp_NoteBook::TurnOverPage(bool bLeft)
 {

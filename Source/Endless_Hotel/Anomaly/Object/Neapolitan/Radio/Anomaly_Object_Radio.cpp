@@ -41,9 +41,14 @@ void AAnomaly_Object_Radio::BeginPlay()
 
 void AAnomaly_Object_Radio::PointerMoving()
 {
+	if (!Component_Interact->CanInteract())
+	{
+		return;
+	}
+
 	int32 RandomIndex = FMath::RandRange(0, Sound_Radio.Num() - 1);
 	AC->SetSound(Sound_Radio[RandomIndex]);
-	AC->Play();
+	AC->FadeIn(0.5f);
 
 	if (RadioSubtitles.IsValidIndex(RandomIndex))
 	{
@@ -109,6 +114,9 @@ void AAnomaly_Object_Radio::StopRadio()
 	AC->FadeOut(0.5f, 0.f);
 
 	Timeline_PointerSpin->SetPlayRate(0.2f);
+
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	UICon->CancelAllSubTitle();
 
 	FTimerHandle TempHandle;
 	GetWorld()->GetTimerManager().SetTimer(TempHandle, FTimerDelegate::CreateWeakLambda(this, [this]()

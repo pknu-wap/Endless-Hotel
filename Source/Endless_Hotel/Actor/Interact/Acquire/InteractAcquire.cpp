@@ -42,6 +42,11 @@ void AInteractAcquire::MoveToPlayerCamera(AEHCharacter* Interacter)
 
 	FVector TargetLocation = CameraLocation + ForwardVector * ForwardLength + UpVector * UpLength;
 
+	if (GetAttachParentActor())
+	{
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	}
+
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
 	LatentInfo.UUID = 1;

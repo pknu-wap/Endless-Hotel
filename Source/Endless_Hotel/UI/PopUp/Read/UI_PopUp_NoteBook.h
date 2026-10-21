@@ -53,6 +53,9 @@ private:
 #pragma region Widget
 
 private:
+	void ResetPageInfo();
+
+private:
 	TArray<TWeakObjectPtr<class UUI_NoteBook>> UI_NoteBooks;
 
 	uint8 PageStartIndex = 0;

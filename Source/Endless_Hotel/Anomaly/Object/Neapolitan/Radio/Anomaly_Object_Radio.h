@@ -48,7 +48,7 @@ protected:
 #pragma region Reset
 
 public:
-	virtual void InitializeOnAnomalySpawned() override { StopRadio(); }
+	virtual void InitializeOnAnomalySpawned() override { Super::InitializeOnAnomalySpawned(); StopRadio(); }
 
 #pragma endregion
 

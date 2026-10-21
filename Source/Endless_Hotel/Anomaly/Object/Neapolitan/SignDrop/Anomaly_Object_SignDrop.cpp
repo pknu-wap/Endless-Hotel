@@ -23,6 +23,8 @@ void AAnomaly_Object_SignDrop::BeginPlay()
 
 void AAnomaly_Object_SignDrop::InitializeOnAnomalySpawned()
 {
+	SetActorTransform(OriginalTransform);
+
 	Super::InitializeOnAnomalySpawned();
 
 	FLinearColor Offset = FLinearColor::Black;
