@@ -41,6 +41,11 @@ void AAnomaly_Object_Radio::BeginPlay()
 
 void AAnomaly_Object_Radio::PointerMoving()
 {
+	if (!Component_Interact->CanInteract())
+	{
+		return;
+	}
+
 	int32 RandomIndex = FMath::RandRange(0, Sound_Radio.Num() - 1);
 	AC->SetSound(Sound_Radio[RandomIndex]);
 	AC->FadeIn(0.5f);
