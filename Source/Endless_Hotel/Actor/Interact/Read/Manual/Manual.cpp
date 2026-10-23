@@ -106,7 +106,9 @@ void AManual::ShowUnlockRulePaper()
 
 void AManual::OnAddedNewRule(EAnomalyRule Rule)
 {
-	PaperFragments[Rule]->SetVisibility(true);
+	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	bool bActive = PoolSub->AnomalyRules.Contains(Rule);
+	PaperFragments[Rule]->SetVisibility(bActive);
 }
 
 #pragma endregion
