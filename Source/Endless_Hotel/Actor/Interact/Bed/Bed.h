@@ -7,6 +7,26 @@
 #include <CoreMinimal.h>
 #include <Bed.generated.h>
 
+#pragma region Declare
+
+USTRUCT(BlueprintType)
+struct FBedDirectionInfo
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "Info")
+	FTransform TargetTrans;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Info")
+	float Delay;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Info")
+	float Duration;
+};
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API ABed : public AInteractBase
 {
@@ -29,7 +49,8 @@ public:
 #pragma region Reference
 
 private:
-	TWeakObjectPtr<class AEHPlayer> EHPlayer;
+	TWeakObjectPtr<class AEHPlayer> Player;
+	TWeakObjectPtr<class UCapsuleComponent> PlayerRoot;
 	TWeakObjectPtr<class AEHPlayerController> PC;
 	TWeakObjectPtr<class AEHPlayerCameraManager> CameraManager;
 
@@ -45,27 +66,19 @@ private:
 #pragma region Rest
 
 private:
-	void MoveToBedStart();
-
-	UFUNCTION()
-	void MoveToBedMiddle();
-
-	UFUNCTION()
-	void MoveToBedEnd();
-
-	void WakeUp();
-
-	UFUNCTION()
-	void OnCompletedWakeUp();
-
-	void StartControllerRotation(const FRotator& TargetRotation, float Duration);
+	void StartRest();
+	void StartWakeUp();
+	void SetPlayerInputAble(bool bAble);
+	void ShowDirection(TArray<FBedDirectionInfo> Infos);
+	void ShowEyeEffect(bool bOpen);
+	void AdjustControllerRotation(const FRotator& TargetRotation, float Duration);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	FTransform Trans_Start;
+	TArray<FBedDirectionInfo> RestInfo;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	FTransform Trans_Middle;
+	TArray<FBedDirectionInfo> WakeInfo;
 
 	FTimerHandle ControllerHandle;
 

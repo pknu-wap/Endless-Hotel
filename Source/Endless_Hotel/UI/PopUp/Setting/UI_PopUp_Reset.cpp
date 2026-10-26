@@ -3,6 +3,7 @@
 #include "UI/PopUp/Setting/UI_PopUp_Reset.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include <Components/Button.h>
 #include <GameFramework/GameUserSettings.h>
 

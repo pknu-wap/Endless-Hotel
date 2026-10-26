@@ -136,6 +136,7 @@ public:
 	bool bCanRun = true;
 	bool bCanCrouch = true;
 	bool bCanFaceCover = true;
+	bool bCanInteract = false;
 	bool bIsRunning = false;
 	bool bIsCrouching = false;
 	bool bIsButtonPressing = false;

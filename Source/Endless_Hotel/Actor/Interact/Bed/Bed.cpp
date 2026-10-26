@@ -11,6 +11,7 @@
 #include "UI/HUD/InGame/UI_HUD_InGame.h"
 #include <Kismet/GameplayStatics.h>
 #include <Kismet/KismetSystemLibrary.h>
+#include <Components/CapsuleComponent.h>
 
 #pragma region Base
 
@@ -24,15 +25,16 @@ void ABed::BeginPlay()
 	bool bActive = GameSystem->GetGameProgression() == EGameProgression::CheckIn;
 	Component_Interact->ActiveInteract(bActive);
 
-	EHPlayer = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	EHPlayer->OnRevive.AddUObject(this, &ThisClass::WakeUp);
+	Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->OnRevive.AddUObject(this, &ThisClass::StartWakeUp);
+	PlayerRoot = Cast<UCapsuleComponent>(Player->GetRootComponent());
 	PC = Cast<AEHPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CameraManager = Cast<AEHPlayerCameraManager>(UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0));
 
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (GameSystem->GetGameProgression() != EGameProgression::CheckIn && FloorSub->GetIsFirstFloor())
 	{
-		WakeUp();
+		StartWakeUp();
 	}
 }
 
@@ -48,7 +50,7 @@ void ABed::Interact(AEHCharacter* Interacter)
 	switch (Info.InteractType)
 	{
 	case EInteractType::Rest:
-		MoveToBedStart();
+		StartRest();
 		break;
 	}
 }
@@ -67,95 +69,89 @@ void ABed::OnChangedProgression(EGameProgression Target)
 
 #pragma region Rest
 
-void ABed::MoveToBedStart()
+void ABed::StartRest()
 {
-	PC->SetPlayerInputAble(false);
+	SetPlayerInputAble(false);
 
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = TEXT("MoveToBedMiddle");
-	LatentInfo.UUID = __LINE__;
-	LatentInfo.Linkage = 0;
+	ShowDirection(RestInfo);
 
-	constexpr float Duration = 0.5f;
-	UKismetSystemLibrary::MoveComponentTo(EHPlayer->GetRootComponent(), Trans_Start.GetLocation(), Trans_Start.Rotator(), false, false, Duration, false, EMoveComponentAction::Move, LatentInfo);
-	StartControllerRotation(Trans_Start.Rotator(), Duration);
-}
+	FBedDirectionInfo LastInfo = RestInfo.Top();
+	FTimerHandle EyeHandle;
+	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ShowEyeEffect, false), LastInfo.Delay + LastInfo.Duration, false);
 
-void ABed::MoveToBedMiddle()
-{
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			FLatentActionInfo LatentInfo;
-			LatentInfo.CallbackTarget = this;
-			LatentInfo.ExecutionFunction = TEXT("MoveToBedEnd");
-			LatentInfo.UUID = __LINE__;
-			LatentInfo.Linkage = 0;
-
-			constexpr float Duration = 1.f;
-			UKismetSystemLibrary::MoveComponentTo(EHPlayer->GetRootComponent(), Trans_Middle.GetLocation(), Trans_Middle.Rotator(), false, false, Duration, false, EMoveComponentAction::Move, LatentInfo);
-			StartControllerRotation(Trans_Middle.Rotator(), Duration);
-		}), 1.0f, false);
-}
-
-void ABed::MoveToBedEnd()
-{
-	CameraManager->StartEyeEffect(false);
-
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
-	UI_InGame->StartInGameHUD(false);
-
-	constexpr float Duration = 6.f;
+	constexpr float WakeUpDelay = 8.f;
 	FTimerHandle WakeUpHandle;
-	GetWorld()->GetTimerManager().SetTimer(WakeUpHandle, this, &ThisClass::WakeUp, Duration, false);
+	GetWorld()->GetTimerManager().SetTimer(WakeUpHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartWakeUp), LastInfo.Delay + LastInfo.Duration + WakeUpDelay, false);
 }
 
-void ABed::WakeUp()
+void ABed::StartWakeUp()
 {
-	PC->SetPlayerInputAble(false);
-	PC->SetControlRotation(Trans_Middle.Rotator());
+	SetPlayerInputAble(false);
 
-	EHPlayer->SetActorTransform(Trans_Middle);
+	FTransform StartTrans = WakeInfo[0].TargetTrans;
+	Player->SetActorTransform(StartTrans);
+	PC->SetControlRotation(StartTrans.Rotator());
 
-	CameraManager->StartEyeEffect(true);
+	ShowEyeEffect(true);
 
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
-	UI_InGame->StartInGameHUD(true);
+	constexpr float StartDelay = 6.f;
+	FTimerHandle StartHandle;
+	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateUObject(this, &ThisClass::ShowDirection, WakeInfo), StartDelay, false);
+
+	FBedDirectionInfo LastInfo = WakeInfo.Top();
+	constexpr float InputDelay = 6.f;
+	FTimerHandle InputHandle;
+	GetWorld()->GetTimerManager().SetTimer(InputHandle, FTimerDelegate::CreateUObject(this, &ThisClass::SetPlayerInputAble, true), LastInfo.Delay + LastInfo.Duration + InputDelay, false);
 
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	if (GameSystem->GetGameProgression() == EGameProgression::CheckIn)
 	{
 		GameSystem->ChangeProgression(EGameProgression::Tutorial);
 	}
-
-	FTimerHandle DelayHandle;
-	GetWorld()->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			FLatentActionInfo LatentInfo;
-			LatentInfo.CallbackTarget = this;
-			LatentInfo.ExecutionFunction = TEXT("OnCompletedWakeUp");
-			LatentInfo.UUID = __LINE__;
-			LatentInfo.Linkage = 0;
-
-			constexpr float Duration = 0.6f;
-			UKismetSystemLibrary::MoveComponentTo(EHPlayer->GetRootComponent(), Trans_Start.GetLocation(), Trans_Start.Rotator(), false, false, Duration, false, EMoveComponentAction::Move, LatentInfo);
-			StartControllerRotation(Trans_Start.Rotator(), Duration);
-		}), 4.f, false);
 }
 
-void ABed::OnCompletedWakeUp()
+void ABed::SetPlayerInputAble(bool bAble)
 {
-	PC->SetPlayerInputAble(true);
+	PC->SetPlayerInputAble(bAble);
+	PlayerRoot->SetEnableGravity(bAble);
+
+	ECollisionEnabled::Type CE = bAble ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision;
+	PlayerRoot->SetCollisionEnabled(CE);
 }
 
-void ABed::StartControllerRotation(const FRotator& TargetRotation, float Duration)
+void ABed::ShowDirection(TArray<FBedDirectionInfo> Infos)
+{
+	UWorld* World = GetWorld();
+	for (const FBedDirectionInfo& Info : Infos)
+	{
+		FTimerHandle DelayHandle;
+		World->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Info]()
+			{
+				FLatentActionInfo LatentInfo;
+				LatentInfo.CallbackTarget = this;
+				LatentInfo.Linkage = 0;
+				LatentInfo.UUID = FMath::RandRange(INT32_MIN, INT32_MAX);
+				UKismetSystemLibrary::MoveComponentTo(PlayerRoot.Get(), Info.TargetTrans.GetLocation(), Info.TargetTrans.Rotator(), true, true, Info.Duration, false, EMoveComponentAction::Move, LatentInfo);
+				AdjustControllerRotation(Info.TargetTrans.Rotator(), Info.Duration);
+			}), Info.Delay, false);
+	}
+}
+
+void ABed::ShowEyeEffect(bool bOpen)
+{
+	CameraManager->StartEyeEffect(bOpen);
+
+	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	UI_InGame->StartInGameHUD(bOpen);
+}
+
+void ABed::AdjustControllerRotation(const FRotator& TargetRotation, float Duration)
 {
 	StartControllerRot = PC->GetControlRotation();
 	TargetControllerRot = TargetRotation;
 
+	ControllerElapsed = 0.f;
 	ControllerDuration = Duration;
 
 	UWorld* World = GetWorld();

@@ -73,6 +73,7 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
+	bCanInteract = bAble;
 }
 
 void AEHPlayerController::SetupInputComponent()
@@ -410,6 +411,11 @@ void AEHPlayerController::OnPushDoorCompleted()
 
 void AEHPlayerController::CheckForInteractables()
 {
+	if (!bCanInteract)
+	{
+		return;
+	}
+
 	auto* HitActor = GetLookedAtActor(TraceDistance);
 	UInteractComponent* HitComp = nullptr;
 	if (HitActor)
@@ -439,7 +445,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 		return;
 	}
 
-	if (bIsFaceCovering)
+	if (bIsFaceCovering || !bCanInteract)
 	{
 		return;
 	}
