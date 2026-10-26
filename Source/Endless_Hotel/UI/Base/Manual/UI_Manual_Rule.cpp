@@ -47,7 +47,9 @@ void UUI_Manual_Rule::ChangeTextState(EAnomalyRule Rule)
 		return;
 	}
 
-	SetVisibility(ESlateVisibility::Visible);
+	auto* PoolSub = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+	ESlateVisibility Active = PoolSub->AnomalyRules.Contains(Rule) ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	SetVisibility(Active);
 }
 
 void UUI_Manual_Rule::DrawUnderLineText(TArray<EAnomalyRule> Rules)

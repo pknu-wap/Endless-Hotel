@@ -33,6 +33,14 @@ void UUI_PopUp_Reset::Click_Yes()
 
 		auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		GameSystem->ChangeProgression(EGameProgression::CheckIn);
+
+		auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::Doll);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::ResetObject);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::BurnObject);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::Cry);
 		break;
 	}
 	case EOptionCategory::Reset_Setting:
