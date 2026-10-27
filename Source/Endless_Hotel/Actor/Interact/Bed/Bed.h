@@ -2,30 +2,12 @@
 
 #pragma once
 
-#include "Type/Save/Type_Save.h"
 #include "Actor/Interact/InteractBase.h"
+#include "Component/Bed/BedDirectionComponent.h"
 #include <CoreMinimal.h>
 #include <Bed.generated.h>
 
-#pragma region Declare
-
-USTRUCT(BlueprintType)
-struct FBedDirectionInfo
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	FTransform TargetTrans;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	float Delay;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	float Duration;
-};
-
-#pragma endregion
+enum class EGameProgression : uint8;
 
 UCLASS()
 class ENDLESS_HOTEL_API ABed : public AInteractBase
@@ -34,8 +16,12 @@ class ENDLESS_HOTEL_API ABed : public AInteractBase
 	
 #pragma region Base
 
+public:
+	ABed(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 #pragma endregion
 
@@ -46,20 +32,18 @@ public:
 
 #pragma endregion
 
-#pragma region Reference
-
-private:
-	TWeakObjectPtr<class AEHPlayer> Player;
-	TWeakObjectPtr<class UCapsuleComponent> PlayerRoot;
-	TWeakObjectPtr<class AEHPlayerController> PC;
-	TWeakObjectPtr<class AEHPlayerCameraManager> CameraManager;
-
-#pragma endregion
-
 #pragma region Progression
 
 private:
 	void OnChangedProgression(EGameProgression Target);
+
+#pragma endregion
+
+#pragma region Component
+
+private:
+	UPROPERTY()
+	TObjectPtr<UBedDirectionComponent> Comp_Direction;
 
 #pragma endregion
 
@@ -68,10 +52,6 @@ private:
 private:
 	void StartRest();
 	void StartWakeUp();
-	void SetPlayerInputAble(bool bAble);
-	void ShowDirection(TArray<FBedDirectionInfo> Infos);
-	void ShowEyeEffect(bool bOpen);
-	void AdjustControllerRotation(const FRotator& TargetRotation, float Duration);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
@@ -79,14 +59,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
 	TArray<FBedDirectionInfo> WakeInfo;
-
-	FTimerHandle ControllerHandle;
-
-	FRotator StartControllerRot;
-	FRotator TargetControllerRot;
-
-	float ControllerElapsed = 0.f;
-	float ControllerDuration = 0.f;
 
 #pragma endregion
 

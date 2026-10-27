@@ -29,4 +29,12 @@ private:
 
 #pragma endregion
 
+#pragma region Restart
+
+private:
+	UFUNCTION()
+	void OnFinishedAnimation();
+
+#pragma endregion
+
 };

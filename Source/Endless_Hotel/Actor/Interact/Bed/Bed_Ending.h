@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Actor/Interact/InteractBase.h"
+#include "Component/Bed/BedDirectionComponent.h"
 #include <CoreMinimal.h>
 #include <Bed_Ending.generated.h>
 
@@ -11,6 +12,13 @@ class ENDLESS_HOTEL_API ABed_Ending : public AInteractBase
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
+public:
+	ABed_Ending(const FObjectInitializer& ObjectInitializer);
+
+#pragma endregion
+
 #pragma region Interact
 
 public:
@@ -18,34 +26,22 @@ public:
 
 #pragma endregion
 
-#pragma region Reference
+#pragma region Component
 
 private:
-	TWeakObjectPtr<class AEHPlayerController> PC;
+	UPROPERTY()
+	TObjectPtr<UBedDirectionComponent> Comp_Direction;
 
 #pragma endregion
 
 #pragma region Sleep
 
 private:
-	void MoveToBedForSleep();
-
-	UFUNCTION()
-	void SleepBadEnding();
-
-	void StartControllerRotation(const FRotator& TargetRotation, float Duration);
+	void StartSleep();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Sleep")
-	FTransform Trans_Sleep;
-
-	FTimerHandle ControllerHandle;
-
-	FRotator StartControllerRot;
-	FRotator TargetControllerRot;
-
-	float ControllerElapsed = 0.f;
-	float ControllerDuration = 0.f;
+	TArray<FBedDirectionInfo> SleepInfo;
 
 #pragma endregion
 
