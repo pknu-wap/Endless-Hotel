@@ -85,7 +85,6 @@ void ABed::OnChangedProgression(EGameProgression Target)
 void ABed::StartRest()
 {
 	Comp_Direction->SetPlayerInputAble(false);
-
 	Comp_Direction->ShowDirection(RestInfo);
 
 	FBedDirectionInfo LastInfo = RestInfo.Top();
@@ -99,8 +98,12 @@ void ABed::StartRest()
 
 void ABed::StartWakeUp()
 {
-	Comp_Direction->SetPlayerInputAble(false);
+	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	Player->SetActorTransform(WakeInfo[0].TargetTrans);
+	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PC->SetControlRotation(WakeInfo[0].TargetTrans.Rotator());
 
+	Comp_Direction->SetPlayerInputAble(false);
 	Comp_Direction->ShowEyeEffect(true);
 
 	constexpr float StartDelay = 6.f;

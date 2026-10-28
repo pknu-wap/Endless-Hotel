@@ -74,6 +74,12 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
 	bCanInteract = bAble;
+	
+	if (!bAble)
+	{
+		EHPlayer->AddMovementInput(EHPlayer->GetActorForwardVector(), 0);
+		EHPlayer->AddMovementInput(EHPlayer->GetActorRightVector(), 0);
+	}
 }
 
 void AEHPlayerController::SetupInputComponent()
