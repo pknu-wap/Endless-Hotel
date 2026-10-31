@@ -4,6 +4,9 @@
 #include "Component/Interact/InteractComponent.h"
 #include <Components/WidgetComponent.h>
 
+#include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+
 #pragma region Base
 
 AInteractBase::AInteractBase(const FObjectInitializer& ObjectInitializer)
@@ -20,6 +23,33 @@ AInteractBase::AInteractBase(const FObjectInitializer& ObjectInitializer)
 	Component_Widget->SetWidgetClass(UIFinder.Class);
 
 	Component_Interact = CreateDefaultSubobject<UInteractComponent>(TEXT("Component_Interact"));
+}
+
+void AInteractBase::BeginPlay()
+{
+	Super::BeginPlay();
+	const auto* GI = GetGameInstance();
+	auto* FloorSys = GI->GetSubsystem<UFloorProgressSubsystem>();
+	auto* GameSys = GI->GetSubsystem<UEHGameSystem>();
+	FloorSys->OnTopFloor.AddUObject(this, &ThisClass::AllowInteractOnIntro);
+	GameSys->OnProgressionChanged.AddUObject(this, &ThisClass::ChangeInteractableByProgress);
+}
+
+#pragma endregion
+
+#pragma region Interact
+
+void AInteractBase::AllowInteractOnIntro() const
+{
+	Component_Interact->ActiveInteract(bAllowInteractionDuringIntro);
+}
+
+void AInteractBase::ChangeInteractableByProgress(const EGameProgression CurrentProgression) const
+{
+	if (CurrentProgression == EGameProgression::Tutorial)
+	{
+		Component_Interact->ActiveInteract(true);
+	}
 }
 
 #pragma endregion

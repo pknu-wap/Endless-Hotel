@@ -8,6 +8,12 @@
 #include <CoreMinimal.h>
 #include <InteractBase.generated.h>
 
+#pragma region Declare
+
+enum class EGameProgression : uint8;
+
+#pragma endregion
+
 UCLASS()
 class ENDLESS_HOTEL_API AInteractBase : public AEHActor, public IInteractable
 {
@@ -17,6 +23,9 @@ class ENDLESS_HOTEL_API AInteractBase : public AEHActor, public IInteractable
 
 public:
 	AInteractBase(const FObjectInitializer& ObjectInitializer);
+	
+protected:
+	virtual void BeginPlay() override;
 
 #pragma endregion
 
@@ -32,6 +41,8 @@ protected:
 
 public:
 	virtual void Interact(AEHCharacter* Interacter) override {}
+	void AllowInteractOnIntro() const;
+	void ChangeInteractableByProgress(EGameProgression CurrentProgression) const;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -39,6 +50,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UInteractComponent> Component_Interact;
+	
+	UPROPERTY(EditAnywhere)
+	bool bAllowInteractionDuringIntro = false;
 
 #pragma endregion
 

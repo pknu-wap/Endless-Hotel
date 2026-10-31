@@ -194,6 +194,7 @@ void AElevator::HandleMoveFinished()
             {
                 bIsRiding = false;
                 MoveComp->bIsCinematicElevator = false;
+                VerdictComp->BroadCastTopFloor();
                 OpenDoorsWithBell();
                 break;
             }
