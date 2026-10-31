@@ -77,7 +77,7 @@ protected:
 #pragma region Verdicts
 
 public:
-	virtual void InteractSolveVerdict();   //상호작용 이상현상 판정
+	virtual void InteractSolveVerdict();
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Anomaly|Verdict")
@@ -111,14 +111,12 @@ public:
 #pragma region StartType
 
 protected:
-	// 트리거
 	virtual void ActiveTrigger();
 
 	UFUNCTION()
 	virtual void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// 타이머 & 즉발
 	virtual void ScheduleAnomaly(float Delay = 0.01f);
 
 #pragma endregion
