@@ -12,6 +12,13 @@ class ENDLESS_HOTEL_API UUI_Base : public UUserWidget
 {
 	GENERATED_BODY()
 
+#pragma region Base
+
+protected:
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
+#pragma endregion
+
 #pragma region Active
 
 public:

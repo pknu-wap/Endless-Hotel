@@ -2,6 +2,7 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_Setting.h"
@@ -136,6 +137,12 @@ void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
+	auto* PCM = Cast<AEHPlayerCameraManager>(PlayerCameraManager);
+	if (PCM->IsPossessingCamera())
+	{
+		return;
+	}
+
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Escape);
 }
