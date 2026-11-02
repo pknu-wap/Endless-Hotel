@@ -2,6 +2,7 @@
 
 #include "Component/Interact/InteractComponent.h"
 #include "Component/Tutorial/TutorialComponent.h"
+#include "UI/Controller/UI_Controller.h"
 #include "UI/Base/Interact/UI_Interact.h"
 #include "Interface/Interact/Interactable.h"
 #include "GameSystem/SaveGame/SaveManager.h"
@@ -60,6 +61,16 @@ void UInteractComponent::ShowInteracting(bool bIsShow)
 	if (Comp_Tutorial.IsValid() && !Comp_Tutorial->bIsCheckTutorial && USaveManager::LoadData_Progression().Progression == EGameProgression::Tutorial)
 	{
 		return;
+	}
+
+	FSaveData_Progression Data = USaveManager::LoadData_Progression();
+	if (bIsShow && Data.Progression != EGameProgression::CheckIn && !Data.bShowInteract)
+	{
+		auto* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+		UICon->OpenWidget(EWidgetType::PopUp_InteractTutorial);
+
+		Data.bShowInteract = true;
+		USaveManager::SaveData_Progression(Data);
 	}
 
 	ShowHighlight(bIsShow);
