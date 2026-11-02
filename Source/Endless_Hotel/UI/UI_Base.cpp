@@ -7,7 +7,7 @@
 
 void UUI_Base::ActiveWidget()
 {
-	SetIsFocusable(true);
+	SetIsFocusable(false);
 
 	SyncChildWidget(&ThisClass::ActiveWidget);
 }
