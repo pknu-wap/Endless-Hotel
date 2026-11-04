@@ -4,95 +4,117 @@
 
 #include "Anomaly/Object/EightExit/Anomaly_Object_EightExit.h"
 #include <CoreMinimal.h>
-#include <Anomaly_Object_CrawlChild.generated.h>
-
-#pragma region Declare
-
-class ACrawlChild;
-
-#pragma endregion
+#include <Engine/TimerHandle.h>
+#include "Anomaly_Object_CrawlChild.generated.h"
 
 UCLASS()
 class ENDLESS_HOTEL_API AAnomaly_Object_CrawlChild : public AAnomaly_Object_EightExit
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 #pragma region Base
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> ObjectAC;
-
-	UPROPERTY(EditAnywhere, Category = "Sound")
-	TObjectPtr<class UAudioComponent> ChildAC;
-
 public:
-	AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer);
+    AAnomaly_Object_CrawlChild(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<class UAudioComponent> ObjectAC;
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    TObjectPtr<class UAudioComponent> ChildAC;
+
+    UPROPERTY(EditAnywhere, Category = "Transform")
+    FTransform StartTransform;
 
 #pragma endregion
 
 #pragma region ReadyAnomaly
 
 public:
-	void SetupCrawlChildObject();
-	void OnCrawlChildSpawnedHandler(class  ACrawlChild* SpawnedCrawlChild);
+    void SetupCrawlChildObject();
+    void OnCrawlChildSpawnedHandler(class ACrawlChild* SpawnedCrawlChild);
 
 #pragma endregion
 
 #pragma region Trigger
 
-protected:
-	UPROPERTY(EditAnywhere, Category = "TriggerBox")
-	TObjectPtr<class UBoxComponent> TriggerBox;
-
-	UPROPERTY(EditAnywhere, Category = "TriggerBox")
-	FTransform TriggerBox_Transform;
-
 public:
-	void ActiveTriggerBox();
+    void ActiveTriggerBox();
 
 protected:
-	UFUNCTION()
-	void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+    UFUNCTION()
+    void OnTriggerBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "TriggerBox")
+    TObjectPtr<class UBoxComponent> TriggerBox;
 
 #pragma endregion
 
 #pragma region Collapse
 
+private:
+    void StartPillCollapse();
+    void SpawnPillBatch();
+    void ClearPhysicsPills();
+    void ReleaseChild();
+
 protected:
-	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
-	FTransform StartTransform;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collapse")
+    TObjectPtr<class UInstancedStaticMeshComponent> PillISM;
 
-	UPROPERTY(EditAnywhere, Category = "Collapse|Transform")
-	FTransform EndTransform;
+    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn")
+    FVector SpawnCenter = FVector(0.f, 0.f, 320.f);
 
-	TObjectPtr<class UTimelineComponent> FallTimeline;
+    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn", meta = (ClampMin = "1"))
+    int32 PillsPerBatch = 4;
 
-	UPROPERTY(EditAnywhere, Category = "Collapse|Curve")
-	TObjectPtr<UCurveFloat> FallCurve;
+    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn", meta = (ClampMin = "1.0"))
+    float SpawnSpacing = 40.f;
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Timing", meta = (ClampMin = "0.01"))
+    float BatchInterval = 0.3f;
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Timing", meta = (ClampMin = "0.01"))
+    float ChildReleaseDelay = 0.8f;
 
 private:
-	UFUNCTION()
-	void OnFallTimelineUpdate(float Alpha);
+    UPROPERTY(Transient)
+    TArray<TObjectPtr<class UStaticMeshComponent>> PhysicsPills;
 
-	UFUNCTION()
-	void OnFallTimelineFinished();
+    TArray<FVector> PillScales;
+    FTimerHandle PillSpawnTimer;
+    FTimerHandle ChildReleaseTimer;
+
+#pragma endregion
+
+#pragma region Physics
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.01"))
+    float PillMassKg = 1.f;
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.0"))
+    float PillLinearDamping = 0.1f;
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.0"))
+    float PillAngularDamping = 3.f;
 
 #pragma endregion
 
 #pragma region AI
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "AI")
-	FTransform AIEndTransform;
+    UPROPERTY(EditAnywhere, Category = "AI")
+    FTransform AIEndTransform;
 
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	TWeakObjectPtr<class ACrawlChild> CrawlChild;
+    UPROPERTY(VisibleAnywhere, Category = "AI")
+    TWeakObjectPtr<class ACrawlChild> CrawlChild;
 
 #pragma endregion
-
+    
 };
