@@ -32,6 +32,12 @@ public:
 
 #pragma region Clock
 
+public:
+	void SetClockSpeed(float Value);
+
+protected:
+	void MoveClockHands();
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_Bar;
@@ -41,6 +47,15 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UStaticMeshComponent> SM_MinuteHand;
+
+	FRotator OriginalHourHandRotation;
+	FRotator OriginalMinuteHandRotation;
+
+	double ClockElapsed = 0.0;
+
+	int32 ClockSeconds = 0;
+
+	float ClockSpeed = 1.f;
 
 #pragma endregion
 
@@ -76,6 +91,14 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<class UAudioComponent> AC_TikTok;
+
+	UPROPERTY(EditAnywhere, Category = "TikTok")
+	TObjectPtr<class USoundBase> Sound_Tick;
+
+	UPROPERTY(EditAnywhere, Category = "TikTok")
+	TObjectPtr<class USoundBase> Sound_Tock;
+
+	bool bPlayTick = true;
 
 #pragma endregion
 
