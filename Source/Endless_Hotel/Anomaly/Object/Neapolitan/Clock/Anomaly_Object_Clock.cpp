@@ -24,7 +24,7 @@ AAnomaly_Object_Clock::AAnomaly_Object_Clock(const FObjectInitializer& ObjectIni
 
 	AC_TikTok = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_TikTok"));
 	AC_TikTok->SetupAttachment(Object);
-	AC_TikTok->OnAudioFinished.AddUniqueDynamic(this, &ThisClass::PlayTikTokSound);
+	AC_TikTok->SetAutoActivate(false);
 
 	AC_Ringing = CreateDefaultSubobject<UAudioComponent>(TEXT("AC_Ringing"));
 	AC_Ringing->SetupAttachment(Object);
@@ -36,6 +36,12 @@ void AAnomaly_Object_Clock::BeginPlay()
 	Super::BeginPlay();
 
 	OriginalRotation = SM_Bar->GetRelativeRotation();
+
+	OriginalHourHandRotation = SM_HourHand->GetRelativeRotation();
+	OriginalMinuteHandRotation = SM_MinuteHand->GetRelativeRotation();
+
+	AC_TikTok->SetAutoActivate(false);
+	AC_TikTok->Stop();
 
 	FOnTimelineFloat Update_TikTok;
 	Update_TikTok.BindUFunction(this, "UpdateTikTok");
@@ -52,9 +58,54 @@ void AAnomaly_Object_Clock::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	SM_HourHand->AddLocalRotation(FRotator(-0.5f * DeltaSeconds, 0.f, 0.f));
+	ClockElapsed += static_cast<double>(DeltaSeconds) * ClockSpeed;
 
-	SM_MinuteHand->AddLocalRotation(FRotator(-6.f * DeltaSeconds, 0.f, 0.f));
+	if (ClockElapsed < 1.0)
+	{
+		return;
+	}
+
+	const double PassedSteps = FMath::FloorToDouble(ClockElapsed);
+	ClockElapsed -= PassedSteps;
+
+	constexpr double ClockSecondsPerStep = 60.0;
+	constexpr int32 SecondsPerCycle = 12 * 60 * 60;
+
+	const int32 PassedSecondsInCycle = static_cast<int32>(FMath::Fmod(PassedSteps * ClockSecondsPerStep, static_cast<double>(SecondsPerCycle)));
+
+	ClockSeconds = (ClockSeconds + PassedSecondsInCycle) % SecondsPerCycle;
+
+	MoveClockHands();
+}
+
+#pragma endregion
+
+#pragma region Clock
+
+void AAnomaly_Object_Clock::SetClockSpeed(float Value)
+{
+	ClockSpeed = FMath::Max(Value, 0.01f);
+	Timeline_TikTok->SetPlayRate(ClockSpeed);
+}
+
+void AAnomaly_Object_Clock::MoveClockHands()
+{
+	constexpr double MinuteAnglePerSecond = 360.0 / 3600.0;
+
+	const double MinuteAngle = FMath::Fmod(ClockSeconds * MinuteAnglePerSecond, 360.0);
+
+	const int32 PassedHours = ClockSeconds / 3600;
+	const double HourAngle = PassedHours * 30.0;
+
+	FRotator MinuteTarget = OriginalMinuteHandRotation;
+	MinuteTarget.Pitch -= MinuteAngle;
+	SM_MinuteHand->SetRelativeRotation(MinuteTarget);
+
+	FRotator HourTarget = OriginalHourHandRotation;
+	HourTarget.Pitch -= HourAngle;
+	SM_HourHand->SetRelativeRotation(HourTarget);
+
+	PlayTikTokSound();
 }
 
 #pragma endregion
@@ -93,6 +144,9 @@ void AAnomaly_Object_Clock::UpdateTikTok(float Value)
 
 void AAnomaly_Object_Clock::PlayTikTokSound()
 {
+	USoundBase* Sound = bPlayTick ? Sound_Tick.Get() : Sound_Tock.Get();
+	bPlayTick = !bPlayTick;
+	AC_TikTok->SetSound(Sound);
 	AC_TikTok->Play();
 }
 
