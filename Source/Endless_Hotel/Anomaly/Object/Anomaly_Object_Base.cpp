@@ -174,6 +174,7 @@ void AAnomaly_Object_Base::StartRestoring(float Duration)
     FLatentActionInfo LatentInfo;
     LatentInfo.UUID = __LINE__;
     LatentInfo.CallbackTarget = this;
+    LatentInfo.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(Object, OriginalTransform.GetLocation(), OriginalTransform.Rotator(), true, true, RestoreDuration, true, EMoveComponentAction::Move, LatentInfo);
 }
