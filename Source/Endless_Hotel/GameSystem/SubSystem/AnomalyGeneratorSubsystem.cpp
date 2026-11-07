@@ -225,7 +225,6 @@ bool UAnomalyGeneratorSubsystem::SetNextAnomalyForced(const EAnomalyID ID)
    FAnomalyEntry Data;
    if (!AssetManager.TryGetActAnomalyEntryByID(ID, Data))
    {
-      UE_LOG(LogTemp, Warning, TEXT("[AnomalyGeneratorSubsystem] SetNextAnomalyForced failed: ID not in active pool."));
       return false;
    }
 
