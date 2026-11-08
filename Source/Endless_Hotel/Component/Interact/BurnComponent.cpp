@@ -85,7 +85,7 @@ void UBurnComponent::BurnTick()
 		Niagara_Fire->Deactivate();
 
 		auto* VerdictSub = GetWorld()->GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-		if (VerdictSub->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
+		if (IsValid(VerdictSub->CurrentAnomaly) && VerdictSub->CurrentAnomaly->AnomalyID == EAnomalyID::Maze_Monster)
 		{
 			VerdictSub->CurrentAnomaly->InteractSolveVerdict();
 		}
