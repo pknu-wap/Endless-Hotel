@@ -2,10 +2,9 @@
 
 #include "Actor/Interact/InteractBase.h"
 #include "Component/Interact/InteractComponent.h"
-#include <Components/WidgetComponent.h>
-
 #include "GameSystem/SubSystem/EHGameSystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
+#include <Components/WidgetComponent.h>
 
 #pragma region Base
 
@@ -46,7 +45,7 @@ void AInteractBase::AllowInteractOnIntro() const
 
 void AInteractBase::ChangeInteractableByProgress(const EGameProgression CurrentProgression) const
 {
-	if (CurrentProgression == EGameProgression::Tutorial)
+	if (CurrentProgression != EGameProgression::CheckIn)
 	{
 		Component_Interact->ActiveInteract(true);
 	}

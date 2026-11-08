@@ -9,8 +9,6 @@
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Components/InstancedStaticMeshComponent.h>
-#include <Components/StaticMeshComponent.h>
-#include <TimerManager.h>
 
 #pragma region Base
 
