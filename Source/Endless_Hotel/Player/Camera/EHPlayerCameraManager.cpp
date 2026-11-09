@@ -96,10 +96,10 @@ void AEHPlayerCameraManager::FindPPV()
 
 void AEHPlayerCameraManager::StartEyeEffect(bool bIsOpen)
 {
-	bIsOpen ? TimeLine_EyeOpen->PlayFromStart() : TimeLine_EyeClose->PlayFromStart();
-
 	const float ParamValue = bIsOpen ? 0.f : 5.f;
 	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), ParamValue);
+
+	bIsOpen ? TimeLine_EyeOpen->PlayFromStart() : TimeLine_EyeClose->PlayFromStart();
 }
 
 void AEHPlayerCameraManager::RemoveAllEyeEffect()

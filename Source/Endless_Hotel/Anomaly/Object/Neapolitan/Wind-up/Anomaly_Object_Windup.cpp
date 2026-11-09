@@ -1,7 +1,7 @@
 ﻿// Copyright by 2026-1 WAP Game 2 team
 
 #include "Anomaly/Object/Neapolitan/Wind-up/Anomaly_Object_Windup.h"
-#include "Component/Interact/InteractComponent.h"
+#include "Component/Interact/BurnComponent.h"
 #include <Niagara/Public/NiagaraComponent.h>
 
 #pragma region Base
@@ -26,18 +26,8 @@ void AAnomaly_Object_Windup::InitializeOnAnomalySpawned()
 	auto& TimerManager = GetWorld()->GetTimerManager();
 	TimerManager.ClearTimer(DelayHandle);
 	TimerManager.ClearTimer(WindupPlayHandle);
-	TimerManager.ClearTimer(WindupBurnHandle);
 
 	CurrentWindupPlayCount = 0;
-	WindupBurnCurrentTime = 0.f;
-
-	for (auto& Material : MID_WindupBurn)
-	{
-		if (IsValid(Material))
-		{
-			Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-		}
-	}
 
 	if (UAnimInstance* AnimInstance = SKM_Windup->GetAnimInstance())
 	{
@@ -110,7 +100,6 @@ void AAnomaly_Object_Windup::StartWrongLoop()
 {
 	GetWorld()->GetTimerManager().ClearTimer(WindupPlayHandle);
 	SKM_Windup->Stop();
-	StartWindupBurning();
 	PlayWrongMontage();
 }
 
@@ -132,68 +121,23 @@ void AAnomaly_Object_Windup::PlayWrongMontage()
 
 	UAnimInstance* AnimInstance = SKM_Windup->GetAnimInstance();
 
-	AnimInstance->PlaySlotAnimationAsDynamicMontage(WrongWindupAnimation, TEXT("DefaultSlot"), 0.f, 0.f, 1.f,	WrongPlayCount);
+	AnimInstance->PlaySlotAnimationAsDynamicMontage(WrongWindupAnimation, TEXT("DefaultSlot"), 0.f, 0.f, 1.f, WrongPlayCount);
 }
+
 #pragma endregion
 
 #pragma region Burn
 
-void AAnomaly_Object_Windup::SetupWindupBurnTargets()
+void AAnomaly_Object_Windup::StartBurning()
 {
-	MID_WindupBurn.SetNum(SKM_Windup->GetNumMaterials());
-
-	for (int32 Index = 0; Index < MID_WindupBurn.Num(); ++Index)
+	auto* Comp_Burn = FindComponentByClass<UBurnComponent>();
+	if (!IsValid(Comp_Burn))
 	{
-		if (!IsValid(MID_WindupBurn[Index]))
-		{
-			MID_WindupBurn[Index] =
-				SKM_Windup->CreateDynamicMaterialInstance(Index);
-		}
-
-		auto* Material = MID_WindupBurn[Index].Get();
-
-		if (!IsValid(Material))
-		{
-			continue;
-		}
-
-		Material->SetScalarParameterValue(TEXT("Alpha"), 0.f);
-		Material->SetVectorParameterValue(TEXT("Edge Color"), EdgeColor * ColorBoost);
-		Material->SetTextureParameterValue(TEXT("Dissolve Texture"), DissolveTexture);
-
-		SKM_Windup->SetMaterial(Index, Material);
-	}
-}
-
-void AAnomaly_Object_Windup::StartWindupBurning()
-{
-	WindupBurnCurrentTime = 0.f;
-	SetupWindupBurnTargets();
-	Niagara_Fire->Activate();
-	AC->Play();
-	GetWorld()->GetTimerManager().SetTimer(WindupBurnHandle, this, &ThisClass::WindupBurnTick,0.02f, true);
-}
-
-void AAnomaly_Object_Windup::WindupBurnTick()
-{
-	WindupBurnCurrentTime += 0.02f;
-	constexpr float BurnDuration = 5.f;
-	const float Alpha =	FMath::Clamp(WindupBurnCurrentTime / BurnDuration, 0.f, 1.f);
-
-	for (int32 Index = 0; Index < MID_WindupBurn.Num(); ++Index)
-	{
-		MID_WindupBurn[Index]->SetScalarParameterValue(TEXT("Alpha"), Alpha);
+		return;
 	}
 
-	if (Alpha >= 1.f)
-	{
-		SKM_Windup->SetHiddenInGame(true);
-		Object->SetHiddenInGame(true);
-		Niagara_Fire->Deactivate();
-
-		GetWorld()->GetTimerManager().ClearTimer(WindupBurnHandle);
-		SKM_Windup->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+	Comp_Burn->SetupBurnTargets(SKM_Windup);
+	Comp_Burn->StartBurning();
 }
 
 #pragma endregion
@@ -203,42 +147,40 @@ void AAnomaly_Object_Windup::WindupBurnTick()
 void AAnomaly_Object_Windup::Interact(AEHCharacter* Interacter)
 {
 	Super::Interact(Interacter);
-
+	
 	FInteractInfo Info = Component_Interact->GetSelectedInteractInfo();
 
 	switch (CurrentInteractStep)
 	{
 	case EWindupInteractStep::NeedStopSound:
+	{
+		if (Info.InteractType == EInteractType::TurnOff)
 		{
-			if (Info.InteractType == EInteractType::TurnOff)
-			{
-				StopWindup();
+			StopWindup();
 
-				CurrentInteractStep = EWindupInteractStep::NeedBurn;
-				AllowNextInteract();
-				Component_Interact->ShowInteracting(true);
-			}
-
-			else if(Info.InteractType == EInteractType::Burn)
-			{
-				StartWrongLoop();
-
-				CurrentInteractStep = EWindupInteractStep::Finished;
-			}
-			break;
+			CurrentInteractStep = EWindupInteractStep::NeedBurn;
+			AllowNextInteract();
+			Component_Interact->ShowInteracting(true);
 		}
 
-		case EWindupInteractStep::NeedBurn:
+		else if (Info.InteractType == EInteractType::Burn)
 		{
-			if (Info.InteractType == EInteractType::Burn)
-			{
-				StartWindupBurning();
+			StartWrongLoop();
 
-				bSolved = true;
-				CurrentInteractStep = EWindupInteractStep::Finished;
-			}
-			break;
+			CurrentInteractStep = EWindupInteractStep::Finished;
 		}
+		break;
+	}
+
+	case EWindupInteractStep::NeedBurn:
+	{
+		if (Info.InteractType == EInteractType::Burn)
+		{
+			bSolved = true;
+			CurrentInteractStep = EWindupInteractStep::Finished;
+		}
+		break;
+	}
 	}
 }
 

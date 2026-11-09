@@ -11,6 +11,13 @@ class ENDLESS_HOTEL_API UUI_PopUp_Credit_Bad : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
 	
+#pragma region Active
+
+public:
+	virtual void ActiveWidget() override;
+
+#pragma endregion
+
 #pragma region Show
 
 public:
@@ -18,7 +25,11 @@ public:
 
 #pragma endregion
 
-#pragma region Logo
+#pragma region Credit
+
+private:
+	UFUNCTION()
+	void OnFinishedAnimation();
 
 private:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
@@ -26,6 +37,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Logo")
 	TObjectPtr<USoundWave> SW_CreditStart;
+
+	UPROPERTY()
+	TArray<TObjectPtr<class UUI_NoteBook>> UI_Pictures;
 
 #pragma endregion
 

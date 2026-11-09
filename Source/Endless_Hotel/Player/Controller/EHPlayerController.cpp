@@ -2,6 +2,7 @@
 
 #include "Player/Controller/EHPlayerController.h"
 #include "Player/Character/EHPlayer.h"
+#include "Player/Camera/EHPlayerCameraManager.h"
 #include "UI/Controller/UI_Controller.h"
 #include "Component/Interact/InteractComponent.h"
 #include "Type/UI/Type_Setting.h"
@@ -73,6 +74,13 @@ void AEHPlayerController::SetPlayerInputAble(bool bAble)
 	bCanFaceCover = bAble;
 	bCanCrouch = bAble;
 	bIsCameraFixed = !bAble;
+	bCanInteract = bAble;
+	
+	if (!bAble)
+	{
+		EHPlayer->AddMovementInput(EHPlayer->GetActorForwardVector(), 0);
+		EHPlayer->AddMovementInput(EHPlayer->GetActorRightVector(), 0);
+	}
 }
 
 void AEHPlayerController::SetupInputComponent()
@@ -129,6 +137,12 @@ void AEHPlayerController::OpenHUDWidget(const EMapDataLayer& DataLayer)
 
 void AEHPlayerController::EscapeStarted(const FInputActionValue& InputValue)
 {
+	auto* PCM = Cast<AEHPlayerCameraManager>(PlayerCameraManager);
+	if (PCM->IsPossessingCamera())
+	{
+		return;
+	}
+
 	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 	UICon->OpenWidget(EWidgetType::PopUp_Escape);
 }
@@ -410,6 +424,11 @@ void AEHPlayerController::OnPushDoorCompleted()
 
 void AEHPlayerController::CheckForInteractables()
 {
+	if (!bCanInteract)
+	{
+		return;
+	}
+
 	auto* HitActor = GetLookedAtActor(TraceDistance);
 	UInteractComponent* HitComp = nullptr;
 	if (HitActor)
@@ -439,7 +458,7 @@ void AEHPlayerController::OnInteract(const FInputActionValue& Value)
 		return;
 	}
 
-	if (bIsFaceCovering)
+	if (bIsFaceCovering || !bCanInteract)
 	{
 		return;
 	}

@@ -76,6 +76,13 @@ public:
 
 #pragma endregion
 
+#pragma region Burn
+
+protected:
+	virtual void StartBurning();
+
+#pragma endregion
+
 #pragma region Floating
 
 public:
@@ -85,10 +92,10 @@ public:
 
 #pragma region Restore
 
-public:
+protected:
 	virtual void StartRestoring(float Duration = 2.5f);
 
-public:
+protected:
 	UPROPERTY(EditAnywhere, Category = "Object|Transform")
 	FTransform OriginalTransform;
 

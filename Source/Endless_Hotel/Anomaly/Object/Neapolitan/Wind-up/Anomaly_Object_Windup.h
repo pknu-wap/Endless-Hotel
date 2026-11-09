@@ -95,18 +95,8 @@ protected:
 
 #pragma region Burn
 
-private:
-	void SetupWindupBurnTargets();
-	void StartWindupBurning();
-	void WindupBurnTick();
-
-private:
-	UPROPERTY()
-	TArray<TObjectPtr<class UMaterialInstanceDynamic>> MID_WindupBurn;
-
-	FTimerHandle WindupBurnHandle;
-
-	float WindupBurnCurrentTime = 0.f;
+protected:
+	virtual void StartBurning() override;
 
 #pragma endregion
 
@@ -118,4 +108,5 @@ public:
 	EWindupInteractStep CurrentInteractStep = EWindupInteractStep::NeedStopSound;
 
 #pragma endregion
+
 };
