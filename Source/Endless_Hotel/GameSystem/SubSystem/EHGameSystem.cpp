@@ -7,6 +7,7 @@
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyGeneratorSubsystem.h"
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
+#include "GameSystem/SubSystem/SteamSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 
@@ -95,6 +96,10 @@ void UEHGameSystem::GameClear()
 	const auto& AssetManager = UEHAssetManager::Get();
 	const EGameProgression Ending = AssetManager.GetRemainingAnomalyCounts() == 0 ? EGameProgression::Clear_True : EGameProgression::Clear_Bad;
 	ChangeProgression(Ending);
+
+	EAchievementID EndingID = Ending == EGameProgression::Clear_True ? EAchievementID::TrueEnding : EAchievementID::BadEnding;
+	auto* SteamSub = GetGameInstance()->GetSubsystem<USteamSubsystem>();
+	SteamSub->UnlockAchievement(EndingID);
 }
 
 bool UEHGameSystem::IsGameClear() const

@@ -8,6 +8,7 @@
 #include "GameSystem/SubSystem/ElevatorManagerSubsystem.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SubSystem/SteamSubsystem.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "Asset/Manager/EHAssetManager.h"
 #include "Anomaly/Event/Anomaly_Event.h"
@@ -111,7 +112,15 @@ void UAnomalyVerdictSubsystem::ApplyVerdict(bool bForceFailed)
 	bPassed = !bForceFailed && ComputeVerdict() && !bWrongInteractionOccurred;
 	bPassed ? HandlePassed() : HandleFailed();
 
-	if (auto* FloorSys = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>())
+	auto* GameInstance = GetGameInstance();
+	auto& AssetManager = UEHAssetManager::Get();
+	if (bPassed && AssetManager.GetRemainingAnomalyCounts() == 0)
+	{
+		auto* SteamSub = GameInstance->GetSubsystem<USteamSubsystem>();
+		SteamSub->UnlockAchievement(EAchievementID::NoteBook);
+	}
+
+	if (auto* FloorSys = GameInstance->GetSubsystem<UFloorProgressSubsystem>())
 	{
 		if (!bForceFailed && FloorSys->GetIsFirstFloor())
 		{

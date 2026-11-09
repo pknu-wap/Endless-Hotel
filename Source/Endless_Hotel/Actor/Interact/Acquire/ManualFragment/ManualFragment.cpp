@@ -3,6 +3,7 @@
 #include "Actor/Interact/Acquire/ManualFragment/ManualFragment.h"
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/SteamSubsystem.h"
 #include "UI/Base/Manual/UI_Manual_Rule.h"
 #include <Components/WidgetComponent.h>
 
@@ -49,12 +50,19 @@ void AManualFragment::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 void AManualFragment::SaveAcquireData()
 {
+	auto* GameInstance = GetGameInstance();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	Subsystem->AddAnomalyRule(NewRule);
 
 	if (bHasFakeRule)
 	{
 		Subsystem->AddFakeManualEntry(AppearAnomaly, FakeRule, NewRule);
+	}
+
+	if (Subsystem->IsCollectedAllRule())
+	{
+		auto* SteamSub = GameInstance->GetSubsystem<USteamSubsystem>();
+		SteamSub->UnlockAchievement(EAchievementID::Manual);
 	}
 }
 

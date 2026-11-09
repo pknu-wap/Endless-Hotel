@@ -27,10 +27,14 @@ public class Endless_Hotel : ModuleRules
             "Chaos",            
             "ChaosSolverEngine",
             "GeometryCollectionEngine",
-            "FieldSystemEngine"
+            "FieldSystemEngine",
+            "OnlineSubsystem",
+            "OnlineSubsystemUtils"
         });
 
         PrivateIncludePaths.Add("Endless_Hotel");
         PublicDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+
+        DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
     }
 }

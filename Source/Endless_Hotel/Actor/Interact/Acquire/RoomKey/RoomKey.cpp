@@ -3,6 +3,7 @@
 #include "Actor/Interact/Acquire/RoomKey/RoomKey.h"
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
+#include "GameSystem/SubSystem/SteamSubsystem.h"
 
 #pragma region Base
 
@@ -27,8 +28,13 @@ void ARoomKey::SaveAcquireData()
 	FSaveData_Progression Data = USaveManager::LoadData_Progression();
 	Data.bHasKey = true;
 	USaveManager::SaveData_Progression(Data);
-	const auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
-	GameSys->OnRoomKeyAcquired.Broadcast();
+
+	auto* GameInstance = GetGameInstance();
+	const auto* GameSystem = GameInstance->GetSubsystem<UEHGameSystem>();
+	GameSystem->OnRoomKeyAcquired.Broadcast();
+
+	auto* SteamSub = GameInstance->GetSubsystem<USteamSubsystem>();
+	SteamSub->UnlockAchievement(EAchievementID::CheckIn);
 }
 
 #pragma endregion
