@@ -196,6 +196,9 @@ public:
 	bool bReadManual = false;
 
 	UPROPERTY(SaveGame)
+	bool bShowInteract = false;
+
+	UPROPERTY(SaveGame)
 	TArray<EAnomalyRule> ActiveRules = { EAnomalyRule::NoAnomaly, EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 };
 

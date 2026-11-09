@@ -58,6 +58,13 @@ void ALobbyDoor::BeginPlay()
 	Component_Interact->ActiveInteract(bActive);
 }
 
+void ALobbyDoor::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	EndingFog->SetFogDensity(0.f);
+
+	Super::EndPlay(EndPlayReason);
+}
+
 #pragma endregion
 
 #pragma region Progression

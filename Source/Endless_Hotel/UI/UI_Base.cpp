@@ -3,6 +3,21 @@
 #include "UI/UI_Base.h"
 #include <Blueprint/WidgetTree.h>
 
+#pragma region Base
+
+FReply UUI_Base::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+	const FKey Key = InKeyEvent.GetKey();
+	if (Key == EKeys::Tab)
+	{
+		return FReply::Handled();
+	}
+
+	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+}
+
+#pragma endregion
+
 #pragma region Active
 
 void UUI_Base::ActiveWidget()

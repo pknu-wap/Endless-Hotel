@@ -39,41 +39,6 @@ public:
 
 #pragma endregion
 
-#pragma region Burn
-
-protected:
-	void StartBurning();
-	void SetupBurnTargets();
-
-private:
-	void BurnTick();
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UAudioComponent> AC;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<class UNiagaraComponent> Niagara_Fire;
-
-	UPROPERTY(EditAnywhere, Category = "Burn")
-	TObjectPtr<UTexture> DissolveTexture;
-
-	UPROPERTY(EditAnywhere, Category = "Burn")
-	FLinearColor EdgeColor = FLinearColor::White;
-
-	UPROPERTY(EditAnywhere, Category = "Burn")
-	float ColorBoost = 1.f;
-
-private:
-	UPROPERTY()
-	TArray<TObjectPtr<UMaterialInstanceDynamic>> MID_Burn;
-
-	FTimerHandle BurnHandle;
-
-	float BurnCurrentTime = 0.f;
-
-#pragma endregion
-
 #pragma region Coming
 
 public:
