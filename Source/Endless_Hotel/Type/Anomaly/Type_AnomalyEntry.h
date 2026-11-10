@@ -36,7 +36,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "UI|Description")
     TSoftObjectPtr<class UTexture2D> Picture;
 
-    UPROPERTY(EditAnywhere, Category = "UI|Description")
+    UPROPERTY(EditAnywhere, Category = "UI|Description", meta = (MultiLine = "true"))
     FText Description;
 };
 

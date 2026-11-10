@@ -43,21 +43,6 @@ void AAnomaly_CrawlChild::DisableAnomaly()
 
 #pragma endregion
 
-#pragma region Subtitle
-
-void AAnomaly_CrawlChild::ShowSubTitle()
-{
-	auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
-	FTimerHandle SubTitleTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(SubTitleTimerHandle, FTimerDelegate::CreateWeakLambda(this, [this, UICon]()
-		{
-			uint8 SubtitleIndex = FMath::RandRange(0, Subtitle.Num() - 1);
-			UICon->ShowSubTitle(Subtitle[SubtitleIndex], 2, 0.5f);
-		}), 2, true);
-}
-
-#pragma endregion
-
 #pragma region AI
 
 void AAnomaly_CrawlChild::StartCrawlChild()

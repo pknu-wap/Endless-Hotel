@@ -15,7 +15,7 @@ AAnomaly_Event::AAnomaly_Event(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
-	TriggerBox->SetupAttachment(RootComponent);
+	SetRootComponent(TriggerBox);
 	TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

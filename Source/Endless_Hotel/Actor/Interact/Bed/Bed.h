@@ -2,10 +2,12 @@
 
 #pragma once
 
-#include "Type/Save/Type_Save.h"
 #include "Actor/Interact/InteractBase.h"
+#include "Component/Bed/BedDirectionComponent.h"
 #include <CoreMinimal.h>
 #include <Bed.generated.h>
+
+enum class EGameProgression : uint8;
 
 UCLASS()
 class ENDLESS_HOTEL_API ABed : public AInteractBase
@@ -14,8 +16,12 @@ class ENDLESS_HOTEL_API ABed : public AInteractBase
 	
 #pragma region Base
 
+public:
+	ABed(const FObjectInitializer& ObjectInitializer);
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 #pragma endregion
 
@@ -26,15 +32,6 @@ public:
 
 #pragma endregion
 
-#pragma region Reference
-
-private:
-	TWeakObjectPtr<class AEHPlayer> EHPlayer;
-	TWeakObjectPtr<class AEHPlayerController> PC;
-	TWeakObjectPtr<class AEHPlayerCameraManager> CameraManager;
-
-#pragma endregion
-
 #pragma region Progression
 
 private:
@@ -42,38 +39,26 @@ private:
 
 #pragma endregion
 
+#pragma region Component
+
+private:
+	UPROPERTY()
+	TObjectPtr<UBedDirectionComponent> Comp_Direction;
+
+#pragma endregion
+
 #pragma region Rest
 
 private:
-	void MoveToBedStart();
-
-	UFUNCTION()
-	void MoveToBedMiddle();
-
-	UFUNCTION()
-	void MoveToBedEnd();
-
-	void WakeUp();
-
-	UFUNCTION()
-	void OnCompletedWakeUp();
-
-	void StartControllerRotation(const FRotator& TargetRotation, float Duration);
+	void StartRest();
+	void StartWakeUp();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	FTransform Trans_Start;
+	TArray<FBedDirectionInfo> RestInfo;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	FTransform Trans_Middle;
-
-	FTimerHandle ControllerHandle;
-
-	FRotator StartControllerRot;
-	FRotator TargetControllerRot;
-
-	float ControllerElapsed = 0.f;
-	float ControllerDuration = 0.f;
+	TArray<FBedDirectionInfo> WakeInfo;
 
 #pragma endregion
 

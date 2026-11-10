@@ -136,7 +136,6 @@ void AEHPlayer::FreezeAnimation(bool bFreeze, float Duration)
 void AEHPlayer::FinishRevivePlayer()
 {
 	bWaitingForRespawnFloor = false;
-
 	auto* VerdictSub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
 
 	if (VerdictSub)
@@ -145,12 +144,12 @@ void AEHPlayer::FinishRevivePlayer()
 	}
 
 	RespawnPlayer();
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	SetWalkSpeed(WALK_SPEED);
 
 	Camera->bUsePawnControlRotation = true;
 
 	FreezeAnimation(false);
-
 	if (VerdictSub)
 	{
 		VerdictSub->bIsStartInBed = false;

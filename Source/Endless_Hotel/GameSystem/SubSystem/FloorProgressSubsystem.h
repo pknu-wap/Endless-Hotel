@@ -72,6 +72,10 @@ public:
 	void AdvanceScriptedFloor();
 	bool IsTopFloor() const { return Floor >= STARTFLOOR; }
 	
+public:
+	DECLARE_MULTICAST_DELEGATE(FOnTopFloor);
+	FOnTopFloor OnTopFloor;
+	
 #pragma endregion
 
 };

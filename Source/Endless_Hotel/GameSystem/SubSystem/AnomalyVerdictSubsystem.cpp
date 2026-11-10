@@ -23,9 +23,14 @@ void UAnomalyVerdictSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	Collection.InitializeDependency<UElevatorManagerSubsystem>();
 	Collection.InitializeDependency<UFloorProgressSubsystem>();
 
-	if (UDataLayerStreamingSubsystem* DataLayerSys = GetGameInstance() ? GetGameInstance()->GetSubsystem<UDataLayerStreamingSubsystem>() : nullptr)
+	const auto* GI = GetGameInstance();
+	if (auto* DataLayerSys = GI->GetSubsystem<UDataLayerStreamingSubsystem>())
 	{
 		DataLayerSys->OnDataLayerReady.AddUObject(this, &ThisClass::OnDataLayerReady);
+	}
+	if (auto* PoolSys = GI->GetSubsystem<UAnomalyPoolSubsystem>())
+	{
+		PoolSys->OnAddAnomalyRule.AddUObject(this, &ThisClass::HandleAnomalyRuleAcquired);
 	}
 }
 
@@ -80,7 +85,7 @@ void UAnomalyVerdictSubsystem::EvaluateIncorrectRules()
 void UAnomalyVerdictSubsystem::HandlePassed()
 {
 	bIsStartInBed = false;
-	if (!IsValid(CurrentAnomaly))
+	if (!IsValid(CurrentAnomaly) || !bHasAcquiredAnomalyRule)
 	{
 		return;
 	}
@@ -91,6 +96,7 @@ void UAnomalyVerdictSubsystem::HandlePassed()
 	{
 		PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
 	}
+	bHasAcquiredAnomalyRule = true;
 }
 
 void UAnomalyVerdictSubsystem::HandleFailed()
@@ -233,6 +239,7 @@ void UAnomalyVerdictSubsystem::ResetVerdict(const bool bShouldScript)
 	bPassed = false;
 	bIsAnomalySolved = false;
 	bIsElevatorNormal = false;
+	bHasAcquiredAnomalyRule = true;
 
 	CurrentAnomaly = nullptr;
 	CurrentAnomalyID = EAnomalyID::Normal;

@@ -58,6 +58,13 @@ void ALobbyDoor::BeginPlay()
 	Component_Interact->ActiveInteract(bActive);
 }
 
+void ALobbyDoor::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+	EndingFog->SetFogDensity(0.f);
+
+	Super::EndPlay(EndPlayReason);
+}
+
 #pragma endregion
 
 #pragma region Progression
@@ -95,7 +102,7 @@ void ALobbyDoor::RotateDoor(FRotator LeftRot, FRotator RightRot, USoundWave* Doo
 	FLatentActionInfo LatentInfo;
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.Linkage = 0;
+	LatentInfo.Linkage = INDEX_NONE;
 
 	UKismetSystemLibrary::MoveComponentTo(DoorLeft, DoorLeft->GetRelativeLocation(), LeftRot, true, true, Duration, true, EMoveComponentAction::Move, LatentInfo);
 

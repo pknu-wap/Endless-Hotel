@@ -5,6 +5,7 @@
 #include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
 #include "Component/Float/FloatComponent.h"
+#include "Component/Interact/BurnComponent.h"
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -119,6 +120,10 @@ void AAnomaly_Object_Base::Interact(AEHCharacter* Interactor)
 
     switch (Info.InteractType)
     {
+    case EInteractType::Burn:
+        StartBurning();
+        break;
+
     case EInteractType::Restore:
         StartRestoring();
         break;
@@ -131,6 +136,22 @@ void AAnomaly_Object_Base::AllowNextInteract()
     {
         Component_Interact->ActiveInteract(true);
     }
+}
+
+#pragma endregion
+
+#pragma region Burn
+
+void AAnomaly_Object_Base::StartBurning()
+{
+    auto* Comp_Burn = FindComponentByClass<UBurnComponent>();
+    if (!IsValid(Comp_Burn))
+    {
+        return;
+    }
+
+    Comp_Burn->SetupBurnTargets(Object);
+    Comp_Burn->StartBurning();
 }
 
 #pragma endregion
@@ -174,6 +195,7 @@ void AAnomaly_Object_Base::StartRestoring(float Duration)
     FLatentActionInfo LatentInfo;
     LatentInfo.UUID = __LINE__;
     LatentInfo.CallbackTarget = this;
+    LatentInfo.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(Object, OriginalTransform.GetLocation(), OriginalTransform.Rotator(), true, true, RestoreDuration, true, EMoveComponentAction::Move, LatentInfo);
 }
