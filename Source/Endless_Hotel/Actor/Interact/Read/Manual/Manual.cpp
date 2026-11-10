@@ -131,6 +131,7 @@ void AManual::SwitchPaper()
 	FLatentActionInfo LatentInfo;
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.CallbackTarget = this;
+	LatentInfo.Linkage = INDEX_NONE;
 	UKismetSystemLibrary::MoveComponentTo(DownPaper, MiddleTrans.GetLocation(), MiddleTrans.Rotator(), true, true, MoveDuration, true, EMoveComponentAction::Move, LatentInfo);
 
 	FTimerHandle MoveHandle;
@@ -142,6 +143,7 @@ void AManual::SwitchPaper()
 			FLatentActionInfo LatentInfo;
 			LatentInfo.UUID = __LINE__;
 			LatentInfo.CallbackTarget = this;
+			LatentInfo.Linkage = INDEX_NONE;
 			UKismetSystemLibrary::MoveComponentTo(UpPaper, DownTrans.GetLocation(), DownTrans.Rotator(), true, true, MoveDuration, true, EMoveComponentAction::Move, LatentInfo);
 
 			LatentInfo.UUID = __LINE__;

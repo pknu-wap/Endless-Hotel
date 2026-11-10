@@ -62,10 +62,15 @@ void AManualFragment::SaveAcquireData()
 
 #pragma region Setting
 
-void AManualFragment::SetManualFragment()
+void AManualFragment::SetManualFragment() const
 {
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	Object->SetVisibility(Subsystem->CurrentAnomalyID == AppearAnomaly, true);
+	const bool bIsVisible = Subsystem->CurrentAnomalyID == AppearAnomaly;
+	Object->SetVisibility(bIsVisible, true);
+	if (bIsVisible)
+	{
+		Subsystem->SetHasAnomalyRule(true);
+	}
 }
 
 #pragma endregion

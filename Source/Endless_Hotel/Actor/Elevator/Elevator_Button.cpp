@@ -165,7 +165,7 @@ void AElevator_Button::PlayButtonPressAnimation()
     LatentInfo1.CallbackTarget = this;
     LatentInfo1.ExecutionFunction = NAME_None;
     LatentInfo1.UUID = __LINE__;
-    LatentInfo1.Linkage = 0;
+    LatentInfo1.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(
         Down_Button,
@@ -204,7 +204,7 @@ void AElevator_Button::RestoreButtonPosition()
     LatentInfo1.CallbackTarget = this;
     LatentInfo1.ExecutionFunction = NAME_None;
     LatentInfo1.UUID = __LINE__;
-    LatentInfo1.Linkage = 0;
+    LatentInfo1.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(
         Down_Button,
@@ -222,7 +222,7 @@ void AElevator_Button::RestoreButtonPosition()
     LatentInfo2.CallbackTarget = this;
     LatentInfo2.ExecutionFunction = NAME_None;
     LatentInfo2.UUID = __LINE__;
-    LatentInfo2.Linkage = 0;
+    LatentInfo2.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(
         Down_ButtonRing,

@@ -118,11 +118,22 @@ private:
 
 #pragma endregion
 
+#pragma region Rule
+    
+public:
+    void HandleAnomalyRuleAcquired(const EAnomalyRule AnomalyRule) { bHasAcquiredAnomalyRule = true; }
+    void SetHasAnomalyRule(const bool bHasAnomalyRule) { bHasAcquiredAnomalyRule = !bHasAnomalyRule; }
+    
+private:
+    bool bHasAcquiredAnomalyRule = true;
+    
+#pragma endregion
+    
 #pragma region Reset
 
 public:
     void ResetVerdict(bool bShouldScript);
 
 #pragma endregion
-
+    
 };
