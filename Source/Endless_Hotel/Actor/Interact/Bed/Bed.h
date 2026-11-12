@@ -51,14 +51,26 @@ private:
 
 private:
 	void StartRest();
-	void StartWakeUp();
+	void StartWakeUp(UAnimMontage* TargetMontage, bool bFast);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	TArray<FBedDirectionInfo> RestInfo;
+	FTransform RestTrans;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Rest")
-	TArray<FBedDirectionInfo> WakeInfo;
+	FTransform WakeUpTrans;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
+	FTransform EndTrans;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
+	TObjectPtr<UAnimMontage> AM_Rest;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
+	TObjectPtr<UAnimMontage> AM_WakeUp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Rest")
+	TObjectPtr<UAnimMontage> AM_BriefWakeUp;
 
 #pragma endregion
 
