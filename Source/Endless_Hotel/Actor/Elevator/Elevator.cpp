@@ -179,7 +179,6 @@ void AElevator::PlayDepartureSequence()
 
 void AElevator::HandleMoveFinished()
 {
-    UE_LOG(LogTemp, Warning, TEXT("[Ride] Arrival IsTop=%d"), VerdictComp->IsTopFloor());
     const EElevatorMoveKind Kind = CurrentMove;
     CurrentMove = EElevatorMoveKind::None;
     const bool bRide = MoveComp->bIsCinematicElevator;
@@ -194,6 +193,7 @@ void AElevator::HandleMoveFinished()
             {
                 bIsRiding = false;
                 MoveComp->bIsCinematicElevator = false;
+                VerdictComp->BroadCastTopFloor();
                 OpenDoorsWithBell();
                 break;
             }

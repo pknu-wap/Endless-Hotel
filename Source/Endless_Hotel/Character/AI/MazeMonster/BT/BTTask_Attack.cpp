@@ -48,6 +48,9 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
     PC->SetPlayerInputAble(false);
+    auto* PlayerMovement = Player->GetCharacterMovement();
+    PlayerMovement->StopMovementImmediately();
+    PlayerMovement->DisableMovement();
 
     MazeMonster->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     MazeMonster->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);

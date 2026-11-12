@@ -19,17 +19,6 @@ protected:
 
 #pragma endregion
 
-#pragma region Subtitle
-
-public:
-	UPROPERTY(EditAnywhere, Category = "SubTitle")
-	TArray<FText> Subtitle;
-
-public:
-	void ShowSubTitle();
-
-#pragma endregion
-
 #pragma region AI
 
 protected:

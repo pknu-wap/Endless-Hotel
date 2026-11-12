@@ -223,14 +223,12 @@ void UEHAssetManager::AddToSpawnList(EAnomalyID AnomalyID)
 	if (const auto* Found = OriginAnomaly.FindByPredicate([AnomalyID](const FAnomalyEntry& E) { return E.ID == AnomalyID; }))
 	{
 		ActAnomaly.Add(*Found);
-		UE_LOG(LogTemp, Log, TEXT("[Debug] Added Anomaly to spawn list: %s"), *UEnum::GetValueAsString(AnomalyID));
 	}
 }
 
 void UEHAssetManager::RemoveFromSpawnList(EAnomalyID AnomalyID)
 {
 	const int32 Removed = ActAnomaly.RemoveAll([AnomalyID](const FAnomalyEntry& E) { return E.ID == AnomalyID; });
-	UE_LOG(LogTemp, Log, TEXT("[Debug] Removed %d entries of Anomaly: %s"), Removed, *UEnum::GetValueAsString(AnomalyID));
 }
 
 bool UEHAssetManager::TryGetActAnomalyEntryByID(EAnomalyID AnomalyID, FAnomalyEntry& OutEntry) const

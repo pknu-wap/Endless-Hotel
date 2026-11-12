@@ -33,6 +33,7 @@ protected:
 public:
 	void ScriptFloor() const;
 	bool IsTopFloor() const;
+	void BroadCastTopFloor() const;
 
 #pragma endregion
 

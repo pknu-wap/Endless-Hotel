@@ -28,7 +28,7 @@ void AElevator_Wall::ResetWall()
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = 1000;
-    LatentInfo.Linkage = 0;
+    LatentInfo.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(RootComponent, StandardLocation + End, RootComponent->GetRelativeRotation(), false, false, 0.0f, false, EMoveComponentAction::Stop, LatentInfo);
     SetActorLocation(StartLocation);
@@ -43,7 +43,7 @@ void AElevator_Wall::MoveWall(float MoveDuration)
     FLatentActionInfo LatentInfo;
     LatentInfo.CallbackTarget = this;
     LatentInfo.UUID = 1000;
-    LatentInfo.Linkage = 0;
+    LatentInfo.Linkage = INDEX_NONE;
 
     UKismetSystemLibrary::MoveComponentTo(RootComponent, StandardLocation + End, RootComponent->GetRelativeRotation(), false, false, MoveDuration, false, EMoveComponentAction::Move, LatentInfo);
 }

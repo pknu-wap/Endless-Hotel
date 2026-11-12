@@ -36,6 +36,13 @@ bool UElevatorGameFlowComponent::IsTopFloor() const
 	return FloorSys->IsTopFloor();
 }
 
+void UElevatorGameFlowComponent::BroadCastTopFloor() const
+{
+	const auto* GI = GetWorld()->GetGameInstance();
+	const auto* FloorSys = GI->GetSubsystem<UFloorProgressSubsystem>();
+	FloorSys->OnTopFloor.Broadcast();
+}
+
 #pragma endregion
 
 #pragma region DataLayer
