@@ -102,7 +102,7 @@ void ALobbyDoor::RotateDoor(FRotator LeftRot, FRotator RightRot, USoundWave* Doo
 	FLatentActionInfo LatentInfo;
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.Linkage = INDEX_NONE;
+	LatentInfo.Linkage = 0;
 
 	UKismetSystemLibrary::MoveComponentTo(DoorLeft, DoorLeft->GetRelativeLocation(), LeftRot, true, true, Duration, true, EMoveComponentAction::Move, LatentInfo);
 

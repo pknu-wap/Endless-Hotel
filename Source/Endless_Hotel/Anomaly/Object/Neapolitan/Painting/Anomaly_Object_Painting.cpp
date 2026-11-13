@@ -170,17 +170,21 @@ void AAnomaly_Object_Painting::InteractRotate()
 	Mesh_RightEye->SetVisibility(false);
 }
 
-void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
+void AAnomaly_Object_Painting::InteractedMoveStep(int32 Step)
 {
-	if (step > 2) return;
+	if (Step > 2)
+	{
+		return;
+	}
+
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("InteractedMoveStep");
-	LatentInfo.Linkage = step + 1;
-	LatentInfo.UUID = 2000 + step;
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, InteractedMoveStep);
+	LatentInfo.Linkage = Step + 1;
+	LatentInfo.UUID = 2000 + Step;
 
 	FVector Location;
-	if (step == 2)
+	if (Step == 2)
 	{
 		Location = (bIsRotated) ? InteractedLocation : DefaultLocation;
 	}
@@ -188,7 +192,7 @@ void AAnomaly_Object_Painting::InteractedMoveStep(int32 step)
 	{
 		Location = InteractingLocation;
 	}
-	FRotator Rotation = (step == 0) ? OriginRotation : OriginRotation + FRotator(0, RotateAngle, 0);
+	FRotator Rotation = (Step == 0) ? OriginRotation : OriginRotation + FRotator(0, RotateAngle, 0);
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, Location, Rotation,
 		true, true, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
