@@ -356,7 +356,7 @@ void AAnomaly_Object_Door::MoveToHandlePlayer()
 
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, OnMoveCompleted);
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.Linkage = 0;
 
@@ -400,7 +400,7 @@ void AAnomaly_Object_Door::OnPushMoveStarted()
 
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnPushMoveCompleted");
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, OnPushMoveCompleted);
 	LatentInfo.UUID = __LINE__ + 100;
 	LatentInfo.Linkage = 0;
 
@@ -466,7 +466,7 @@ void AAnomaly_Object_Door::MoveToHandleKey()
 
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("RotateKey");
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, RotateKey);
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.Linkage = 0;
 
@@ -477,7 +477,7 @@ void AAnomaly_Object_Door::RotateKey()
 {
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OpenDoor");
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, OpenDoor);
 	LatentInfo.UUID = __LINE__;
 	LatentInfo.Linkage = 0;
 

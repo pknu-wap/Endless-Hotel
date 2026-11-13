@@ -23,6 +23,7 @@ AEHPlayerCameraManager::AEHPlayerCameraManager(const FObjectInitializer& ObjectI
 	TimeLine_EyeOpen = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeOpen"));
 	TimeLine_EyeClose = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_EyeClose"));
 	TimeLine_Loading = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Loading"));
+	TimeLine_Fast = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Fast"));
 	TimeLine_Hallucination = CreateDefaultSubobject<UTimelineComponent>(TEXT("TimeLine_Hallucination"));
 
 	ViewPitchMin = -70.0f;
@@ -118,6 +119,13 @@ float AEHPlayerCameraManager::LoadingEyeEffect()
 	return TimeLine_Loading->GetTimelineLength();
 }
 
+void AEHPlayerCameraManager::StartFastEyeEffect()
+{
+	RemoveAllEyeEffect();
+	DM_EyeEffect->SetScalarParameterValue(FName("EyeEffect"), 0);
+	TimeLine_Fast->PlayFromStart();
+}
+
 void AEHPlayerCameraManager::SetEyeEffect()
 {
 	DM_EyeEffect = UMaterialInstanceDynamic::Create(M_EyeEffect, this);
@@ -136,6 +144,10 @@ void AEHPlayerCameraManager::SetEyeEffect()
 	FOnTimelineFloat Update_Loading;
 	Update_Loading.BindUFunction(this, FName("OnValueChangedEyeEffect"));
 	TimeLine_Loading->AddInterpFloat(CV_Loading, Update_Loading);
+
+	FOnTimelineFloat Update_Fast;
+	Update_Fast.BindUFunction(this, FName("OnValueChangedEyeEffect"));
+	TimeLine_Fast->AddInterpFloat(CV_EyeFastOpen, Update_Fast);
 }
 
 void AEHPlayerCameraManager::OnValueChangedEyeEffect(float Value)

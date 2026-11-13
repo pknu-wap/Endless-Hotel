@@ -4,6 +4,8 @@
 
 #include <CoreMinimal.h>
 
+#define MAX_ANOMALY_RULE_COUNT 10;
+
 UENUM(BlueprintType)
 enum class EAnomalyRule : uint8
 {

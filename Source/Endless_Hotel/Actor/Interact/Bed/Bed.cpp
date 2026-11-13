@@ -25,12 +25,14 @@ void ABed::BeginPlay()
 	Component_Interact->ActiveInteract(bActive);
 
 	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	Player->OnRevive.AddUObject(this, &ThisClass::StartWakeUp);
+	Player->OnRevive.AddWeakLambda(this, [this]() {StartWakeUp(AM_BriefWakeUp, true); });
 
 	auto* FloorSub = GetGameInstance()->GetSubsystem<UFloorProgressSubsystem>();
 	if (GameSystem->GetGameProgression() != EGameProgression::CheckIn && FloorSub->GetIsFirstFloor())
 	{
-		StartWakeUp();
+		bool bGameClear = GameSystem->IsGameClear();
+		UAnimMontage* TargetMontage = bGameClear ? AM_BriefWakeUp : AM_WakeUp;
+		StartWakeUp(TargetMontage, bGameClear);
 	}
 }
 
@@ -84,42 +86,60 @@ void ABed::OnChangedProgression(EGameProgression Target)
 
 void ABed::StartRest()
 {
+	Comp_Direction->SyncCameraRotation(true);
 	Comp_Direction->SetPlayerInputAble(false);
-	Comp_Direction->ShowDirection(RestInfo);
 
-	FBedDirectionInfo LastInfo = RestInfo.Top();
+	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PC->SetControlRotation(RestTrans.Rotator());
+
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->SetActorTransform(RestTrans);
+	Player->SetControlRotation(false);
+	Player->SetCameraRotation(FRotator(0, 90, -90));
+	Player->PlayAnimMontage(AM_Rest);
+
+	const float EyeDelay = 10.5f;
 	FTimerHandle EyeHandle;
-	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateUObject(Comp_Direction, &UBedDirectionComponent::ShowEyeEffect, false), LastInfo.Delay + LastInfo.Duration, false);
+	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateUObject(Comp_Direction, &UBedDirectionComponent::ShowEyeEffect, false), EyeDelay, false);
 
-	constexpr float WakeUpDelay = 8.f;
+	const float WakeUpDelay = EyeDelay + 8.f;
 	FTimerHandle WakeUpHandle;
-	GetWorld()->GetTimerManager().SetTimer(WakeUpHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartWakeUp), LastInfo.Delay + LastInfo.Duration + WakeUpDelay, false);
+	GetWorld()->GetTimerManager().SetTimer(WakeUpHandle, FTimerDelegate::CreateUObject(this, &ThisClass::StartWakeUp, AM_WakeUp.Get(), false), WakeUpDelay, false);
 }
 
-void ABed::StartWakeUp()
+void ABed::StartWakeUp(UAnimMontage* TargetMontage, bool bFast)
 {
-	auto* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	Player->SetActorTransform(WakeInfo[0].TargetTrans);
 	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	PC->SetControlRotation(WakeInfo[0].TargetTrans.Rotator());
+	PC->SetControlRotation(WakeUpTrans.Rotator());
 
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->SetActorTransform(WakeUpTrans);
+	Player->SetControlRotation(false);
+	Player->SetCameraRotation(FRotator(0, 90, -90));
+	Player->PlayAnimMontage(TargetMontage);
+
+	bFast ? Comp_Direction->ShowEyeFastEffect() : Comp_Direction->ShowEyeEffect(true);
+	
+	Comp_Direction->SyncCameraRotation(true);
 	Comp_Direction->SetPlayerInputAble(false);
-	Comp_Direction->ShowEyeEffect(true);
-
-	constexpr float StartDelay = 6.f;
-	FTimerHandle StartHandle;
-	GetWorld()->GetTimerManager().SetTimer(StartHandle, FTimerDelegate::CreateUObject(Comp_Direction, &UBedDirectionComponent::ShowDirection, WakeInfo), StartDelay, false);
-
-	FBedDirectionInfo LastInfo = WakeInfo.Top();
-	constexpr float InputDelay = 6.f;
-	FTimerHandle InputHandle;
-	GetWorld()->GetTimerManager().SetTimer(InputHandle, FTimerDelegate::CreateUObject(Comp_Direction, &UBedDirectionComponent::SetPlayerInputAble, true), LastInfo.Delay + LastInfo.Duration + InputDelay, false);
 
 	auto* GameSystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 	if (GameSystem->GetGameProgression() == EGameProgression::CheckIn)
 	{
 		GameSystem->ChangeProgression(EGameProgression::Tutorial);
 	}
+
+	const float InputDelay = TargetMontage->GetPlayLength() - 0.1f;
+	FTimerHandle InputHandle;
+	GetWorld()->GetTimerManager().SetTimer(InputHandle, FTimerDelegate::CreateWeakLambda(this, [this, Player, PC]()
+		{
+			Comp_Direction->SyncCameraRotation(false);
+			Comp_Direction->SetPlayerInputAble(true);
+
+			Player->SetActorTransform(EndTrans);
+			PC->SetControlRotation(EndTrans.Rotator());
+			Player->SetControlRotation(true);
+		}), InputDelay, false);
 }
 
 #pragma endregion

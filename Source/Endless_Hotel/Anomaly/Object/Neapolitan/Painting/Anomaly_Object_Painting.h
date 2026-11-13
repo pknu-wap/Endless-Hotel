@@ -108,7 +108,7 @@ protected:
 	void InteractRotate();
 
 	UFUNCTION()
-	void InteractedMoveStep(int32 step);
+	void InteractedMoveStep(int32 Step);
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Interact")

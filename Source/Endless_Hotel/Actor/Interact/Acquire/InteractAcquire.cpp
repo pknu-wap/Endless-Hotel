@@ -50,8 +50,8 @@ void AInteractAcquire::MoveToPlayerCamera(AEHCharacter* Interacter)
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
 	LatentInfo.UUID = 1;
-	LatentInfo.Linkage = INDEX_NONE;
-	LatentInfo.ExecutionFunction = FName("OnMoveCompleted");
+	LatentInfo.Linkage = 0;
+	LatentInfo.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, OnMoveCompleted);
 
 	UKismetSystemLibrary::MoveComponentTo(RootComponent, TargetLocation, CameraComp->GetComponentRotation() + RotationOffset, true, true, 0.5f, false, EMoveComponentAction::Move, LatentInfo);
 }

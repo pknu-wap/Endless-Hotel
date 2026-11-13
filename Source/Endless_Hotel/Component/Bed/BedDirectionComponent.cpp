@@ -35,24 +35,6 @@ void UBedDirectionComponent::SetPlayerInputAble(bool bAble)
 	PlayerRoot->SetCollisionEnabled(CE);
 }
 
-void UBedDirectionComponent::ShowDirection(TArray<FBedDirectionInfo> Infos)
-{
-	UWorld* World = GetWorld();
-	for (const FBedDirectionInfo& Info : Infos)
-	{
-		FTimerHandle DelayHandle;
-		World->GetTimerManager().SetTimer(DelayHandle, FTimerDelegate::CreateWeakLambda(this, [this, Info]()
-			{
-				FLatentActionInfo LatentInfo;
-				LatentInfo.CallbackTarget = this;
-				LatentInfo.Linkage = 0;
-				LatentInfo.UUID = FMath::RandRange(INT32_MIN, INT32_MAX);
-				UKismetSystemLibrary::MoveComponentTo(PlayerRoot.Get(), Info.TargetTrans.GetLocation(), Info.TargetTrans.Rotator(), true, true, Info.Duration, false, EMoveComponentAction::Move, LatentInfo);
-				AdjustControllerRotation(Info.TargetTrans.Rotator(), Info.Duration);
-			}), Info.Delay, false);
-	}
-}
-
 void UBedDirectionComponent::ShowEyeEffect(bool bOpen)
 {
 	CameraManager->StartEyeEffect(bOpen);
@@ -62,29 +44,28 @@ void UBedDirectionComponent::ShowEyeEffect(bool bOpen)
 	UI_InGame->StartInGameHUD(bOpen);
 }
 
-void UBedDirectionComponent::AdjustControllerRotation(const FRotator& TargetRotation, float Duration)
+void UBedDirectionComponent::ShowEyeFastEffect()
 {
-	StartControllerRot = PC->GetControlRotation();
-	TargetControllerRot = TargetRotation;
+	CameraManager->StartFastEyeEffect();
 
-	ControllerElapsed = 0.f;
-	ControllerDuration = Duration;
+	auto* UICon = GetWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+	auto* UI_InGame = Cast<UUI_HUD_InGame>(UICon->GetHUDWidget());
+	UI_InGame->RemoveEyeEffectBlur();
+}
 
-	UWorld* World = GetWorld();
-	World->GetTimerManager().SetTimer(ControllerHandle, FTimerDelegate::CreateWeakLambda(this, [this, World]()
+void UBedDirectionComponent::SyncCameraRotation(bool bOn)
+{
+	FTimerManager& TimerManager = GetWorld()->GetTimerManager();
+	if (!bOn)
+	{
+		TimerManager.ClearTimer(ControllerHandle);
+		return;
+	}
+
+	TimerManager.SetTimer(ControllerHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
-			ControllerElapsed += World->GetDeltaSeconds();
-
-			const float Alpha = FMath::Clamp(ControllerElapsed / ControllerDuration, 0.f, 1.f);
-			const FRotator Rotation = FMath::Lerp(StartControllerRot, TargetControllerRot, Alpha);
-			PC->SetControlRotation(Rotation);
-
-			if (Alpha >= 1.f)
-			{
-				PC->SetControlRotation(TargetControllerRot);
-				World->GetTimerManager().ClearTimer(ControllerHandle);
-			}
-		}), 0.016f, true);
+			PC->SetControlRotation(Player->GetActorRotation());
+		}), 0.01f, true);
 }
 
 #pragma endregion

@@ -2,6 +2,8 @@
 
 #include "Actor/Interact/Bed/Bed_Ending.h"
 #include "UI/Controller/UI_Controller.h"
+#include "Player/Character/EHPlayer.h"
+#include <Kismet/GameplayStatics.h>
 
 #pragma region Base
 
@@ -34,22 +36,28 @@ void ABed_Ending::Interact(AEHCharacter* Interacter)
 
 void ABed_Ending::StartSleep()
 {
+	Comp_Direction->SyncCameraRotation(true);
 	Comp_Direction->SetPlayerInputAble(false);
 
-	Comp_Direction->ShowDirection(SleepInfo);
+	auto* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PC->SetControlRotation(SleepTrans.Rotator());
 
+	auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	Player->SetActorTransform(SleepTrans);
+	Player->SetControlRotation(false);
+	Player->SetCameraRotation(FRotator(0, 110, -90));
+	Player->PlayAnimMontage(AM_Sleep);
+
+	const float EyeDelay = 10.5f;
 	FTimerHandle EyeHandle;
-	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
-		{
-			Comp_Direction->ShowEyeEffect(false);
-		}), 6.f, false);
+	GetWorld()->GetTimerManager().SetTimer(EyeHandle, FTimerDelegate::CreateUObject(Comp_Direction, &UBedDirectionComponent::ShowEyeEffect, false), EyeDelay, false);
 
 	FTimerHandle WidgetHandle;
 	GetWorld()->GetTimerManager().SetTimer(WidgetHandle, FTimerDelegate::CreateWeakLambda(this, [this]()
 		{
 			auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
 			UICon->OpenWidget(EWidgetType::PopUp_Credit_Bad);
-		}), 13.f, false);
+		}), 18.f, false);
 }
 
 #pragma endregion
