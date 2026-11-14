@@ -7,8 +7,7 @@
 #include <ShadowMonsterAnimInstance.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API UShadowMonsterAnimInstance
-	: public UBaseAIAnimInstance
+class ENDLESS_HOTEL_API UShadowMonsterAnimInstance: public UBaseAIAnimInstance
 {
 	GENERATED_BODY()
 

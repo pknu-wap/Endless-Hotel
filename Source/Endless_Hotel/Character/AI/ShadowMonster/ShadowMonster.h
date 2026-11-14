@@ -25,8 +25,7 @@ private:
 private:
 	bool bIsAppearing = false;
 
-	UPROPERTY(EditAnywhere, Category = "Appear",
-		meta = (ClampMin = "0.0"))
+	UPROPERTY(EditAnywhere, Category = "Appear",meta = (ClampMin = "0.0"))
 	float AppearRootMotionScale = 0.5f;
 
 #pragma endregion
