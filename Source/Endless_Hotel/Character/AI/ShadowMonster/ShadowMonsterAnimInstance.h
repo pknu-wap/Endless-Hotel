@@ -7,12 +7,14 @@
 #include <ShadowMonsterAnimInstance.generated.h>
 
 UCLASS()
-class ENDLESS_HOTEL_API UShadowMonsterAnimInstance : public UBaseAIAnimInstance
+class ENDLESS_HOTEL_API UShadowMonsterAnimInstance: public UBaseAIAnimInstance
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	bool bMonsterAppear = false;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta = (ClampMin = "0.0"))
+	float AppearPlayRate = 0.f;
 };

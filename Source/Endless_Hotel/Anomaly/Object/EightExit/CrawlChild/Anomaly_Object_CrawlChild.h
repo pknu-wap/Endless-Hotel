@@ -59,50 +59,37 @@ protected:
 
 private:
     void StartPillCollapse();
-    void SpawnPillBatch();
-    void ClearPhysicsPills();
+    void StopPillSpawn();
     void ReleaseChild();
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collapse")
-    TObjectPtr<class UInstancedStaticMeshComponent> PillISM;
+    TObjectPtr<class UNiagaraComponent> PillNiagara;
 
-    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn")
+    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn", meta = (MakeEditWidget = true))
     FVector SpawnCenter = FVector(0.f, 0.f, 320.f);
 
+    UPROPERTY(EditAnywhere, Category = "Collapse|Path", meta = (MakeEditWidget = true))
+    FVector WallPoint = FVector(500.f, 0.f, 0.f);
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Path", meta = (MakeEditWidget = true))
+    FVector CornerPoint = FVector(500.f, 800.f, 0.f);
+
+    UPROPERTY(EditAnywhere, Category = "Collapse|Path", meta = (MakeEditWidget = true))
+    FVector HallEndPoint = FVector(500.f, 2500.f, 0.f);
+
     UPROPERTY(EditAnywhere, Category = "Collapse|Spawn", meta = (ClampMin = "1"))
-    int32 PillsPerBatch = 4;
+    int32 PillCount = 3000;
 
-    UPROPERTY(EditAnywhere, Category = "Collapse|Spawn", meta = (ClampMin = "1.0"))
-    float SpawnSpacing = 40.f;
-
-    UPROPERTY(EditAnywhere, Category = "Collapse|Timing", meta = (ClampMin = "0.01"))
-    float BatchInterval = 0.3f;
+    UPROPERTY(EditAnywhere, Category = "Collapse|Timing", meta = (ClampMin = "0.1"))
+    float PillSpawnDuration = 8.f;
 
     UPROPERTY(EditAnywhere, Category = "Collapse|Timing", meta = (ClampMin = "0.01"))
     float ChildReleaseDelay = 0.8f;
 
 private:
-    UPROPERTY(Transient)
-    TArray<TObjectPtr<class UStaticMeshComponent>> PhysicsPills;
-
-    TArray<FVector> PillScales;
     FTimerHandle PillSpawnTimer;
     FTimerHandle ChildReleaseTimer;
-
-#pragma endregion
-
-#pragma region Physics
-
-protected:
-    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.01"))
-    float PillMassKg = 1.f;
-
-    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.0"))
-    float PillLinearDamping = 0.1f;
-
-    UPROPERTY(EditAnywhere, Category = "Collapse|Physics", meta = (ClampMin = "0.0"))
-    float PillAngularDamping = 3.f;
 
 #pragma endregion
 
