@@ -69,27 +69,4 @@ protected:
 
 #pragma endregion
 
-#pragma region Collapsing
-
-public:
-	void TriggerCeilingCollapse();
-	void SetupCrawlChildCeilingObject();
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Destruction")
-	TObjectPtr<class UGeometryCollectionComponent> GeometryCollection_Ceiling;
-
-	UPROPERTY(EditAnywhere, Category = "Ceiling|Collapse")
-	TSubclassOf<class AFieldSystemActor> FieldSystemActorClass;
-
-	TWeakObjectPtr<class AFieldSystemActor> ActiveCollapseFieldWeak;
-
-	UPROPERTY(VisibleAnywhere, Category = "AI")
-	TWeakObjectPtr<class ACrawlChild> CrawlChild;
-
-protected:
-	bool bHasCollapsed = false;
-
-#pragma endregion
-
 };

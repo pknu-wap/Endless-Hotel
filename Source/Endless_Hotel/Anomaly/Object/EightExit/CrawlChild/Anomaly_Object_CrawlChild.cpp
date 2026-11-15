@@ -8,7 +8,7 @@
 #include "Player/Controller/EHPlayerController.h"
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
-#include <Components/InstancedStaticMeshComponent.h>
+#include <NiagaraComponent.h>
 
 #pragma region Base
 
@@ -27,12 +27,9 @@ AAnomaly_Object_CrawlChild::AAnomaly_Object_CrawlChild(const FObjectInitializer&
     ChildAC->SetupAttachment(RootComponent);
     ChildAC->SetAutoActivate(false);
 
-    PillISM = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("PillISM"));
-    PillISM->SetupAttachment(RootComponent);
-    PillISM->SetMobility(EComponentMobility::Movable);
-    PillISM->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    PillISM->SetGenerateOverlapEvents(false);
-    PillISM->SetCanEverAffectNavigation(false);
+    PillNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PillNiagara"));
+    PillNiagara->SetupAttachment(RootComponent);
+    PillNiagara->SetAutoActivate(false);
 }
 
 void AAnomaly_Object_CrawlChild::BeginPlay()
@@ -41,19 +38,9 @@ void AAnomaly_Object_CrawlChild::BeginPlay()
 
     TriggerBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnTriggerBox);
 
-    const int32 Count = PillISM->GetInstanceCount();
-    PillScales.SetNum(Count);
-
-    for (int32 Index = 0; Index < Count; ++Index)
-    {
-        FTransform InstanceTransform;
-        PillISM->GetInstanceTransform(Index, InstanceTransform, false);
-        PillScales[Index] = InstanceTransform.GetScale3D();
-    }
-
     Object->SetVisibility(false, false);
     Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    PillISM->SetVisibility(false);
+    PillNiagara->SetVisibility(false);
 }
 
 #pragma endregion
@@ -65,14 +52,14 @@ void AAnomaly_Object_CrawlChild::SetupCrawlChildObject()
     GetWorldTimerManager().ClearTimer(PillSpawnTimer);
     GetWorldTimerManager().ClearTimer(ChildReleaseTimer);
 
-    ClearPhysicsPills();
+    PillNiagara->DeactivateImmediate();
+    PillNiagara->SetVisibility(false);
 
     Object->SetWorldTransform(StartTransform);
     Object->SetVisibility(false, false);
     Object->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    PillISM->SetVisibility(false);
 
     ObjectAC->Stop();
     ChildAC->Stop();
@@ -102,8 +89,6 @@ void AAnomaly_Object_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedCom
 
     TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-    OwnerAnomalyEvent->DispatchToObject<AAnomaly_Object_Ceiling>(&AAnomaly_Object_Ceiling::TriggerCeilingCollapse);
-
     StartPillCollapse();
 
     AEHPlayerController* PC = Cast<AEHPlayerController>(Player->GetController());
@@ -120,85 +105,30 @@ void AAnomaly_Object_CrawlChild::OnTriggerBox(UPrimitiveComponent* OverlappedCom
 
 void AAnomaly_Object_CrawlChild::StartPillCollapse()
 {
-    if (!PillISM->GetStaticMesh() || PillScales.IsEmpty())
+    if (PillNiagara->GetAsset())
     {
-        return;
-    }
+        const FTransform ActorTransform = GetActorTransform();
+        const FVector Duration = FVector::ZeroVector;
+        PillNiagara->SetWorldLocation(AIEndTransform.GetLocation() + SpawnCenter);
 
-    SpawnPillBatch();
+        PillNiagara->SetVariableInt(TEXT("User.PillCount"), PillCount);
+        PillNiagara->SetVariableFloat(TEXT("User.SpawnRate"), PillCount / FMath::Max(PillSpawnDuration, 0.1f));
+        PillNiagara->SetVariablePosition(TEXT("User.WallPoint"), ActorTransform.TransformPosition(WallPoint));
+        PillNiagara->SetVariablePosition(TEXT("User.CornerPoint"), ActorTransform.TransformPosition(CornerPoint));
+        PillNiagara->SetVariablePosition(TEXT("User.HallEndPoint"), ActorTransform.TransformPosition(HallEndPoint));
 
-    if (PhysicsPills.Num() < PillScales.Num())
-    {
-        GetWorldTimerManager().SetTimer(PillSpawnTimer, this, &ThisClass::SpawnPillBatch, FMath::Max(BatchInterval, 0.01f), true);
+        PillNiagara->SetVisibility(true);
+        PillNiagara->Activate(true);
+
+        GetWorldTimerManager().SetTimer(PillSpawnTimer, this, &ThisClass::StopPillSpawn, FMath::Max(PillSpawnDuration, 0.1f), false);
     }
 
     GetWorldTimerManager().SetTimer(ChildReleaseTimer, this, &ThisClass::ReleaseChild, FMath::Max(ChildReleaseDelay, 0.01f), false);
 }
 
-void AAnomaly_Object_CrawlChild::SpawnPillBatch()
+void AAnomaly_Object_CrawlChild::StopPillSpawn()
 {
-    const int32 Count = PillScales.Num();
-    const int32 BatchSize = FMath::Max(PillsPerBatch, 1);
-    const int32 Columns = FMath::CeilToInt(FMath::Sqrt(static_cast<float>(BatchSize)));
-    const int32 Rows = FMath::DivideAndRoundUp(BatchSize, Columns);
-    const FVector BaseLocation = AIEndTransform.GetLocation() + SpawnCenter;
-    const FVector ISMWorldScale = PillISM->GetComponentScale();
-
-    for (int32 Slot = 0; Slot < BatchSize && PhysicsPills.Num() < Count; ++Slot)
-    {
-        const int32 Index = PhysicsPills.Num();
-        const int32 Column = Slot % Columns;
-        const int32 Row = Slot / Columns;
-
-        const FVector SpawnOffset((Column - (Columns - 1) * 0.5f) * SpawnSpacing, (Row - (Rows - 1) * 0.5f) * SpawnSpacing, 0.f);
-        const FVector WorldLocation = BaseLocation + SpawnOffset;
-        const FQuat WorldRotation = FRotator(0.f, FMath::FRandRange(-180.f, 180.f), 0.f).Quaternion();
-        const FVector WorldScale = ISMWorldScale * PillScales[Index];
-
-        UStaticMeshComponent* Pill = NewObject<UStaticMeshComponent>(this);
-        Pill->SetMobility(EComponentMobility::Movable);
-        Pill->SetStaticMesh(PillISM->GetStaticMesh());
-
-        for (int32 MaterialIndex = 0; MaterialIndex < PillISM->GetNumMaterials(); ++MaterialIndex)
-        {
-            Pill->SetMaterial(MaterialIndex, PillISM->GetMaterial(MaterialIndex));
-        }
-
-        Pill->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        Pill->SetCollisionObjectType(ECC_PhysicsBody);
-        Pill->SetCollisionResponseToAllChannels(ECR_Block);
-        Pill->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-        Pill->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-        Pill->SetGenerateOverlapEvents(false);
-        Pill->SetCanEverAffectNavigation(false);
-
-        Pill->SetWorldTransform(FTransform(WorldRotation, WorldLocation, WorldScale));
-        Pill->RegisterComponent();
-
-        Pill->SetMassOverrideInKg(NAME_None, PillMassKg, true);
-        Pill->SetLinearDamping(PillLinearDamping);
-        Pill->SetAngularDamping(PillAngularDamping);
-        Pill->SetUseCCD(true);
-        Pill->SetEnableGravity(true);
-        Pill->SetSimulatePhysics(true);
-
-        PhysicsPills.Add(Pill);
-    }
-
-    if (PhysicsPills.Num() >= Count)
-    {
-        GetWorldTimerManager().ClearTimer(PillSpawnTimer);
-    }
-}
-
-void AAnomaly_Object_CrawlChild::ClearPhysicsPills()
-{
-    for (UStaticMeshComponent* Pill : PhysicsPills)
-    {
-        Pill->DestroyComponent();
-    }
-
-    PhysicsPills.Reset();
+    PillNiagara->Deactivate();
 }
 
 void AAnomaly_Object_CrawlChild::ReleaseChild()

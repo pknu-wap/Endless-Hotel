@@ -16,8 +16,6 @@ AAnomaly_Object_Ceiling::AAnomaly_Object_Ceiling(const FObjectInitializer& Objec
 	Niagara_Ceiling_Blood->SetAutoActivate(false);
 
 	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
-	GeometryCollection_Ceiling = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollection_Ceiling"));
-	GeometryCollection_Ceiling->SetupAttachment(RootComponent);
 }
 
 void AAnomaly_Object_Ceiling::BeginPlay()
@@ -38,14 +36,6 @@ void AAnomaly_Object_Ceiling::InitializeOnAnomalySpawned()
 	Niagara_Ceiling_Blood->SetVisibility(false);
 	Object->SetVisibility(true);
 	GetWorld()->GetTimerManager().ClearTimer(BloodHandle);
-	bHasCollapsed = false;
-	if (ActiveCollapseFieldWeak.IsValid())
-	{
-		ActiveCollapseFieldWeak->Destroy();
-	}
-	ActiveCollapseFieldWeak = nullptr;
-	GeometryCollection_Ceiling->SetVisibility(false);
-	GeometryCollection_Ceiling->SetSimulatePhysics(false);
 }
 
 #pragma endregion
@@ -94,34 +84,6 @@ void AAnomaly_Object_Ceiling::CeilingBloodDripping()
 			Niagara_Ceiling_Blood->SetRelativeLocation(RandomLocation);
 		}
 	), BloodInterval, true);
-}
-
-#pragma endregion
-
-#pragma region Ceiling_Collapse
-
-void AAnomaly_Object_Ceiling::TriggerCeilingCollapse()
-{
-	if (bHasCollapsed) 
-	{
-		return;
-	}
-	FVector CeilingLocation = GeometryCollection_Ceiling->GetComponentLocation();
-	float Radius = 100000.f;
-	int32 PropagationDepth = 0;
-	float PropagationFactor = 0.f;
-	float Strain = 999999.f;
-
-	GeometryCollection_Ceiling->ApplyExternalStrain(0, CeilingLocation, Radius, PropagationDepth, PropagationFactor, Strain);
-	GeometryCollection_Ceiling->WakeAllRigidBodies();
-	bHasCollapsed = true;
-}
-
-void AAnomaly_Object_Ceiling::SetupCrawlChildCeilingObject()
-{
-	Object->SetVisibility(false);
-	GeometryCollection_Ceiling->SetSimulatePhysics(true);
-	GeometryCollection_Ceiling->SetVisibility(true);
 }
 
 #pragma endregion
