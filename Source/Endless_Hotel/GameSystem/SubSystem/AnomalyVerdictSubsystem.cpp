@@ -93,10 +93,6 @@ void UAnomalyVerdictSubsystem::HandlePassed()
 	auto& AssetManager = UEHAssetManager::Get();
 	AssetManager.MarkAnomalyCleared(CurrentAnomaly->AnomalyID);
 	USaveManager::SaveClearedAnomalyID(AssetManager.GetClearedAnomalySet());
-	if (auto* PoolSys = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>())
-	{
-		PoolSys->ClearFakeManualEntry(CurrentAnomaly->AnomalyID);
-	}
 	bHasAcquiredAnomalyRule = true;
 }
 

@@ -32,9 +32,9 @@ void UAnomalyPoolSubsystem::Initialize(FSubsystemCollectionBase& Collection)
     InitializePool();
 }
  
- #pragma endregion
+#pragma endregion
  
- #pragma region Pool
+#pragma region Pool
  
 void UAnomalyPoolSubsystem::InitializePool()
 {
@@ -109,58 +109,55 @@ void UAnomalyPoolSubsystem::UnRegisterAnomalyObject(AAnomaly_Object_Base* Object
 #pragma endregion
  
 #pragma region ManualRule
- 
+
 void UAnomalyPoolSubsystem::AddAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
-    AnomalyRules.AddUnique(AnomalyRule);
- 
+    const EAnomalyRule Rule = AnomalyRule;
+    const bool bNewlyAcquired = !AnomalyRules.Contains(Rule);
+
+    AnomalyRules.RemoveSingle(Rule);
+    AnomalyRules.Add(Rule);
+
     FSaveData_Progression Data = USaveManager::LoadData_Progression();
     Data.ActiveRules = AnomalyRules;
     USaveManager::SaveData_Progression(Data);
-    auto& AssetManager = UEHAssetManager::Get();
-    AssetManager.AppendAnomaliesForRule(AnomalyRule);
-    AssetManager.ShuffleActAnomaly(ActIndex);
-    OnAddAnomalyRule.Broadcast(AnomalyRule);
+
+    if (bNewlyAcquired)
+    {
+        auto& AssetManager = UEHAssetManager::Get();
+        AssetManager.AppendAnomaliesForRule(Rule);
+        AssetManager.ShuffleActAnomaly(ActIndex);
+    }
+    OnAddAnomalyRule.Broadcast(Rule);
 }
- 
+
 void UAnomalyPoolSubsystem::RemoveAnomalyRule(const EAnomalyRule& AnomalyRule)
 {
     AnomalyRules.Remove(AnomalyRule);
- 
+
     FSaveData_Progression Data = USaveManager::LoadData_Progression();
     Data.ActiveRules = AnomalyRules;
     USaveManager::SaveData_Progression(Data);
-    FakeManualEntries.RemoveAll([AnomalyRule](const FFakeManualEntry& Entry)
-    {
-        return Entry.RealRuleToSolve == AnomalyRule;
-    });
- 
+
     InitializePool();
     OnAddAnomalyRule.Broadcast(AnomalyRule);
 }
- 
-void UAnomalyPoolSubsystem::AddFakeManualEntry(const EAnomalyID TargetAnomalyID, const EAnomalyRule FakeAction, const EAnomalyRule RealRule)
+
+EAnomalyRule UAnomalyPoolSubsystem::ResolveRule(const TArray<EAnomalyRule>& Accepted) const
 {
-    FFakeManualEntry NewEntry;
-    NewEntry.TargetAnomalyID = TargetAnomalyID;
-    NewEntry.DisplayedFakeAction = FakeAction;
-    NewEntry.RealRuleToSolve = RealRule;
-    
-    FakeManualEntries.Add(NewEntry);
-    OnAddAnomalyRule.Broadcast(FakeAction);
-}
- 
-void UAnomalyPoolSubsystem::ClearFakeManualEntry(EAnomalyID TargetAnomalyID)
-{
-    FakeManualEntries.RemoveAll([TargetAnomalyID](const FFakeManualEntry& Entry)
+    for (int32 i = AnomalyRules.Num() - 1; i >= 0; --i)
     {
-        return Entry.TargetAnomalyID == TargetAnomalyID;
-    });
+        if (Accepted.Contains(AnomalyRules[i]))
+        {
+            return AnomalyRules[i];
+        }
+    }
+    return EAnomalyRule::None;
 }
 
 #pragma endregion
  
- #pragma region Reset
+#pragma region Reset
  
 void UAnomalyPoolSubsystem::ResetPool()
 {

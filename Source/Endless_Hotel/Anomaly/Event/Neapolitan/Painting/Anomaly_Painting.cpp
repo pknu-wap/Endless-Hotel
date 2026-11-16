@@ -10,30 +10,31 @@
 void AAnomaly_Painting::SetAnomalyState()
 {
 	Super::SetAnomalyState();
+	const FAnomalyActionInfo SolveInfo = GetRuleActionInfo();
 
 	switch (AnomalyID)
 	{
 	case EAnomalyID::Painting_Eye:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::EyeFollowing, FAnomalyActionInfo({ EInteractType::Rotate }));
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::EyeFollowing, SolveInfo);
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Blood:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BloodDropping, FAnomalyActionInfo({ EInteractType::Rotate }));
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BloodDropping, SolveInfo);
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Blur:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BlurPaint, FAnomalyActionInfo({ EInteractType::Rotate }));
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::BlurPaint, SolveInfo);
 		ScheduleAnomaly();
 		break;
 	case EAnomalyID::Painting_Tilt:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::FrameTilt, FAnomalyActionInfo({ EInteractType::Rotate }));
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::FrameTilt, SolveInfo);
 		ScheduleAnomaly(10.0f);
 		break;
 	case EAnomalyID::Painting_Picture:
-		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::ChangePicture, FAnomalyActionInfo({ EInteractType::Rotate }));
+		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::ChangePicture, SolveInfo);
 		ScheduleAnomaly();
 		break;
-	case  EAnomalyID::Painting_Watch:
+	case EAnomalyID::Painting_Watch:
 		SetupAnomalyAction<AAnomaly_Object_Painting>(&AAnomaly_Object_Painting::SpawnMonsterWatchingPainting);
 		SetupAnomalyAction<ThisClass>(&ThisClass::SpawnShadowMonster);
 		ScheduleAnomaly();

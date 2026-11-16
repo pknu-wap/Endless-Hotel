@@ -36,7 +36,7 @@ void UUI_PopUp_Reset::Click_Yes()
 
 		auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Doll);
-		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::FlipObject);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::ResetObject);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::BurnObject);

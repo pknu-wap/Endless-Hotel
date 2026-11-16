@@ -148,7 +148,7 @@ TOptional<FAnomalySpawnInfo> UAnomalyGeneratorSubsystem::DecideAnomaly(uint8 Ind
 
    FAnomalySpawnInfo Info;
    Info.AnomalyID = Data.ID;
-   Info.Rule = Data.Rule;
+   Info.AcceptedRules = Data.AcceptedRules;
    Info.DataLayer = Data.DataLayer;
    Info.EventClass = Data.Event;
 
@@ -212,7 +212,12 @@ AAnomaly_Event* UAnomalyGeneratorSubsystem::SpawnFromInfo(const FAnomalySpawnInf
    if (Spawned)
    {
       Spawned->AnomalyID = Info.AnomalyID;
-      Spawned->Rule = Info.Rule;
+      EAnomalyRule Resolved = EAnomalyRule::None;
+      if (const auto* Pool = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>())
+      {
+         Resolved = Pool->ResolveRule(Info.AcceptedRules);
+      }
+      Spawned->Rule = Resolved;
    }
    return Spawned;
 }
@@ -231,7 +236,7 @@ bool UAnomalyGeneratorSubsystem::SetNextAnomalyForced(const EAnomalyID ID)
    FAnomalySpawnInfo Info;
    Info.bIsNormal = false;
    Info.AnomalyID = Data.ID;
-   Info.Rule = Data.Rule;
+   Info.AcceptedRules = Data.AcceptedRules;
    Info.DataLayer = Data.DataLayer;
    Info.EventClass = Data.Event;
 

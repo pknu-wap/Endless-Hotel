@@ -4,6 +4,7 @@
 #include "Neapolitan/Anomaly_Event_Neapolitan.h"
 #include "GameSystem/SubSystem/FloorProgressSubsystem.h"
 #include "GameSystem/SubSystem/AnomalyVerdictSubsystem.h"
+#include "GameSystem/SubSystem/AnomalyPoolSubsystem.h"
 #include "Anomaly/Object/Neapolitan/Anomaly_Object_Neapolitan.h"
 #include "Player/Character/EHPlayer.h"
 #include <Engine/GameInstance.h>
@@ -56,6 +57,23 @@ void AAnomaly_Event::StartAnomalyAction()
 	}
 }
 
+FAnomalyActionInfo AAnomaly_Event::GetRuleActionInfo() const
+{
+	switch (Rule)
+	{
+	case EAnomalyRule::FlipObject:
+		return FAnomalyActionInfo({ EInteractType::Rotate });
+	case EAnomalyRule::BurnObject:
+		return FAnomalyActionInfo({ EInteractType::Burn });
+	case EAnomalyRule::ResetObject:
+		return FAnomalyActionInfo({ EInteractType::Restore });
+	case EAnomalyRule::TurnOffSound:
+		return FAnomalyActionInfo({ EInteractType::TurnOff });
+	default:
+		return FAnomalyActionInfo();
+	}
+}
+
 #pragma endregion
 
 #pragma region Verdicts
@@ -63,7 +81,7 @@ void AAnomaly_Event::StartAnomalyAction()
 void AAnomaly_Event::SetVerdictMode(EAnomalyVerdictMode NewMode)
 {
 	auto* Sub = GetGameInstance()->GetSubsystem<UAnomalyVerdictSubsystem>();
-	Sub->SetVerdictMode(NewMode); // VerdictMode Setting
+	Sub->SetVerdictMode(NewMode);
 }
 
 #pragma endregion

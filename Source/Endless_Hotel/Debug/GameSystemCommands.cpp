@@ -61,7 +61,7 @@ static FAutoConsoleCommand AddAllAnomalyRule(TEXT("EHDebug.GameSystem.AddAllAnom
 	{
 		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->AddAnomalyRule(EAnomalyRule::Doll);
-		Subsystem->AddAnomalyRule(EAnomalyRule::Painting);
+		Subsystem->AddAnomalyRule(EAnomalyRule::FlipObject);
 		Subsystem->AddAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->AddAnomalyRule(EAnomalyRule::ResetObject);
 		Subsystem->AddAnomalyRule(EAnomalyRule::BurnObject);
@@ -72,7 +72,7 @@ static FAutoConsoleCommand RemoveAllAnomalyRule(TEXT("EHDebug.GameSystem.RemoveA
 	{
 		auto* Subsystem = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::Doll);
-		Subsystem->RemoveAnomalyRule(EAnomalyRule::Painting);
+		Subsystem->RemoveAnomalyRule(EAnomalyRule::FlipObject);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::TurnOffSound);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::ResetObject);
 		Subsystem->RemoveAnomalyRule(EAnomalyRule::BurnObject);
