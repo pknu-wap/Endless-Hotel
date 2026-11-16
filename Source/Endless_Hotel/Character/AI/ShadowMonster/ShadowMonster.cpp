@@ -1,7 +1,8 @@
 // Copyright by 2026-1 WAP Game 2 team
 
 #include "Character/AI/ShadowMonster/ShadowMonster.h"
-#include "ShadowMonsterAnimInstance.h"
+#include "Character/AI/ShadowMonster/ShadowMonsterAnimInstance.h"
+#include <Components/SkeletalMeshComponent.h>
 
 #pragma region Appear
 
@@ -11,18 +12,43 @@ void AShadowMonster::StartAppear()
 	{
 		return;
 	}
+	
+	UShadowMonsterAnimInstance* Anim = GetShadowAnim();
+	if (!IsValid(Anim))
+	{
+		return;
+	}
+	
 	bIsAppearing = true;
 	SetAnimRootMotionTranslationScale(AppearRootMotionScale);
 	SetActorHiddenInGame(false);
-	if (auto* Anim = GetShadowAnim())
+	Anim->bMonsterAppear = true;
+}
+
+void AShadowMonster::SetAppearPlaying(bool bPlaying)
+{
+	if (bPlaying)
 	{
-		Anim->bMonsterAppear = true;
+		StartAppear();
 	}
+
+	UShadowMonsterAnimInstance* Anim = GetShadowAnim();
+	if (!IsValid(Anim))
+	{
+		return;
+	}
+	Anim->AppearPlayRate = bPlaying ? 1.f : 0.f;
 }
 
 UShadowMonsterAnimInstance* AShadowMonster::GetShadowAnim() const
 {
-	return Cast<UShadowMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	const USkeletalMeshComponent* AnimMesh = GetMesh();
+
+	if (!IsValid(AnimMesh))
+	{
+		return nullptr;
+	}
+	return Cast<UShadowMonsterAnimInstance>(AnimMesh->GetAnimInstance());
 }
 
 #pragma endregion

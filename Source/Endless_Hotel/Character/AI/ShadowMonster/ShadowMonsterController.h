@@ -18,21 +18,31 @@ class ENDLESS_HOTEL_API AShadowMonsterController : public ABaseAIController
 	GENERATED_BODY()
 	
 #pragma region Base
-	
+
+protected:
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+#pragma endregion
+
+#pragma region Appear
+
 public:
 	void StartBind(AAnomaly_Object_Painting* OwnerPainting);
-	
-#pragma endregion
-	
-#pragma region Appear
-	
-public:
+	void SyncPaintingWatched(bool bWatched);
+
+private:
 	void HandleMonsterAppear(bool bAppear);
-	
-protected:
-	UPROPERTY(EditAnywhere, Category = "Spawn")
-	FTransform InitialTransform;
-	
+	void HandleFaceCover(bool bCovered);
+	void UpdateAppearPlayback();
+	void UnbindAppearEvents();
+
+private:
+	TWeakObjectPtr<AAnomaly_Object_Painting> BoundPainting;
+	TWeakObjectPtr<class AEHPlayer> BoundPlayer;
+
+	bool bPaintingWatched = false;
+	bool bFaceCovered = false;
+
 #pragma endregion
 	
 };
