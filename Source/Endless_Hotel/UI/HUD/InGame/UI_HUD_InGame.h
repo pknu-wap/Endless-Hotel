@@ -47,6 +47,7 @@ private:
 public:
 	void StartInGameHUD(bool bIsStart);
 	void EyeEffectBlur(bool bIsStart, float Value = 1.f);
+	void RemoveEyeEffectBlur();
 
 private:
 	UPROPERTY(meta = (BindWidget))

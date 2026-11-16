@@ -33,6 +33,16 @@ AEHPlayer::AEHPlayer(const FObjectInitializer& ObjectInitializer)
 
 #pragma region Component
 
+void AEHPlayer::SetControlRotation(bool bUseRotation)
+{
+	Camera->bUsePawnControlRotation = bUseRotation;
+}
+
+void AEHPlayer::SetCameraRotation(FRotator Target)
+{
+	Camera->SetRelativeRotation(Target);
+}
+
 void AEHPlayer::ToggleLighter()
 {
 	Lighter->SetVisibility(!Lighter->IsVisible(), true);

@@ -106,6 +106,12 @@ void UUI_HUD_InGame::EyeEffectBlur(bool bIsStart, float Value)
 		}), 0.01f, true);
 }
 
+void UUI_HUD_InGame::RemoveEyeEffectBlur()
+{
+	ShowCrosshair(true);
+	BackBlur->SetBlurStrength(0.f);
+}
+
 #pragma endregion
 
 #pragma region Crosshair

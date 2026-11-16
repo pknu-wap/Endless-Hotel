@@ -49,6 +49,7 @@ public:
 	void StartEyeEffect(bool bIsOpen);
 	void RemoveAllEyeEffect();
 	float LoadingEyeEffect();
+	void StartFastEyeEffect();
 
 private:
 	void SetEyeEffect();
@@ -69,6 +70,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "EyeEffect")
 	TObjectPtr<UCurveFloat> CV_Loading;
 
+	UPROPERTY(EditAnywhere, Category = "EyeEffect")
+	TObjectPtr<UCurveFloat> CV_EyeFastOpen;
+
 	TWeakObjectPtr<UMaterialInstanceDynamic> DM_EyeEffect;
 
 	UPROPERTY()
@@ -79,6 +83,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<class UTimelineComponent> TimeLine_Loading;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TimeLine_Fast;
 
 	FTimerHandle BindHandle;
 

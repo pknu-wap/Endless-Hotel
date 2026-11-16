@@ -24,6 +24,8 @@ public:
 
 public:
 	class UCameraComponent* GetCamera() { return Camera; }
+	void SetControlRotation(bool bUseRotation);
+	void SetCameraRotation(FRotator Target);
 	void ToggleLighter();
 
 private:

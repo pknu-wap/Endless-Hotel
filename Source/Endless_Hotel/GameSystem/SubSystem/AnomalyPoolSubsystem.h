@@ -78,10 +78,10 @@ public:
     void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
     void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnomalyRule FakeAction, EAnomalyRule RealRule);
     void ClearFakeManualEntry(EAnomalyID TargetAnomalyID);
+    bool IsCollectedAllRule() { return AnomalyRules.Num() >= MAX_ANOMALY_RULE_COUNT; }
 
 public:
-    TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch,
-        EAnomalyRule::Doll, EAnomalyRule::Painting, EAnomalyRule::ResetObject, EAnomalyRule::TurnOffSound };
+	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::NoAnomaly, EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 
     DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule);
     FOnAddAnomalyRule OnAddAnomalyRule;

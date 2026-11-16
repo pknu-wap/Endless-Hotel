@@ -181,7 +181,7 @@ void AElevator_Button::PlayButtonPressAnimation()
 
     FLatentActionInfo LatentInfo2;
     LatentInfo2.CallbackTarget = this;
-    LatentInfo2.ExecutionFunction = FName("RestoreButtonPosition");
+    LatentInfo2.ExecutionFunction = GET_FUNCTION_NAME_CHECKED(ThisClass, RestoreButtonPosition);
     LatentInfo2.UUID = __LINE__;
     LatentInfo2.Linkage = 0;
 

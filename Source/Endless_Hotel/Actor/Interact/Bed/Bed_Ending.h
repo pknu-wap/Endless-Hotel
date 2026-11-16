@@ -41,7 +41,10 @@ private:
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Sleep")
-	TArray<FBedDirectionInfo> SleepInfo;
+	FTransform SleepTrans;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sleep")
+	TObjectPtr<UAnimMontage> AM_Sleep;
 
 #pragma endregion
 

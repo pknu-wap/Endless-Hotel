@@ -6,26 +6,6 @@
 #include <CoreMinimal.h>
 #include <BedDirectionComponent.generated.h>
 
-#pragma region Declare
-
-USTRUCT(BlueprintType)
-struct FBedDirectionInfo
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	FTransform TargetTrans;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	float Delay;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Info")
-	float Duration;
-};
-
-#pragma endregion
-
 UCLASS()
 class ENDLESS_HOTEL_API UBedDirectionComponent : public UEHComponent
 {
@@ -52,18 +32,12 @@ private:
 
 public:
 	void SetPlayerInputAble(bool bAble);
-	void ShowDirection(TArray<FBedDirectionInfo> Infos);
 	void ShowEyeEffect(bool bOpen);
-	void AdjustControllerRotation(const FRotator& TargetRotation, float Duration);
+	void ShowEyeFastEffect();
+	void SyncCameraRotation(bool bOn);
 
 private:
 	FTimerHandle ControllerHandle;
-
-	FRotator StartControllerRot;
-	FRotator TargetControllerRot;
-
-	float ControllerElapsed = 0.f;
-	float ControllerDuration = 0.f;
 
 #pragma endregion
 
