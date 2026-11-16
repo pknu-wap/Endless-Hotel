@@ -106,6 +106,8 @@ void UAnomalyVerdictSubsystem::HandleFailed()
 	{
 		Gen->ForceNormalNext();
 	}
+	auto* GameSys = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+	GameSys->bIsPerfectClear = false;
 	NextAnomalyMap = EMapDataLayer::Hotel;
 }
 
