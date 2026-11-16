@@ -20,9 +20,6 @@ public:
 public:
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EAnomalyID ID = EAnomalyID::None;
-
-    UPROPERTY(EditAnywhere, Category = "InGame|Data")
-    EAnomalyRule Rule = EAnomalyRule::EightExit;
     
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     TArray<EAnomalyRule> AcceptedRules;

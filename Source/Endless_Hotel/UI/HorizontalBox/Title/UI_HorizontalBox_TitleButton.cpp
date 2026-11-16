@@ -37,7 +37,7 @@ void UUI_HorizontalBox_TitleButton::Click_Button()
 	{
 	case ETitleButtonType::Start:
 	{
-		const auto* Subsystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
+		auto* Subsystem = GetGameInstance()->GetSubsystem<UEHGameSystem>();
 		Subsystem->ResetGameSystem();
 
 		auto* Player = Cast<AEHPlayer>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
