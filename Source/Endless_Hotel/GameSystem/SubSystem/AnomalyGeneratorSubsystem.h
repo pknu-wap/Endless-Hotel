@@ -19,7 +19,7 @@ struct FAnomalySpawnInfo
 	bool bIsNormal = false;
 	EAnomalyID AnomalyID = EAnomalyID::None;
 	EMapDataLayer DataLayer = EMapDataLayer::Hotel;
-	EAnomalyRule Rule = EAnomalyRule::None;
+	TArray<EAnomalyRule> AcceptedRules;
 	UPROPERTY()
 	TSoftClassPtr<AAnomaly_Event> EventClass;
 };

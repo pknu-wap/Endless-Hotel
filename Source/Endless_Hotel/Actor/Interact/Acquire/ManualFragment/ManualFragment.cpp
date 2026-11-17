@@ -50,14 +50,9 @@ void AManualFragment::EndPlay(EEndPlayReason::Type EndPlayReason)
 
 void AManualFragment::SaveAcquireData()
 {
-	auto* GameInstance = GetGameInstance();
+	const auto* GameInstance = GetGameInstance();
 	auto* Subsystem = GetGameInstance()->GetSubsystem<UAnomalyPoolSubsystem>();
 	Subsystem->AddAnomalyRule(NewRule);
-
-	if (bHasFakeRule)
-	{
-		Subsystem->AddFakeManualEntry(AppearAnomaly, FakeRule, NewRule);
-	}
 
 	if (Subsystem->IsCollectedAllRule())
 	{
