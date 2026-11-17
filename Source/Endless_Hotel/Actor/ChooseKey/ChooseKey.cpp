@@ -25,8 +25,10 @@ void AChooseKey::BeginPlay()
     {
         Comp_Key->SetRelativeScale3D(FVector(1, 1, 1));
 
-        auto* Light = FindComponentByClass<UPointLightComponent>();
-        Light->SetRelativeLocation(FVector(-3.06f, 0.69f, 0.74f));
+        if (auto* Light = FindComponentByClass<UPointLightComponent>())
+        {
+            Light->SetRelativeLocation(FVector(-3.06f, 0.69f, 0.74f));
+        }
     }
 
     Comp_Key->SetStaticMesh(TargetMesh);
