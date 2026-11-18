@@ -35,9 +35,10 @@ void UEHGameSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 #pragma region Reset
 
-void UEHGameSystem::ResetGameSystem() const
+void UEHGameSystem::ResetGameSystem()
 {
 	const UGameInstance* GameInstance = GetGameInstance();
+	bIsPerfectClear = true;
 	if (!GameInstance)
 	{
 		return;
@@ -100,6 +101,10 @@ void UEHGameSystem::GameClear()
 	EAchievementID EndingID = Ending == EGameProgression::Clear_True ? EAchievementID::TrueEnding : EAchievementID::BadEnding;
 	auto* SteamSub = GetGameInstance()->GetSubsystem<USteamSubsystem>();
 	SteamSub->UnlockAchievement(EndingID);
+	if (bIsPerfectClear)
+	{
+		SteamSub->UnlockAchievement(EAchievementID::PerfectClear);
+	}
 }
 
 bool UEHGameSystem::IsGameClear() const

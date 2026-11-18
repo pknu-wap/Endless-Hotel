@@ -20,9 +20,9 @@ public:
 public:
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EAnomalyID ID = EAnomalyID::None;
-
+    
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
-    EAnomalyRule Rule = EAnomalyRule::EightExit;
+    TArray<EAnomalyRule> AcceptedRules;
 
     UPROPERTY(EditAnywhere, Category = "InGame|Data")
     EMapDataLayer DataLayer = EMapDataLayer::Hotel;

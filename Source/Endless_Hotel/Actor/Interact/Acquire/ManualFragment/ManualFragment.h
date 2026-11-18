@@ -54,12 +54,6 @@ private:
     UPROPERTY(EditAnywhere, Category = "Setting")
     FText Description;
 
-    UPROPERTY(EditAnywhere, Category = "Setting|Fake")
-    bool bHasFakeRule = false;
-
-    UPROPERTY(EditAnywhere, Category = "Setting|Fake", meta = (EditCondition = "bHasFakeRule"))
-    EAnomalyRule FakeRule = EAnomalyRule::None;
-
 #pragma endregion
 
 };

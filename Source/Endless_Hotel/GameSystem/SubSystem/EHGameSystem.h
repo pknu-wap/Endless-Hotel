@@ -30,7 +30,7 @@ public:
 #pragma region Reset
 
 public:
-	void ResetGameSystem() const;
+	void ResetGameSystem();
 
 #pragma endregion
 
@@ -58,6 +58,8 @@ public:
 public:
 	DECLARE_MULTICAST_DELEGATE(FGameClearEvent);
 	FGameClearEvent GameClearEvent;
+	
+	bool bIsPerfectClear = true;
 
 #pragma endregion
 	

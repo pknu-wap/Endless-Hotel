@@ -24,7 +24,7 @@ void AChooseKey::BeginPlay()
     if (Index == 2)
     {
         Comp_Key->SetRelativeScale3D(FVector(1, 1, 1));
-
+        
         if (auto* Light = FindComponentByClass<UPointLightComponent>())
         {
             Light->SetRelativeLocation(FVector(-3.06f, 0.69f, 0.74f));

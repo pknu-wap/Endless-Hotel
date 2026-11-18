@@ -22,22 +22,6 @@ public:
     TArray<TObjectPtr<AAnomaly_Object_Base>> Objects;
 };
 
-USTRUCT(BlueprintType)
-struct FFakeManualEntry
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere)
-    EAnomalyID TargetAnomalyID = EAnomalyID::None;
-
-    UPROPERTY(EditAnywhere)
-    EAnomalyRule DisplayedFakeAction = EAnomalyRule::None;
-
-    UPROPERTY(EditAnywhere)
-    EAnomalyRule RealRuleToSolve = EAnomalyRule::None;
-};
-
 #pragma endregion
 
 UCLASS()
@@ -76,19 +60,16 @@ private:
 public:
     void AddAnomalyRule(const EAnomalyRule& AnomalyRule);
     void RemoveAnomalyRule(const EAnomalyRule& AnomalyRule);
-    void AddFakeManualEntry(EAnomalyID TargetAnomalyID, EAnomalyRule FakeAction, EAnomalyRule RealRule);
-    void ClearFakeManualEntry(EAnomalyID TargetAnomalyID);
-    bool IsCollectedAllRule() { return AnomalyRules.Num() >= MAX_ANOMALY_RULE_COUNT; }
+    EAnomalyRule ResolveRule(const TArray<EAnomalyRule>& Accepted) const;
+    bool HasRule(const EAnomalyRule Rule) const { return AnomalyRules.Contains(Rule); }
+    EAnomalyRule GetLastAcquiredRule() const { return AnomalyRules.IsEmpty() ? EAnomalyRule::None : AnomalyRules.Last(); }
+    bool IsCollectedAllRule() const { return AnomalyRules.Num() >= MAX_ANOMALY_RULE_COUNT; }
 
 public:
-	TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::NoAnomaly, EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
+    TArray<EAnomalyRule> AnomalyRules = { EAnomalyRule::NoAnomaly, EAnomalyRule::EightExit, EAnomalyRule::Touch, EAnomalyRule::Watch };
 
     DECLARE_MULTICAST_DELEGATE_OneParam(FOnAddAnomalyRule, EAnomalyRule);
     FOnAddAnomalyRule OnAddAnomalyRule;
-
-private:
-    UPROPERTY()
-    TArray<FFakeManualEntry> FakeManualEntries;
 
 #pragma endregion
 

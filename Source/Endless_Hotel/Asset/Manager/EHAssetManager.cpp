@@ -135,7 +135,7 @@ void UEHAssetManager::AppendAnomaliesForRule(EAnomalyRule Rule)
 {
 	for (const FAnomalyEntry& Entry : OriginAnomaly)
 	{
-		if (Entry.Rule != Rule)
+		if (!Entry.AcceptedRules.Contains(Rule))
 		{
 			continue;
 		}
@@ -206,7 +206,7 @@ TArray<TSubclassOf<AAnomaly_Object_Base>> UEHAssetManager::GetObjectByID(EAnomal
 
 bool UEHAssetManager::CanSpawnAnomaly(const FAnomalyEntry& AnomalyEntry, const TArray<EAnomalyRule>& ActiveRules) const
 {
-	return ActiveRules.Contains(AnomalyEntry.Rule);
+	return AnomalyEntry.AcceptedRules.ContainsByPredicate([&](const EAnomalyRule R) { return ActiveRules.Contains(R); });
 }
 
 #pragma endregion

@@ -64,6 +64,7 @@ public:
 
 protected:
 	virtual void StartAnomalyAction();
+	FAnomalyActionInfo GetRuleActionInfo() const;
 
 public:
 	EAnomalyID AnomalyID;

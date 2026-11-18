@@ -4,7 +4,7 @@
 
 #include <CoreMinimal.h>
 
-#define MAX_ANOMALY_RULE_COUNT 10;
+#define MAX_ANOMALY_RULE_COUNT 10
 
 UENUM(BlueprintType)
 enum class EAnomalyRule : uint8
@@ -14,7 +14,7 @@ enum class EAnomalyRule : uint8
 	EightExit			= 2		UMETA(DisplayName = "EightExit"),
 	Touch				= 3		UMETA(DisplayName = "Touch"),
 	Doll				= 4		UMETA(DisplayName = "Doll"),
-	Painting			= 5		UMETA(DisplayName = "Painting"),
+	FlipObject			= 5		UMETA(DisplayName = "FlipObject"),
 	TurnOffSound		= 6		UMETA(DisplayName = "TurnOffSound"),
 	ResetObject			= 7		UMETA(DisplayName = "ResetObject"),
 	Watch				= 8		UMETA(DisplayName = "Watch"),
