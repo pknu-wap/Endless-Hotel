@@ -10,5 +10,23 @@ UCLASS()
 class ENDLESS_HOTEL_API UUI_PopUp_Credit_True : public UUI_PopUp_Base
 {
 	GENERATED_BODY()
-	
+
+#pragma region Show
+
+public:
+	virtual void ShowWidget() override;
+
+#pragma endregion
+
+#pragma region Credit
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Credit")
+	TObjectPtr<class ULevelSequence> LS_Ending;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	TObjectPtr<UWidgetAnimation> WA_Credit;
+
+#pragma endregion
+
 };
