@@ -21,6 +21,10 @@ public:
 #pragma region Credit
 
 private:
+	UFUNCTION()
+	void OnFinishedAnimation();
+
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Credit")
 	TObjectPtr<class ULevelSequence> LS_Ending;
 
