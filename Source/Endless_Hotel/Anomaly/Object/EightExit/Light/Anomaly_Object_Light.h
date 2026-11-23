@@ -82,6 +82,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Color")
 	FLinearColor OriginalColor;
 
+	UPROPERTY(EditAnywhere, Category = "Color")
+	FLinearColor ChangeColor;
+
 #pragma endregion
 
 };
