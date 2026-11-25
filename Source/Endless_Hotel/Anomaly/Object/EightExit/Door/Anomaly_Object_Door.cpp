@@ -121,6 +121,7 @@ void AAnomaly_Object_Door::OnChangedProgression(EGameProgression Target)
 
 		GetRootComponent()->SetWorldTransform(OriginalTransform);
 		SetLight(true);
+
 		Component_Interact->ActiveInteract(true);
 	}
 }
