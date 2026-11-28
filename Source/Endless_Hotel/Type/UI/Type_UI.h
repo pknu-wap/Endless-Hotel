@@ -26,7 +26,8 @@ enum class EWidgetType : uint8
 	PopUp_SettingTutorial	UMETA(DisplayName = "PopUp_SettingTutorial"),
 	PopUp_InteractTutorial	UMETA(DisplayName = "PopUp_InteractTutorial"),
 	PopUp_Credit_Bad		UMETA(DisplayName = "PopUp_Credit_Bad"),
-	PopUp_Credit_True		UMETA(DisplayName = "PopUp_Credit_True")
+	PopUp_Credit_True		UMETA(DisplayName = "PopUp_Credit_True"),
+	PopUp_White				UMETA(DisplayName = "PopUp_White")
 };
 
 UENUM(BlueprintType)

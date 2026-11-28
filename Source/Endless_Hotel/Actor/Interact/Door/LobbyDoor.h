@@ -83,6 +83,13 @@ private:
 #pragma region SpotLight
 
 private:
+	UFUNCTION()
+	void OnUpdateRectLight(float Value);
+
+	UFUNCTION()
+	void OnFinishedRectLight();
+
+private:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class USpotLightComponent> SpotLight;
 
@@ -91,6 +98,18 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<class UAudioComponent> AC_SpotLight;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class URectLightComponent> RectLight;
+
+	UPROPERTY()
+	TObjectPtr<class UTimelineComponent> TL_Rect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SpotLight")
+	TObjectPtr<class UCurveFloat> CV_Rect;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class UPostProcessComponent> PostProcess;
 
 #pragma endregion
 

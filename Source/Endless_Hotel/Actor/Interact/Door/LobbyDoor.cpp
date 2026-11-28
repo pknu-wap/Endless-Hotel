@@ -4,10 +4,14 @@
 #include "GameSystem/SaveGame/SaveManager.h"
 #include "GameSystem/SubSystem/EHGameSystem.h"
 #include "Player/Character/EHPlayer.h"
+#include "UI/Controller/UI_Controller.h"
 #include <Components/AudioComponent.h>
 #include <Components/BoxComponent.h>
 #include <Components/SpotLightComponent.h>
+#include <Components/RectLightComponent.h>
+#include <Components/TimelineComponent.h>
 #include <Components/ExponentialHeightFogComponent.h>
+#include <Components/PostProcessComponent.h>
 #include <Kismet/KismetSystemLibrary.h>
 
 #pragma region Base
@@ -41,6 +45,23 @@ ALobbyDoor::ALobbyDoor(const FObjectInitializer& ObjectInitializer)
 	AC_SpotLight->SetupAttachment(SpotLight);
 	AC_SpotLight->SetAutoActivate(false);
 
+	RectLight = CreateDefaultSubobject<URectLightComponent>(TEXT("RectLight"));
+	RectLight->SetupAttachment(RootComponent);
+	RectLight->SetIntensity(0.f);
+
+	TL_Rect = CreateDefaultSubobject<UTimelineComponent>(TEXT("TL_Rect"));
+
+	PostProcess = CreateDefaultSubobject<UPostProcessComponent>(TEXT("PostProcess"));
+	PostProcess->BlendWeight = 0.f;
+
+	FPostProcessSettings& Settings = PostProcess->Settings;
+	Settings.bOverride_BloomIntensity = true;
+	Settings.BloomIntensity = 0.675f;
+	Settings.bOverride_AutoExposureMethod = true;
+	Settings.AutoExposureMethod = EAutoExposureMethod::AEM_Manual;
+	Settings.bOverride_AutoExposureBias = true;
+	Settings.AutoExposureBias = 0.0f;
+
 	Object->SetupAttachment(RootComponent);
 }
 
@@ -56,6 +77,14 @@ void ALobbyDoor::BeginPlay()
 
 	bool bActive = USaveManager::LoadData_Progression().Progression != EGameProgression::CheckIn;
 	Component_Interact->ActiveInteract(bActive);
+
+	FOnTimelineFloat UpdateRectLight;
+	UpdateRectLight.BindUFunction(this, FName("OnUpdateRectLight"));
+	TL_Rect->AddInterpFloat(CV_Rect, UpdateRectLight);
+
+	FOnTimelineEvent FinishedRect;
+	FinishedRect.BindUFunction(this, FName("OnFinishedRectLight"));
+	TL_Rect->SetTimelineFinishedFunc(FinishedRect);
 }
 
 void ALobbyDoor::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -90,6 +119,19 @@ void ALobbyDoor::Interact(AEHCharacter* Interacter)
 		constexpr float Duration = 4.f;
 		RotateDoor(LeftOpenRot, RightOpenRot, SW_DoorOpen, Duration);
 		break;
+	}
+
+	if (USaveManager::LoadData_Progression().Progression == EGameProgression::Clear_True)
+	{
+		CloseTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		FPostProcessSettings& Settings = PostProcess->Settings;
+		PostProcess->BlendWeight = 1.f;
+
+		TL_Rect->PlayFromStart();
+
+		auto* UICon = GetGameInstance()->GetSubsystem<UUI_Controller>();
+		UICon->OpenWidget(EWidgetType::PopUp_White);
 	}
 }
 
@@ -133,6 +175,33 @@ void ALobbyDoor::OnCloseTrigger(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	SpotLight->SetVisibility(true);
 	EndingFog->SetFogDensity(1.f);
 	AC_SpotLight->Play();
+}
+
+#pragma endregion
+
+#pragma region SpotLight
+
+void ALobbyDoor::OnUpdateRectLight(float Value)
+{
+	float Alpha = FMath::Clamp(Value, 0.0f, 1.0f);
+	constexpr float Intensity = 400000.f;
+
+	RectLight->SetIntensity(Alpha * Intensity);
+
+	FPostProcessSettings& Settings = PostProcess->Settings;
+	Settings.BloomIntensity = FMath::Lerp(0.675f, 16.0f, Alpha);
+	Settings.AutoExposureBias = FMath::Lerp(0.0f, 10.0f, Alpha);
+}
+
+void ALobbyDoor::OnFinishedRectLight()
+{
+	RectLight->SetIntensity(0.f);
+
+	PostProcess->BlendWeight = 0.f;
+
+	FPostProcessSettings& Settings = PostProcess->Settings;
+	Settings.BloomIntensity = 0.675f;
+	Settings.AutoExposureBias = 0.f;
 }
 
 #pragma endregion
