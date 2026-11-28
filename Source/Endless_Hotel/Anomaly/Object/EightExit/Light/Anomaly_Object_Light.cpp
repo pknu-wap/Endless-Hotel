@@ -33,7 +33,6 @@ void AAnomaly_Object_Light::InitializeOnAnomalySpawned()
 
 	Object->SetVisibility(true);
 
-	// 임시
 	Mesh_Destroy->DestroyComponent();
 	Mesh_Destroy = NewObject<UGeometryCollectionComponent>(this);
 	Mesh_Destroy->AttachToComponent(Object, FAttachmentTransformRules::KeepRelativeTransform);
@@ -43,6 +42,7 @@ void AAnomaly_Object_Light::InitializeOnAnomalySpawned()
 	SetGeometryCollection();
 
 	PointLight->SetLightColor(OriginalColor);
+	PointLight->SetIntensity(500.f);
 	PointLight->AttachToComponent(Object, FAttachmentTransformRules::KeepWorldTransform);
 
 	TurnLight(true);
@@ -118,7 +118,8 @@ void AAnomaly_Object_Light::StartChangeColor()
 
 void AAnomaly_Object_Light::ChangeLightColor()
 {
-	PointLight->SetLightColor(FLinearColor(0, 0.9f, 1));
+	PointLight->SetLightColor(ChangeColor);
+	PointLight->SetIntensity(200.f);
 	PointLight->MarkRenderStateDirty();
 
 	AC->Sound = Sound_LightBlue;

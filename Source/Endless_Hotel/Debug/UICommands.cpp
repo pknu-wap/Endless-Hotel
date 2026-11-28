@@ -46,3 +46,9 @@ static FAutoConsoleCommand CmdHideGameInfo(TEXT("EHDebug.UI.Hide.GameInfo"), TEX
 			UI_InGame->ShowDebugGameInfo(false);
 		}
 	}));
+
+static FAutoConsoleCommand CmdTestCredit(TEXT("EHDebug.UI.Test.CreditTrue"), TEXT("진엔딩 크레딧 테스트"), FConsoleCommandDelegate::CreateLambda([]()
+	{
+		auto* UICon = GEngine->GetCurrentPlayWorld()->GetGameInstance()->GetSubsystem<UUI_Controller>();
+		UICon->OpenWidget(EWidgetType::PopUp_Credit_True);
+	}));
